@@ -2509,6 +2509,34 @@ body {
 }
 .place-bar button:hover { background: rgba(126, 226, 180, 0.26); }
 
+/* The holder's own figures. Shown only with a card in hand, because they are
+   the only thing on the page they describe -- and hidden rather than disabled,
+   since a row of dead sliders under a picked screwdriver is a question the
+   placer cannot answer. */
+.place-case { margin-top: 10px; border-top: 1px solid rgba(126, 226, 180, 0.22); padding-top: 9px; }
+.place-case[hidden] { display: none; }
+.place-case h6 { margin: 0 0 6px; }
+.place-case label {
+  display: grid; grid-template-columns: 42px 1fr 38px;
+  align-items: center; gap: 8px; margin-top: 3px;
+  color: rgba(203, 232, 219, 0.74);
+}
+.place-case b { font-weight: 400; color: #7ee2b4; text-align: right; font-variant-numeric: tabular-nums; }
+.place-case input {
+  -webkit-appearance: none; appearance: none;
+  width: 100%; height: 3px; margin: 0; cursor: pointer;
+  background: rgba(126, 226, 180, 0.28);
+}
+.place-case input::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 11px; height: 11px; border-radius: 50%;
+  background: #7ee2b4; border: 0; cursor: grab;
+}
+.place-case input::-moz-range-thumb {
+  width: 11px; height: 11px; border-radius: 50%;
+  background: #7ee2b4; border: 0; cursor: grab;
+}
+
 
 .w-lab .t-work-1 { left: 549px; top: -70px; width: 244px; height: 259px; rotate: 14deg; background-image: url("assets/tools/set-square.png"); }
 .w-lab .t-work-2 { left: -24px; top: 411px; width: 138px; height: 174px; rotate: 160deg; background-image: url("assets/tools/knife.png"); }
@@ -7702,8 +7730,25 @@ a.arrow { text-decoration: none; }
    exactly where it is glued. */
 .play-case {
   position: absolute;
-  aspect-ratio: 81 / 124;
   z-index: 5;
+
+  /* The holder, in fractions of the card's width -- which is how a real one is
+     specified: a rim of so many millimetres around a 63mm card, rather than a
+     percentage of itself. The placer sets --w and the rest falls out of it, so
+     there is one number to move and no way for the parts to disagree.
+
+     These four are the default. build.js writes the same four again from
+     content/tools.json below, which is what the sliders in ?place hand back. */
+  --rim: 0.1;    /* shell either side of the card */
+  --lip: 0.06;   /* shell above it */
+  --foot: 0.16;  /* the printed strip below it */
+  --card: 0.7143;
+
+  --cardw: calc(var(--w, 200px) / (1 + 2 * var(--rim)));
+  --cardh: calc(var(--cardw) / var(--card));
+
+  width: var(--w, 200px);
+  height: calc(var(--cardh) + (var(--lip) + var(--foot)) * var(--cardw));
   /* The tile hears the pointer, not these. */
   pointer-events: none;
   border-radius: 5px;
@@ -7729,9 +7774,10 @@ a.arrow { text-decoration: none; }
    the case width -- sizes the whole assembly. */
 .play-case .play-lens {
   position: absolute;
-  left: 5.5%;
-  right: 5.5%;
-  top: 4.2%;
+  left: calc(var(--rim) * var(--cardw));
+  top: calc(var(--lip) * var(--cardw));
+  width: var(--cardw);
+  height: var(--cardh);
   pointer-events: none;
 }
 
@@ -7758,33 +7804,39 @@ a.arrow { text-decoration: none; }
 /* The printing, along the foot, where a toploader carries it. */
 .play-foot {
   position: absolute;
-  left: 6%;
-  right: 6%;
-  bottom: 2.6%;
-  height: 8%;
+  left: calc(var(--rim) * var(--cardw));
+  width: var(--cardw);
+  /* Directly under the card, because that is where the strip is: the old
+     figure was a guess at the same place and missed, which is how the card
+     came to sit over its own printing. */
+  top: calc(var(--lip) * var(--cardw) + var(--cardh));
+  height: calc(var(--foot) * var(--cardw));
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
   white-space: nowrap;
   font-family: var(--f-nav);
-  font-size: 6px;
+  /* With the holder: a fixed 6px is a different thing on a 190px card than on
+     a 110px one. */
+  font-size: calc(var(--cardw) * 0.05);
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.42);
 }
 
 /* Before the element upgrades the case is a box holding an unknown tag, which
-   is fine -- it already has its shape from aspect-ratio, so nothing reflows
-   when the script lands. */
-.play-lens:not(:defined) { display: block; aspect-ratio: 2 / 3; }
+   is fine -- the well is already the right size and shape from --cardw and
+   --cardh, so nothing reflows when the script lands. */
+.play-lens:not(:defined) { display: block; }
 
 @media (prefers-reduced-motion: reduce) {
   .play-case { transition: none; }
 }
 
-.experiments .lens-home-1 { left: 76px; top: 178px; width: 212px; rotate: -3deg; }
-.experiments .lens-home-2 { left: 246px; top: 92px; width: 150px; rotate: 13deg; }
+.play-case { --rim: 0.1; --lip: 0.06; --foot: 0.16; --card: 0.7143; }
+.experiments .lens-home-1 { left: 44px; top: 132px; --w: 142px; rotate: -3deg; }
+.experiments .lens-home-2 { left: 194px; top: 138px; --w: 122px; rotate: 13deg; }
 
 .wr-list { position: absolute; left: 24px; right: 24px; top: 92px; }
 
@@ -8642,9 +8694,9 @@ a.arrow { text-decoration: none; }
       <section class="card ab-desk" data-tile="b">
         <p class="label">About // Colophon</p>
         <dl class="ab-desk-list is-tight">
-          <div><dt>One file</dt><dd>index.html, 625 KB</dd></div>
+          <div><dt>One file</dt><dd>index.html, 633 KB</dd></div>
           <div><dt>Built from</dt><dd>7 files of JSON, no framework</dd></div>
-          <div><dt>Stylesheet</dt><dd>7,790 lines</dd></div>
+          <div><dt>Stylesheet</dt><dd>7,841 lines</dd></div>
           <div><dt>Words</dt><dd>6,764 of them</dd></div>
         </dl>
         <p class="ab-colo">Counted by build.js, not typed.</p>
@@ -10387,7 +10439,9 @@ a.arrow { text-decoration: none; }
   /* Written by build.js from content/tools.json -- read by ?place. */
   var TOOLS = { tool: {"work-1":"square","work-2":"knife","table-1":"rule","table-2":"pencil","table-3":"eraser","table-4":"square","table-5":"knife","table-6":"clutch","table-7":"wood","table-8":"steel"},
                 card: {"lens-home-1":"dragon","lens-home-2":"chandra"},
-                ratio: {"work-1":1.0615,"work-2":1.2609,"table-1":1.2467,"table-2":1.3113,"table-3":1.275,"table-4":1.0627,"table-5":1.2567,"table-6":1.3684,"table-7":1.2785,"table-8":1.1989,"lens-home-1":1.5309,"lens-home-2":1.5309},
+                print: {"lens-home-1":["FULL BLEED","Green Flame"],"lens-home-2":["FULL BLEED","Torch Of Defiance"]},
+                ratio: {"work-1":1.0615,"work-2":1.2609,"table-1":1.2467,"table-2":1.3113,"table-3":1.275,"table-4":1.0627,"table-5":1.2567,"table-6":1.3684,"table-7":1.2785,"table-8":1.1989,"lens-home-1":1.35,"lens-home-2":1.35},
+                case: {"rim":0.1,"lip":0.06,"foot":0.16,"card":0.7143},
                 size: {"work-1":1.16,"work-2":0.74,"table-1":1.4,"table-2":1,"table-3":1,"table-4":1.52,"table-5":1,"table-6":1,"table-7":1,"table-8":1.8} };
 
   /* ---- placing the kit --------------------------------------------------
@@ -10461,12 +10515,14 @@ a.arrow { text-decoration: none; }
       el.style.left = Math.round(st.x) + 'px';
       el.style.top = Math.round(st.y) + 'px';
       el.style.rotate = (Math.round(st.rot * 10) / 10) + 'deg';
-      el.style.width = Math.round(st.w * st.size) + 'px';
-      /* A case takes its height from aspect-ratio and the card inside takes
-         its own from the width it is given, so setting one here would be two
-         opinions about the same number. The kit has no such rule and needs
-         to be told. */
-      if (!isLens(key(el))) {
+      /* A case is given --w and works the rest out -- its own height, the well,
+         the strip at the foot. Setting a width here as well would be a second
+         opinion about the same number, and setting a height would be a third.
+         The kit has no such rule and needs to be told both. */
+      if (isLens(key(el))) {
+        el.style.setProperty('--w', Math.round(st.w * st.size) + 'px');
+      } else {
+        el.style.width = Math.round(st.w * st.size) + 'px';
         el.style.height = Math.round(st.w * st.size * (TOOLS.ratio[key(el)] || 1)) + 'px';
       }
     }
@@ -10497,11 +10553,79 @@ a.arrow { text-decoration: none; }
     bar.innerHTML = '<h6>Placing the kit</h6><p id="place-now">Press a tool to pick it up.</p>' +
       '<p class="place-keys">drag to move &middot; arrows nudge, shift for ten<br>' +
       '[ ] turn &middot; - = resize &middot; esc to drop<br>' +
-      'tab for the next tool &middot; o shows what the card clips</p>' +
+      'tab for the next tool &middot; o shows what the card clips<br>' +
+      'a card in hand brings up the holder below</p>' +
+      /* One holder, not one per card: a toploader is a toploader, and two
+         cards on the same mat arriving in different-shaped cases reads as a
+         mistake rather than a choice. So these are global and the JSON has
+         one "case" block, while x, y, width and turn stay per card. */
+      '<div class="place-case" id="place-case" hidden>' +
+        '<h6>The holder</h6>' +
+        '<label>rim<input type="range" id="cs-rim" min="0.02" max="0.22" step="0.005"><b id="cs-rim-v"></b></label>' +
+        '<label>lip<input type="range" id="cs-lip" min="0" max="0.2" step="0.005"><b id="cs-lip-v"></b></label>' +
+        '<label>foot<input type="range" id="cs-foot" min="0" max="0.4" step="0.005"><b id="cs-foot-v"></b></label>' +
+        '<label>card<input type="range" id="cs-card" min="0.55" max="1" step="0.0025"><b id="cs-card-v"></b></label>' +
+      '</div>' +
       '<div class="place-do"><button id="place-copy">Copy JSON</button>' +
       '<button id="place-clear">Start over</button></div>';
     document.body.appendChild(bar);
     var now = bar.querySelector('#place-now');
+
+    /* ---- the holder ----------------------------------------------------
+
+       The case used to be a set of percentages of itself -- the card inset
+       5.5% either side, the strip at the foot guessed at 8% of the height --
+       and percentages of a box whose height came from an aspect ratio cut for
+       a 63x88 card. The element does not draw a 63x88 card. Its orientation
+       snaps to the nearest named shape and portrait is 5/7, so the card came
+       out taller than the well it was cut for and sat over its own printing.
+
+       Now every part is a fraction of the card's width, which is how a real
+       holder is specified, and the case works its own height out from them.
+       These four are the whole shape, so they are the four worth a slider. */
+    var CASE_KEY = 'bento-tools-case-1';
+    var CASE_DEF = TOOLS.case || { rim: 0.1, lip: 0.06, foot: 0.16, card: 0.7143 };
+    var holder = {};
+    try { holder = JSON.parse(localStorage.getItem(CASE_KEY) || 'null') || {}; } catch (e) { holder = {}; }
+    ['rim', 'lip', 'foot', 'card'].forEach(function (n) {
+      if (typeof holder[n] !== 'number') { holder[n] = CASE_DEF[n]; }
+    });
+
+    var casePanel = bar.querySelector('#place-case');
+    var caseInputs = {};
+
+    /* Written onto each case rather than :root, because inline is the only
+       thing that beats the rule build.js wrote, and because a card dropped
+       into the page later still gets them from the next apply. */
+    function applyCase() {
+      var all = document.querySelectorAll('.play-case');
+      Array.prototype.forEach.call(all, function (el) {
+        el.style.setProperty('--rim', holder.rim);
+        el.style.setProperty('--lip', holder.lip);
+        el.style.setProperty('--foot', holder.foot);
+        el.style.setProperty('--card', holder.card);
+      });
+      ['rim', 'lip', 'foot', 'card'].forEach(function (n) {
+        var box = bar.querySelector('#cs-' + n + '-v');
+        if (box) { box.textContent = holder[n].toFixed(n === 'card' ? 4 : 3); }
+        if (caseInputs[n] && caseInputs[n].value !== String(holder[n])) {
+          caseInputs[n].value = holder[n];
+        }
+      });
+      try { localStorage.setItem(CASE_KEY, JSON.stringify(holder)); } catch (e) {}
+    }
+
+    ['rim', 'lip', 'foot', 'card'].forEach(function (n) {
+      var input = bar.querySelector('#cs-' + n);
+      caseInputs[n] = input;
+      input.value = holder[n];
+      input.addEventListener('input', function () {
+        holder[n] = parseFloat(input.value);
+        applyCase();
+        say();
+      });
+    });
+    applyCase();
 
     function say() {
       if (!picked) { now.textContent = 'Press a tool to pick it up.'; return; }
@@ -10526,12 +10650,20 @@ a.arrow { text-decoration: none; }
       if (picked) { picked.classList.remove('is-picked'); }
       picked = el;
       if (picked) { picked.classList.add('is-picked'); }
+      /* The holder's figures describe a case, so they appear when one is in
+         hand and go away again when it is put down. */
+      casePanel.hidden = !(picked && isLens(key(picked)));
       say();
     }
 
     var from = null;
     document.addEventListener('pointerdown', function (e) {
-      var el = e.target.closest && e.target.closest('.mat-tool');
+      /* A card as well as a tool. The cases were in every other part of this --
+         the table of state, tab, the arrow keys, the JSON handed back -- but
+         not here, so the one way of moving something that does not need to be
+         read about first was the one way that did not reach them. Picking a
+         card up meant tabbing to it. */
+      var el = e.target.closest && e.target.closest('.mat-tool, .play-case');
       if (!el) { return; }
       e.preventDefault();
       pick(el);
@@ -10611,9 +10743,14 @@ a.arrow { text-decoration: none; }
           var lwhere = bits[1], lat = parseInt(bits[2], 10) - 1;
           /* set and name are not the placer's to know -- it moves things
              about, it does not name them -- so they are carried through from
-             what the build put in the table. */
+             what the build put in the table. Which they were not, until now:
+             the table did not carry them, so every pasted session came back
+             with both feet printed "undefined &middot; undefined". */
+          var print = (TOOLS.print && TOOLS.print[k]) || [];
           (lenses[lwhere] = lenses[lwhere] || [])[lat] = {
             card: TOOLS.card[k],
+            set: print[0],
+            name: print[1],
             x: Math.round(st.x),
             y: Math.round(st.y),
             w: Math.round(st.w * st.size),
@@ -10630,11 +10767,17 @@ a.arrow { text-decoration: none; }
           size: Math.round(st.size * 100) / 100
         };
       });
-      /* Two blocks, because they are two blocks in the file: "places" holds
-         the kit and "lenses" holds the cards. Both come out at once so a
-         session of moving things ends in one paste rather than two. */
-      var text = JSON.stringify({ places: places, lenses: lenses }, null, 2);
-      var done = function () { now.textContent = 'Copied. The two blocks go in content/tools.json.'; };
+      /* Three blocks, because they are three blocks in the file: "places"
+         holds the kit, "lenses" the cards, and "case" the holder they are all
+         sealed in. They come out at once so a session of moving things about
+         ends in one paste rather than three. */
+      var text = JSON.stringify({ places: places, lenses: lenses, 'case': {
+        rim: Math.round(holder.rim * 1000) / 1000,
+        lip: Math.round(holder.lip * 1000) / 1000,
+        foot: Math.round(holder.foot * 1000) / 1000,
+        card: Math.round(holder.card * 10000) / 10000
+      } }, null, 2);
+      var done = function () { now.textContent = 'Copied. The three blocks go in content/tools.json.'; };
       /* And a box to copy out of when the clipboard says no, which it does on
          any page not served over https. A prompt() would have done it in one
          line and would also have stopped the page dead until it was answered,
@@ -10668,7 +10811,10 @@ a.arrow { text-decoration: none; }
     window.tools = handOver;
 
     bar.querySelector('#place-clear').onclick = function () {
-      try { localStorage.removeItem(KEY); } catch (e) {}
+      /* The holder goes back with everything else. Starting over on the
+         placements and keeping a case somebody dragged out of shape is half a
+         start over, and the half it keeps is the one that is hardest to see. */
+      try { localStorage.removeItem(KEY); localStorage.removeItem(CASE_KEY); } catch (e) {}
       location.reload();
     };
   })();
