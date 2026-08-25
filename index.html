@@ -6094,7 +6094,10 @@ a.arrow { text-decoration: none; }
 
 .lab-pin {
   position: absolute;
-  width: 336px;
+  /* 336 unless the table has been re-laid to hold more than the ten that
+     were placed by hand, in which case build.js cuts the prints down to the
+     pitch and writes the figure once, on the table. */
+  width: var(--pin-w, 336px);
   margin: 0;
   padding: 13px 13px 0;
   background: var(--print);
@@ -6113,7 +6116,9 @@ a.arrow { text-decoration: none; }
   position: relative;
   display: block;
   overflow: hidden;
-  height: 212px;
+  /* The window keeps its share of the paper when the paper is cut down: a
+     smaller print, not a print with a different opening in it. */
+  height: var(--pin-shot, 212px);
   background-color: var(--print-shot);
   background-size: cover;
   background-position: center;
@@ -6122,6 +6127,68 @@ a.arrow { text-decoration: none; }
       var(--print-mark) 50%, transparent calc(50% + 0.5px)),
     linear-gradient(to bottom left, transparent calc(50% - 0.5px),
       var(--print-mark) 50%, transparent calc(50% + 0.5px));
+}
+
+/* --- the one window with the thing itself in it ---------------------------
+
+   Ten of the eleven prints are a photograph of the work, or the crossed grey
+   standing in for one not taken yet. The lenticular card is the entry where
+   that arrangement fails on its own terms: a photograph of a card that only
+   exists when it moves is a photograph of the half of it that does not. So
+   that window holds the card -- the real element, in the same holder the two
+   on the Home tile are sealed in, standing on the paper.
+
+   The crossed marks come off, because they are what a window says when it is
+   empty and this one is not. What stays is the ground, which is the same dark
+   the other ten photographs are printed on: the card is standing in a print,
+   not floating on the table. */
+.lab-pshot-lens {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-image: none;
+}
+
+/* Relative rather than absolute, which is the whole of the placing: the case
+   is a flex item in a centred box instead of a thing at a coordinate, so it
+   holds the middle of the window at any width the print is drawn at.
+
+   And it is sized off the window rather than given a width, because the window
+   is not one size: it is 212 on the table the ten were placed on and 165 on a
+   re-laid one, and a card that does not know which would be trimmed by the
+   paper on the second. 0.661 is one over the holder's 1.513 -- the shape it
+   works out from rim, lip, foot and card, see CASE in build.js -- and 40 is
+   the air left above and below. Width is the only figure set: the holder
+   derives its own height from it, so the two cannot get out of step the way a
+   width and a height set separately can. */
+.lab-pshot-lens .play-case {
+  position: relative;
+  --w: calc((var(--pin-shot, 212px) - 40px) * 0.661);
+  rotate: -2.5deg;
+}
+
+/* And it turns, slowly, the way something you are being shown turns.
+
+   The element's own sweep is running underneath this and does a different
+   job: it moves the picture through the lens while the card holds still,
+   which is the shader. This moves the holder. Together they are an object
+   being tilted in the light, which is the only way a lenticular card can be
+   shown to a reader who has not touched it -- and on the table most readers
+   never will.
+
+   The transform is restated in full, perspective and all, because a keyframe
+   replaces the property whole. Nothing is driving --rx and --ry here: those
+   are for the two on the Home tile, which have a pointer handler on the tile
+   to drive them and no need of a loop. */
+@keyframes lab-lens-turn {
+  0%,  100% { transform: perspective(760px) rotateY(-8deg) rotateX(2.5deg); }
+  50%       { transform: perspective(760px) rotateY(8deg)  rotateX(-2.5deg); }
+}
+.lab-pshot-lens .play-case {
+  animation: lab-lens-turn 7200ms ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .lab-pshot-lens .play-case { animation: none; }
 }
 
 .lab-pin figcaption { padding: 13px 3px 15px; }
@@ -6193,27 +6260,31 @@ a.arrow { text-decoration: none; }
    exactly the 1820 there is to put them in; the tops and the angles are not
    on anything. The angles are not on anything. */
 /* Written by build.js from content/playground.json -- see SPOTS there. */
-.lab-pin-1 { left: 50px; top: 150px; rotate: -3.2deg; }
-.lab-pin-2 { left: 421px; top: 132px; rotate: 2.4deg; }
-.lab-pin-3 { left: 792px; top: 162px; rotate: -1.8deg; }
-.lab-pin-4 { left: 1163px; top: 138px; rotate: 3.6deg; }
-.lab-pin-5 { left: 1534px; top: 156px; rotate: -2.6deg; }
-.lab-pin-6 { left: 50px; top: 556px; rotate: 2.8deg; }
-.lab-pin-7 { left: 421px; top: 574px; rotate: -3.4deg; }
-.lab-pin-8 { left: 792px; top: 548px; rotate: 1.9deg; }
-.lab-pin-9 { left: 1163px; top: 568px; rotate: -2.2deg; }
-.lab-pin-10 { left: 1534px; top: 552px; rotate: 3.1deg; }
+.view-lab { --pin-w: 268px; --pin-shot: 165px; }
 
-.lab-pin-1 > .lab-tape { rotate: -3.4deg; }
-.lab-pin-2 > .lab-tape { rotate: 2.6deg; }
-.lab-pin-3 > .lab-tape { rotate: -1.4deg; }
-.lab-pin-4 > .lab-tape { rotate: 4.1deg; }
-.lab-pin-5 > .lab-tape { rotate: -2.2deg; }
-.lab-pin-6 > .lab-tape { rotate: 3.1deg; }
-.lab-pin-7 > .lab-tape { rotate: -3.8deg; }
-.lab-pin-8 > .lab-tape { rotate: 1.7deg; }
-.lab-pin-9 > .lab-tape { rotate: -2.9deg; }
-.lab-pin-10 > .lab-tape { rotate: 3.6deg; }
+.lab-pin-1 { left: 50px; top: 231px; rotate: -3.4deg; }
+.lab-pin-2 { left: 353px; top: 247px; rotate: 2.6deg; }
+.lab-pin-3 { left: 657px; top: 242px; rotate: 1.6deg; }
+.lab-pin-4 { left: 960px; top: 237px; rotate: 0.6deg; }
+.lab-pin-5 { left: 1263px; top: 232px; rotate: -0.4deg; }
+.lab-pin-6 { left: 1567px; top: 248px; rotate: -1.4deg; }
+.lab-pin-7 { left: 202px; top: 610px; rotate: -2.4deg; }
+.lab-pin-8 { left: 505px; top: 605px; rotate: -3.4deg; }
+.lab-pin-9 { left: 809px; top: 600px; rotate: 2.6deg; }
+.lab-pin-10 { left: 1112px; top: 616px; rotate: 1.6deg; }
+.lab-pin-11 { left: 1415px; top: 611px; rotate: 0.6deg; }
+
+.lab-pin-1 > .lab-tape { rotate: -3.8deg; }
+.lab-pin-2 > .lab-tape { rotate: -2.8deg; }
+.lab-pin-3 > .lab-tape { rotate: -1.8deg; }
+.lab-pin-4 > .lab-tape { rotate: -0.8deg; }
+.lab-pin-5 > .lab-tape { rotate: 0.2deg; }
+.lab-pin-6 > .lab-tape { rotate: 1.2deg; }
+.lab-pin-7 > .lab-tape { rotate: 2.2deg; }
+.lab-pin-8 > .lab-tape { rotate: 3.2deg; }
+.lab-pin-9 > .lab-tape { rotate: -3.8deg; }
+.lab-pin-10 > .lab-tape { rotate: -2.8deg; }
+.lab-pin-11 > .lab-tape { rotate: -1.8deg; }
 
 .lab-pin-1 { --x-delay: 26ms; }
 .lab-pin-2 { --x-delay: 52ms; }
@@ -6225,6 +6296,7 @@ a.arrow { text-decoration: none; }
 .lab-pin-8 { --x-delay: 208ms; }
 .lab-pin-9 { --x-delay: 234ms; }
 .lab-pin-10 { --x-delay: 260ms; }
+.lab-pin-11 { --x-delay: 286ms; }
 
 /* ==========================================================================
    L4 -- one experiment, on the same table
@@ -6717,8 +6789,15 @@ a.arrow { text-decoration: none; }
      with it -- the avatar and the covers were cut with a radius in the frame
      and they lose it too, because a rule that is true of everything is worth
      more than the six pixels it takes off a photograph. */
+  /* The two controls are the exception, and they are one for a reason rather
+     than by oversight. Everything on this list is content -- a card, a plate,
+     a cover, a photograph -- and content is cut square because the frame it
+     came out of is ruled square. The bar and the button are not content: they
+     float over it, and a floating pane with square corners and eighteen
+     pixels of air either side does not read as floating. It reads as a shelf
+     that has failed to reach the edges. */
   .card, .card::after, .slot, .cover, .avatar,
-  .btn, .chip, .c-stat b, .nav, .nav::before, .nav a, .back { border-radius: 0; }
+  .btn, .chip, .c-stat b { border-radius: 0; }
 
   /* The rim, on the ring the frame already built for the hover glint: the
      mask and the one-pixel padding are right and only the paint changes. */
@@ -6738,6 +6817,29 @@ a.arrow { text-decoration: none; }
     top: auto;
     width: auto;
   }
+
+  /* And the same figures again at the weight the frame wrote them, because
+     the reset above cannot reach them.
+
+     The frame places the type by hand and does it at (0,2,0) -- `.repo
+     .headline`, `.experiments .headline`, `.w-one .w-said` -- so a bare
+     `.headline` loses the cascade on the one property that still bites once
+     the box is static. position, left and top are all answered above, since a
+     static box ignores the last two whatever they say; width is not, and
+     every one of those widths is still a measurement of a card that is not on
+     the screen any more.
+
+     It shows up at both ends. The column is 293 wide on a 390 phone and 263
+     on a 360 one, so 296, 297 and 300 run the type past the right padding --
+     which is the gutter looking broken down one side only -- and 244 stops
+     the Media headline four words short of an edge it should be reaching.
+     Matched at the same weight and later in the sheet, each one measures the
+     column it is actually in.
+
+     The L2 block below already does this for the screens it owns, one
+     selector at a time. This is the same fix for the L1 and for `.w-said`,
+     which was on that list at (0,1,0) and losing to `.w-one .w-said`. */
+  .card .headline, .card .sub, .card .w-said { width: auto; }
 
   .card > .arrow { display: none; }
   .label { display: block; margin-bottom: 18px; }
@@ -6840,8 +6942,21 @@ a.arrow { text-decoration: none; }
     bottom: max(12px, env(safe-area-inset-bottom, 0px));
     transform: translateX(-50%);
     z-index: 60;
-    width: min(330px, calc(100% - 36px));
-    height: 60px;
+    /* Eighteen pixels of air either side is not air, it is a margin of error:
+       at 360 the old figure resolved to 324 on a 345 column and the bar was a
+       full-width shelf that had missed. The gutter is what says the page runs
+       past underneath, so it is the thing being set here, and the width is
+       whatever is left. 300 is the cap because three cells of ninety-odd hold
+       ABOUT with room round it and a wider bar buys nothing.
+
+       The floor is the smaller half of the pair: on a 320 screen the gutter
+       gives way before the bar does, since a control too narrow to press is a
+       worse failure than one sitting close to the edge. */
+    width: min(300px, max(232px, 100% - 72px));
+    height: 56px;
+    /* Fully round. The pill is the other half of reading as a floating pane;
+       see the corners rule above, which lets these two out of the square. */
+    border-radius: 999px;
     padding: 6px;
     display: flex;
     align-items: stretch;
@@ -6874,6 +6989,26 @@ a.arrow { text-decoration: none; }
     pointer-events: none;
   }
 
+  /* And the arrival had to learn it too, which nothing had noticed because
+     the bar is only centred by a transform down here.
+     All four ways in animate one, and all four fill both ways: for the
+     1180ms of delay before the arrival starts, and for good afterwards, the
+     keyframe's transform is the bar's transform -- so translateX(-50%) was
+     gone from first paint, and the bar stood with its left edge on the middle
+     of the screen and the rest of it off the side of the phone. It only came
+     back the moment something else wrote the property, which is to say the
+     first time the reader scrolled and nav-away fired.
+     There is nothing on this bar worth blurring or scaling in any case -- it
+     is 300 pixels of glass with three words on it -- so on a phone all four
+     arrivals hand it the one thing they were really doing, and leave the
+     property that holds it up alone. Written at (0,3,0) to meet them. */
+  .arriving.arr-focus .nav,
+  .arriving.arr-decode .nav,
+  .arriving.arr-register .nav,
+  .arriving.arr-wipe .nav {
+    animation: arr-bar 620ms cubic-bezier(0.2, 0.7, 0.3, 1) var(--at, 1180ms) both;
+  }
+
   /* The lit cell, and it slides. One lozenge for the bar rather than one
      each, so moving the selection is a single box travelling the width of a
      cell instead of two boxes fading past each other -- which is the
@@ -6892,6 +7027,9 @@ a.arrow { text-decoration: none; }
     bottom: 6px;
     left: calc(6px + var(--ni) * (100% - 12px) / 3);
     width: calc((100% - 12px) / 3);
+    /* It was already called a lozenge and already cast like one; square was
+       the only thing about it that was not. */
+    border-radius: 999px;
     background: rgba(var(--w), 0.185);
     box-shadow: var(--pill-cast);
     transition: left 460ms cubic-bezier(0.34, 1.42, 0.5, 1);
@@ -6938,6 +7076,7 @@ a.arrow { text-decoration: none; }
     align-items: center;
     gap: 5px;
     height: 44px;                        /* the smallest target worth having */
+    border-radius: 999px;                /* the bar's shape, at the bar's job */
     padding: 0 18px 0 12px;
     font-family: var(--f-nav); letter-spacing: 0.06em;
     font-size: 13px;
@@ -6952,6 +7091,8 @@ a.arrow { text-decoration: none; }
   .back[hidden] { display: none; }
   .back svg { width: 17px; height: 17px; flex: none; }
   .back:active { transform: scale(0.96); }
+
+  @keyframes arr-bar { from { opacity: 0; } to { opacity: 1; } }
 
   /* The rim on the two controls. A pane of glass is not lit evenly round its
      edge: the light is above and a little to one side, so the top corner
@@ -7704,6 +7845,123 @@ a.arrow { text-decoration: none; }
   .arriving .room { animation: arrive-card 240ms linear 60ms both !important; }
 }
 
+/* --- crossing, on a phone -------------------------------------------------
+
+   The desktop crossing is a grid rearranging itself: every tile measured
+   where it stands, the contents taken off, the lattice rubbed out, the views
+   swapped under cover of an empty frame, and each tile walked from the box it
+   held to the box its partner holds. It is a minute of machinery and it is
+   worth it, because there is a grid on the screen and the reader can watch it
+   become a different one.
+
+   A phone has none of that. The views are columns in a scroller, cards are
+   sized by their contents, and there is no shared geometry for a tile to
+   travel across -- so go() sent the phone straight past all of it to a bare
+   paint(), and a screen change was one column being replaced by another
+   between two frames. Correct, and completely silent. Nothing moved, nothing
+   said which direction you had gone, and the Playground -- ten photographs
+   laid out on a cutting mat, the most physical screen on the site -- simply
+   appeared.
+
+   So the phone gets a crossing built out of what a phone actually has, which
+   is a column. The old one drops and goes; the new one comes up a card at a
+   time from the top, which is both the reading order and the direction the
+   scroll has just been reset to. Fifty-five milliseconds apart is enough to
+   read as a sequence and short enough that the last card is in before the
+   first one has been looked at.
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 900px) {
+  /* Out. Short, and downwards -- the column is leaving the way it came. */
+  .stage.x-cross-out > .view:not([hidden]) > * {
+    animation: cr-out 190ms cubic-bezier(0.4, 0, 0.75, 0.2) both;
+  }
+  @keyframes cr-out {
+    to { opacity: 0; transform: translateY(12px) scale(0.985); }
+  }
+
+  /* In, one card at a time. --i is the card's place in the column, counted in
+     go() over the ones that are actually showing: a view carries hidden
+     children -- the pins on About, the tools on the mat -- and counting those
+     would leave the visible cards waiting on gaps in the sequence. */
+  .stage.x-cross-in > .view:not([hidden]) > * {
+    animation: cr-in 460ms cubic-bezier(0.16, 0.84, 0.32, 1) both;
+    animation-delay: calc(var(--i, 0) * 55ms);
+  }
+  @keyframes cr-in {
+    from { opacity: 0; transform: translateY(26px) scale(0.97); }
+    to   { opacity: 1; transform: none; }
+  }
+
+  /* --- and the playground, which is a table ------------------------------
+
+     The mat is the one ground on the site that is a physical surface rather
+     than a room, and the ten pieces on it are taped-down photographs. A
+     column of cards fading up is the right move for five screens and the
+     wrong one for this: things do not fade onto a table, they are put down.
+
+     So the crossing into and out of the playground is a wipe in the mat's own
+     green, ruled like the mat -- the table is rolled over the screen you were
+     on, and off the top of the one you are going to. Under it the pieces are
+     dealt rather than faded: each one comes in from a little further down, at
+     a slight angle that settles, alternating side to side so it reads as a
+     hand laying them out and not as a list scrolling.
+
+     The wipe is a fixed pane on the stage rather than a new element, and it
+     is painted in both halves of the crossing because it has to survive the
+     view swap in the middle. z-index 55 puts it over the column and under the
+     bar, which stays put: it is the thing that got you here. */
+  .stage.x-cross-mat.x-cross-out::after,
+  .stage.x-cross-mat.x-cross-in::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 55;
+    pointer-events: none;
+    background-color: var(--mat);
+    background-image:
+      repeating-linear-gradient(to right,  var(--mat-bold) 0 1px, transparent 1px 105px),
+      repeating-linear-gradient(to bottom, var(--mat-bold) 0 1px, transparent 1px 105px),
+      repeating-linear-gradient(to right,  var(--mat-fine) 0 1px, transparent 1px 21px),
+      repeating-linear-gradient(to bottom, var(--mat-fine) 0 1px, transparent 1px 21px);
+    background-position: 12px 12px;
+  }
+  .stage.x-cross-mat.x-cross-out::after {
+    animation: cr-mat-over 190ms cubic-bezier(0.45, 0, 0.2, 1) both;
+  }
+  .stage.x-cross-mat.x-cross-in::after {
+    animation: cr-mat-off 400ms cubic-bezier(0.4, 0, 0.15, 1) both;
+  }
+  @keyframes cr-mat-over { from { transform: translateY(100%); } to { transform: none; } }
+  @keyframes cr-mat-off  { from { transform: none; } to { transform: translateY(-100%); } }
+
+  /* Dealt, not faded. The tilt alternates off nth-child so no two next to
+     each other land the same way, and the origin is below the card so the
+     angle reads as a corner touching down first. */
+  .stage.x-cross-mat.x-cross-in > .view:not([hidden]) > * {
+    transform-origin: 50% 130%;
+    animation: cr-deal 540ms cubic-bezier(0.18, 0.86, 0.31, 1) both;
+    animation-delay: calc(var(--i, 0) * 70ms);
+  }
+  .stage.x-cross-mat.x-cross-in > .view:not([hidden]) > :nth-child(even) { --dr: 2.6deg; }
+  @keyframes cr-deal {
+    from { opacity: 0; transform: translateY(40px) rotate(var(--dr, -2.6deg)) scale(0.93); }
+    70%  { opacity: 1; }
+    to   { opacity: 1; transform: none; }
+  }
+}
+
+/* Reduced motion keeps the swap and drops the movement, which is what go()
+   already does for it -- it never reaches the crossing at all. This is here
+   so the rules cannot be left behind on a stage if a preference changes
+   mid-crossing. */
+@media (prefers-reduced-motion: reduce) {
+  .stage.x-cross-out > .view > *,
+  .stage.x-cross-in > .view > * { animation: none; }
+  .stage.x-cross-mat.x-cross-out::after,
+  .stage.x-cross-mat.x-cross-in::after { display: none; }
+}
+
 /* --- the writing index ---------------------------------------------------
 
    Ten rows and three years in one column. The year is a heading rather than
@@ -7837,6 +8095,71 @@ a.arrow { text-decoration: none; }
 .play-case { --rim: 0.02; --lip: 0.055; --foot: 0.095; --card: 0.7025; }
 .experiments .lens-home-1 { left: 47px; top: 162px; --w: 148px; rotate: -13deg; }
 .experiments .lens-home-2 { left: 170px; top: 199px; --w: 144px; rotate: 13deg; }
+
+/* --- the two cards on the mat, on a phone ---------------------------------
+
+   Everything above this line is written in the frame's pixels -- left 47, top
+   162, 148 wide, on a tile that is 364 by 335 -- and on a phone none of those
+   four numbers describes anything. The tile is whatever the screen is minus
+   its margins, and its height is its own contents: a kicker, two lines of
+   headline, and the padding under them. A hundred and fifty-two pixels.
+
+   So both cases were being laid out from 162 down a box that stopped at 152,
+   which put the whole of the first one and the whole of the second one below
+   the bottom edge of a card that clips -- and the Playground tile arrived on
+   the phone as a bare green rectangle with three pixels of something showing
+   at the foot of it. The one tile on the screen that is meant to have objects
+   lying on it had none.
+
+   This is the same arrangement measured against the card instead of the
+   frame. The two are placed as fractions of the tile's width and sized off
+   one figure, so the fan keeps the angle it was drawn at from a small phone
+   up to the breakpoint, and the tile is given a body deep enough to lie them
+   on -- deep enough, and no deeper: the cards are cut off by the bottom edge
+   here exactly as they are on the desktop, because a card that stops short of
+   the edge of the mat is a picture of a card and one that runs off it is an
+   object on a table.
+
+   Placed after the generated rules and not in the block with the rest of the
+   phone layout, which is four thousand lines above: build.js writes those out
+   at this marker, and at the same weight the later of the two wins. This is
+   the later of the two.
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 900px) {
+  .experiments {
+    /* The card's own width, less the viewport's 16 either side and its two
+       hairlines. Capped at the figure the frame uses, so a tablet held in
+       portrait gets the composition at the size it was drawn rather than a
+       pair of playing cards nine inches across. */
+    --lens: min(148px, calc((100vw - 34px) * 0.4066));
+
+    /* Where the first case starts, plus as much of its height as the frame
+       lets show. A case is 1.513 times its own width tall -- that falls out
+       of the rim, lip, foot and card ratios build.js writes from tools.json,
+       and it is worth reading from there rather than guessing, because those
+       four are what the sliders in ?place hand back and they have moved
+       before. The frame keeps the bottom 23 per cent of the first case under
+       the edge of the mat, so 0.772 of it shows: 1.168 is the two together. */
+    min-height: calc(158px + 1.168 * var(--lens));
+  }
+
+  /* rotate is not restated on purpose. It is the angle the card was put down
+     at, it is the same angle on any screen, and it is already set by the rule
+     above this one -- which still applies, because only the properties named
+     here are being taken off it. */
+  .experiments .lens-home-1 {
+    left: 12.9%;
+    top: 158px;
+    --w: var(--lens);
+  }
+  .experiments .lens-home-2 {
+    left: 46.7%;
+    /* Down the fan by a quarter of a card, as on the frame: 37 of 148. */
+    top: calc(158px + 0.25 * var(--lens));
+    --w: calc(var(--lens) * 0.973);
+  }
+}
 
 .wr-list { position: absolute; left: 24px; right: 24px; top: 92px; }
 
@@ -8694,10 +9017,10 @@ a.arrow { text-decoration: none; }
       <section class="card ab-desk" data-tile="b">
         <p class="label">About // Colophon</p>
         <dl class="ab-desk-list is-tight">
-          <div><dt>One file</dt><dd>index.html, 633 KB</dd></div>
+          <div><dt>One file</dt><dd>index.html, 655 KB</dd></div>
           <div><dt>Built from</dt><dd>7 files of JSON, no framework</dd></div>
-          <div><dt>Stylesheet</dt><dd>7,841 lines</dd></div>
-          <div><dt>Words</dt><dd>6,764 of them</dd></div>
+          <div><dt>Stylesheet</dt><dd>8,159 lines</dd></div>
+          <div><dt>Words</dt><dd>6,988 of them</dd></div>
         </dl>
         <p class="ab-colo">Counted by build.js, not typed.</p>
       </section>
@@ -8839,6 +9162,24 @@ a.arrow { text-decoration: none; }
           <span>Plays an hour of a game, notes the minute it stopped caring.</span></figcaption>
         <a class="lab-hit" href="#lab/backseat" data-route="piece" data-slug="backseat"
            aria-label="Open Backseat"></a>
+      </figure>
+
+      <figure class="lab-pin lab-pin-11">
+        <span class="lab-tape" aria-hidden="true"></span>
+        <span class="lab-pshot lab-pshot-lens" aria-hidden="true">
+          <div class="play-case lab-lens">
+            <lenticular-card class="play-lens"
+              images="assets/lenticard/dragon-1.jpg,assets/lenticard/dragon-2.jpg,assets/lenticard/dragon-3.jpg"
+              lenticules="64" tilt="0" float="0" radius="4" sheen="0.4"
+              parallax="1.1" idle-sweep="3400" motion="pointer"></lenticular-card>
+            <span class="play-glass" aria-hidden="true"></span>
+            <span class="play-foot" aria-hidden="true">FULL BLEED &middot; Green Flame</span>
+          </div>
+        </span>
+        <figcaption><b>Lenticard</b>
+          <span>Two to six photographs become one card you have to tilt.</span></figcaption>
+        <a class="lab-hit" href="#lab/lenticard" data-route="piece" data-slug="lenticard"
+           aria-label="Open Lenticard"></a>
       </figure>
     </div>
 
@@ -11295,6 +11636,24 @@ a.arrow { text-decoration: none; }
       ],
       verdict: 'I read its logs before I read reviews now.',
       facts: ['Two weekends', 'One hour a game', '23 games logged']
+    },
+
+    'lenticard': {
+      name: 'Lenticard',
+      kit: 'Canvas · Web Components',
+      state: 'live', label: 'Running',
+      shot: '',
+      lede: 'Two to six photographs become one card that changes as it moves.',
+      beats: [
+        ['What I wanted', 'I wanted to give somebody a card they had to tilt. A picture that only pays out when it moves is a different object from a picture, and the web has almost none of them.',
+         'the first one, on a phone in one hand', ''],
+        ['What it does', 'Two to six photographs are interlaced into one image and drawn through a lenticular shader on a canvas. It follows a pointer, or a phone being tilted, or nothing at all: left alone it sweeps by itself, which is how a reader finds out it moves.',
+         'the same card at three angles', ''],
+        ['What happened', 'It ships four ways for four amounts of effort — a link, a React component, a web component, and one function. The two cards on the Home screen are the web component, and so is the one standing in this print.',
+         'the holder, printed along the foot', '']
+      ],
+      verdict: 'The pair on the front page are the same element as the one in this window. If it looked wrong here I would have found out.',
+      facts: ['Two to six frames', 'Ships four ways', 'Draws on a canvas']
     }
   };
 
@@ -12987,6 +13346,70 @@ a.arrow { text-decoration: none; }
     var gen = 0;
     var root = document.documentElement;
 
+    /* The crossing a phone gets, and the whole of it: the column leaves, the
+     * views swap under an empty screen, and the new column comes up a card at
+     * a time from the top. The stylesheet does the moving -- see the phone
+     * block by the arrival rules -- and this hands it two things it cannot
+     * work out for itself.
+     *
+     * Which crossing it is. Into or out of the playground, the wipe is the
+     * mat itself and the pieces are dealt onto it rather than faded up; every
+     * other crossing is the plain one. Both sides are tested because the
+     * table is as much a thing to leave as to arrive at.
+     *
+     * And where each card stands in the column. A view carries children that
+     * are not on the screen -- the pins on About, the ten tools on the mat --
+     * and numbering those would leave the visible cards waiting out gaps in
+     * the sequence, which is a stagger with holes in it. So the count is over
+     * what is actually showing, and it is taken in one pass of reads before
+     * one pass of writes: a rect read after a style write is a second reflow,
+     * and About has twenty-odd children to do it to.
+     *
+     * The index is capped because the stagger is a gesture, not a queue. Past
+     * the seventh card everything is below the fold anyway, and the only
+     * thing a longer tail buys is a longer wait before the next tap is heard.
+     */
+    var CR_OUT = 190, CR_STEP = 70, CR_IN = 560, CR_CAP = 6;
+
+    function column(name) {
+      busy = true;
+
+      var mat = name === 'lab'   || here === 'lab' ||
+                name === 'piece' || here === 'piece';
+
+      stage.classList.add('x-cross-out');
+      if (mat) { stage.classList.add('x-cross-mat'); }
+
+      setTimeout(function () {
+        paint(name);
+        // The scroll position that survives the swap belongs to the screen
+        // you just left; three thousand pixels down an essay is not where the
+        // Work screen starts.
+        window.scrollTo(0, 0);
+        stage.classList.remove('x-cross-out');
+
+        var kids = views[name] ? views[name].children : [], show = [], i, r;
+        for (i = 0; i < kids.length; i++) {
+          r = kids[i].getBoundingClientRect();
+          if (r.width && r.height) { show.push(kids[i]); }
+        }
+        for (i = 0; i < show.length; i++) {
+          show[i].style.setProperty('--i', i < CR_CAP ? i : CR_CAP);
+        }
+
+        stage.classList.add('x-cross-in');
+
+        var tail = Math.min(show.length ? show.length - 1 : 0, CR_CAP);
+        setTimeout(function () {
+          stage.classList.remove('x-cross-in', 'x-cross-mat');
+          for (var j = 0; j < show.length; j++) {
+            show[j].style.removeProperty('--i');
+          }
+          busy = false;
+        }, CR_IN + tail * CR_STEP);
+      }, CR_OUT);
+    }
+
     function go(name) {
       if (name === here || busy) return;
 
@@ -13023,13 +13446,18 @@ a.arrow { text-decoration: none; }
       // A hidden tab runs no timers and no frames, so a crossing started there
       // would stall on its first wait with the contents already faded out and
       // sit like that until the tab came back.
-      if (small() ||
-          matchMedia('(prefers-reduced-motion: reduce)').matches ||
+      if (matchMedia('(prefers-reduced-motion: reduce)').matches ||
           document.hidden) {
         paint(name);
         if (small()) { window.scrollTo(0, 0); }
         return;
       }
+
+      // A phone has no grid for a tile to travel across -- the views are
+      // columns in a scroller and cards are sized by their contents -- so it
+      // gets a crossing made out of the column instead of being sent past the
+      // whole thing to a bare paint(). See column().
+      if (small()) { column(name); return; }
 
       busy = true;
 
