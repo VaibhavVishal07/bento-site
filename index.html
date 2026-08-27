@@ -1766,20 +1766,161 @@ body {
   font-weight: 500;
   text-decoration: none;
   cursor: pointer;
-  transition: background-color 160ms ease;
+  transition: background-color 160ms ease,
+              box-shadow 190ms var(--ease),
+              transform 190ms var(--ease);
 }
+
+/* --- and standing them up -------------------------------------------------
+
+   These were two flat rectangles in the same plane as the paragraph above
+   them. A call to action is the one element on a page whose whole argument is
+   that it can be pressed, and a thing that can be pressed has to look like it
+   is currently up.
+
+   What models that here is not a drop shadow. A drop shadow on near-black is
+   a shadow nobody can see, which is exactly why --cast-a is zero in this room
+   and a tenth in the lit one -- the file has already made this argument about
+   the cards. So the elevation is built out of the one thing that does read in
+   both rooms: an edge.
+
+   Three of them.
+
+   A bright chamfer along the top, where a lamp hanging over the page catches
+   the front face as it turns over.
+
+   A band under the face, three pixels of it, in the button's own colour
+   turned down. That band is the side of the thing, and it is the whole trick:
+   it is the two millimetres between the top of a key and the board it is set
+   into. Written as rgba(var(--w)) rather than as a shadow, so it flips with
+   the room and stays correct in both -- a grey slab under a white key on
+   black, and a dark one under a dark key on paper. A cast could not have done
+   this. It would have had to be black in a black room.
+
+   And a shaded chamfer along the bottom of the face, which is the same edge
+   the band is the side of, seen from above.
+
+   The real cast is still written under all three, and still scaled by the
+   room. Where it reads it does most of the work and the chamfers read as
+   restraint; where it does not, it costs one composited layer of nothing.
+
+   The last part is the press, and it is the part that actually sells the
+   other three: the band collapses to a pixel and the face travels the
+   distance the band gave up, so the button goes down into the card by exactly
+   its own thickness. Hovering runs it the other way -- a pixel further up,
+   and the side of it a pixel taller.
+   ------------------------------------------------------------------------- */
 
 /* The solid button is the one element on the page painted in the ground it
    is standing on: ink for a fill, page colour for the letters. So it does not
    travel a ramp between rooms, it swaps ends -- which is what --pill and
    --pill-ink are for, and why they are the only two tokens here that are not
-   a distance from anything. */
-.btn-solid { left: 60px;  background: var(--pill); color: var(--pill-ink); }
-.btn-ghost { left: 233px; background: rgba(var(--w), 0.05); color: rgb(var(--w)); }
+   a distance from anything.
 
-.btn-solid:hover { background: rgba(var(--w), 0.86); }
-.btn-ghost:hover { background: rgba(242, 242, 242, 0.12); }
+   The ramp over the fill is the face turning: brightest along the top edge
+   and gone by the middle, which is a flat panel catching an overhead lamp
+   rather than a gradient anybody was meant to notice. It is laid over --pill
+   instead of replacing it, so the token still decides what colour the button
+   is and this only decides how the light falls on it. */
+.btn-solid {
+  left: 60px;
+  background:
+    linear-gradient(180deg,
+      rgba(var(--w), 0.17) 0%,
+      rgba(var(--w), 0) 54%),
+    var(--pill);
+  color: var(--pill-ink);
+  box-shadow:
+    inset 0 1px 0 rgba(var(--w), 0.62),
+    inset 0 -1px 0 rgba(var(--shade), 0.24),
+    0 3px 0 rgba(var(--w), 0.30),
+    0 7px 16px -5px rgba(var(--shade), calc(0.10 + var(--cast-a) * 5)),
+    0 2px 5px -2px rgba(var(--shade), calc(0.08 + var(--cast-a) * 4));
+}
+
+.btn-ghost {
+  left: 233px;
+  background:
+    linear-gradient(180deg,
+      rgba(var(--w), 0.07) 0%,
+      rgba(var(--w), 0) 58%),
+    rgba(var(--w), 0.05);
+  color: rgb(var(--w));
+  box-shadow:
+    inset 0 1px 0 rgba(var(--w), 0.20),
+    inset 0 0 0 1px rgba(var(--w), 0.07),
+    inset 0 -1px 0 rgba(var(--shade), 0.22),
+    0 3px 0 rgba(var(--w), 0.11),
+    0 7px 16px -5px rgba(var(--shade), calc(0.08 + var(--cast-a) * 4)),
+    0 2px 5px -2px rgba(var(--shade), calc(0.06 + var(--cast-a) * 3));
+}
+
+/* Up a pixel, and the side of it a pixel taller -- which is the same object
+   lifted rather than a brighter picture of it. */
+.btn-solid:hover {
+  background:
+    linear-gradient(180deg,
+      rgba(var(--w), 0.17) 0%,
+      rgba(var(--w), 0) 54%),
+    rgba(var(--w), 0.92);
+  transform: translateY(-1px);
+  box-shadow:
+    inset 0 1px 0 rgba(var(--w), 0.7),
+    inset 0 -1px 0 rgba(var(--shade), 0.26),
+    0 4px 0 rgba(var(--w), 0.32),
+    0 11px 22px -6px rgba(var(--shade), calc(0.13 + var(--cast-a) * 6)),
+    0 3px 7px -2px rgba(var(--shade), calc(0.10 + var(--cast-a) * 4.5));
+}
+
+.btn-ghost:hover {
+  background:
+    linear-gradient(180deg,
+      rgba(var(--w), 0.09) 0%,
+      rgba(var(--w), 0) 58%),
+    rgba(var(--w), 0.11);
+  transform: translateY(-1px);
+  box-shadow:
+    inset 0 1px 0 rgba(var(--w), 0.26),
+    inset 0 0 0 1px rgba(var(--w), 0.09),
+    inset 0 -1px 0 rgba(var(--shade), 0.24),
+    0 4px 0 rgba(var(--w), 0.13),
+    0 11px 22px -6px rgba(var(--shade), calc(0.10 + var(--cast-a) * 5)),
+    0 3px 7px -2px rgba(var(--shade), calc(0.08 + var(--cast-a) * 3.5));
+}
+
+/* And down. The face travels three and the band gives up two of the three it
+   was standing on, so the top of the button ends a pixel below where it
+   started and the whole thing has visibly gone into the card rather than
+   sliding down it. Faster than it came up, because a key answers a finger and
+   eases back. */
+.btn:active {
+  transform: translateY(3px);
+  transition-duration: 60ms;
+}
+.btn-solid:active {
+  box-shadow:
+    inset 0 1px 0 rgba(var(--w), 0.35),
+    inset 0 -1px 0 rgba(var(--shade), 0.14),
+    0 1px 0 rgba(var(--w), 0.22),
+    0 2px 5px -3px rgba(var(--shade), calc(0.08 + var(--cast-a) * 3));
+}
+.btn-ghost:active {
+  box-shadow:
+    inset 0 1px 0 rgba(var(--w), 0.14),
+    inset 0 0 0 1px rgba(var(--w), 0.07),
+    inset 0 -1px 0 rgba(var(--shade), 0.14),
+    0 1px 0 rgba(var(--w), 0.08),
+    0 2px 5px -3px rgba(var(--shade), calc(0.06 + var(--cast-a) * 2.5));
+}
+
 .btn:focus-visible { outline: 2px solid rgb(var(--w)); outline-offset: 3px; }
+
+/* The lift and the press are movement. The modelling is not -- it is what the
+   button is made of, and it stays. */
+@media (prefers-reduced-motion: reduce) {
+  .btn { transition: background-color 160ms ease, box-shadow 190ms var(--ease); }
+  .btn-solid:hover, .btn-ghost:hover, .btn:active { transform: none; }
+}
 
 /* ==========================================================================
    Work // Repo — offsets relative to 1155, 91
@@ -2272,6 +2413,79 @@ body {
 }
 .x-empty .view-about > .ab-pin { opacity: 0; }
 
+/* And the table, which had none of this and needed it most.
+
+   The playground is the one screen with nothing standing on the frame: no
+   card, no tile, so not a line of move 1 or move 3 above reaches any of it.
+   What that meant is that the whole of it -- eleven photographs, eight tools
+   lying on the mat and the protractor drawn into the margin -- was painted at
+   full strength on the single frame the views are swapped, which is the frame
+   in the middle of the crossing when the screen is meant to be empty. The
+   contents of the screen you were leaving faded politely away, and then the
+   screen you were going to was simply already there: a beat early and all at
+   once. That is the whole of what read as the crossing being wrong. Not that
+   it was too fast or too slow -- that the arrival never happened. A fade out,
+   a gap, and a cut.
+
+   So the table arrives the way everything else on this site arrives, and on
+   the same clock.
+
+   Opacity and nothing else, for the reason the About pins give three rules
+   above and for one more of its own: a print carries its hover lift in
+   transform and its angle in rotate, and the lift is 260ms with no delay on
+   it. A rise written here would have to be in transform too, and the tenth
+   print would then answer a pointer a fifth of a second after it was
+   pointed at. The photographs are already lying on the table. What the
+   crossing owes them is to be seen putting them there, not to move them.
+
+   In reading order, and the stagger is the tile step -- the same figure the
+   grid empties and refills on, so the two screens turn over at one tempo
+   even though only one of them is made of tiles. Half a step between prints
+   rather than a whole one: eleven whole ones is a tail twice as long as the
+   move it belongs to, and a table still being dealt out after the screen has
+   settled is a slow crossing rather than a staggered one. */
+.view-lab > .lab-marks {
+  transition: opacity var(--x-in) var(--x-ease) var(--x-delay, 0ms);
+}
+
+/* Restated in full rather than added to. This selector outranks the one that
+   sets the lift, so a bare `transition: opacity` here would take the lift's
+   own transition with it and the prints would snap under the pointer. */
+.view-lab > .lab-pin {
+  transition: transform 260ms var(--ease),
+              box-shadow 260ms var(--ease),
+              opacity var(--x-in) var(--x-ease) var(--x-delay, 0ms);
+}
+
+.view-lab > .mat-tool {
+  transition: opacity var(--x-in) var(--x-ease) var(--x-delay, 0ms);
+}
+
+.x-empty .view-lab > .lab-pin,
+.x-empty .view-lab > .lab-marks,
+.x-empty .view-lab > .mat-tool { opacity: 0; }
+
+/* The mat is laid out before anything is put on it: the marks drawn into it
+   first, then the tools lying on it, then the paper on top of them. */
+.view-lab > .lab-marks { --x-delay: 0ms; }
+.view-lab > .mat-tool  { --x-delay: calc(var(--x-step) * 0.5); }
+.view-lab > .lab-pin   { --x-delay: var(--x-step); }
+.view-lab > .lab-pin-2  { --x-delay: calc(var(--x-step) * 1.5); }
+.view-lab > .lab-pin-3  { --x-delay: calc(var(--x-step) * 2); }
+.view-lab > .lab-pin-4  { --x-delay: calc(var(--x-step) * 2.5); }
+.view-lab > .lab-pin-5  { --x-delay: calc(var(--x-step) * 3); }
+.view-lab > .lab-pin-6  { --x-delay: calc(var(--x-step) * 3.5); }
+.view-lab > .lab-pin-7  { --x-delay: calc(var(--x-step) * 4); }
+.view-lab > .lab-pin-8  { --x-delay: calc(var(--x-step) * 4.5); }
+.view-lab > .lab-pin-9  { --x-delay: calc(var(--x-step) * 5); }
+.view-lab > .lab-pin-10 { --x-delay: calc(var(--x-step) * 5.5); }
+.view-lab > .lab-pin-11 { --x-delay: calc(var(--x-step) * 6); }
+
+/* The table crossing hides an arriving print and flies a copy of it instead
+   -- see .tbl-fly. A print held at visibility: hidden still has this rule on
+   it, and .x-empty is not on the stage for that crossing, so there is nothing
+   here for it to disagree with. The two do not meet. */
+
 
 
 /* Move 2 -- the shapes. Exactly one tile changes: the third column runs 483
@@ -2571,8 +2785,12 @@ body {
   letter-spacing: -0.012em;
   color: var(--mat-type);
 }
+/* Eight under the headline, and 122 is where the headline ends: 58 to stand
+   on, two lines of 32. Forty-eight of air was the headline and the line under
+   it reading as two separate things on the same card -- and they are not two
+   things. The second one finishes the sentence the first one starts. */
 .w-lab .sub {
-  left: 40px; top: 170px; width: 400px;
+  left: 40px; top: 130px; width: 400px;
   color: var(--mat-body);
 }
 .w-lab .arrow { left: 685px; top: 20px; color: var(--mat-label); }
@@ -2586,13 +2804,24 @@ body {
 .view-lab .t-table-7 { left: 148px; top: 932px; width: 219px; height: 280px; rotate: 188deg; background-image: url("assets/tools/pencil-wood.png"); }
 .view-lab .t-table-8 { left: 1759px; top: 958px; width: 357px; height: 428px; rotate: -63deg; background-image: url("assets/tools/rule-steel.png"); }
 
-/* Three photographs rather than four, and half as big again.
+/* Two photographs and half of a third.
 
    Four at 158 was a row of stamps across the foot of a card with three hundred
    pixels of empty mat above them: the picture of a table with nothing on it.
-   Three at 236 fill the space they are standing in, and the third runs off the
-   card edge, which is the one thing the row has to say -- there are more of
-   these than fit here.
+   Three at 236 fixed the size and left the count saying the wrong thing --
+   two-thirds of the last one showed, which is a photograph that has been
+   slightly clipped rather than a row that carries on past the edge.
+
+   Half is the figure that reads. A thing cut exactly in half is obviously
+   still going; a thing cut at two-thirds looks like it very nearly fit. And
+   the row has one job beyond holding pictures, which is to say there are more
+   of these than there is card to put them on.
+
+   So the arithmetic is run the other way round: 693 is what there is between
+   the shelf's left margin and the card edge, two gaps of 30 come out of it,
+   and what is left is divided by two and a half. 252, and the third one is
+   cut down its middle. Height and the window in it keep the shape they were
+   drawn at.
 
    Each gets a strip of the same tape that holds the ones on the table down,
    half on the paper and half on the mat. */
@@ -2602,15 +2831,24 @@ body {
   display: flex;
   gap: 30px;
 }
-.w-shelf span {
+/* Direct children throughout, and that is not tidiness.
+
+   These were written when the only thing inside a mount was its own plate, so
+   `.w-shelf span` and `the mounts` were the same set. The middle mount now
+   holds a card in a holder, and a holder is built out of two more spans -- the
+   sheet of glass over the front, and the printed strip along its foot. Both
+   were being handed a mount's width, a mount's padding, a mount's fill and a
+   strip of tape, which is where the second piece of tape lying across the
+   middle photograph came from. */
+.w-shelf > span {
   position: relative;
   flex: none;
-  width: 236px; height: 186px;
+  width: 252px; height: 199px;
   padding: 10px 10px 0;
   background: var(--lab-mount);
   box-shadow: var(--lab-shadow);
 }
-.w-shelf span::after {
+.w-shelf > span::after {
   content: "";
   position: absolute;
   left: 50%; top: -10px;
@@ -2619,9 +2857,9 @@ body {
   background: var(--tape);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.22);
 }
-.w-shelf span i {
+.w-shelf > span > i {
   display: block;
-  height: 128px;
+  height: 137px;
   background-color: var(--lab-plate);
   background-image:
     linear-gradient(to bottom right, transparent calc(50% - 0.5px),
@@ -2629,12 +2867,12 @@ body {
     linear-gradient(to bottom left, transparent calc(50% - 0.5px),
       var(--mat-diag) 50%, transparent calc(50% + 0.5px));
 }
-.w-shelf span:nth-child(1) { rotate: -2.4deg; }
-.w-shelf span:nth-child(2) { rotate: 1.6deg; }
-.w-shelf span:nth-child(3) { rotate: -1.2deg; }
-.w-shelf span:nth-child(1)::after { rotate: -3.2deg; }
-.w-shelf span:nth-child(2)::after { rotate: 2.4deg; }
-.w-shelf span:nth-child(3)::after { rotate: -1.8deg; }
+.w-shelf > span:nth-child(1) { rotate: -2.4deg; }
+.w-shelf > span:nth-child(2) { rotate: 1.6deg; }
+.w-shelf > span:nth-child(3) { rotate: -1.2deg; }
+.w-shelf > span:nth-child(1)::after { rotate: -3.2deg; }
+.w-shelf > span:nth-child(2)::after { rotate: 2.4deg; }
+.w-shelf > span:nth-child(3)::after { rotate: -1.8deg; }
 
 /* --- the breadcrumb row, above the grid ---------------------------------- */
 
@@ -6143,28 +6381,74 @@ a.arrow { text-decoration: none; }
    the other ten photographs are printed on: the card is standing in a print,
    not floating on the table. */
 .lab-pshot-lens {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  /* The ground the card stands in, and the box that cuts it off. display is
+     back to the block .lab-pshot already is: the case is placed at a
+     coordinate now rather than centred by a flex box, and overflow: hidden
+     comes with the window. */
+  position: relative;
   background-image: none;
+  --lens-well: var(--pin-shot, 212px);
 }
 
-/* Relative rather than absolute, which is the whole of the placing: the case
-   is a flex item in a centred box instead of a thing at a coordinate, so it
-   holds the middle of the window at any width the print is drawn at.
+/* And it stands in the paper the way the two on Home stand on the mat: cut
+   off by the bottom edge of the window rather than sitting whole inside it.
 
-   And it is sized off the window rather than given a width, because the window
-   is not one size: it is 212 on the table the ten were placed on and 165 on a
+   It was centred and drawn small enough to clear the paper top and bottom,
+   which is a photograph of a card -- the thing the window exists to avoid.
+   The argument the Home tile already makes is the right one here too: a card
+   that stops short of the edge is a picture of a card, and one that runs off
+   it is an object lying on something. The only difference is what it is
+   lying on. On the mat it is the mat; here it is a print, and the print is
+   the thing with the edge.
+
+   Cut to the same fraction, so the two places agree about what a lenticular
+   card in a holder looks like on this site. The frame keeps the bottom 23 per
+   cent of the Home cases under the edge of the tile, so 0.772 of the holder
+   shows; 1.513 is the shape the holder works out from rim, lip, foot and card
+   -- see CASE in build.js -- and 1.165 is those two multiplied. Subtracting it
+   from the window height is the top that leaves exactly that much showing.
+
+   Still sized off the window rather than given a width, because the window is
+   not one size: it is 212 on the table the ten were placed on and 165 on a
    re-laid one, and a card that does not know which would be trimmed by the
-   paper on the second. 0.661 is one over the holder's 1.513 -- the shape it
-   works out from rim, lip, foot and card, see CASE in build.js -- and 40 is
-   the air left above and below. Width is the only figure set: the holder
-   derives its own height from it, so the two cannot get out of step the way a
-   width and a height set separately can. */
-.lab-pshot-lens .play-case {
-  position: relative;
-  --w: calc((var(--pin-shot, 212px) - 40px) * 0.661);
+   paper on the second. Width is the only figure set -- the holder derives its
+   own height from it, so the two cannot get out of step the way a width and a
+   height set separately can.
+
+   Absolute now rather than a flex item, because a coordinate is what half of
+   an object off an edge actually is. The centring it gives up is handed back
+   by left and a negative margin of half its own width, which is the one way
+   to centre a box whose width is an expression nothing else can read. */
+/* Written for both of the windows a card stands in -- the print on the table
+   and the middle photograph on the Work lead -- because they are the same
+   object and should be cut to the same line. --lens-well is the height of
+   whichever window it is; every other figure here falls out of it. */
+.lab-pshot-lens .play-case,
+.w-shelf-lens i .play-case {
+  position: absolute;
+  left: 50%;
+  --w: calc(var(--lens-well) * var(--lens-fill, 0.6));
+  top: calc(var(--lens-well) - var(--w) * 1.165);
+  margin-left: calc(var(--w) / -2);
   rotate: -2.5deg;
+}
+
+/* And the window on the Work lead. The plate is the ground the other two
+   photographs are printed on with its crossed marks taken off, for the reason
+   the one on the table takes them off: the marks are what a window says when
+   it is empty, and this one is not. */
+/* --lens-fill is off the window's height and the two windows are not the same
+   shape -- 310 by 212 on the table, 232 by 137 here -- so the same fraction of
+   the height is a different fraction of the width in each. What should match
+   between them is how wide the card looks against the window it is standing
+   in, which is the figure the Home tile sets: 148 of 364, a little over two
+   fifths. 0.6 of 212 gets there on the table. It takes 0.7 of 137 here. */
+.w-shelf-lens i {
+  position: relative;
+  overflow: hidden;
+  background-image: none;
+  --lens-well: 137px;
+  --lens-fill: 0.7;
 }
 
 /* And it turns, slowly, the way something you are being shown turns.
@@ -6184,11 +6468,13 @@ a.arrow { text-decoration: none; }
   0%,  100% { transform: perspective(760px) rotateY(-8deg) rotateX(2.5deg); }
   50%       { transform: perspective(760px) rotateY(8deg)  rotateX(-2.5deg); }
 }
-.lab-pshot-lens .play-case {
+.lab-pshot-lens .play-case,
+.w-shelf-lens i .play-case {
   animation: lab-lens-turn 7200ms ease-in-out infinite;
 }
 @media (prefers-reduced-motion: reduce) {
-  .lab-pshot-lens .play-case { animation: none; }
+  .lab-pshot-lens .play-case,
+  .w-shelf-lens i .play-case { animation: none; }
 }
 
 .lab-pin figcaption { padding: 13px 3px 15px; }
@@ -7333,7 +7619,12 @@ a.arrow { text-decoration: none; }
     box-shadow: var(--print-cast);
   }
     .lab-pin > .lab-tape { display: none; }
+  /* Two figures for one window, and they have to move together: the card
+     standing in it is cut by the height, so a height changed here and a
+     --lens-well left on the desktop's would cut it somewhere the rule above
+     did not intend. */
   .lab-pshot { height: 200px; }
+  .lab-pshot-lens { --lens-well: 200px; }
 
   /* The back button floats at 14 from the top of the screen and these two
      screens are the only ones whose first element is a picture rather than a
@@ -8368,16 +8659,18 @@ a.arrow { text-decoration: none; }
       <div class="play-case lens-home-1">
         <lenticular-card class="play-lens"
           images="assets/lenticard/dragon-1.jpg,assets/lenticard/dragon-2.jpg,assets/lenticard/dragon-3.jpg"
-          lenticules="64" tilt="0" float="0" radius="4" sheen="0.4"
-          parallax="1.1" idle-sweep="3400" motion="none"></lenticular-card>
+          lenticules="32" tilt="0" float="0" radius="4" sheen="0.18"
+          interlace="0.14" blend="0.85" lens="0.32"
+          parallax="1.2" idle-sweep="3400" motion="none"></lenticular-card>
         <span class="play-glass" aria-hidden="true"></span>
         <span class="play-foot" aria-hidden="true">FULL BLEED &middot; Green Flame</span>
       </div>
       <div class="play-case lens-home-2">
         <lenticular-card class="play-lens"
           images="assets/lenticard/chandra-1.jpg,assets/lenticard/chandra-2.jpg,assets/lenticard/chandra-3.jpg"
-          lenticules="64" tilt="0" float="0" radius="4" sheen="0.4"
-          parallax="1.1" idle-sweep="3400" motion="none"></lenticular-card>
+          lenticules="32" tilt="0" float="0" radius="4" sheen="0.18"
+          interlace="0.14" blend="0.85" lens="0.32"
+          parallax="1.2" idle-sweep="3400" motion="none"></lenticular-card>
         <span class="play-glass" aria-hidden="true"></span>
         <span class="play-foot" aria-hidden="true">FULL BLEED &middot; Torch Of Defiance</span>
       </div>
@@ -8482,7 +8775,19 @@ a.arrow { text-decoration: none; }
         <p class="sub">Ten small builds from ten weekends, each with a log of what it turned up.</p>
 
         <div class="w-shelf" aria-hidden="true">
-          <span><i></i></span><span><i></i></span><span><i></i></span>
+          <span><i></i></span>
+          <span class="w-shelf-lens"><i>
+            <div class="play-case w-shelf-case">
+              <lenticular-card class="play-lens"
+                images="assets/lenticard/chandra-1.jpg,assets/lenticard/chandra-2.jpg,assets/lenticard/chandra-3.jpg"
+                lenticules="32" tilt="0" float="0" radius="4" sheen="0.18"
+                interlace="0.14" blend="0.85" lens="0.32"
+                parallax="1.2" idle-sweep="3400" motion="pointer"></lenticular-card>
+              <span class="play-glass" aria-hidden="true"></span>
+              <span class="play-foot" aria-hidden="true">FULL BLEED &middot; Torch Of Defiance</span>
+            </div>
+          </i></span>
+          <span><i></i></span>
         </div>
 
         <a class="card-hit" href="#lab" data-route="lab" aria-label="Open the Playground"></a>
@@ -9017,9 +9322,9 @@ a.arrow { text-decoration: none; }
       <section class="card ab-desk" data-tile="b">
         <p class="label">About // Colophon</p>
         <dl class="ab-desk-list is-tight">
-          <div><dt>One file</dt><dd>index.html, 655 KB</dd></div>
+          <div><dt>One file</dt><dd>index.html, 670 KB</dd></div>
           <div><dt>Built from</dt><dd>7 files of JSON, no framework</dd></div>
-          <div><dt>Stylesheet</dt><dd>8,159 lines</dd></div>
+          <div><dt>Stylesheet</dt><dd>8,450 lines</dd></div>
           <div><dt>Words</dt><dd>6,988 of them</dd></div>
         </dl>
         <p class="ab-colo">Counted by build.js, not typed.</p>
@@ -9170,8 +9475,9 @@ a.arrow { text-decoration: none; }
           <div class="play-case lab-lens">
             <lenticular-card class="play-lens"
               images="assets/lenticard/dragon-1.jpg,assets/lenticard/dragon-2.jpg,assets/lenticard/dragon-3.jpg"
-              lenticules="64" tilt="0" float="0" radius="4" sheen="0.4"
-              parallax="1.1" idle-sweep="3400" motion="pointer"></lenticular-card>
+              lenticules="32" tilt="0" float="0" radius="4" sheen="0.18"
+              interlace="0.14" blend="0.85" lens="0.32"
+              parallax="1.2" idle-sweep="3400" motion="pointer"></lenticular-card>
             <span class="play-glass" aria-hidden="true"></span>
             <span class="play-foot" aria-hidden="true">FULL BLEED &middot; Green Flame</span>
           </div>
@@ -11178,6 +11484,7 @@ a.arrow { text-decoration: none; }
     if (!cases.length) { return; }
 
     var frame = 0, nx = 0, ny = 0;
+    function clip(v) { return v < -1 ? -1 : v > 1 ? 1 : v; }
     function push() {
       frame = 0;
       Array.prototype.forEach.call(cases, function (box) {
@@ -11200,8 +11507,15 @@ a.arrow { text-decoration: none; }
     tile.addEventListener('pointermove', function (e) {
       var r = tile.getBoundingClientRect();
       if (!r.width || !r.height) { return; }
-      nx = ((e.clientX - r.left) / r.width) * 2 - 1;
-      ny = ((e.clientY - r.top) / r.height) * 2 - 1;
+      /* Geared up and clipped rather than mapped straight across.
+         Corner to corner the tile is a long way to travel for one sweep of
+         the stack, and the middle of it -- which is where a pointer crossing
+         the card actually is -- was the flattest part of the run. At 1.45 the
+         stack is spent by the time the pointer is three-quarters out to the
+         edge, and the last quarter holds the extreme instead of easing
+         toward it, which is what a card held at an angle does. */
+      nx = clip(((e.clientX - r.left) / r.width * 2 - 1) * 1.45);
+      ny = clip(((e.clientY - r.top) / r.height * 2 - 1) * 1.45);
       queue();
     }, { passive: true });
 
