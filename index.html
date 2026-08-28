@@ -5606,14 +5606,22 @@ a.arrow { text-decoration: none; }
 
    Shelf and Now split a band with no rule across it, so that gutter is a free
    choice -- 21, which is the one the frame uses everywhere else. Every other
-   edge is a line you can see. */
-.ab-habits     { left: 399px;  top: 596px; width: 364px; height: 335px;
+   edge is a line you can see.
+
+   The bottom row runs to 952 rather than 931. Those two are a pair of rules
+   with the frame's own 21 between them, so the row is landing on a line
+   either way -- it has just taken the lower of the two. What bought it: the
+   music card had a heading, a machine and no room between them, and the
+   choice was a bigger gap or a shorter machine. This is the third option,
+   and it costs nothing because 952 to 1010 is still fifty-eight clear
+   pixels of frame before the nav. */
+.ab-habits     { left: 399px;  top: 596px; width: 364px; height: 356px;
                  --gx: 22%; --gy: 0%; --gw: 110%; --gh: 150%; --gs: 0.05; }
-.ab-lately     { left: 785px;  top: 596px; width: 349px; height: 335px;
+.ab-lately     { left: 785px;  top: 596px; width: 349px; height: 356px;
                  --gx: 100%; --gy: 0%; --gw: 130%; --gh: 150%; --gs: 0.05; }
 .ab-now        { left: 785px;  top: 364px; width: 736px; height: 211px;
                  --gx: 100%; --gy: 0%; --gw: 130%; --gh: 150%; --gs: 0.05; }
-.ab-music      { left: 1155px; top: 596px; width: 366px; height: 335px;
+.ab-music      { left: 1155px; top: 596px; width: 366px; height: 356px;
                  --gx: 20%; --gy: 100%; --gw: 120%; --gh: 140%; --gs: 0.05; }
 
 /* Both bands cross the mid pair now -- the shelf runs 785 to 1521 up top and
@@ -5956,9 +5964,12 @@ a.arrow { text-decoration: none; }
    it is what the front of a stereo looks like, and one off to the left with
    the meters beside it is what a thumbnail looks like.
    ------------------------------------------------------------------------ */
+/* Twenty lower and twenty taller. The heading was sitting on the roof of
+   the machine; there is air between them now, and the machine got the
+   room the taller card freed rather than giving it up to the gap. */
 .ms-wk {
-  position: absolute; left: 24px; top: 58px;
-  width: 300px; height: 234px;
+  position: absolute; left: 24px; top: 78px;
+  width: 300px; height: 254px;
 }
 .ms-wk-face {
   position: absolute; inset: 0;
@@ -5969,11 +5980,31 @@ a.arrow { text-decoration: none; }
     #757a84 0%, #40444c 8%, #2a2d34 22%, #52575f 38%, #23262c 50%,
     #3a3e46 66%, #62676f 82%, #262930 93%, #4a4e56 100%);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.34),
-    inset 0 0 0 1px rgba(0, 0, 0, 0.6),
-    inset 0 -2px 0 rgba(0, 0, 0, 0.6),
-    0 26px 40px -22px rgba(0, 0, 0, 0.85),
-    0 3px 7px rgba(0, 0, 0, 0.35);
+    /* the chamfer: lit along the top edge, shaded along the bottom */
+    inset 0 2px 0 rgba(255, 255, 255, 0.4),
+    inset 0 -3px 0 rgba(0, 0, 0, 0.7),
+    inset 2px 0 0 rgba(255, 255, 255, 0.1),
+    inset -2px 0 0 rgba(0, 0, 0, 0.35),
+    /* the rim of the shell, and the seam just inside it */
+    inset 0 0 0 1px rgba(0, 0, 0, 0.75),
+    inset 0 0 0 4px rgba(255, 255, 255, 0.05),
+    inset 0 0 14px 4px rgba(0, 0, 0, 0.34),
+    /* and what it does to the card underneath */
+    0 34px 46px -26px rgba(0, 0, 0, 0.92),
+    0 10px 18px -8px rgba(0, 0, 0, 0.5),
+    0 3px 6px rgba(0, 0, 0, 0.42);
+}
+/* The moulding line around the face plate. A shell this size is two pieces
+   of metal and you can always see where they meet. */
+.ms-wk-face::before {
+  content: "";
+  position: absolute; inset: 5px;
+  border-radius: 9px;
+  pointer-events: none;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.16),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.45),
+    0 1px 0 rgba(255, 255, 255, 0.07);
 }
 /* The brushing, and the lamp. Both under the controls rather than over them
    -- a sheen that dims the writing on a key is on the wrong side of it. */
@@ -6012,15 +6043,17 @@ a.arrow { text-decoration: none; }
 .ms-well {
   position: absolute; left: 16px; right: 16px; top: 14px;
   z-index: 2;
-  height: 132px;
+  height: 152px;
   padding: 6px;
   border-radius: 5px;
   overflow: hidden;
   background: #06070a;
   box-shadow:
-    inset 0 3px 9px rgba(0, 0, 0, 0.95),
-    inset 0 0 0 1px rgba(0, 0, 0, 0.8),
-    0 1px 0 rgba(255, 255, 255, 0.16);
+    inset 0 5px 12px rgba(0, 0, 0, 0.98),
+    inset 0 -2px 6px rgba(0, 0, 0, 0.6),
+    inset 0 0 0 1px rgba(0, 0, 0, 0.85),
+    0 1px 0 rgba(255, 255, 255, 0.22),
+    0 2px 3px rgba(255, 255, 255, 0.05);
 }
 .ms-top {
   position: relative;
@@ -6144,27 +6177,29 @@ a.arrow { text-decoration: none; }
    somewhere or the sixth key is a button with no readout. */
 .ms-lcd {
   position: relative;
-  height: 30px;
-  margin-top: 6px;
+  height: 48px;
+  margin-top: 8px;
   padding: 0 3px;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 2px;
+  align-items: center;
+  gap: 7px;
   overflow: hidden;
+  text-align: center;
 }
 /* The hairline that joins the two halves rather than a gap that parts them. */
 .ms-lcd::before {
   content: "";
-  position: absolute; left: 0; right: 0; top: -3px;
+  position: absolute; left: 0; right: 0; top: -4px;
   height: 1px;
   background: rgba(150, 240, 200, 0.16);
 }
-.ms-lcd-a, .ms-lcd-by, .ms-mode {
+.ms-lcd-a, .ms-lcd-by {
   font-family: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas,
     "Liberation Mono", monospace;
   font-size: 11px;
-  line-height: 14px;
+  line-height: 16px;
   letter-spacing: 0.15em;
   text-transform: uppercase;
   white-space: nowrap;
@@ -6175,10 +6210,15 @@ a.arrow { text-decoration: none; }
   color: #9dffcf;
   text-shadow: 0 0 9px rgba(90, 255, 190, 0.55);
 }
+/* Centred, because there is nothing on the right any more to justify
+   against. The mode was printed here and was a word nobody could act on --
+   "BARS" answers a question about the software, not about the record --
+   and pressing the key changes eighteen bars in front of you, which is the
+   only readout that key ever needed. */
 .ms-lcd-b {
   display: flex;
   align-items: baseline;
-  justify-content: space-between;
+  justify-content: center;
   gap: 10px;
   min-width: 0;
 }
@@ -6186,10 +6226,6 @@ a.arrow { text-decoration: none; }
   overflow: hidden;
   text-overflow: clip;
   color: rgba(157, 255, 207, 0.52);
-}
-.ms-mode {
-  flex: none;
-  color: rgba(157, 255, 207, 0.78);
 }
 
 /* The grid, over the whole screen and everything on it. This is what makes
@@ -6209,7 +6245,7 @@ a.arrow { text-decoration: none; }
 /* Inset four further than the glass, so the handle at nought sits inside the
    line of the well rather than hanging off the end of it. */
 .ms-bar {
-  position: absolute; left: 22px; right: 22px; top: 156px;
+  position: absolute; left: 22px; right: 22px; top: 176px;
   z-index: 2;
   height: 9px;
   cursor: pointer;
@@ -6269,9 +6305,11 @@ a.arrow { text-decoration: none; }
   color: rgba(255, 255, 255, 0.86);
   background: linear-gradient(180deg, #7d828c 0%, #474b53 54%, #34373d 100%);
   box-shadow:
-    0 5px 0 #101115,
-    0 7px 8px rgba(0, 0, 0, 0.62),
-    inset 0 1px 0 rgba(255, 255, 255, 0.38);
+    0 3px 0 #4b4f57,
+    0 6px 0 #101115,
+    0 9px 10px rgba(0, 0, 0, 0.68),
+    inset 0 1px 0 rgba(255, 255, 255, 0.45),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.4);
   transition: transform 110ms var(--ease), box-shadow 110ms var(--ease),
               color 110ms var(--ease);
 }
@@ -6289,11 +6327,13 @@ a.arrow { text-decoration: none; }
 .ms-key:active,
 .is-going .ms-key-play,
 .is-held .ms-key-pause {
-  transform: translateY(5px);
+  transform: translateY(6px);
   box-shadow:
+    0 0 0 #4b4f57,
     0 0 0 #101115,
-    0 1px 3px rgba(0, 0, 0, 0.6),
-    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    0 1px 3px rgba(0, 0, 0, 0.65),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.4);
 }
 .is-going .ms-key-play, .is-held .ms-key-pause { color: #fff; }
 
@@ -6570,7 +6610,7 @@ a.arrow { text-decoration: none; }
   left: 24px; width: 316px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 22px;
 }
 .ab-half-mark {
   order: 0;
@@ -6587,13 +6627,13 @@ a.arrow { text-decoration: none; }
    that turns up when a box was decided before its contents. */
 /* 24, 123, 41, 123, 24 = 335. */
 .ab-half-gym { top: 24px; }
-.ab-half-git { top: 188px; }
+.ab-half-git { top: 201px; }
 
 /* The rule between them lies down again, because what it separates is back to
    being above and below it. */
 .ab-half-git::before {
   content: "";
-  position: absolute; left: 0; right: 0; top: -20px; height: 1px;
+  position: absolute; left: 0; right: 0; top: -23px; height: 1px;
   background: var(--card-line);
 }
 
@@ -6819,7 +6859,7 @@ a.arrow { text-decoration: none; }
   display: block;
   flex: none;
   width: auto;
-  height: 126px;
+  height: 150px;
   background-color: var(--slot);
   background-size: cover;
   background-position: center;
@@ -10723,7 +10763,6 @@ a.arrow { text-decoration: none; }
                 <span class="ms-lcd-a">Everything In Its Right Place</span>
                 <span class="ms-lcd-b">
                   <span class="ms-lcd-by">Radiohead</span>
-                  <span class="ms-mode" data-ms-mode-tag>BARS</span>
                 </span>
               </div>
               <span class="ms-pix"></span>
