@@ -6197,6 +6197,47 @@ a.arrow { text-decoration: none; }
 .viz-neon .ms-viz i { opacity: 0.14; }
 .viz-neon.is-going .ms-viz i { opacity: 1; }
 
+/* BOUNCE -- not a meter at all. The bars stop growing and start jumping:
+   every one is the same small block and what moves is where it is, which
+   no analyser has ever done and is the best thing on the dial. */
+.viz-bounce .ms-viz i {
+  height: 15%;
+  background: linear-gradient(0deg, #ff7a00 0%, #ffc61e 55%, #ffe98a 100%);
+  box-shadow: 0 0 8px rgba(255, 170, 40, 0.5);
+}
+.viz-bounce .ms-viz::after { display: none; }
+.viz-bounce.is-going .ms-viz i { animation-name: ms-bounce; }
+@keyframes ms-bounce {
+  from { transform: translateY(0); }
+  to   { transform: translateY(calc(var(--y, 0.7) * -430%)); }
+}
+
+/* STATIC -- the meter having a breakdown. The heights snap between seven
+   values instead of easing between two, because the timing function is
+   steps(1) and every keyframe is a jump cut. Kept its segment rows, which
+   is what makes it read as a display going wrong rather than a new
+   pattern. */
+.viz-static .ms-viz i {
+  background: linear-gradient(0deg,
+    #6f7780 0%, #cfd6dd 55%, #ffffff 100%) bottom / 100% 84px no-repeat;
+}
+.viz-static.is-going .ms-viz i {
+  animation-name: ms-static;
+  animation-duration: calc(var(--d, 700ms) * 0.42);
+  animation-direction: normal;
+  animation-timing-function: steps(1, end);
+}
+@keyframes ms-static {
+  0%   { height: 14%;  opacity: 0.55; }
+  14%  { height: 96%;  opacity: 1; }
+  28%  { height: 31%;  opacity: 0.7; }
+  42%  { height: 100%; opacity: 1; }
+  56%  { height: 19%;  opacity: 0.45; }
+  70%  { height: 74%;  opacity: 0.95; }
+  84%  { height: 42%;  opacity: 0.8; }
+  100% { height: 12%;  opacity: 0.6; }
+}
+
 /* OFF -- the sleeve, on its own, in the dark. */
 .viz-off .ms-viz { visibility: hidden; }
 
@@ -6223,9 +6264,9 @@ a.arrow { text-decoration: none; }
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  /* Three, not seven. They are one thing said twice -- what it is and who
-     by -- and seven pixels was enough to read them as two. */
-  gap: 3px;
+  /* One pixel. They are one thing said twice -- what it is and who by --
+     and any daylight at all was enough to read them as two. */
+  gap: 1px;
   overflow: hidden;
   text-align: center;
 }
@@ -6241,8 +6282,12 @@ a.arrow { text-decoration: none; }
     "Liberation Mono", monospace;
   font-size: 11px;
   line-height: 16px;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
+  /* Set as written rather than shouted. Upper case was doing the work of
+     looking like a machine, and the fixed pitch and the pixel grid over
+     the top of it were already doing that -- so all the capitals were
+     adding was volume. The spacing comes in a little to suit: lower case
+     has ascenders and descenders to space it, capitals have nothing. */
+  letter-spacing: 0.08em;
   white-space: nowrap;
 }
 .ms-lcd-a {
@@ -10786,7 +10831,7 @@ a.arrow { text-decoration: none; }
                     <i style="--y:0.47;--d:534ms;--o:-305ms"></i>
                 </span>
                 <span class="ms-stage">
-                  <span class="ms-tube"><span data-ms-tube data-video="NUnXxh5U25Y"></span></span>
+                  <span class="ms-tube"><span data-ms-tube data-video="onRk0sjSgFU"></span></span>
                   <span class="ms-art" role="img" aria-label="Everything In Its Right Place"
                         style="background-image:url('assets/covers/music-kid-a.jpg')"></span>
                 </span>
@@ -16485,10 +16530,27 @@ a.arrow { text-decoration: none; }
       if (on) { tick = setInterval(draw, 250); }
     }
 
+    /* Two different failures, and they had been sharing one handler.
+
+       off() is for a player that is not there at all -- the API script
+       blocked, the video pulled. Nothing can drive anything, so the
+       transport goes and the object stays.
+
+       stall() is for a player that is there and will not start, which is a
+       different thing and was being punished as though it were the same:
+       the controls vanished fifteen seconds after a press, so a slow
+       connection lost its buttons for being slow. Now the keys just come
+       back up, which is what a deck does when the tape will not go. */
     function off() {
       card.classList.add('is-mute');
       clearInterval(tick);
       clearTimeout(guard);
+    }
+
+    function stall() {
+      clearTimeout(guard);
+      latch('idle');
+      follow(false);
     }
 
     /* Asked to play, and nothing ever started.
@@ -16502,7 +16564,7 @@ a.arrow { text-decoration: none; }
        happens when the script is blocked outright. */
     function watch() {
       clearTimeout(guard);
-      guard = setTimeout(off, 15000);
+      guard = setTimeout(stall, 20000);
     }
 
     /* The API arrives once, and onYouTubeIframeAPIReady is a global it calls
@@ -16592,7 +16654,8 @@ a.arrow { text-decoration: none; }
        nothing here knows what a bar looks like. It is written on the display
        as well: a control with no readout is a control you press twice to
        find out what it did. */
-    var MODES = ['bars', 'peak', 'scope', 'fire', 'drop', 'neon', 'off'];
+    var MODES = ['bars', 'peak', 'scope', 'fire', 'drop', 'neon',
+                 'bounce', 'static', 'off'];
     var mode = 0;
 
     function meters(i) {
