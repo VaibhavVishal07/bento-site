@@ -5971,9 +5971,17 @@ a.arrow { text-decoration: none; }
   position: absolute; left: 24px; top: 78px;
   width: 300px; height: 254px;
 }
+/* Square, everywhere, on purpose.
+
+   Nothing on this machine is rounded off any more. The rounding was doing
+   the softening that a rounded rectangle always does, and this is a milled
+   box with a screen cut into it -- the kind of thing that is machined out of
+   a billet and has edges you would not want to run a thumb along. The card
+   behind it keeps its own radius, which is what makes the difference read:
+   a hard object sitting on a soft one. */
 .ms-wk-face {
   position: absolute; inset: 0;
-  border-radius: 13px;
+  border-radius: 0;
   /* Milled, not moulded. The bands are the point: a single flat fill is the
      one thing that never looks like metal. */
   background: linear-gradient(99deg,
@@ -5999,7 +6007,7 @@ a.arrow { text-decoration: none; }
 .ms-wk-face::before {
   content: "";
   position: absolute; inset: 5px;
-  border-radius: 9px;
+  border-radius: 0;
   pointer-events: none;
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.16),
@@ -6012,7 +6020,7 @@ a.arrow { text-decoration: none; }
   content: "";
   position: absolute; inset: 0;
   z-index: 1;
-  border-radius: 13px;
+  border-radius: 0;
   pointer-events: none;
   background:
     repeating-linear-gradient(99deg,
@@ -6045,7 +6053,7 @@ a.arrow { text-decoration: none; }
   z-index: 2;
   height: 152px;
   padding: 6px;
-  border-radius: 5px;
+  border-radius: 0;
   overflow: hidden;
   background: #06070a;
   box-shadow:
@@ -6158,6 +6166,37 @@ a.arrow { text-decoration: none; }
 .viz-fire .ms-viz::after { display: none; }
 .viz-fire.is-going .ms-viz i { animation-duration: calc(var(--d, 700ms) * 0.55); }
 
+/* DROP -- hung from the ceiling instead of stood on the floor, and lit in
+   the colours no meter has ever been. */
+.viz-drop .ms-viz { align-items: flex-start; }
+.viz-drop .ms-viz i {
+  background: linear-gradient(180deg,
+    #6a12ff 0%, #b03cff 34%, #ff5ad2 70%, #ffd6f2 100%)
+    top / 100% 84px no-repeat;
+  box-shadow: 0 0 8px rgba(190, 70, 255, 0.45);
+}
+.viz-drop .ms-viz::after { display: none; }
+
+/* NEON -- a light organ. Every bar is full height all the time and what
+   moves is how hard each one is lit, which is the wrong way round for a
+   meter and exactly right for a wall of them. */
+.viz-neon .ms-viz i {
+  height: 100%;
+  background: linear-gradient(0deg, #ff17c1 0%, #9d4bff 46%, #00e9ff 100%);
+  box-shadow: 0 0 10px rgba(255, 40, 200, 0.55);
+}
+.viz-neon .ms-viz::after { display: none; }
+.viz-neon.is-going .ms-viz i { animation-name: ms-neon; }
+@keyframes ms-neon {
+  from { opacity: 0.1; }
+  to   { opacity: 1; }
+}
+/* Standing still it is a solid wall of colour, which is not a resting
+   meter -- so at rest it is dimmed to the same near-nothing it pulses
+   down to. */
+.viz-neon .ms-viz i { opacity: 0.14; }
+.viz-neon.is-going .ms-viz i { opacity: 1; }
+
 /* OFF -- the sleeve, on its own, in the dark. */
 .viz-off .ms-viz { visibility: hidden; }
 
@@ -6184,7 +6223,9 @@ a.arrow { text-decoration: none; }
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 7px;
+  /* Three, not seven. They are one thing said twice -- what it is and who
+     by -- and seven pixels was enough to read them as two. */
+  gap: 3px;
   overflow: hidden;
   text-align: center;
 }
@@ -6255,7 +6296,7 @@ a.arrow { text-decoration: none; }
   content: "";
   position: absolute; left: 0; right: 0; top: 50%;
   height: 3px; margin-top: -1.5px;
-  border-radius: 2px;
+  border-radius: 0;
   background: rgba(0, 0, 0, 0.5);
   box-shadow:
     inset 0 1px 2px rgba(0, 0, 0, 0.8),
@@ -6264,13 +6305,15 @@ a.arrow { text-decoration: none; }
 .ms-fill {
   position: absolute; left: 0; top: 50%;
   height: 3px; margin-top: -1.5px; width: 0;
-  border-radius: 2px;
+  border-radius: 0;
   background: rgba(157, 255, 207, 0.8);
 }
+/* The handle goes square with everything else. A round one on a machine
+   with no round corners on it is the one part you would notice. */
 .ms-knob {
   position: absolute; top: 50%; left: 0;
-  width: 8px; height: 8px; margin: -4px 0 0 -4px;
-  border-radius: 50%;
+  width: 7px; height: 11px; margin: -5.5px 0 0 -3.5px;
+  border-radius: 0;
   background: #dfffee;
   opacity: 0;
   transition: opacity var(--dur) var(--ease);
@@ -6287,7 +6330,7 @@ a.arrow { text-decoration: none; }
   z-index: 2;
   height: 38px;
   padding: 0 12px;
-  border-radius: 6px;
+  border-radius: 0;
   display: flex; align-items: center; justify-content: center; gap: 8px;
   background: linear-gradient(180deg, rgba(0, 0, 0, 0.46), rgba(0, 0, 0, 0.2));
   box-shadow:
@@ -6300,7 +6343,7 @@ a.arrow { text-decoration: none; }
   display: grid; place-items: center;
   appearance: none; -webkit-appearance: none;
   margin: 0; padding: 0; border: 0;
-  border-radius: 4px;
+  border-radius: 0;
   cursor: pointer;
   color: rgba(255, 255, 255, 0.86);
   background: linear-gradient(180deg, #7d828c 0%, #474b53 54%, #34373d 100%);
@@ -16549,7 +16592,7 @@ a.arrow { text-decoration: none; }
        nothing here knows what a bar looks like. It is written on the display
        as well: a control with no readout is a control you press twice to
        find out what it did. */
-    var MODES = ['bars', 'peak', 'scope', 'fire', 'off'];
+    var MODES = ['bars', 'peak', 'scope', 'fire', 'drop', 'neon', 'off'];
     var mode = 0;
 
     function meters(i) {
