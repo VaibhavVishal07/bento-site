@@ -5546,12 +5546,12 @@ a.arrow { text-decoration: none; }
    card that is standing still at the head of the screen. d comes up from
    Thoughts, 785,596,350x139, into the shelf: same left edge, up the frame,
    and three and a half times the height when it lands. */
-.ab-who        { left: 399px;  top: 91px;  width: 364px; height: 438px;
+.ab-who        { left: 399px;  top: 91px;  width: 364px; height: 484px;
                  --gx: 100%; --gy: 0%; --gw: 130%; --gh: 130%; --gs: 0.052; }
 /* Lately used to say what it had to say in a 366 corner. It has the whole
    bottom band now -- twice the width -- and the shelf keeps the height that
    thirty-four covers in two rows actually need. */
-.ab-shelf-card { left: 785px;  top: 91px;  width: 736px; height: 438px;
+.ab-shelf-card { left: 785px;  top: 91px;  width: 736px; height: 252px;
                  --gx: 34%; --gy: -6%; --gw: 120%; --gh: 125%; --gs: 0.048; }
 /* Two boxes rather than one with a line down it. A hairline between two
    grids on one card says they are two halves of a thing; two cards with the
@@ -5574,10 +5574,47 @@ a.arrow { text-decoration: none; }
    Home's media strip stands at 1155,596,366x335, which is exactly where the
    right-hand card is -- so it takes f and crosses the frame instead, and b
    comes down out of the Repo tile into the box it left. */
-.ab-habits     { left: 399px;  top: 551px; width: 364px; height: 380px;
+/* Six boxes, every edge on a line the frame already draws.
+
+   They were not. Chasing the contents around had walked three of these cards
+   off the lattice: the desk started at 551 where the frame rules at 575 and
+   596, Lately ended at 1142 which is between the two mid verticals rather
+   than on either, and Now finished at 581 where there is no line at all. A
+   card whose edge lands a few pixels off a rule that is right there is worse
+   than one nowhere near it -- the eye reads the near miss as a mistake and
+   the far one as a decision.
+
+   So the arithmetic starts from the frame now and the contents fit into it.
+   The lines this screen uses:
+
+     verticals    399   763 | 785   1134 | 1155   1521
+     horizontals   91   575 | 596   931
+
+     Who      399..763    91..575     364 x 484
+     Habits   399..763   596..931     364 x 335
+     Shelf    785..1521   91..343     736 x 252
+     Now      785..1521  364..575     736 x 211
+     Lately   785..1134  596..931     349 x 335
+     Music   1155..1521  596..931     366 x 335
+
+   The shelf goes back on top. It was moved to the foot on the argument that
+   it is the least urgent thing on the screen, which is true and turned out
+   not to matter: at the foot it had a third of the column to fill and the
+   covers grew to 222 to fill it, and a wall of jackets that size is the
+   loudest thing on the page whatever order it is read in. Back at the top it
+   is a strip again.
+
+   Shelf and Now split a band with no rule across it, so that gutter is a free
+   choice -- 21, which is the one the frame uses everywhere else. Every other
+   edge is a line you can see. */
+.ab-habits     { left: 399px;  top: 596px; width: 364px; height: 335px;
                  --gx: 22%; --gy: 0%; --gw: 110%; --gh: 150%; --gs: 0.05; }
-.ab-lately     { left: 785px;  top: 551px; width: 736px; height: 380px;
+.ab-lately     { left: 785px;  top: 596px; width: 349px; height: 335px;
                  --gx: 100%; --gy: 0%; --gw: 130%; --gh: 150%; --gs: 0.05; }
+.ab-now        { left: 785px;  top: 364px; width: 736px; height: 211px;
+                 --gx: 100%; --gy: 0%; --gw: 130%; --gh: 150%; --gs: 0.05; }
+.ab-music      { left: 1155px; top: 596px; width: 366px; height: 335px;
+                 --gx: 20%; --gy: 100%; --gw: 120%; --gh: 140%; --gs: 0.05; }
 
 /* Both bands cross the mid pair now -- the shelf runs 785 to 1521 up top and
    the tally runs 399 to 1521 below it -- so the gap opens down the whole
@@ -5666,8 +5703,11 @@ a.arrow { text-decoration: none; }
   background: rgba(var(--w), 0.14);
 }
 
+/* 28 under the heading rather than 8. A row of covers starting eight pixels
+   below the words naming it reads as one object with a caption jammed on top;
+   the shelf on a wall has air between the label and the books. */
 .ab-rack-t {
-  margin: 0 0 8px;
+  margin: 0 0 28px;
   /* The strip is full bleed, so the name has to climb back out to where
      the card's own padding is -- and --pad rather than 24, so the label and
      the card cannot drift apart on a phone. */
@@ -5675,7 +5715,7 @@ a.arrow { text-decoration: none; }
   font-size: 13px; line-height: 18px;
   color: var(--quieter);
 }
-.ab-rack-t b { font-weight: 500; color: var(--heading); }
+.ab-rack-t b { font-weight: 600; color: var(--quieter); }
 
 .ab-level {
   display: flex;
@@ -5722,6 +5762,553 @@ a.arrow { text-decoration: none; }
    resolves to Home. Opening a book on the shelf navigated off the screen the
    shelf is on. What they do is open a panel in place, and the element for a
    control that does something on the page you are already on is a button. */
+/* ==========================================================================
+   The About screen, set
+
+   Seventeen different type styles were rendering on this one screen. Not
+   seventeen elements -- seventeen combinations of size, leading and weight,
+   nine of them within a point and a half of another, none of them meaning
+   anything different from the one it was nearly the same as. That is what a
+   page looks like when every card was set on the day it was built.
+
+   There are four now, and they are the whole page:
+
+     .ab-title 28/34 semibold        the name of a page. The sheet only.
+     .ab-head  16/24 semibold        the name of a card, and of a thing on one
+     .ab-body  14/21                 anything written in sentences
+     .ab-sub   13/19 quiet           labels, bylines, dates, counts
+
+   There was a fifth for a while -- Literata italic, for the name of a work.
+   The argument for it was good and the result was not: one serif on a screen
+   set entirely in a grotesque reads as a font that got in by accident, and it
+   was doing that at four different places on this page. A title is already
+   marked as a title by being the largest thing in its box.
+
+   The sheet was running nine more of its own -- 30, 17, 16, 15, 14.5, 14, 13,
+   12 and 12 again -- because it was built as its own thing on its own day.
+   It uses these five now, and the only one it adds is the page title, which
+   is a real difference in rank: a sheet is a page and a card is a card.
+
+   The italic is the one that carries meaning rather than rank: it means this
+   string is the title of a book, a game, a film or a record. It is the actual
+   convention for the names of works, the face is already loaded for the
+   reading view, and it is the only place on the screen a serif appears.
+
+   Everything below this line uses one of the four. If something needs a fifth,
+   the honest question is whether it needs to be on this screen.
+   ========================================================================== */
+.ab-title {
+  margin: 0;
+  font-size: 28px; line-height: 34px; font-weight: 600;
+  letter-spacing: -0.015em;
+  color: var(--heading);
+  text-wrap: balance;
+}
+.ab-head {
+  margin: 0;
+  font-size: 16px; line-height: 24px; font-weight: 600;
+  color: var(--heading);
+}
+.ab-work { margin: 0; font-size: 16px; line-height: 22px; font-weight: 600; color: var(--heading); }
+.ab-body {
+  margin: 0;
+  font-size: 14px; line-height: 21px; font-weight: 400;
+  color: var(--body);
+}
+.ab-sub {
+  margin: 0;
+  font-size: 13px; line-height: 19px; font-weight: 400;
+  color: var(--quieter);
+}
+
+/* The card headings are .ab-head with a place to stand. */
+.nw-h, .ab-late-h, .ms-h, .ab-rack-t {
+  margin: 0;
+  font-family: var(--f-sans);
+  letter-spacing: normal;
+  text-transform: none;
+  font-size: 16px; line-height: 24px; font-weight: 600;
+  color: var(--heading);
+}
+
+/* Except over the carousel, which wants air between the name and the covers --
+   eight pixels read as a caption stuck to the top of them. */
+.ab-rack-t { margin-bottom: 28px; }
+
+/* ==========================================================================
+   Now — the other half of the desk
+
+   A shelf answers "what does he have". This answers "what is he doing", and
+   that is the question people actually arrive with -- so it is a card in the
+   grid and not a sheet behind a button in the corner, which is where it spent
+   an hour and which was hiding the best thing on the screen.
+
+   Two rules brought over from the page this idea came off, and they are the
+   two worth having:
+
+   Italic serif for the name of a work, and nothing else. Piranesi is set in
+   Literata italic; the word Reading above it is not, and Susanna Clarke under
+   it is not. That is the actual typographic convention for the title of a
+   work, the site was not using it, and the face is already loaded for the
+   reading view -- so it costs nothing and it means something.
+
+   Labels are quiet sans at reading size. Reading, Playing: 13px, normal
+   weight, the grey. Not nine-point capitals. A label that has to be shouted
+   to read as a label is a label in the wrong place.
+   ========================================================================== */
+
+.nw-head { position: absolute; left: 24px; top: 24px; }
+/* The one thing on this screen that is true to the minute. */
+.nw-where { font-variant-numeric: tabular-nums; }
+
+/* --- three things standing on a shelf ------------------------------------
+
+   It was three identical cells -- a stamp-sized cover, a name, a byline, a
+   hairline between each. Which is a specification table with pictures in it,
+   and it read like one: the same shape three times, nothing about it
+   belonging to this page rather than to any other.
+
+   The pictures are the card now. Three covers at the height the box will take,
+   standing side by side on the same kind of rule the shelf above them stands
+   on, and the words moved off to the right as one caption block for the group
+   rather than three labels repeated over three columns.
+
+   The two halves know about each other: point at a line and its cover lifts
+   off the rule while the other two step back, point at a cover and its line
+   lights. That is what answers "which of these is that" -- not a label
+   printed three times.
+   ------------------------------------------------------------------------ */
+.nw-row {
+  position: absolute; left: 24px; right: 24px; bottom: 24px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0 24px;
+  margin: 0; padding: 0;
+  list-style: none;
+}
+/* Bottom, not top: the covers are three different pictures and the words
+   beside them run to one, two or three lines, so the only edge all six
+   things can share is the one they are standing on. Which is the whole
+   point -- three covers in a row on the left with their three labels
+   stacked away on the right lined up with nothing, and the reader had to
+   count positions to find out which was which. */
+.nw-item {
+  display: flex;
+  align-items: flex-end;
+  gap: 13px;
+}
+.nw-plate {
+  flex: none;
+  display: block;
+  width: 80px; height: 120px;
+  background-color: var(--slot);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  box-shadow: var(--lie);
+}
+.nw-said {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 2px;
+}
+.nw-when { font-style: normal; margin-bottom: 3px; }
+.nw-what { margin: 0 0 1px; }
+
+/* No hover play here. Dimming two of the three and lifting the third is a
+   lot of movement to answer a question nobody asked -- each cover already
+   has its own words beside it, so there is nothing left to point out. */
+/* --- music ---------------------------------------------------------------
+
+   The one thing on this screen that is not on the shelf. A book gets finished
+   and a game gets put down; a record gets played again on Thursday, so it has
+   no place in a collection you count and it carries its own sleeve.
+   ------------------------------------------------------------------------ */
+/* --- the player ----------------------------------------------------------
+
+   Real transport over a real YouTube player.
+
+   The embed with its own chrome was a video sitting in a card about music --
+   a red play button, a title bar, a share sheet, a suggested-videos grid at
+   the end. What is wanted is a music player, so YouTube runs underneath as
+   the thing making the sound and the card carries its own controls: back ten,
+   play, forward ten, a bar you can drag, and the clock.
+
+   The bar is real. It reads the position off the player sixty times a minute
+   and dragging it seeks the audio -- there is no timer running alongside
+   pretending. Everything on this card is either the player's state or a
+   command to it.
+   ------------------------------------------------------------------------ */
+.ms-h { position: absolute; left: 24px; top: 24px; }
+
+/* The deck, in dark metal, face on -- and wearing a Winamp skin.
+
+   It does not lean. An object turned a few degrees is how you photograph
+   one, not how you use one, and everything printed on it sat on a slant. So
+   the depth is in the light instead, and there is a lot of it: an outer
+   shell with an inset face plate, a milled band gradient across the case, a
+   sunken well for the glass, a sunken strip for the keys, four screws, and
+   keys standing on five pixels of their own side wall.
+
+   It reads as a component rather than a personal player now, and that is the
+   arrangement doing it: the sleeve in the middle with a meter either side of
+   it is what the front of a stereo looks like, and one off to the left with
+   the meters beside it is what a thumbnail looks like.
+   ------------------------------------------------------------------------ */
+.ms-wk {
+  position: absolute; left: 24px; top: 58px;
+  width: 300px; height: 234px;
+}
+.ms-wk-face {
+  position: absolute; inset: 0;
+  border-radius: 13px;
+  /* Milled, not moulded. The bands are the point: a single flat fill is the
+     one thing that never looks like metal. */
+  background: linear-gradient(99deg,
+    #757a84 0%, #40444c 8%, #2a2d34 22%, #52575f 38%, #23262c 50%,
+    #3a3e46 66%, #62676f 82%, #262930 93%, #4a4e56 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.34),
+    inset 0 0 0 1px rgba(0, 0, 0, 0.6),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.6),
+    0 26px 40px -22px rgba(0, 0, 0, 0.85),
+    0 3px 7px rgba(0, 0, 0, 0.35);
+}
+/* The brushing, and the lamp. Both under the controls rather than over them
+   -- a sheen that dims the writing on a key is on the wrong side of it. */
+.ms-wk-face::after {
+  content: "";
+  position: absolute; inset: 0;
+  z-index: 1;
+  border-radius: 13px;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(99deg,
+      rgba(255, 255, 255, 0.035) 0 1px, rgba(0, 0, 0, 0.03) 1px 3px),
+    linear-gradient(99deg,
+      rgba(255, 255, 255, 0.24) 0%, rgba(255, 255, 255, 0) 12%,
+      rgba(255, 255, 255, 0) 32%, rgba(255, 255, 255, 0.18) 38%,
+      rgba(255, 255, 255, 0) 45%, rgba(255, 255, 255, 0) 76%,
+      rgba(255, 255, 255, 0.20) 83%, rgba(255, 255, 255, 0) 92%);
+}
+
+.ms-screw {
+  position: absolute;
+  z-index: 2;
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 38% 32%, #9198a3 0%, #4a4e57 48%, #1d2025 100%);
+  box-shadow:
+    inset 0 0 0 1px rgba(0, 0, 0, 0.45),
+    0 1px 0 rgba(255, 255, 255, 0.2);
+}
+.ms-screw-1 { left: 7px;  top: 7px; }
+.ms-screw-2 { right: 7px; top: 7px; }
+.ms-screw-3 { left: 7px;  bottom: 7px; }
+.ms-screw-4 { right: 7px; bottom: 7px; }
+
+/* --- the glass ---------------------------------------------------------- */
+.ms-well {
+  position: absolute; left: 16px; right: 16px; top: 14px;
+  z-index: 2;
+  height: 132px;
+  padding: 6px;
+  border-radius: 5px;
+  overflow: hidden;
+  background: #06070a;
+  box-shadow:
+    inset 0 3px 9px rgba(0, 0, 0, 0.95),
+    inset 0 0 0 1px rgba(0, 0, 0, 0.8),
+    0 1px 0 rgba(255, 255, 255, 0.16);
+}
+.ms-top {
+  position: relative;
+  height: 84px;
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
+}
+
+/* Square, whole, and in the middle. */
+.ms-stage {
+  position: relative;
+  flex: none;
+  width: 84px; height: 84px;
+  overflow: hidden;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.14);
+}
+.ms-tube { position: absolute; inset: 0; pointer-events: none; }
+.ms-tube iframe { display: block; width: 100%; height: 100%; border: 0; }
+.ms-art {
+  position: absolute; inset: 0;
+  z-index: 1;
+  background: var(--slot) center / cover no-repeat;
+}
+
+/* --- the meters --------------------------------------------------------- */
+.ms-viz {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+}
+.ms-viz i {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  height: 7%;
+  /* Anchored to the bottom at a fixed size, so a short bar shows the green
+     end of the ramp and only a tall one reaches the red. Scaling the bar
+     would squash the whole ramp into it and every bar would be every
+     colour, which is the thing that makes a fake analyser look fake. */
+  background: linear-gradient(0deg,
+    #10b355 0%, #35e06a 26%, #b9e21a 56%, #ffc61e 76%, #ff4d2e 100%)
+    bottom / 100% 84px no-repeat;
+}
+/* Only while there is sound. At rest they sit on the floor and stay there,
+   which is what a meter with nothing going into it does. */
+.is-going .ms-viz i {
+  animation: ms-viz var(--d, 700ms) ease-in-out infinite alternate;
+  animation-delay: var(--o, 0ms);
+}
+@keyframes ms-viz {
+  from { height: 7%; }
+  to   { height: calc(var(--y, 0.7) * 100%); }
+}
+/* A Winamp analyser is not made of bars, it is made of rows of little
+   blocks. This is the row part. */
+.ms-viz::after {
+  content: "";
+  position: absolute; inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(180deg,
+    rgba(0, 0, 0, 0.72) 0 1px, rgba(0, 0, 0, 0) 1px 3px);
+}
+@media (prefers-reduced-motion: reduce) {
+  .is-going .ms-viz i { animation: none; height: calc(var(--y, 0.7) * 55%); }
+}
+
+/* --- five ways to draw the same nothing ---------------------------------
+
+   The sixth key cycles these. None of them is reading the audio -- it cannot
+   be read, the player is a cross-origin iframe -- so what changes is the
+   drawing, not the data. They are the four Winamp ever really had plus the
+   one where you turn it off.
+   ------------------------------------------------------------------------ */
+
+/* PEAK -- bars with the little marker riding on top of each one. */
+.viz-peak .ms-viz i::after {
+  content: "";
+  position: absolute; left: 0; right: 0; top: -4px;
+  height: 2px;
+  background: #e8f6ff;
+  box-shadow: 0 0 6px rgba(220, 242, 255, 0.9);
+}
+
+/* SCOPE -- struck from the middle instead of stood on the floor. */
+.viz-scope .ms-viz { align-items: center; }
+.viz-scope .ms-viz i {
+  background: linear-gradient(0deg, #14d9ff, #a6f2ff) center / 100% 100% no-repeat;
+  box-shadow: 0 0 7px rgba(60, 220, 255, 0.45);
+}
+.viz-scope .ms-viz::after { display: none; }
+
+/* FIRE -- no segments, hotter ramp, and quicker on its feet. */
+.viz-fire .ms-viz i {
+  background: linear-gradient(0deg,
+    #c81e00 0%, #ff6a00 32%, #ffb300 62%, #ffe680 84%, #fffdf2 100%)
+    bottom / 100% 84px no-repeat;
+}
+.viz-fire .ms-viz::after { display: none; }
+.viz-fire.is-going .ms-viz i { animation-duration: calc(var(--d, 700ms) * 0.55); }
+
+/* OFF -- the sleeve, on its own, in the dark. */
+.viz-off .ms-viz { visibility: hidden; }
+
+/* --- the readout -------------------------------------------------------- */
+
+/* What text looks like on a screen this small.
+
+   Fixed pitch, one weight, upper case and widely spaced, lit from behind and
+   then broken up by the pixel grid over the whole well -- which is the part
+   that does the work. A screen does not have smooth letters on it; it has
+   whatever the grid lets through. Upper case because every stereo readout
+   ever built was, and because it is the object speaking rather than the
+   page: the rule against shouting headings is a rule about the page.
+
+   The clock is gone. It was two numbers doing the job the bar under the
+   glass already does with a position, and the mode has to be printed
+   somewhere or the sixth key is a button with no readout. */
+.ms-lcd {
+  position: relative;
+  height: 30px;
+  margin-top: 6px;
+  padding: 0 3px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+  overflow: hidden;
+}
+/* The hairline that joins the two halves rather than a gap that parts them. */
+.ms-lcd::before {
+  content: "";
+  position: absolute; left: 0; right: 0; top: -3px;
+  height: 1px;
+  background: rgba(150, 240, 200, 0.16);
+}
+.ms-lcd-a, .ms-lcd-by, .ms-mode {
+  font-family: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas,
+    "Liberation Mono", monospace;
+  font-size: 11px;
+  line-height: 14px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.ms-lcd-a {
+  overflow: hidden;
+  text-overflow: clip;
+  color: #9dffcf;
+  text-shadow: 0 0 9px rgba(90, 255, 190, 0.55);
+}
+.ms-lcd-b {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  min-width: 0;
+}
+.ms-lcd-by {
+  overflow: hidden;
+  text-overflow: clip;
+  color: rgba(157, 255, 207, 0.52);
+}
+.ms-mode {
+  flex: none;
+  color: rgba(157, 255, 207, 0.78);
+}
+
+/* The grid, over the whole screen and everything on it. This is what makes
+   the sleeve read as being displayed rather than printed. */
+.ms-pix {
+  position: absolute; inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(90deg,
+      rgba(0, 0, 0, 0.34) 0 1px, rgba(0, 0, 0, 0) 1px 2px),
+    repeating-linear-gradient(180deg,
+      rgba(0, 0, 0, 0.34) 0 1px, rgba(0, 0, 0, 0) 1px 2px);
+}
+
+/* --- the counter -------------------------------------------------------- */
+/* Inset four further than the glass, so the handle at nought sits inside the
+   line of the well rather than hanging off the end of it. */
+.ms-bar {
+  position: absolute; left: 22px; right: 22px; top: 156px;
+  z-index: 2;
+  height: 9px;
+  cursor: pointer;
+  touch-action: none;
+}
+.ms-bar::before {
+  content: "";
+  position: absolute; left: 0; right: 0; top: 50%;
+  height: 3px; margin-top: -1.5px;
+  border-radius: 2px;
+  background: rgba(0, 0, 0, 0.5);
+  box-shadow:
+    inset 0 1px 2px rgba(0, 0, 0, 0.8),
+    0 1px 0 rgba(255, 255, 255, 0.16);
+}
+.ms-fill {
+  position: absolute; left: 0; top: 50%;
+  height: 3px; margin-top: -1.5px; width: 0;
+  border-radius: 2px;
+  background: rgba(157, 255, 207, 0.8);
+}
+.ms-knob {
+  position: absolute; top: 50%; left: 0;
+  width: 8px; height: 8px; margin: -4px 0 0 -4px;
+  border-radius: 50%;
+  background: #dfffee;
+  opacity: 0;
+  transition: opacity var(--dur) var(--ease);
+}
+.ms-bar:hover .ms-knob, .ms-bar:focus-visible .ms-knob, .is-going .ms-knob { opacity: 1; }
+.ms-bar:focus-visible { outline: 1px solid rgba(157, 255, 207, 0.6); outline-offset: 3px; }
+
+/* --- the keys, in their own sunken strip -------------------------------- */
+/* Centred in the strip rather than run up against the left end of it: six
+   keys and a fixed gap do not fill 244 exactly, and the leftover was all
+   piling up on one side. */
+.ms-deck {
+  position: absolute; left: 16px; right: 16px; bottom: 20px;
+  z-index: 2;
+  height: 38px;
+  padding: 0 12px;
+  border-radius: 6px;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.46), rgba(0, 0, 0, 0.2));
+  box-shadow:
+    inset 0 2px 5px rgba(0, 0, 0, 0.65),
+    0 1px 0 rgba(255, 255, 255, 0.15);
+}
+.ms-key {
+  flex: none;
+  width: 32px; height: 24px;
+  display: grid; place-items: center;
+  appearance: none; -webkit-appearance: none;
+  margin: 0; padding: 0; border: 0;
+  border-radius: 4px;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.86);
+  background: linear-gradient(180deg, #7d828c 0%, #474b53 54%, #34373d 100%);
+  box-shadow:
+    0 5px 0 #101115,
+    0 7px 8px rgba(0, 0, 0, 0.62),
+    inset 0 1px 0 rgba(255, 255, 255, 0.38);
+  transition: transform 110ms var(--ease), box-shadow 110ms var(--ease),
+              color 110ms var(--ease);
+}
+.ms-key:hover { color: #fff; }
+.ms-key:focus-visible { outline: 2px solid #8ab4ff; outline-offset: 3px; }
+.ms-key svg { display: block; width: 13px; height: 13px; fill: currentColor; }
+
+/* Down is five pixels of travel and the loss of the wall that held it up.
+
+   Play and pause latch, and they latch against each other, which is the one
+   thing a tape deck does that no software player has bothered to do since:
+   press play and it stays in; press pause and play comes back out while
+   pause goes down; press stop and they both come up. The state is read off
+   the player, so it is true rather than decorative. */
+.ms-key:active,
+.is-going .ms-key-play,
+.is-held .ms-key-pause {
+  transform: translateY(5px);
+  box-shadow:
+    0 0 0 #101115,
+    0 1px 3px rgba(0, 0, 0, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+.is-going .ms-key-play, .is-held .ms-key-pause { color: #fff; }
+
+/* A player that cannot get its audio buffers for ever and reports nothing.
+   When the watchdog gives up, the controls go and the object stays. */
+.is-mute .ms-deck, .is-mute .ms-bar { display: none; }
+.nw-cover {
+  flex: none;
+  width: 56px; height: 84px;
+  background-color: var(--slot);
+  box-shadow: var(--lie);
+}
+
+.nw-piece-b .ab-sub { margin-top: 2px; }
+.nw-piece-b .ab-body { margin-top: 9px; }
 /* --- a cover is a solid object, and light is what says so ----------------
 
    This was built out of geometry first: every cover turned twelve degrees
@@ -5850,8 +6437,9 @@ a.arrow { text-decoration: none; }
    and lands on the frame's left column -- 399 to 763, with the 762/785 pair
    in the gutter beside it. */
 .ab-por {
+  /* one of the four, like everything else here */
   position: absolute;
-  left: 24px; top: 24px; width: 316px; height: 173px;
+  left: 24px; top: 24px; width: 316px; height: 219px;
   background-color: var(--slot);
   background-image:
     linear-gradient(to bottom right, transparent calc(50% - 0.5px),
@@ -5860,8 +6448,7 @@ a.arrow { text-decoration: none; }
       rgba(var(--w), 0.06) 50%, transparent calc(50% + 0.5px));
   display: flex; align-items: flex-end;
   padding: 10px 12px;
-  font-family: var(--f-nav); letter-spacing: 0.06em; font-size: 9px; line-height: 14px;
-  text-transform: uppercase; color: var(--icon);
+  font-size: 13px; line-height: 19px; color: var(--quieter);
 }
 
 /* Under the frame. It leads the screen but it does not get a display size to
@@ -5873,10 +6460,23 @@ a.arrow { text-decoration: none; }
    16 over 24, which is the size the rest of this card reads at. */
 .ab-lede {
   position: absolute; margin: 0;
-  left: 24px; top: 231px; width: 316px;
+  left: 24px; top: 277px; width: 316px;
   font-size: 16px; line-height: 24px; font-weight: 600;
   color: var(--heading);
 }
+
+/* The three facts: the name is a label and the value is a sentence, which is
+   the same pair the record on a piece page uses. They were 10px letterspaced
+   capitals against 15px, which is two sizes nobody else on the screen has. */
+.ab-facts dt {
+  margin: 0;
+  font-family: var(--f-sans);
+  letter-spacing: normal;
+  text-transform: none;
+  font-size: 13px; line-height: 19px; font-weight: 400;
+  color: var(--quieter);
+}
+.ab-facts dd { margin: 0; font-size: 14px; line-height: 21px; color: var(--body); }
 
 /* Off the foot rather than at a measured top: the lede above it is three
    lines at one width and four at another, and a fixed top is a collision
@@ -5884,14 +6484,9 @@ a.arrow { text-decoration: none; }
 .ab-facts {
   position: absolute; margin: 0;
   left: 24px; bottom: 24px; width: 316px;
-  display: grid; grid-template-columns: 96px 1fr; gap: 8px 14px;
+  display: grid; grid-template-columns: 96px 1fr; gap: 9px 14px;
+  align-items: baseline;
 }
-.ab-facts dt {
-  margin: 0;
-  font-family: var(--f-nav); letter-spacing: 0.06em; font-size: 10px; line-height: 20px;
-  text-transform: uppercase; color: var(--icon);
-}
-.ab-facts dd { margin: 0; font-size: 15px; line-height: 20px; color: var(--body); }
 
 /* --- two habits, counted -------------------------------------------------
 
@@ -5959,24 +6554,46 @@ a.arrow { text-decoration: none; }
 
    107 apiece and 35 between them, which is the same 34 the rest of the
    screen uses and the pixel the arithmetic leaves over. */
+/* Text over the grid, and the grid the full width of the card.
+
+   The mark and the line used to stand beside the squares, which cost a third
+   of the card to a column of two short lines and left the grid 130 wide in a
+   316 box. Above it they cost one row, the grid gets the whole width, and the
+   thing reads the way every contribution graph anybody has seen reads: a key
+   at the top, the year underneath it.
+
+   310 by 82: twenty-six columns of 10 with 2 between, seven rows deep. Half a
+   year rather than eight weeks, at a smaller square again -- more of the year
+   in less ink, which is the trade a smaller tile buys. */
 .ab-half {
   position: absolute;
   left: 24px; width: 316px;
   display: flex;
-  align-items: flex-start;
-  gap: 22px;
+  flex-direction: column;
+  gap: 14px;
 }
+.ab-half-mark {
+  order: 0;
+  flex: none;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  color: var(--icon);
+}
+.ab-half-say { flex: 1; }
 /* 24, 149, 34, 149, 24 -- which is 380, the card, and the 34 is the same 34
    the rest of the screen uses. It was 41 before, which is the sort of figure
    that turns up when a box was decided before its contents. */
+/* 24, 123, 41, 123, 24 = 335. */
 .ab-half-gym { top: 24px; }
-.ab-half-git { top: 207px; }
+.ab-half-git { top: 188px; }
 
 /* The rule between them lies down again, because what it separates is back to
    being above and below it. */
 .ab-half-git::before {
   content: "";
-  position: absolute; left: 0; right: 0; top: -17px; height: 1px;
+  position: absolute; left: 0; right: 0; top: -20px; height: 1px;
   background: var(--card-line);
 }
 
@@ -6018,11 +6635,27 @@ a.arrow { text-decoration: none; }
    the lit room drops it.
    ------------------------------------------------------------------------- */
 .ab-grid {
+  order: 1;
   display: grid;
-  grid-template-columns: repeat(7, 16px);
-  grid-template-rows: repeat(8, 16px);
-  gap: 3px;
-  width: max-content;
+  /* 1fr columns rather than a fixed square, because 26 squares and 25 gaps
+     do not divide 316 into whole pixels at any size worth having -- and a
+     grid that stops six pixels short of the card it is in is the one thing
+     on this screen you cannot unsee. The columns take what is there and
+     the left and right margins come out identical by construction. */
+  /* Twenty-six columns for twenty weeks of days: six of them had nothing to
+     put in and sat empty against the right edge, so the chart read as a grid
+     pushed to the left of its own card. The count comes off the data now --
+     see the painter, which writes --weeks -- and twenty is only what it
+     happens to be today. */
+  grid-template-columns: repeat(var(--weeks, 26), 1fr);
+  grid-template-rows: repeat(7, auto);
+  grid-auto-flow: column;
+  gap: 2px;
+  width: 100%;
+  /* No height. The cells are square and there are seven of them down, so
+     the chart is as tall as it needs to be -- which is the only way a day
+     stays a square when the number of weeks changes. Fixing the height and
+     the width both is what made them oblongs. */
 }
 
 /* A day that did not happen is not nothing -- it is a day, and the block of
@@ -6030,6 +6663,7 @@ a.arrow { text-decoration: none; }
    room's own slot colour rather than the card's. */
 .ab-grid i {
   display: block;
+  aspect-ratio: 1;
   background: var(--lv0);
   border-radius: 2px;
 }
@@ -6063,23 +6697,11 @@ a.arrow { text-decoration: none; }
    key you have to go looking for is a key that is not doing its job. And half
    the people who will read this page are on a touchscreen, where there is no
    hover to go looking with. */
-.ab-half-mark {
-  order: 2;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  color: var(--icon);
-}
 .ab-half-mark svg { display: block; width: 28px; height: 28px; flex: none; margin-top: -3px; }
 .ab-half-mark svg path { fill: currentColor; }
 .ab-half-gym .ab-half-mark svg path { fill: none; stroke: currentColor; }
 
-.ab-half-say {
-  margin: 0;
-  font-size: 12.5px; line-height: 18px;
-  color: var(--body);
-}
+.ab-half-say { margin: 0; font-size: 13px; line-height: 19px; color: var(--quieter); }
 
 /* --- nine weeks ----------------------------------------------------------
 
@@ -6156,38 +6778,48 @@ a.arrow { text-decoration: none; }
    of empty space between two sentences and made the gap look like something
    was missing from it. Nothing was: there are two, and two things sit beside
    each other. */
+/* One column now the card is 340 rather than 736. Two entries stacked, spread
+   to the ends: what separates them is the air, which is enough for two things
+   and needs no rule to help it. */
+.ab-late-h { position: absolute; left: 24px; top: 24px; margin: 0; }
+
+/* One thing, and a picture of it standing beside the words. Two entries in a
+   card this width were two captions with nothing to caption; one gets the room
+   to be shown. */
+/* The picture across the top, the words under it.
+
+   Standing beside the words it was a tall narrow crop -- the one shape no
+   photograph of a thing on a desk is ever in -- and it took a third of the
+   card to be it. Lying along the top it can be the shape a picture actually
+   comes in, and the words get the full width under it instead of a column
+   four words wide. */
+.ab-late-i {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 17px;
+  align-items: stretch;
+}
+.ab-late-i > div { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+
 .ab-late {
   position: absolute;
-  left: 24px; right: 24px; top: 24px; bottom: 24px;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0 44px;
-  align-content: start;
+  left: 24px; right: 24px; top: 72px; bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 /* Divided by a rule rather than by space: three of these in a 335 box have
    not the room to be separated by air, and a hairline between them is the
    same device the facts on Who I Am and the rows on the index already use. */
-/* A dash between them rather than a rule down the card. Two things do not
-   need dividing into columns -- they need marking as two, and the shortest
-   mark that does it is the one a printer would set: a rule the width of a
-   dash, standing in the gutter between them. */
-.ab-late-i { position: relative; display: flex; flex-direction: column; }
-.ab-late-i + .ab-late-i::before {
-  content: "";
-  position: absolute;
-  left: -22px; top: 4px; bottom: 4px;
-  width: 1px;
-  background: rgba(var(--w), 0.10);
-}
-/* The picture. 132 of the 249 this card has, which is what is left once the
-   name, the line and the date have taken theirs -- so the column fills the
-   box exactly rather than sitting in the top third of it with 142 of nothing
-   underneath, which is what it was doing. */
 .ab-late-shot {
   display: block;
-  height: 212px;
-  margin-bottom: 12px;
+  flex: none;
+  width: auto;
+  height: 126px;
   background-color: var(--slot);
   background-size: cover;
   background-position: center;
@@ -6198,26 +6830,9 @@ a.arrow { text-decoration: none; }
       rgba(var(--w), 0.06) 50%, transparent calc(50% + 0.5px));
 }
 
-/* The same size as the lede on Who I Am, which is the other sentence on this
-   screen written in a person's own voice. At 19 it was the loudest thing in
-   the room and there are four other cards in the room. */
-.ab-late-i b {
-  display: block;
-  font-size: 16px; line-height: 24px; font-weight: 600;
-  color: var(--heading);
-}
-.ab-late-i span {
-  display: block; margin-top: 6px;
-  font-size: 15px; line-height: 23px;
-  color: var(--body);
-}
-.ab-late-i i {
-  display: block; margin-top: 12px;
-  font-style: normal;
-  font-family: var(--f-nav); letter-spacing: 0.08em;
-  font-size: 9.5px; line-height: 14px;
-  text-transform: uppercase; color: var(--label);
-}
+.ab-late-i b { display: block; }
+.ab-late-i span { display: block; margin-top: 7px; }
+.ab-late-i i { display: block; margin-top: auto; font-style: normal; }
 
 /* --- the prints -----------------------------------------------------------
 
@@ -6463,41 +7078,63 @@ a.arrow { text-decoration: none; }
 }
 .zoom.is-open .zoom-scrim { opacity: 1; }
 
+/* A sheet off the bottom, and it was a drawer off the right for a while.
+
+   Both work. The sheet is better here for one reason: the shelf runs across
+   this screen, not down it. A drawer coming in from the right covers the end
+   of both rows and leaves you looking at the half of a shelf it did not reach.
+   A sheet comes up under the whole thing, so what stays visible is the top of
+   the shelf -- the row the cover you pressed came out of -- which is the part
+   worth keeping on screen while you read about one of them.
+
+   It is also the one gesture this site now has for "a thing over the page",
+   and having one is worth more than having the best one twice.
+
+   930 of 1080, so a hand of the screen behind it is always showing and the
+   sheet never reads as a page that has replaced the one you were on. It is
+   taller than most entries need and it scrolls inside itself, which is right
+   for a panel whose contents run from four lines to four hundred.
+   ------------------------------------------------------------------------ */
 .zoom-panel {
   position: absolute;
-  right: 0; top: 0; bottom: 0;
-
-  /* 760, not 560.
-
-     At 560 there was one column and the cover sat on top of the title, which
-     put the name a third of the way down and left the drawer reading like a
-     receipt. 760 is enough for a 180 plate beside a 470 measure -- which is
-     the shape every page of this kind settles on, because a cover is a tall
-     thing and a paragraph is a wide one and stacking them wastes both. */
-  width: 760px;
+  left: 0; right: 0; bottom: 0;
+  height: auto;
+  max-height: 930px;
 
   display: flex;
   flex-direction: column;
   overflow-y: auto;
   overscroll-behavior: contain;
   scrollbar-width: none;
-  padding: 0 0 60px;
+
+  /* 510 either side, which centres a 900 column in the frame. The reading
+     measure wants about 900 whatever the sheet is; a panel 1920 wide with
+     type running the width of it is a spreadsheet. */
+  padding: 0 510px 76px;
   background: var(--card-fill);
 
-  /* One edge, on the side it opens from. An outline all the way round is how
-     a card in the grid is drawn, and this is not a card in the grid -- it is
-     a thing standing in front of them. */
-  border-left: var(--card-edge) solid var(--card-line);
-  box-shadow: -70px 0 90px -30px rgba(var(--shade), calc(var(--cast-a, 0) + 0.28));
+  border-top: var(--card-edge) solid var(--card-line);
+  border-radius: 24px 24px 0 0;
+  box-shadow: 0 -50px 100px -34px rgba(var(--shade), calc(var(--cast-a, 0) + 0.34));
 
-  /* Off the edge and back. The frame clips at 1920, so a closed drawer is
-     nowhere rather than parked in the right margin. */
-  transform: translateX(100%);
+  transform: translateY(100%);
   transition: transform 460ms var(--ease);
+}
+
+/* The handle. Not draggable and not pretending to be -- it is the mark that
+   says which edge this came off, and every sheet anybody has used has one. */
+.zoom-panel::before {
+  content: "";
+  position: absolute; left: 50%; top: 13px;
+  width: 46px; height: 4px;
+  margin-left: -23px;
+  border-radius: 2px;
+  background: rgba(var(--lift), 0.32);
+  z-index: 2;
 }
 .zoom.is-open .zoom-panel { transform: none; }
 .zoom-panel::-webkit-scrollbar { display: none; }
-.zoom-hero, .zoom-head, .zoom-read { flex: none; }
+.zoom-head, .zoom-read { flex: none; }
 
 /* The contents come up after the drawer has arrived, rather than standing
    there finished inside a thing that is still moving. */
@@ -6513,68 +7150,27 @@ a.arrow { text-decoration: none; }
   filter: blur(2px);
 }
 
-/* --- the head ------------------------------------------------------------
-
-   A wash rather than a band. The picture runs off the top and both sides and
-   is gone by halfway down: what you get is a drawer that opens in the colour
-   of the thing rather than a screenshot in a box with the page starting under
-   it. The vignette at the sides is what stops it reading as a rectangle.
-
-   A book has no screenshot and never will, so it uses its own cover thrown
-   out of focus behind the sharp one -- same gesture, no second asset, and the
-   colour comes off the book, so a red spine gives a red head. Thirty-three
-   different openings out of thirty-three files that were already there.
-   ------------------------------------------------------------------------ */
-.zoom-hero {
-  position: relative;
-  height: 286px;
-  overflow: hidden;
-  background: var(--slot);
-}
-.zoom-hero-art {
-  position: absolute; inset: 0;
-  background: var(--slot) center / cover no-repeat;
-}
-/* Blown up before it is blurred, so the blur has something to bleed into
-   rather than pulling the drawer fill in at the edges. */
-.zoom.is-blur .zoom-hero-art { transform: scale(1.3); filter: blur(30px) saturate(1.3); }
-
-.zoom-hero::after {
-  content: "";
-  position: absolute; inset: 0;
-  background:
-    linear-gradient(to bottom,
-      color-mix(in srgb, var(--card-fill), transparent 100%) 34%,
-      var(--card-fill) 97%),
-    linear-gradient(to right,
-      var(--card-fill), color-mix(in srgb, var(--card-fill), transparent 100%) 22%,
-      color-mix(in srgb, var(--card-fill), transparent 100%) 78%, var(--card-fill));
-}
-.zoom-hero-cap {
-  position: absolute; left: 250px; right: 40px; bottom: 12px;
-  margin: 0;
-  z-index: 1;
-  font-size: 11.5px; line-height: 16px;
-  color: var(--quieter);
-}
-.zoom-hero-cap:empty { display: none; }
-
+/* The head used to open on a screenshot bleeding off three sides, with the
+   cover standing in it. It went, and it went because it was the loudest thing
+   in a panel whose job is to be read: three hundred and twenty pixels of
+   moving colour above four hundred words, on a sheet that already arrives with
+   a movement of its own. The pictures are still here -- they are further down,
+   under Stills, where a picture of a game belongs on a page about it, and
+   where you get to them having been told what you are looking at. */
 .zoom-head {
   position: relative;
   z-index: 1;
   display: grid;
-  grid-template-columns: 180px 1fr;
-  gap: 0 30px;
-  padding: 0 40px;
-  /* Up into the wash, so the plate stands in the picture rather than under
-     it. 112 is most of the fade, which is where a poster wants to be. */
-  margin-top: -112px;
+  grid-template-columns: 200px 1fr;
+  gap: 0 40px;
+  padding: 0;
+  padding-top: 56px;
 }
 .zoom-rail { grid-column: 1; }
-.zoom-main { grid-column: 2; padding-top: 112px; }
+.zoom-main { grid-column: 2; }
 
 .zoom-cover {
-  width: 180px; height: 270px;
+  width: 200px; height: 300px;
   background-color: var(--slot);
   /* cover, not contain: the box is one size and every jacket has its own, and
      a paperback and a Steam library plate are both 2:3, which is the box. */
@@ -6589,14 +7185,10 @@ a.arrow { text-decoration: none; }
 /* Book or game, which the cover says too, but not in a word. */
 /* Sentence case, and no box round it. A capitalised chip reading GAME over a
    picture of a game was a label on a label. */
-.zoom-pill {
-  margin: 0 0 8px;
-  font-size: 13px; line-height: 19px;
-  color: var(--quieter);
-}
+.zoom-pill { margin: 0 0 8px; font-size: 13px; line-height: 19px; color: var(--quieter); }
 .zoom-title {
   margin: 0 0 8px;
-  font-size: 30px; line-height: 37px; font-weight: 600;
+  font-size: 28px; line-height: 34px; font-weight: 600;
   letter-spacing: -0.015em;
   color: var(--heading);
   text-wrap: balance;
@@ -6606,8 +7198,8 @@ a.arrow { text-decoration: none; }
    which is three lines to say what a caption says in one. */
 .zoom-meta {
   margin: 0 0 16px;
-  font-size: 14.5px; line-height: 22px;
-  color: var(--sub);
+  font-size: 13px; line-height: 19px;
+  color: var(--quieter);
 }
 
 /* The object, as chips. Who made it, when, what shelf, what the reviews said:
@@ -6625,8 +7217,8 @@ a.arrow { text-decoration: none; }
 .zoom-chips li {
   padding: 4px 10px;
   border: 1px solid rgba(var(--w), 0.12);
-  font-size: 12px; line-height: 17px;
-  color: var(--quiet);
+  font-size: 13px; line-height: 19px;
+  color: var(--quieter);
 }
 
 /* His line, set as a tagline over the shop's description. Every page of this
@@ -6634,7 +7226,7 @@ a.arrow { text-decoration: none; }
    wrote, and it is the whole difference between a shelf and a catalogue. */
 .zoom-tag {
   margin: 0 0 16px;
-  font-size: 16px; line-height: 25px; font-weight: 600;
+  font-size: 16px; line-height: 24px; font-weight: 600;
   color: var(--heading);
   text-wrap: pretty;
 }
@@ -6644,7 +7236,8 @@ a.arrow { text-decoration: none; }
    thing, on a page about that thing, which is as labelled as it needs. */
 .zoom-what {
   margin: 0;
-  font-size: 15px; line-height: 25px;
+  max-width: 64ch;
+  font-size: 14px; line-height: 21px;
   color: var(--body);
 }
 
@@ -6657,7 +7250,7 @@ a.arrow { text-decoration: none; }
   display: inline-block;
   padding: 7px 12px;
   background: rgba(var(--w), 0.07);
-  font-size: 12.5px; line-height: 17px;
+  font-size: 13px; line-height: 19px;
   color: var(--heading);
   text-decoration: none;
   transition: background var(--dur) var(--ease);
@@ -6667,7 +7260,7 @@ a.arrow { text-decoration: none; }
 
 /* --- everything below the head ------------------------------------------- */
 
-.zoom-read { position: relative; margin-top: 38px; padding: 0 40px; }
+.zoom-read { position: relative; margin-top: 40px; }
 
 /* --- the headings --------------------------------------------------------
 
@@ -6695,7 +7288,7 @@ a.arrow { text-decoration: none; }
 .zoom-sec > * { grid-column: 2; }
 .zoom-sec:last-child { margin-bottom: 0; }
 .zoom-sec[hidden] { display: none; }
-.zoom-sec p { margin: 0; font-size: 15px; line-height: 25px; color: var(--body); }
+.zoom-sec p { margin: 0; max-width: 64ch; font-size: 14px; line-height: 21px; color: var(--body); }
 .zoom-sec p + p { margin-top: 12px; }
 
 .zoom-h {
@@ -6705,8 +7298,8 @@ a.arrow { text-decoration: none; }
   margin: 0;
   text-align: right;
   font-size: 13px;
-  line-height: 25px;
-  font-weight: 500;
+  line-height: 21px;
+  font-weight: 400;
   color: var(--quieter);
   text-wrap: balance;
 }
@@ -6744,7 +7337,7 @@ a.arrow { text-decoration: none; }
 }
 .zoom-facts dd {
   margin: 0;
-  font-size: 17px; line-height: 24px; font-weight: 600;
+  font-size: 16px; line-height: 24px; font-weight: 600;
   color: var(--heading);
 }
 .zoom-facts dt {
@@ -6774,11 +7367,12 @@ a.arrow { text-decoration: none; }
 /* The pictures ignore the margin column: they are the one thing here wider
    than the measure, and a side head over a full-bleed strip would be a
    caption for the page rather than for the pictures. */
-.zoom-sec-stills { display: block; margin: 0 -40px 36px; }
-.zoom-sec-stills .zoom-h { margin: 0 40px 12px; text-align: left; }
+.zoom-sec-stills { display: block; margin: 0 -510px 36px; }
+.zoom-sec-stills .zoom-h { margin: 0 510px 12px; text-align: left; }
 .zoom-stills {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
   gap: 4px;
 }
 .zoom-still { margin: 0; }
@@ -6791,14 +7385,15 @@ a.arrow { text-decoration: none; }
   background-repeat: no-repeat;
 }
 .zoom-still figcaption {
-  margin: 9px 40px 0;
-  font-size: 12px;
-  line-height: 17px;
+  margin: 10px 0 0;
+  padding: 0 16px;
+  font-size: 13px;
+  line-height: 19px;
   color: var(--quieter);
 }
-/* Two across means the second caption needs the left gutter, not the page's. */
-.zoom-still:nth-child(even) figcaption { margin-left: 14px; }
-.zoom-still:nth-child(odd) figcaption { margin-right: 14px; }
+/* The first one lines up with the type above it; the rest sit in their own
+   cells, because a caption belongs to the picture over it and not to the page. */
+.zoom-still:first-child figcaption { padding-left: 510px; }
 
 /* --- if that landed ------------------------------------------------------ */
 .zoom-near { margin: 0; padding: 0; list-style: none; }
@@ -6814,14 +7409,12 @@ a.arrow { text-decoration: none; }
 
 /* --- the way out --------------------------------------------------------- */
 
-/* Outside the panel, over the drawer's own corner.
-
-   It was sticky inside the scroller for a while, which worked but put a button
-   with a halo of card fill over the top of the hero picture. Out here it is
-   fixed against the drawer, never moves, and never has to hide anything. */
+/* Outside the panel, over the sheet's own corner. Fixed against the sheet
+   rather than riding its scroller, so it never moves and never has to hide
+   anything behind it. */
 .zoom-x {
   position: absolute;
-  right: 20px; top: 20px;
+  right: 30px; top: 26px;
   z-index: 3;
   width: 34px; height: 34px;
   display: grid;
@@ -8221,9 +8814,28 @@ a.arrow { text-decoration: none; }
   /* Everything About places by hand rejoins the flow, for the reason the
      L1 and L2 children do: a card is only relative here, so anything still
      absolute sizes itself against the card rather than sitting in it. */
-  .ab-por, .ab-lede, .ab-facts, .ab-shelf {
+  .ab-por, .ab-lede, .ab-facts, .ab-shelf,
+  .nw-head, .nw-row, .ab-late-h, .ab-late, .ms-h, .ms-wk {
     position: static; left: auto; top: auto;
     right: auto; bottom: auto; width: auto; height: auto;
+  }
+
+  /* Now reads down rather than across: three columns of a cover and its two
+     lines are three columns too narrow to hold either on a phone. */
+  .nw-row {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin-top: 20px;
+  }
+
+  .ab-late { display: flex; margin-top: 20px; }
+
+  /* The Walkman keeps its own height -- the window and the keys inside it are
+     placed against it -- but takes the width of the column it lands in. */
+  .ms-wk {
+    position: relative;
+    height: 204px;
+    margin: 20px 0 0;
   }
 
   /* Both rows keep running here, and go full bleed out of the card's own
@@ -8242,7 +8854,7 @@ a.arrow { text-decoration: none; }
      small -- and the two lists on this screen are all second voice. So the
      floor comes up: nothing under 11, the names in both lists to 12, and what
      they name to a size you read rather than decipher. */
-  .ab-facts dt { font-size: 12px; }
+  .ab-facts dt { font-size: 13px; }
   .ab-facts dd { font-size: 16px; line-height: 23px; }
   .ab-half-say { font-size: 12px; }
   .ab-por, .ab-pin-shot { font-size: 11px; line-height: 15px; }
@@ -8260,10 +8872,9 @@ a.arrow { text-decoration: none; }
      not here. The two grids stack and the cells take whatever a column of
      the phone gives them, which keeps the nine-by-seven shape at any width. */
   .ab-grid {
-    grid-template-columns: repeat(9, 1fr);
-    grid-template-rows: repeat(7, 1fr);
-    aspect-ratio: 9 / 7;
-    gap: 3px;
+    grid-template-columns: repeat(var(--weeks, 26), 1fr);
+    grid-template-rows: repeat(7, auto);
+    gap: 2px;
   }
   .ab-late { position: static; margin-top: 14px; }
   .ab-shelf {
@@ -8486,8 +9097,6 @@ a.arrow { text-decoration: none; }
     outline: none;
   }
 
-  .zoom-hero { height: 200px; }
-  .zoom-hero-cap { left: var(--pad); right: var(--pad); bottom: 8px; }
 
   /* One column, and the cover stops being a rail and becomes the first thing
      in it. -70 keeps the overlap that makes it a poster on a backdrop. */
@@ -9784,21 +10393,6 @@ a.arrow { text-decoration: none; }
         <span class="ab-pin-shot">him, asleep</span>
       </figure>
 
-      <figure class="ab-pin ab-pin-6" aria-hidden="true">
-        <span class="ab-pin-tack"></span>
-        <span class="ab-pin-shot">the commit that broke it</span>
-      </figure>
-
-      <figure class="ab-pin ab-pin-7" aria-hidden="true">
-        <span class="ab-pin-tack"></span>
-        <span class="ab-pin-shot">the gym at six, empty</span>
-      </figure>
-
-      <figure class="ab-pin ab-pin-8" aria-hidden="true">
-        <span class="ab-pin-tack"></span>
-        <span class="ab-pin-shot">bengaluru, out of a window</span>
-      </figure>
-
       <p class="crumb">
         <a href="#" data-route="home">Home</a>
         <span aria-hidden="true">/</span>
@@ -9837,11 +10431,20 @@ a.arrow { text-decoration: none; }
              edit, and the markup stays a list of covers. -->
         <div class="ab-shelf">
           <div class="ab-rack">
-            <p class="ab-rack-t">Books &middot; <b>21</b></p>
-            <div class="ab-level ab-level-1" data-set="21" style="--run: 499s;--shift: 50.0000%">
+          <p class="nw-h ab-rack-t">On the shelf &middot; <b>34</b></p>
+            <div class="ab-level ab-level-1" data-set="34" style="--run: 808s;--shift: 50.0000%">
             <button type="button" class="ab-item" data-piece="red-rising"
                aria-label="Red Rising by Pierce Brown"
                style="background-image:url('assets/covers/red-rising.jpg')"></button>
+            <button type="button" class="ab-item" data-piece="totk"
+               aria-label="The Legend of Zelda: Tears of the Kingdom"
+               style="background-image:url('assets/covers/cover-1.png')"></button>
+            <button type="button" class="ab-item" data-piece="edith-finch"
+               aria-label="What Remains of Edith Finch"
+               style="background-image:url('assets/covers/edith-finch.jpg')"></button>
+            <button type="button" class="ab-item" data-piece="alttp"
+               aria-label="The Legend of Zelda: A Link to the Past"
+               style="background-image:url('assets/covers/cover-6.png')"></button>
             <button type="button" class="ab-item" data-piece="project-hail-mary"
                aria-label="Project Hail Mary by Andy Weir"
                style="background-image:url('assets/covers/project-hail-mary.jpg')"></button>
@@ -9866,6 +10469,33 @@ a.arrow { text-decoration: none; }
             <button type="button" class="ab-item" data-piece="white-tiger"
                aria-label="The White Tiger by Aravind Adiga"
                style="background-image:url('assets/covers/white-tiger.jpg')"></button>
+            <button type="button" class="ab-item" data-piece="hades"
+               aria-label="Hades by Supergiant Games"
+               style="background-image:url('assets/covers/hades.jpg')"></button>
+            <button type="button" class="ab-item" data-piece="disco-elysium"
+               aria-label="Disco Elysium by ZA/UM"
+               style="background-image:url('assets/covers/disco-elysium.jpg')"></button>
+            <button type="button" class="ab-item" data-piece="outer-wilds"
+               aria-label="Outer Wilds by Mobius Digital"
+               style="background-image:url('assets/covers/outer-wilds.jpg')"></button>
+            <button type="button" class="ab-item" data-piece="obra-dinn"
+               aria-label="Return of the Obra Dinn by Lucas Pope"
+               style="background-image:url('assets/covers/obra-dinn.jpg')"></button>
+            <button type="button" class="ab-item" data-piece="balatro"
+               aria-label="Balatro by LocalThunk"
+               style="background-image:url('assets/covers/balatro.jpg')"></button>
+            <button type="button" class="ab-item" data-piece="inscryption"
+               aria-label="Inscryption by Daniel Mullins Games"
+               style="background-image:url('assets/covers/inscryption.jpg')"></button>
+            <button type="button" class="ab-item" data-piece="slay-the-spire"
+               aria-label="Slay the Spire by Mega Crit"
+               style="background-image:url('assets/covers/slay-the-spire.jpg')"></button>
+            <button type="button" class="ab-item" data-piece="celeste"
+               aria-label="Celeste by Maddy Makes Games"
+               style="background-image:url('assets/covers/celeste.jpg')"></button>
+            <button type="button" class="ab-item" data-piece="hollow-knight"
+               aria-label="Hollow Knight by Team Cherry"
+               style="background-image:url('assets/covers/hollow-knight.jpg')"></button>
             <button type="button" class="ab-item" data-piece="three-body"
                aria-label="The Three-Body Problem by Cixin Liu"
                style="background-image:url('assets/covers/three-body.jpg')"></button>
@@ -9902,8 +10532,17 @@ a.arrow { text-decoration: none; }
             <button type="button" class="ab-item" data-piece="blindness"
                aria-label="Blindness by Jose Saramago"
                style="background-image:url('assets/covers/blindness.jpg')"></button>
+            <button type="button" class="ab-item" data-piece="chungking-express"
+               aria-label="Chungking Express, directed by Wong Kar-wai"
+               style="background-image:url('assets/covers/chungking-express.jpg')"></button>
             <button type="button" class="ab-item" aria-hidden="true" tabindex="-1" data-piece="red-rising"
                style="background-image:url('assets/covers/red-rising.jpg')"></button>
+            <button type="button" class="ab-item" aria-hidden="true" tabindex="-1" data-piece="totk"
+               style="background-image:url('assets/covers/cover-1.png')"></button>
+            <button type="button" class="ab-item" aria-hidden="true" tabindex="-1" data-piece="edith-finch"
+               style="background-image:url('assets/covers/edith-finch.jpg')"></button>
+            <button type="button" class="ab-item" aria-hidden="true" tabindex="-1" data-piece="alttp"
+               style="background-image:url('assets/covers/cover-6.png')"></button>
             <button type="button" class="ab-item" aria-hidden="true" tabindex="-1" data-piece="project-hail-mary"
                style="background-image:url('assets/covers/project-hail-mary.jpg')"></button>
             <button type="button" class="ab-item" aria-hidden="true" tabindex="-1" data-piece="piranesi"
@@ -9920,6 +10559,24 @@ a.arrow { text-decoration: none; }
                style="background-image:url('assets/covers/midnights-children.jpg')"></button>
             <button type="button" class="ab-item" aria-hidden="true" tabindex="-1" data-piece="white-tiger"
                style="background-image:url('assets/covers/white-tiger.jpg')"></button>
+            <button type="button" class="ab-item" aria-hidden="true" tabindex="-1" data-piece="hades"
+               style="background-image:url('assets/covers/hades.jpg')"></button>
+            <button type="button" class="ab-item" aria-hidden="true" tabindex="-1" data-piece="disco-elysium"
+               style="background-image:url('assets/covers/disco-elysium.jpg')"></button>
+            <button type="button" class="ab-item" aria-hidden="true" tabindex="-1" data-piece="outer-wilds"
+               style="background-image:url('assets/covers/outer-wilds.jpg')"></button>
+            <button type="button" class="ab-item" aria-hidden="true" tabindex="-1" data-piece="obra-dinn"
+               style="background-image:url('assets/covers/obra-dinn.jpg')"></button>
+            <button type="button" class="ab-item" aria-hidden="true" tabindex="-1" data-piece="balatro"
+               style="background-image:url('assets/covers/balatro.jpg')"></button>
+            <button type="button" class="ab-item" aria-hidden="true" tabindex="-1" data-piece="inscryption"
+               style="background-image:url('assets/covers/inscryption.jpg')"></button>
+            <button type="button" class="ab-item" aria-hidden="true" tabindex="-1" data-piece="slay-the-spire"
+               style="background-image:url('assets/covers/slay-the-spire.jpg')"></button>
+            <button type="button" class="ab-item" aria-hidden="true" tabindex="-1" data-piece="celeste"
+               style="background-image:url('assets/covers/celeste.jpg')"></button>
+            <button type="button" class="ab-item" aria-hidden="true" tabindex="-1" data-piece="hollow-knight"
+               style="background-image:url('assets/covers/hollow-knight.jpg')"></button>
             <button type="button" class="ab-item" aria-hidden="true" tabindex="-1" data-piece="three-body"
                style="background-image:url('assets/covers/three-body.jpg')"></button>
             <button type="button" class="ab-item" aria-hidden="true" tabindex="-1" data-piece="dune"
@@ -9944,71 +10601,8 @@ a.arrow { text-decoration: none; }
                style="background-image:url('assets/covers/a-fine-balance.jpg')"></button>
             <button type="button" class="ab-item" aria-hidden="true" tabindex="-1" data-piece="blindness"
                style="background-image:url('assets/covers/blindness.jpg')"></button>
-            </div>
-          </div>
-          <div class="ab-rack">
-            <p class="ab-rack-t">Games &middot; <b>12</b></p>
-            <div class="ab-level ab-level-2" data-set="12" style="--run: 285s;--shift: 50.0000%">
-            <button type="button" class="ab-item" data-piece="totk"
-               aria-label="The Legend of Zelda: Tears of the Kingdom"
-               style="background-image:url('assets/covers/cover-1.png')"></button>
-            <button type="button" class="ab-item" data-piece="edith-finch"
-               aria-label="What Remains of Edith Finch"
-               style="background-image:url('assets/covers/edith-finch.jpg')"></button>
-            <button type="button" class="ab-item" data-piece="alttp"
-               aria-label="The Legend of Zelda: A Link to the Past"
-               style="background-image:url('assets/covers/cover-6.png')"></button>
-            <button type="button" class="ab-item" data-piece="hades"
-               aria-label="Hades by Supergiant Games"
-               style="background-image:url('assets/covers/hades.jpg')"></button>
-            <button type="button" class="ab-item" data-piece="disco-elysium"
-               aria-label="Disco Elysium by ZA/UM"
-               style="background-image:url('assets/covers/disco-elysium.jpg')"></button>
-            <button type="button" class="ab-item" data-piece="outer-wilds"
-               aria-label="Outer Wilds by Mobius Digital"
-               style="background-image:url('assets/covers/outer-wilds.jpg')"></button>
-            <button type="button" class="ab-item" data-piece="obra-dinn"
-               aria-label="Return of the Obra Dinn by Lucas Pope"
-               style="background-image:url('assets/covers/obra-dinn.jpg')"></button>
-            <button type="button" class="ab-item" data-piece="balatro"
-               aria-label="Balatro by LocalThunk"
-               style="background-image:url('assets/covers/balatro.jpg')"></button>
-            <button type="button" class="ab-item" data-piece="inscryption"
-               aria-label="Inscryption by Daniel Mullins Games"
-               style="background-image:url('assets/covers/inscryption.jpg')"></button>
-            <button type="button" class="ab-item" data-piece="slay-the-spire"
-               aria-label="Slay the Spire by Mega Crit"
-               style="background-image:url('assets/covers/slay-the-spire.jpg')"></button>
-            <button type="button" class="ab-item" data-piece="celeste"
-               aria-label="Celeste by Maddy Makes Games"
-               style="background-image:url('assets/covers/celeste.jpg')"></button>
-            <button type="button" class="ab-item" data-piece="hollow-knight"
-               aria-label="Hollow Knight by Team Cherry"
-               style="background-image:url('assets/covers/hollow-knight.jpg')"></button>
-            <button type="button" class="ab-item" aria-hidden="true" tabindex="-1" data-piece="totk"
-               style="background-image:url('assets/covers/cover-1.png')"></button>
-            <button type="button" class="ab-item" aria-hidden="true" tabindex="-1" data-piece="edith-finch"
-               style="background-image:url('assets/covers/edith-finch.jpg')"></button>
-            <button type="button" class="ab-item" aria-hidden="true" tabindex="-1" data-piece="alttp"
-               style="background-image:url('assets/covers/cover-6.png')"></button>
-            <button type="button" class="ab-item" aria-hidden="true" tabindex="-1" data-piece="hades"
-               style="background-image:url('assets/covers/hades.jpg')"></button>
-            <button type="button" class="ab-item" aria-hidden="true" tabindex="-1" data-piece="disco-elysium"
-               style="background-image:url('assets/covers/disco-elysium.jpg')"></button>
-            <button type="button" class="ab-item" aria-hidden="true" tabindex="-1" data-piece="outer-wilds"
-               style="background-image:url('assets/covers/outer-wilds.jpg')"></button>
-            <button type="button" class="ab-item" aria-hidden="true" tabindex="-1" data-piece="obra-dinn"
-               style="background-image:url('assets/covers/obra-dinn.jpg')"></button>
-            <button type="button" class="ab-item" aria-hidden="true" tabindex="-1" data-piece="balatro"
-               style="background-image:url('assets/covers/balatro.jpg')"></button>
-            <button type="button" class="ab-item" aria-hidden="true" tabindex="-1" data-piece="inscryption"
-               style="background-image:url('assets/covers/inscryption.jpg')"></button>
-            <button type="button" class="ab-item" aria-hidden="true" tabindex="-1" data-piece="slay-the-spire"
-               style="background-image:url('assets/covers/slay-the-spire.jpg')"></button>
-            <button type="button" class="ab-item" aria-hidden="true" tabindex="-1" data-piece="celeste"
-               style="background-image:url('assets/covers/celeste.jpg')"></button>
-            <button type="button" class="ab-item" aria-hidden="true" tabindex="-1" data-piece="hollow-knight"
-               style="background-image:url('assets/covers/hollow-knight.jpg')"></button>
+            <button type="button" class="ab-item" aria-hidden="true" tabindex="-1" data-piece="chungking-express"
+               style="background-image:url('assets/covers/chungking-express.jpg')"></button>
             </div>
           </div>
         </div>
@@ -10020,37 +10614,133 @@ a.arrow { text-decoration: none; }
       <section class="card ab-habits" data-tile="f">
         <div class="ab-half ab-half-gym">
           <div class="ab-grid" data-gym-grid role="img"
-               aria-label="Eight weeks of training, one square a day"></div>
+               aria-label="Twenty-six weeks of training, one square a day"></div>
           <div class="ab-half-mark">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M3 9v6M6 7v10M18 7v10M21 9v6M6 12h12"/></svg>
-            <p class="ab-half-say">Eight weeks of training, one square a day</p>
+            <p class="ab-half-say">Twenty-six weeks of training, one square a day</p>
           </div>
         </div>
 
         <div class="ab-half ab-half-git">
           <div class="ab-grid" data-git-grid role="img"
-               aria-label="Eight weeks of commits, one square a day"></div>
+               aria-label="Twenty-six weeks of commits, one square a day"></div>
           <div class="ab-half-mark">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .5A11.5 11.5 0 0 0 .5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.2.8-.6v-2.2c-3.2.7-3.9-1.4-3.9-1.4-.5-1.3-1.3-1.7-1.3-1.7-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.7 1.3 3.4 1 .1-.8.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.8 0-1.3.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0C17.6 4.6 18.6 5 18.6 5c.6 1.6.2 2.8.1 3.1.8.8 1.2 1.8 1.2 3.1 0 4.5-2.7 5.5-5.3 5.8.4.4.8 1.1.8 2.2v3.3c0 .4.2.7.8.6 4.6-1.5 7.9-5.8 7.9-10.9A11.5 11.5 0 0 0 12 .5z"/></svg>
-            <p class="ab-half-say">Eight weeks of commits, one square a day</p>
+            <p class="ab-half-say">Twenty-six weeks of commits, one square a day</p>
           </div>
         </div>
       </section>
 
       <!-- ----------------------------- the desk ----------------------- -->
       <section class="card ab-lately" data-tile="b">
+        <p class="nw-h ab-late-h">Lately</p>
         <div class="ab-late">
           <div class="ab-late-i">
             <span class="ab-late-shot"></span>
-            <b>Wii, jailbroken</b>
-            <span>The Homebrew Channel, and every disc I own running off one drive.</span>
-            <i>This month</i>
+            <div>
+            <b class="ab-head">Wii, jailbroken</b>
+            <span class="ab-body">The Homebrew Channel, and every disc I own running off one drive.</span>
+            <i class="ab-sub">This month</i>
+            </div>
           </div>
-          <div class="ab-late-i">
-            <span class="ab-late-shot"></span>
-            <b>The media server</b>
-            <span>Every Criterion rip in one place, on my own terms and my own sofa.</span>
-            <i>Spring</i>
+        </div>
+      </section>
+
+      <!-- ----------------------------- now ---------------------------- -->
+      <section class="card ab-now" data-tile="b">
+        <h2 class="nw-h nw-head">Now</h2>
+        <ul class="nw-row">
+          <li class="nw-item" data-now="reading">
+            <span class="nw-plate" style="background-image:url('assets/covers/piranesi.jpg');background-size:cover;background-position:center;background-repeat:no-repeat" role="img"
+                  aria-label="Reading: Piranesi"></span>
+            <span class="nw-said">
+              <i class="ab-sub nw-when">Reading</i>
+              <b class="ab-head nw-what">Piranesi</b>
+              <span class="ab-sub">Susanna Clarke</span>
+            </span>
+          </li>
+          <li class="nw-item" data-now="playing">
+            <span class="nw-plate" style="background-image:url('assets/covers/balatro.jpg');background-size:cover;background-position:center;background-repeat:no-repeat" role="img"
+                  aria-label="Playing: Balatro"></span>
+            <span class="nw-said">
+              <i class="ab-sub nw-when">Playing</i>
+              <b class="ab-head nw-what">Balatro</b>
+              <span class="ab-sub">LocalThunk</span>
+            </span>
+          </li>
+          <li class="nw-item" data-now="watching">
+            <span class="nw-plate" style="background-image:url('assets/covers/chungking-express.jpg');background-size:cover;background-position:center;background-repeat:no-repeat" role="img"
+                  aria-label="Watching: Chungking Express"></span>
+            <span class="nw-said">
+              <i class="ab-sub nw-when">Watching</i>
+              <b class="ab-head nw-what">Chungking Express</b>
+              <span class="ab-sub">Wong Kar-wai</span>
+            </span>
+          </li>
+        </ul>
+      </section>
+
+      <!-- ---------------------------- music --------------------------- -->
+      <section class="card ab-music" data-tile="f">
+        <p class="nw-h ms-h">Music</p>
+        <div class="ms-wk">
+          <div class="ms-wk-face">
+          <span class="ms-screw ms-screw-1"></span>
+          <span class="ms-screw ms-screw-2"></span>
+          <span class="ms-screw ms-screw-3"></span>
+          <span class="ms-screw ms-screw-4"></span>
+            <div class="ms-well">
+              <div class="ms-top">
+                <span class="ms-viz ms-viz-l" aria-hidden="true">
+                    <i style="--y:0.83;--d:979ms;--o:-921ms"></i>
+                    <i style="--y:0.35;--d:673ms;--o:-836ms"></i>
+                    <i style="--y:0.81;--d:526ms;--o:-677ms"></i>
+                    <i style="--y:0.37;--d:867ms;--o:-616ms"></i>
+                    <i style="--y:0.73;--d:598ms;--o:-287ms"></i>
+                    <i style="--y:0.56;--d:560ms;--o:-859ms"></i>
+                    <i style="--y:0.96;--d:392ms;--o:-455ms"></i>
+                    <i style="--y:0.29;--d:523ms;--o:-472ms"></i>
+                    <i style="--y:0.47;--d:534ms;--o:-305ms"></i>
+                </span>
+                <span class="ms-stage">
+                  <span class="ms-tube"><span data-ms-tube data-video="NUnXxh5U25Y"></span></span>
+                  <span class="ms-art" role="img" aria-label="Everything In Its Right Place"
+                        style="background-image:url('assets/covers/music-kid-a.jpg')"></span>
+                </span>
+                <span class="ms-viz ms-viz-r" aria-hidden="true">
+                    <i style="--y:0.60;--d:392ms;--o:-314ms"></i>
+                    <i style="--y:0.95;--d:642ms;--o:-802ms"></i>
+                    <i style="--y:0.64;--d:832ms;--o:-449ms"></i>
+                    <i style="--y:0.37;--d:606ms;--o:-630ms"></i>
+                    <i style="--y:0.88;--d:715ms;--o:-228ms"></i>
+                    <i style="--y:0.35;--d:529ms;--o:-537ms"></i>
+                    <i style="--y:0.60;--d:610ms;--o:-637ms"></i>
+                    <i style="--y:0.76;--d:870ms;--o:-247ms"></i>
+                    <i style="--y:0.95;--d:574ms;--o:-548ms"></i>
+                </span>
+              </div>
+              <div class="ms-lcd">
+                <span class="ms-lcd-a">Everything In Its Right Place</span>
+                <span class="ms-lcd-b">
+                  <span class="ms-lcd-by">Radiohead</span>
+                  <span class="ms-mode" data-ms-mode-tag>BARS</span>
+                </span>
+              </div>
+              <span class="ms-pix"></span>
+            </div>
+            <div class="ms-bar" data-ms-bar role="slider" tabindex="0"
+                 aria-label="Seek" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+              <span class="ms-fill" data-ms-fill></span>
+              <span class="ms-knob" data-ms-knob></span>
+            </div>
+            <div class="ms-deck">
+              <button type="button" class="ms-key ms-key-back" data-ms-back aria-label="Back ten seconds"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 18V6l-8.5 6 8.5 6zm.5-6l8.5 6V6l-8.5 6z"/></svg></button>
+              <button type="button" class="ms-key ms-key-play" data-ms-play aria-label="Play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></button>
+              <button type="button" class="ms-key ms-key-pause" data-ms-pause aria-label="Pause"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/></svg></button>
+              <button type="button" class="ms-key ms-key-stop" data-ms-stop aria-label="Stop"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5h11v11h-11z"/></svg></button>
+              <button type="button" class="ms-key ms-key-fwd" data-ms-fwd aria-label="Forward ten seconds"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 6v12l8.5-6L13 6zm-.5 6L4 6v12l8.5-6z"/></svg></button>
+              <button type="button" class="ms-key ms-key-mode" data-ms-mode aria-label="Change the meters"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 14h3v6H3zm5-5h3v11H8zm5-6h3v17h-3zm5 9h3v8h-3z"/></svg></button>
+            </div>
           </div>
         </div>
       </section>
@@ -10252,14 +10942,6 @@ a.arrow { text-decoration: none; }
       <div class="zoom-panel" role="dialog" aria-modal="true"
            aria-labelledby="zoom-title">
 
-        <!-- The head: a picture of the thing running, bleeding off three
-             sides and washing out into the sheet at the bottom. A game leads
-             with a screenshot; a book has none, so it leads with its own
-             cover thrown out of focus behind the sharp one. -->
-        <div class="zoom-hero" data-zoom-hero>
-          <span class="zoom-hero-art" data-zoom-hero-art></span>
-          <p class="zoom-hero-cap" data-zoom-hero-cap></p>
-        </div>
 
         <!-- Cover on the left, everything about it on the right. Stacked, the
              title started a third of the way down a drawer that is mostly
@@ -12788,7 +13470,7 @@ a.arrow { text-decoration: none; }
   })();
 
 
-  /* Two habits, eight weeks each, drawn and counted from two arrays.
+  /* Two habits, twenty weeks each, drawn and counted from two arrays.
 
      Both arrays are one number a day: 0 for a day it did not happen, 1 to 4
      for how much did. Both are stand-ins until real data replaces them, and
@@ -12809,7 +13491,7 @@ a.arrow { text-decoration: none; }
      breaks. See the README for the query and the workflow.
      --------------------------------------------------------------------- */
   var HABITS = (function () {
-    var WEEKS = 8, seed = 20260822;
+    var WEEKS = 26, seed = 20260822;
     function rnd() { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff; }
 
     function run(weekday, weekend, gaps) {
@@ -12856,6 +13538,9 @@ a.arrow { text-decoration: none; }
         if (lv) { i.setAttribute('data-l', String(lv)); total++; }
         frag.appendChild(i);
       });
+      /* As wide as there are weeks in it. Written here rather than in the
+         stylesheet because this is the only place that knows how many. */
+      grid.style.setProperty('--weeks', String(Math.ceil(days.length / 7)));
       grid.appendChild(frag);
       if (count) { count.textContent = total; }
 
@@ -14331,6 +15016,35 @@ a.arrow { text-decoration: none; }
         near: [
 
         ]
+      },
+
+      'chungking-express': {
+        kind: 'Film / Hong Kong / 1994',
+        title: 'Chungking Express',
+        by: 'Wong Kar-wai',
+        cover: 'assets/covers/chungking-express.jpg',
+        what: 'Two policemen, two women, and a fortnight in Hong Kong shot mostly at night and mostly in a hurry. Two stories that barely touch, both about people talking to objects because the person is gone.',
+        take: '',
+        verdict: '',
+        keep: '',
+        spec: [
+          ['Made by', 'Wong Kar-wai'],
+          ['Released', '1994'],
+          ['Shelf', 'Drama, Romance']
+        ],
+        facts: [
+
+        ],
+        stillsT: 'Stills',
+        stills: [
+
+        ],
+        buy: [
+          { t: 'Criterion', u: amazon('Chungking Express Criterion') }
+        ],
+        near: [
+
+        ]
       }
     };
 
@@ -14391,15 +15105,6 @@ a.arrow { text-decoration: none; }
       text('[data-zoom-verdict]', d.verdict);
       text('[data-zoom-stills-t]', d.stillsT || 'Stills');
 
-      /* The head. A screenshot if there is one; otherwise the cover again, out
-       * of focus, which the stylesheet does with a class rather than a second
-       * file. */
-      var lead = (d.stills || []).filter(function (s) { return s.src; })[0];
-      at('[data-zoom-hero-art]').style.backgroundImage =
-        'url("' + (lead ? lead.src : d.cover) + '")';
-      text('[data-zoom-hero-cap]', lead ? (lead.cap || '') : '');
-      box.classList.toggle('is-blur', !lead);
-
       /* "Game / Adventure / 2018" was a kicker over the title, and the author a
        * line under it: three lines to carry what a caption carries in one. The
        * first word becomes the chip, the rest joins the byline. */
@@ -14451,7 +15156,7 @@ a.arrow { text-decoration: none; }
        * A section of crossed grey boxes is not a gallery waiting to be filled
        * either, it is a gallery that failed -- so on a book, which has no
        * screenshots and never will, the whole block is simply not there. */
-      var rest = (d.stills || []).filter(function (s) { return s.src; }).slice(1);
+      var rest = (d.stills || []).filter(function (s) { return s.src; });
       var gallery = strip.closest ? strip.closest('.zoom-sec') : null;
       if (gallery) { gallery.hidden = !rest.length; }
       rest.forEach(function (s) {
@@ -14549,6 +15254,7 @@ a.arrow { text-decoration: none; }
     box.addEventListener('click', function (e) {
       if (e.target.closest('[data-zoom-shut]')) { shut(); }
     });
+
 
     /* Escape, and a Tab that cannot leave.
      *
@@ -15634,6 +16340,281 @@ a.arrow { text-decoration: none; }
       'arr-focus', 'arr-decode', 'arr-register', 'arr-wipe');
   }, 4000);
 })();
+
+  /* --------------------------------------------------------------- music --
+
+     YouTube runs the audio; the card runs the controls.
+
+     The API script is fetched on the first press and not before -- a reader
+     who never touches the card pays for one thumbnail and nothing else. That
+     is also why the player is built lazily: creating it early would load the
+     whole embed on every visit to a screen most people scroll past.
+
+     Everything the deck shows is read off the player. The bar polls four
+     times a second while it is playing and not at all while it is not, which
+     is enough to look continuous and cheap enough to leave running.
+
+     If any of it fails -- blocked script, no network, an id that has been
+     taken down -- the deck goes and the art and the name stay. A dead
+     transport is worse than no transport.
+     ---------------------------------------------------------------------- */
+  (function () {
+    var card = document.querySelector('.ab-music');
+    if (!card) { return; }
+
+    /* Found from the card rather than from the keys: the keys are on the
+       body of the Walkman and the counter is under it, which are two places
+       now and were one before. */
+    var host = card.querySelector('[data-ms-tube]');
+    var deck = card.querySelector('.ms-deck');
+    var play = card.querySelector('[data-ms-play]');
+    var pause = card.querySelector('[data-ms-pause]');
+    var stop = card.querySelector('[data-ms-stop]');
+    var bar = card.querySelector('[data-ms-bar]');
+    var fill = card.querySelector('[data-ms-fill]');
+    var knob = card.querySelector('[data-ms-knob]');
+    var clock = card.querySelector('[data-ms-clock]');
+    var modeKey = card.querySelector('[data-ms-mode]');
+    var modeTag = card.querySelector('[data-ms-mode-tag]');
+    if (!host || !deck || !play || !pause || !bar) { return; }
+    var yt = null, ready = false, tick = 0, asked = false, guard = 0;
+
+    function time(s) {
+      if (!isFinite(s) || s < 0) { s = 0; }
+      var m = Math.floor(s / 60), r = Math.floor(s % 60);
+      return m + ':' + (r < 10 ? '0' : '') + r;
+    }
+
+    function draw() {
+      if (!ready) { return; }
+      var d = yt.getDuration ? yt.getDuration() : 0;
+      var at = yt.getCurrentTime ? yt.getCurrentTime() : 0;
+      var p = d > 0 ? Math.min(1, at / d) : 0;
+      fill.style.width = (p * 100).toFixed(2) + '%';
+      knob.style.left = (p * 100).toFixed(2) + '%';
+      bar.setAttribute('aria-valuenow', Math.round(p * 100));
+      /* The readout carries the mode now, not the time. Guarded because the
+         clock is a thing this card used to have. */
+      if (clock) { clock.textContent = time(at) + (d > 0 ? ' / ' + time(d) : ''); }
+    }
+
+    function follow(on) {
+      clearInterval(tick);
+      if (on) { tick = setInterval(draw, 250); }
+    }
+
+    function off() {
+      card.classList.add('is-mute');
+      clearInterval(tick);
+      clearTimeout(guard);
+    }
+
+    /* Asked to play, and nothing ever started.
+
+       A player that cannot get its audio does not report an error -- it goes to
+       buffering and stays there, which on this card is a transport sitting at
+       0:00 with no way to tell whether it is loading or dead. Fifteen seconds is
+       long enough that a slow connection has been given its chance, and short
+       enough that nobody is still waiting to find out. After that the transport
+       goes and the sleeve and the name stay, which is the same thing that
+       happens when the script is blocked outright. */
+    function watch() {
+      clearTimeout(guard);
+      guard = setTimeout(off, 15000);
+    }
+
+    /* The API arrives once, and onYouTubeIframeAPIReady is a global it calls
+       by name -- so anything else on the page that wants it has to chain, not
+       replace. Nothing else here does, but the next thing might. */
+    function api(then) {
+      if (window.YT && window.YT.Player) { then(); return; }
+      var prev = window.onYouTubeIframeAPIReady;
+      window.onYouTubeIframeAPIReady = function () {
+        if (typeof prev === 'function') { prev(); }
+        then();
+      };
+      if (asked) { return; }
+      asked = true;
+      var s = document.createElement('script');
+      s.src = 'https://www.youtube.com/iframe_api';
+      s.onerror = off;
+      document.head.appendChild(s);
+    }
+
+    function build(then) {
+      if (yt) { return; }
+      api(function () {
+        yt = new YT.Player(host, {
+          videoId: host.getAttribute('data-video'),
+          playerVars: { playsinline: 1, rel: 0, controls: 0 },
+          events: {
+            onReady: function () {
+              ready = true;
+              draw();
+              if (want) { want = false; yt.playVideo(); }
+              if (then) { then(); }
+            },
+            onError: off,
+            onStateChange: function (e) {
+              var playing = e.data === YT.PlayerState.PLAYING;
+              var held = e.data === YT.PlayerState.PAUSED;
+              if (playing) { clearTimeout(guard); }
+              latch(playing ? 'going' : held ? 'held' : 'idle');
+              follow(playing);
+              draw();
+            }
+          }
+        });
+      });
+    }
+
+    /* The player is made when you arrive at the card, not when you press it.
+
+       Building on the press looks correct and is not: the embed takes a second
+       or two to come up, and by the time it is ready to be told to play, the
+       click that asked for it has long since ended -- and a browser will only
+       start unmuted sound inside a gesture. The first press did nothing and the
+       second one worked, which is a bug that reads as a broken button.
+
+       You cannot press the button without first bringing a pointer onto the
+       card, so that is the moment it gets built. By the time the press lands,
+       playVideo() is a direct answer to it. Touch has no hover, so pointerdown
+       does the same job a moment earlier, and the want flag below catches the
+       narrow case where the press really does arrive first. */
+    function warm() { if (!yt) { build(); } }
+    card.addEventListener('pointerenter', warm);
+    card.addEventListener('pointerdown', warm);
+
+
+    /* Which keys are down.
+
+       Read off the player rather than off the click, so the two of them
+       cannot disagree: if playback stops on its own -- the track ends, the
+       network goes -- the key comes up without anybody pressing it. Play and
+       pause are mutually exclusive by construction here, which is what makes
+       them behave like two keys on one bar rather than two switches that
+       happen to sit next to each other. */
+    function latch(what) {
+      var going = what === 'going';
+      var held = what === 'held';
+      card.classList.toggle('is-going', going);
+      card.classList.toggle('is-held', held);
+      play.setAttribute('aria-pressed', going ? 'true' : 'false');
+      pause.setAttribute('aria-pressed', held ? 'true' : 'false');
+    }
+    latch('idle');
+
+    /* Five ways of drawing it, and a key to walk through them.
+
+       The mode is a class on the card and the stylesheet does the rest, so
+       nothing here knows what a bar looks like. It is written on the display
+       as well: a control with no readout is a control you press twice to
+       find out what it did. */
+    var MODES = ['bars', 'peak', 'scope', 'fire', 'off'];
+    var mode = 0;
+
+    function meters(i) {
+      mode = (i + MODES.length) % MODES.length;
+      for (var n = 0; n < MODES.length; n++) {
+        card.classList.toggle('viz-' + MODES[n], n === mode);
+      }
+      if (modeTag) { modeTag.textContent = MODES[mode]; }
+    }
+    meters(0);
+
+    if (modeKey) {
+      modeKey.addEventListener('click', function () { meters(mode + 1); });
+    }
+
+    var want = false;
+    play.addEventListener('click', function () {
+      if (!ready) { want = true; watch(); build(); return; }
+      watch();
+      yt.playVideo();
+    });
+
+    pause.addEventListener('click', function () {
+      if (!ready) { return; }
+      clearTimeout(guard);
+      yt.pauseVideo();
+    });
+
+    /* Stop is not pause. It lets both keys up and winds back to the start,
+       which is the whole of the difference and the reason the key exists. */
+    if (stop) {
+      stop.addEventListener('click', function () {
+        if (!ready) { return; }
+        clearTimeout(guard);
+        yt.pauseVideo();
+        yt.seekTo(0, true);
+        latch('idle');
+
+    /* Five ways of drawing it, and a key to walk through them.
+
+       The mode is a class on the card and the stylesheet does the rest, so
+       nothing here knows what a bar looks like. It is written on the display
+       as well: a control with no readout is a control you press twice to
+       find out what it did. */
+    var MODES = ['bars', 'peak', 'scope', 'fire', 'off'];
+    var mode = 0;
+
+    function meters(i) {
+      mode = (i + MODES.length) % MODES.length;
+      for (var n = 0; n < MODES.length; n++) {
+        card.classList.toggle('viz-' + MODES[n], n === mode);
+      }
+      if (modeTag) { modeTag.textContent = MODES[mode]; }
+    }
+    meters(0);
+
+    if (modeKey) {
+      modeKey.addEventListener('click', function () { meters(mode + 1); });
+    }
+        draw();
+      });
+    }
+
+    function nudge(by) {
+      if (!ready) { return; }
+      var d = yt.getDuration() || 0;
+      yt.seekTo(Math.max(0, Math.min(d, yt.getCurrentTime() + by)), true);
+      draw();
+    }
+    /* Bound only if they are actually there. A missing control is a card with
+       one fewer button on it; a throw here is a page with no router. */
+    var back = card.querySelector('[data-ms-back]');
+    var fwd = card.querySelector('[data-ms-fwd]');
+    if (back) { back.addEventListener('click', function () { nudge(-10); }); }
+    if (fwd) { fwd.addEventListener('click', function () { nudge(10); }); }
+
+    function seek(x) {
+      if (!ready) { return; }
+      var r = bar.getBoundingClientRect();
+      var d = yt.getDuration() || 0;
+      if (!r.width || !d) { return; }
+      yt.seekTo(Math.max(0, Math.min(1, (x - r.left) / r.width)) * d, true);
+      draw();
+    }
+    bar.addEventListener('pointerdown', function (e) {
+      bar.setPointerCapture(e.pointerId);
+      seek(e.clientX);
+    });
+    bar.addEventListener('pointermove', function (e) {
+      if (bar.hasPointerCapture(e.pointerId)) { seek(e.clientX); }
+    });
+    bar.addEventListener('keydown', function (e) {
+      var by = e.key === 'ArrowRight' ? 5 : e.key === 'ArrowLeft' ? -5 : 0;
+      if (!by) { return; }
+      e.preventDefault();
+      nudge(by);
+    });
+
+    /* Music from a screen you have left is the rudest thing a site does. */
+    window.addEventListener('hashchange', function () {
+      if (ready && yt.pauseVideo) { yt.pauseVideo(); }
+    });
+  })();
+
 </script>
 
 </body>
