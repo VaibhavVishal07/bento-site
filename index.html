@@ -837,6 +837,26 @@
     --lab-mount: #ffffff;
         --lab-plate: #e8eeeb;
 
+    /* The mat's ink, which was written for the room it is pressed into and
+       not for the room it is found in.
+
+       These five sat under [data-theme="light"] alone -- the room you get by
+       pressing the sun -- and never under the query that answers for a visitor
+       who has set nothing, which is nearly all of them. So on a system set to
+       light the mat turned white, as it is told to two lines above, and its
+       type stayed the near-white it is drawn in on jade: a headline, a label
+       and a paragraph, all of them invisible on the Playground tile and on
+       the Playground screen. It read as an empty card with a grid on it.
+
+       A value that exists in one of the two light rooms and not the other is
+       the whole of this bug, so they are stated in both. */
+    --mat-type:  rgba(14, 40, 32, 0.94);
+    --mat-label: rgba(22, 58, 47, 0.62);
+    --mat-body:  rgba(22, 58, 47, 0.76);
+    --lab-shadow: 0 16px 30px -14px rgba(22, 58, 47, 0.34),
+                  0 2px 6px -2px rgba(22, 58, 47, 0.20);
+    --bar-tape: #e9efec;
+
     --st-live: #14603b;
     --st-used: #10527e;
     --st-away: #6f4e0c;
@@ -3222,6 +3242,10 @@ body {
    the line below it. One box, one margin, and the gap is the same on all four
    however many lines the headline takes. */
 .w-said { position: absolute; left: 24px; top: 204px; }
+/* Both of these are written for the phone, where a project card is the only
+   thing in view. On the frame the three cards sit in a row under a headline
+   that has already said what they are, and the case is one press away. */
+.w-kind, .w-figs { display: none; }
 .w-one .w-said   { width: 300px; }
 .w-two .w-said   { width: 286px; }
 .w-three .w-said { width: 302px; }
@@ -5905,6 +5929,25 @@ a.arrow { text-decoration: none; }
   align-items: flex-end;
   gap: 13px;
 }
+/* The whole row presses. It carries the layout the item used to, so the frame
+   is drawn exactly as it was -- a button with every button style taken off
+   it, which is the only honest way to make a picture and two lines pressable
+   without wrapping them in a link that says nothing. */
+.nw-hit {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  align-items: flex-end;
+  gap: 13px;
+  appearance: none; -webkit-appearance: none;
+  margin: 0; padding: 0; border: 0;
+  background: none;
+  font: inherit; color: inherit; text-align: left;
+  cursor: pointer;
+}
+.nw-hit:focus-visible { outline: 2px solid rgb(var(--w)); outline-offset: 4px; }
+/* What it is: a line the frame has no room for. See the phone block. */
+.nw-kind { display: none; }
 .nw-plate {
   flex: none;
   display: block;
@@ -8481,7 +8524,14 @@ a.arrow { text-decoration: none; }
        scaled stage. Here it is the page, and a clipped box is a scroll
        container. */
     overflow: visible;
-    padding: 20px 16px calc(100px + env(safe-area-inset-bottom, 0px));
+    /* --gut is the page's own gutter: the whole of the distance between the
+       column and the edge of the screen. It is written as a name because one
+       thing below needs to pull against it by exactly as much as it is, and
+       a second copy of 16 is a second copy that can go out of step. --pad,
+       which is 24, is the inside margin of a card and is a different
+       measurement -- pulling by it lands 8px off the screen. */
+    --gut: 16px;
+    padding: 20px var(--gut) calc(100px + env(safe-area-inset-bottom, 0px));
   }
 
   /* --pad is the phone's inside margin and it lives here rather than on the
@@ -8509,6 +8559,25 @@ a.arrow { text-decoration: none; }
 
   /* The lattice is the frame, and there is no frame here. */
   .rules { display: none; }
+
+  /* The lamp is the one thing left drawn at frame scale: 1500px of it hung
+     off the middle of a column 390 wide, so 800 lies off the left of the
+     screen and 700 off the right -- and the sweep it is on carries that
+     another 430 either way, breathing, over 53 seconds.
+
+     Absolutely positioned, all of that is real page. The document measures
+     1130 rather than 390, the whole site scrolls sideways, and the width it
+     scrolls by changes as the animation moves -- which is also what pushed
+     the bar off centre, because an overflowing page widens the layout
+     viewport a phone resolves a fixed left: 50% against, and the bar was
+     centring itself on the overflow rather than on the screen.
+
+     Fixed, the same light falls in the same place and none of it is page: a
+     fixed box is not part of the scrollable overflow, at any width, at any
+     point in the sweep. On a phone it is the truer of the two anyway -- the
+     light belongs to the room, and the room does not scroll with the
+     column. */
+  .lamp { position: fixed; }
 
   /* relative, not static: the card carries two absolutely positioned children
      of its own -- the ring and the .card-hit link -- and a static card is not
@@ -8949,22 +9018,93 @@ a.arrow { text-decoration: none; }
   }
 
   /* Now reads down rather than across: three columns of a cover and its two
-     lines are three columns too narrow to hold either on a phone. */
+     lines are three columns too narrow to hold either on a phone.
+
+     Down, though, it had the opposite problem. The cover kept the 80 x 120 it
+     is given on the frame and set the height of the row at 120; the two lines
+     beside it are short, bottom-aligned against the cover, and ran out at 208
+     of 349. So each row was a picture, a title, and a third of the screen of
+     nothing -- three times, one under the other. That is what made a section
+     about what somebody is in the middle of read as an empty one.
+
+     So the row is sized by its words rather than by its picture: a smaller
+     plate, the lines centred against it and using the width, a third line
+     saying what the thing is, and a hairline between one row and the next
+     instead of a 16px gap holding three loose objects apart. */
   .nw-row {
     grid-template-columns: 1fr;
-    gap: 16px;
-    margin-top: 20px;
+    gap: 0;
+    margin-top: 12px;
   }
+  .nw-item + .nw-item { border-top: 1px solid rgba(var(--w), 0.10); }
+  .nw-hit {
+    align-items: center;
+    gap: 14px;
+    padding: 14px 0;
+    width: 100%;
+  }
+  .nw-plate { width: 58px; height: 87px; }
+  .nw-said { flex: 1 1 auto; padding-bottom: 0; }
+  /* Reading / Playing / Watching is the one word on the row that says what
+     kind of line this is rather than what is on it, so it is set as the label
+     it is rather than as a smaller copy of the sentence under it. */
+  .nw-when {
+    font-family: var(--f-label);
+    font-size: 11px; line-height: 15px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+  }
+  .nw-what { font-size: 17px; line-height: 22px; }
+  .nw-kind { display: block; margin-top: 3px; font-size: 12px; }
 
   .ab-late { display: flex; margin-top: 20px; }
 
-  /* The Walkman keeps its own height -- the window and the keys inside it are
-     placed against it -- but takes the width of the column it lands in. */
+  /* The Walkman, laid out for a hand rather than shrunk to fit one.
+
+     It was given the column's width and 204px of height, and the parts inside
+     it kept the offsets they were placed at against a face of 254: the window
+     hangs from the top, the seek bar sits at 176 from the top, and the deck is
+     anchored to the bottom. Take 50px out of the face and the deck rises to
+     146 and lands on the bar -- two controls occupying the same 8 pixels, one
+     of them drawn over the other. That is the break.
+
+     So the face is given the height its own parts need, and the parts are
+     placed against it in the order a machine has them: window, then the bar
+     that says where you are in the track, then the keys. And the keys are
+     sized for a finger. 32 x 24 is a mouse target: it was six of them in a
+     row on an object people are meant to press, at half the size a phone
+     asks for. They flex to the width now, 44 tall, which is the floor. */
   .ms-wk {
     position: relative;
-    height: 204px;
+    height: 272px;
     margin: 20px 0 0;
   }
+  .ms-bar {
+    top: 178px;
+    height: 12px;                    /* scrubbing with a thumb, not a cursor */
+    left: 16px; right: 16px;
+  }
+  .ms-deck {
+    top: 202px; bottom: auto;
+    height: 56px;
+    padding: 0 8px;
+    gap: 4px;
+  }
+  /* Six keys sharing one row: an equal share each, capped so they stay keys
+     rather than becoming panels, and never under 44 tall. */
+  .ms-key {
+    flex: 1 1 0;
+    min-width: 0;
+    max-width: 52px;
+    height: 44px;
+  }
+  .ms-key svg { width: 15px; height: 15px; }
+
+  /* The display is read at arm's length on the frame and at a third of that
+     here, but it is also the only words on the object -- 11px of them behind
+     glass, at the size the rest of this screen calls a caption. */
+  .ms-lcd-a { font-size: 13px; }
 
   /* Both rows keep running here, and go full bleed out of the card's own
      padding to do it -- no inside padding, because a strip that is moving
@@ -9168,7 +9308,12 @@ a.arrow { text-decoration: none; }
     overscroll-behavior-x: contain;
     scrollbar-width: none;
     background: none;
-    margin-inline: calc(var(--pad) * -1);
+    /* Edge to edge, and the edge is --gut away, not --pad. The strip sits on
+       the stage, and all that stands between the stage and the screen is the
+       page's gutter; pulled by --pad it went 8px past the screen on both
+       sides -- 16px of page nobody can see, that every phone still scrolls
+       sideways to reach. */
+    margin-inline: calc(var(--gut) * -1);
     padding: 0 var(--pad);
   }
   .pc-rail::-webkit-scrollbar { display: none; }
@@ -9257,6 +9402,11 @@ a.arrow { text-decoration: none; }
   .room {
     position: fixed;
     top: calc(12px + env(safe-area-inset-top, 0px));
+    /* The frame's own left is 1541px -- a coordinate in a stage 1920 wide --
+       and setting right without clearing it leaves both sides specified, at
+       which point left wins and the switch sits a thousand pixels off the
+       side of the phone, unreachable and out of sight. */
+    left: auto;
     right: 12px;
     z-index: 30;
     width: 72px; height: 36px;
@@ -9407,13 +9557,77 @@ a.arrow { text-decoration: none; }
   .bk-plate { height: 190px; }
 
   /* The picture leads the card down here too, so it goes back to the top of
-     it -- and keeps the margin it has on the frame. */
+     it -- and keeps the margin it has on the frame.
+
+     display: block, which the frame never had to say. There it is absolutely
+     positioned, and that blockifies a box on its own; take the position away
+     and what is left is what the markup says it is -- a bare <span>, inline,
+     where a height is a value with nothing to apply it to and an order is a
+     property with no flex line to sit on. So the frame that leads all three
+     project cards computed to 0 x 0 and drew nothing: three cards holding a
+     number, a title and one line of type each, in the room a picture was
+     supposed to be standing in. That is the whole of why this screen looked
+     empty. */
   .w-shot {
     position: static;
+    display: block;
     order: -1;
     height: 190px;
     margin: 0 0 16px;
   }
+  /* A frame with nothing in it yet is still drawn -- that is how this site
+     says "a picture goes here" -- but it does not need to be the largest
+     thing on the card while it waits. Three of them, one under another, at
+     the height a photograph would take, is a screen of held space. At 128 it
+     is plainly a slot and the card reads as a card. Put a shot in work.json
+     and it takes the full height back. */
+  .w-shot.is-blank { height: 128px; }
+  /* What it is, over the name of it: the smallest line on the card and the
+     first one read, which is the job an eyebrow does. */
+  .w-kind {
+    display: block;
+    margin: 0 0 7px;
+    font-family: var(--f-label);
+    font-size: 11px; line-height: 15px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--quiet);
+  }
+
+  /* Two figures under the line that names the work.
+
+     A number wants the same left edge as the number under it, so the column is
+     fixed rather than shrink-to-fit -- 38% and +12% are different widths and a
+     ragged pair of them reads as two unrelated facts. Tabular figures for the
+     same reason. The rule over each is the one the writing index and the shelf
+     drawer already use, so a list of facts looks like a list of facts wherever
+     it turns up on this site. */
+  .w-figs {
+    display: block;
+    margin: 16px 0 0;
+    padding: 0;
+  }
+  .w-fig {
+    display: grid;
+    grid-template-columns: 76px 1fr;
+    column-gap: 12px;
+    align-items: baseline;
+    padding: 10px 0;
+    border-top: 1px solid rgba(var(--w), 0.10);
+  }
+  .w-fig dt {
+    font-family: var(--f-label);
+    font-size: 19px; line-height: 24px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: var(--heading);
+  }
+  .w-fig dd {
+    margin: 0;
+    font-size: 13px; line-height: 18px;
+    color: var(--sub);
+  }
+
   .w-cta, .idx-foot { display: inline-flex; margin-top: 4px; }
   .w-tags { margin-top: 12px; }
   .idx-list {
@@ -9429,10 +9643,22 @@ a.arrow { text-decoration: none; }
   }
   .idx-nav { display: none; }
   /* A phone has the room the frame does not, so the titles go up another step
-     rather than holding a budget that is not there. */
-  .idx-row { padding: 16px 0; }
+     rather than holding a budget that is not there.
+
+     And the row has to be allowed to take it. The frame gives every row a
+     height of 70, which fits two lines of 19 and the metre under them; at 17
+     over 24 two lines are 48, and 48 plus the padding does not go into 70. The
+     title is clamped to two lines and the row is clipped to one and a bit, so
+     eight of the titles here ended mid-sentence with nothing to say they had
+     -- "Why video games are the", and then a year. The row is sized by what is
+     in it now, which is what the clamp was always for. */
+  .idx-row { height: auto; padding: 16px 0; }
   .idx-t { font-size: 17px; line-height: 24px; }
   .idx-m { font-size: 13px; line-height: 17px; }
+  /* The count is a figure standing beside the word it counts, and the two of
+     them start at the same line: the card's own inside margin, not the 24 the
+     frame happens to use. */
+  .w-index .idx-count { top: var(--pad); right: var(--pad); }
 }
 
 /* The crossing is motion by definition, so reduced motion gets the new state
@@ -10230,47 +10456,62 @@ a.arrow { text-decoration: none; }
       <!-- ------------------------ w-one ------------------------ -->
       <!-- Tile a comes down out of Home's intro card. -->
       <section class="card w-one" data-tile="a">
+        <span class="w-shot is-blank" aria-hidden="true"></span>
         <p class="label">01</p>
         <span class="arrow" aria-hidden="true">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
              stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h17M14 6l6 6-6 6"/></svg>
         </span>
         <div class="w-said">
+          <p class="w-kind">Case study · 2025</p>
           <h2 class="headline">Reimagining linear player</h2>
           <p class="sub">Live TV, rebuilt around what is on now and what is next.</p>
         </div>
-        <span class="w-shot" aria-hidden="true"></span>
+        <dl class="w-figs">
+          <div class="w-fig"><dt>38%</dt><dd>fewer taps from open to playing</dd></div>
+          <div class="w-fig"><dt>+12%</dt><dd>median session length</dd></div>
+        </dl>
         <a class="card-hit" href="#case/linear-player" data-route="case" data-slug="linear-player" aria-label="Open Reimagining linear player"></a>
       </section>
 
       <!-- ------------------------ w-two ------------------------ -->
       <section class="card w-two" data-tile="d">
+        <span class="w-shot is-blank" aria-hidden="true"></span>
         <p class="label">02</p>
         <span class="arrow" aria-hidden="true">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
              stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h17M14 6l6 6-6 6"/></svg>
         </span>
         <div class="w-said">
+          <p class="w-kind">Case study · 2024</p>
           <h2 class="headline">Xstream creative toolkit</h2>
           <p class="sub">A kit of parts for a team shipping faster than a design system can keep up with.</p>
         </div>
-        <span class="w-shot" aria-hidden="true"></span>
+        <dl class="w-figs">
+          <div class="w-fig"><dt>08</dt><dd>catalogues on one set of rules</dd></div>
+          <div class="w-fig"><dt>4x</dt><dd>faster from brief to artwork</dd></div>
+        </dl>
         <a class="card-hit" href="#case/xstream-toolkit" data-route="case" data-slug="xstream-toolkit" aria-label="Open Xstream creative toolkit"></a>
       </section>
 
       <!-- ------------------------ w-three ------------------------ -->
       <!-- Tile f crosses the whole frame from Home's media strip. -->
       <section class="card w-three" data-tile="f">
+        <span class="w-shot is-blank" aria-hidden="true"></span>
         <p class="label">03</p>
         <span class="arrow" aria-hidden="true">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
              stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h17M14 6l6 6-6 6"/></svg>
         </span>
         <div class="w-said">
+          <p class="w-kind">Case study · 2024</p>
           <h2 class="headline">Bubbles // a studio site</h2>
           <p class="sub">A studio site that reads like a place to walk around rather than a list of work.</p>
         </div>
-        <span class="w-shot" aria-hidden="true"></span>
+        <dl class="w-figs">
+          <div class="w-fig"><dt>01</dt><dd>page, start to finish</dd></div>
+          <div class="w-fig"><dt>60fps</dt><dd>on a four-year-old phone</dd></div>
+        </dl>
         <a class="card-hit" href="#case/bubbles" data-route="case" data-slug="bubbles" aria-label="Open Bubbles // a studio site"></a>
       </section>
 
@@ -10779,31 +11020,40 @@ a.arrow { text-decoration: none; }
         <h2 class="nw-h nw-head">Now</h2>
         <ul class="nw-row">
           <li class="nw-item" data-now="reading">
-            <span class="nw-plate" style="background-image:url('assets/covers/piranesi.jpg');background-size:cover;background-position:center;background-repeat:no-repeat" role="img"
-                  aria-label="Reading: Piranesi"></span>
-            <span class="nw-said">
-              <i class="ab-sub nw-when">Reading</i>
-              <b class="ab-head nw-what">Piranesi</b>
-              <span class="ab-sub">Susanna Clarke</span>
-            </span>
+            <button type="button" class="nw-hit" data-piece="piranesi"
+                    aria-label="Reading: Piranesi, Susanna Clarke">
+              <span class="nw-plate" style="background-image:url('assets/covers/piranesi.jpg');background-size:cover;background-position:center;background-repeat:no-repeat" aria-hidden="true"></span>
+              <span class="nw-said">
+                <i class="ab-sub nw-when">Reading</i>
+                <b class="ab-head nw-what">Piranesi</b>
+                <span class="ab-sub">Susanna Clarke</span>
+                <span class="ab-sub nw-kind">Book / Fiction / 2020</span>
+              </span>
+            </button>
           </li>
           <li class="nw-item" data-now="playing">
-            <span class="nw-plate" style="background-image:url('assets/covers/balatro.jpg');background-size:cover;background-position:center;background-repeat:no-repeat" role="img"
-                  aria-label="Playing: Balatro"></span>
-            <span class="nw-said">
-              <i class="ab-sub nw-when">Playing</i>
-              <b class="ab-head nw-what">Balatro</b>
-              <span class="ab-sub">LocalThunk</span>
-            </span>
+            <button type="button" class="nw-hit" data-piece="balatro"
+                    aria-label="Playing: Balatro, LocalThunk">
+              <span class="nw-plate" style="background-image:url('assets/covers/balatro.jpg');background-size:cover;background-position:center;background-repeat:no-repeat" aria-hidden="true"></span>
+              <span class="nw-said">
+                <i class="ab-sub nw-when">Playing</i>
+                <b class="ab-head nw-what">Balatro</b>
+                <span class="ab-sub">LocalThunk</span>
+                <span class="ab-sub nw-kind">Game / Casual / 2024</span>
+              </span>
+            </button>
           </li>
           <li class="nw-item" data-now="watching">
-            <span class="nw-plate" style="background-image:url('assets/covers/chungking-express.jpg');background-size:cover;background-position:center;background-repeat:no-repeat" role="img"
-                  aria-label="Watching: Chungking Express"></span>
-            <span class="nw-said">
-              <i class="ab-sub nw-when">Watching</i>
-              <b class="ab-head nw-what">Chungking Express</b>
-              <span class="ab-sub">Wong Kar-wai</span>
-            </span>
+            <button type="button" class="nw-hit" data-piece="chungking-express"
+                    aria-label="Watching: Chungking Express, Wong Kar-wai">
+              <span class="nw-plate" style="background-image:url('assets/covers/chungking-express.jpg');background-size:cover;background-position:center;background-repeat:no-repeat" aria-hidden="true"></span>
+              <span class="nw-said">
+                <i class="ab-sub nw-when">Watching</i>
+                <b class="ab-head nw-what">Chungking Express</b>
+                <span class="ab-sub">Wong Kar-wai</span>
+                <span class="ab-sub nw-kind">Film / Hong Kong / 1994</span>
+              </span>
+            </button>
           </li>
         </ul>
       </section>
@@ -15372,7 +15622,7 @@ a.arrow { text-decoration: none; }
     // A cover on either copy of a row opens; the second copy is aria-hidden
     // and untabbable but it is the one on screen half the time.
     document.addEventListener('click', function (e) {
-      var item = e.target.closest ? e.target.closest('.ab-item[data-piece]') : null;
+      var item = e.target.closest ? e.target.closest('.ab-item[data-piece], .nw-hit[data-piece]') : null;
       if (!item) { return; }
       e.preventDefault();
       open(item);
