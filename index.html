@@ -686,10 +686,18 @@
   --tape-ink: rgba(28, 34, 46, 0.60);
   --print-name: rgba(24, 28, 38, 0.82);
 
-  /* Flat. Nothing on the phone casts in this room -- see --pane-cast. */
+  /* Flat. Nothing on the phone casts in this room -- see --pane-cast.
+     Except the bar, and only since it stopped being a phone control. A
+     floating capsule over a white page with no shadow under it is not
+     floating, it is a light grey rectangle drawn on the paper -- the blur
+     does nothing when what is behind it is the same white. So the two the bar
+     is made of get soft, neutral values here; the panes keep none. */
   --pane-cast: none;
-  --bar-cast: none;
-  --pill-cast: none;
+  --bar-cast:
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 12px 30px -14px rgba(22, 26, 36, 0.30),
+    0 3px 10px -4px rgba(22, 26, 36, 0.16);
+  --pill-cast: 0 1px 2px rgba(22, 26, 36, 0.14);
 
   /* Glass in a lit room is light, and it is flat: tint, border, type. */
   --ctl-tint: rgba(255, 255, 255, 0.66);
@@ -908,7 +916,7 @@
    transitions, where they are the whole of the change. Where the wipe below
    does run, it covers them: the new room is composited from a snapshot that
    was taken after the tokens had already swapped. */
-:root, .card, .nav-base, .rules i, body, .stage {
+:root, .card, .rules i, body, .stage {
   transition: background-color 320ms var(--ease),
               outline-color 320ms var(--ease),
               border-color 320ms var(--ease),
@@ -1342,6 +1350,17 @@ body {
    its tall column somewhere else the gap will cross the frame to meet it. */
 .x-work .rules i.h-mid,
 .x-case .rules i.h-mid { --hgap-x: 4145px; --hgap-w: 386px; }
+
+/* And the middle verticals give way across the studies.
+
+   1134 and 1155 are the gutter between the playground and the writing column
+   and they belong there. Below 596 the row is cut on its own four columns,
+   where 1134 falls inside the third box and 1155 inside its gutter -- so the
+   pair is masked out over the band rather than ruled through a card. The two
+   gutters this band adds are ruled under the cards instead of over them, so
+   they are covered everywhere except in the gutters, which is the whole of
+   what a gutter line is. */
+.x-work .rules i.v-mid { --vgap-y: 596px; --vgap-h: 335px; }
 
 /* And on the article it does exactly that. There is no tall column there --
    one book spans the whole 399 -> 1521 -- so the gap crosses the frame and
@@ -2320,90 +2339,94 @@ body {
    988/1009 rules, down to the bottom of the frame.
    ========================================================================== */
 
-.nav-base {
-  position: absolute;
-  left: 399px;
-  top: 1010px;
-  width: 1122px;
-  height: 70px;
-  background: var(--card-fill);
-  outline: 1px solid var(--nav-line);
-}
-
+/* The pane. Tint, a hairline, and the room behind it blurred through --
+   which is why it does not need a rule saying what to do on the playground
+   the way the old base panel did: a pane made of what is behind it changes
+   when what is behind it changes, and a painted one has to be told. */
 .nav {
-  /* Which cell is lit, in the frame's own pixels. The marker and the wash
-     both read these, so moving the selection writes two numbers, not four. */
-  --nx: 399px;
-  --nw: 364px;
-  --nav-ease: 300ms cubic-bezier(0.4, 0, 0.2, 1);
-  transition: --nx var(--nav-ease), --nw var(--nav-ease);
+  position: fixed;
+  left: 50%;
+  /* Clear of the bottom of the window, and clear of whatever the hardware
+     puts below that. max() rather than a sum: where there is a home indicator
+     the inset is already 34, and 22 + 34 would float the bar in the middle of
+     nowhere. */
+  bottom: max(22px, env(safe-area-inset-bottom, 0px));
+  transform: translateX(-50%);
+  z-index: 60;
+
+  height: 54px;
+  padding: 6px;
+  display: flex;
+  align-items: stretch;
+  /* Fully round, which is the other half of reading as a floating pane. */
+  border-radius: 999px;
+
+  border: 1px solid rgba(var(--w), 0.14);
+  background-color: var(--bar-tint);
+  background-image: var(--ctl-ramp);
+  backdrop-filter: blur(30px) saturate(1.9) brightness(1.06);
+  -webkit-backdrop-filter: blur(30px) saturate(1.9) brightness(1.06);
+  box-shadow: var(--bar-cast);
 }
 
-/* The frame draws no rule under the bar, so the lit cell is shown by light
-   alone. A light source is not the shape of the thing it lands on: giving the
-   wash the cell's own box put a wall down the column edge, which reads as a
-   lit rectangle rather than as light. So the box spans the whole base and the
-   pool is placed inside it, free to fall off past the cell it belongs to and
-   to stop only where the base does -- a panel edge is a real edge, a column
-   boundary is not. Same soft ladder as the cards' glare, for the same reason:
-   two stops across this little contrast is where the banding rings come from. */
-.nav-glow {
+/* The lit cell, and it slides. One lozenge for the bar rather than one each,
+   so moving the selection is a single box travelling the width of a cell
+   instead of two boxes fading past each other -- which is the difference
+   between a control that answers and a control that redraws. Which cell it
+   stands in is read straight off whichever item carries aria-current, so
+   nothing has to be told twice; the overshoot in the curve is the weight of
+   the thing arriving. */
+.nav { --ni: 0; }
+.nav:has(.nav-work[aria-current="page"])  { --ni: 1; }
+.nav:has(.nav-about[aria-current="page"]) { --ni: 2; }
+
+.nav::before {
+  content: "";
   position: absolute;
-  left: 399px;
-  top: 1010px;
-  width: 1122px;
-  height: 70px;
-  pointer-events: none;
-
-  /* centre of the lit cell, in this box's own coordinates */
-  --cx: calc(var(--nx) + var(--nw) / 2 - 399px);
-
-  background:
-    radial-gradient(ellipse 320px 96px at var(--cx) 100%,
-      rgba(var(--w), 0.105) 0%,
-      rgba(var(--w), 0.079) 20%,
-      rgba(var(--w), 0.049) 40%,
-      rgba(var(--w), 0.025) 58%,
-      rgba(var(--w), 0.010) 76%,
-      rgba(var(--w), 0.003) 88%,
-      rgba(var(--w), 0) 100%);
+  top: 6px;
+  bottom: 6px;
+  left: calc(6px + var(--ni) * (100% - 12px) / 3);
+  width: calc((100% - 12px) / 3);
+  border-radius: 999px;
+  background: rgba(var(--w), 0.17);
+  box-shadow: var(--pill-cast);
+  transition: left 460ms cubic-bezier(0.34, 1.42, 0.5, 1);
 }
 
+/* And the labels. Each one takes a third of the bar and the whole height of
+   it, so the target is the cell and not the four characters in the middle of
+   it: 104 by 42 rather than 48 by 28, and 104 by 42 in every window rather
+   than whatever the frame's scale left of it.
+
+   The lozenge is the selection, so the lit label only has to stop being grey.
+   The bloom went with the pool it belonged to -- light on a pane comes off the
+   pane, and a word glowing on a piece of glass is a word on fire. */
 .nav a {
-  position: absolute;
-  top: 1034px;
-  height: 28px;
-  display: block;
+  position: relative;
+  z-index: 1;                          /* over the lozenge, not under it */
+  flex: 1;
+  min-width: 104px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-family: var(--f-nav);
-  font-size: 14px;
-  line-height: 28px;
+  font-size: 13px;
   font-weight: 500;
-  letter-spacing: 0.16em;
-  text-align: center;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   text-decoration: none;
   color: rgb(var(--w));
-  opacity: 0.4;                     /* unlit is the resting state for all three */
-  transition: opacity 200ms ease, text-shadow 260ms ease;
+  opacity: 0.55;
+  -webkit-tap-highlight-color: transparent;
+  transition: opacity 200ms ease;
 }
-
-.nav-home  { left: 557px;  width: 48px; }
-.nav-work  { left: 935px;  width: 48px; }
-.nav-about { left: 1297px; width: 53px; }
-
-/* Hover says the cell can be lit; it is not the lighting itself, so it stops
-   well short of white and leaves the selection the brightest thing in the bar. */
-.nav a:hover { opacity: 0.72; }
-
-/* Lit: full white, and enough bloom that the label reads as a source rather
-   than just a lighter grey. Two shadows -- a tight one for the edge of the
-   glyph, a wide one for the halo the pixel font is too thin to throw itself. */
-.nav a[aria-current="page"] {
-  opacity: 1;
-  text-shadow: var(--nav-lit);
+.nav a:hover { opacity: 0.85; }
+.nav a[aria-current="page"] { opacity: 1; }
+.nav a:focus-visible {
+  outline: 2px solid rgb(var(--w));
+  outline-offset: -2px;
+  border-radius: 999px;
 }
-
-.nav a:focus-visible { outline: 2px solid rgb(var(--w)); outline-offset: 6px; }
 
 /* A phone control. The frame has a breadcrumb ranged with the cards and a bar
    ruled into the lattice; neither wants a floating button over the top of it. */
@@ -2587,17 +2610,9 @@ body {
    is not painted -- and the cost that is left lands on a compositor rather
    than on the frame doing the work.
 
-   Opacity and nothing else. A print carries its angle in transform and its
-   place on the wall in translate, and both of those belong to the drag; a fade
-   that also moved them would be taking two properties off a pointer. They come
-   in a beat behind the last tile, because a wall is the thing a room is hung
-   on and it settles after what is hanging on it. */
-.view-about > .ab-pin {
-  --x-delay: calc(var(--x-step) * 3);
-  transition: opacity var(--x-fade) var(--x-ease);
-  transition-delay: var(--x-delay);
-}
-.x-empty .view-about > .ab-pin { opacity: 0; }
+   The About screen had a set of these too, for seven prints pinned behind its
+   bento. The prints are gone and so is the rule; what is said above about the
+   cost of fading something nobody has asked for still holds for the table. */
 
 /* And the table, which had none of this and needed it most.
 
@@ -2785,16 +2800,26 @@ body {
    with the eight in the space that is left. */
 .w-index { left: 1155px; top: 91px;  width: 366px; height: 483px;
            --gx: 50%; --gy: 0%;  --gw: 140%; --gh: 78%;  --gs: 0.022; }
-/* One row of three, a column each, 596 to the foot of the frame. The widths
-   are the frame's own: the two the projects already stood in, and the third
-   is the writing column's, which is why the row lines up with the two boxes
-   above it without a figure being invented for it. */
-.w-one   { left: 399px;  top: 596px; width: 364px; height: 335px;
+/* One row of four, a column each, 596 to the foot of the frame.
+
+   It was three, and the three widths were the frame's own -- the two the
+   projects already stood in and the writing column's -- which is why the row
+   lined up with the boxes above it without a figure being invented for it.
+   A fourth study cannot have that: three columns is what the frame's
+   verticals cut this band into, and any fourth box stands on a line.
+
+   So the band is cut on its own figures: 264 apiece with 22 between, which is
+   1122 and is 399 to 1521 to the pixel. The gutters land at 663, 949 and
+   1235. The last of those is the only one the frame already rules, and the
+   middle pair gives way across this band rather than being drawn twice. */
+.w-one   { left: 399px;  top: 596px; width: 264px; height: 335px;
            --gx: 100%; --gy: 0%; --gw: 130%; --gh: 165%; --gs: 0.05; }
-.w-two   { left: 785px;  top: 596px; width: 350px; height: 335px;
+.w-two   { left: 685px;  top: 596px; width: 264px; height: 335px;
            --gx: 68%; --gy: 0%;  --gw: 110%; --gh: 165%; --gs: 0.05; }
-.w-three { left: 1155px; top: 596px; width: 366px; height: 335px;
+.w-three { left: 971px;  top: 596px; width: 264px; height: 335px;
            --gx: 40%; --gy: 0%;  --gw: 125%; --gh: 165%; --gs: 0.05; }
+.w-four  { left: 1257px; top: 596px; width: 264px; height: 335px;
+           --gx: 20%; --gy: 0%;  --gw: 125%; --gh: 165%; --gs: 0.05; }
 
 /* --- the playground, as a lead tile ---------------------------------------
 
@@ -3229,11 +3254,13 @@ body {
 
 /* Under the picture, which is 128 tall and starts on the card own 24. */
 .w-one .label, .w-two .label,
-.w-three .label { left: 24px; top: 176px; }
+.w-three .label, .w-four .label { left: 24px; top: 176px; }
 
-.w-one .arrow   { left: 316px; top: 174px; }
-.w-two .arrow   { left: 302px; top: 174px; }
-.w-three .arrow { left: 318px; top: 174px; }
+/* One figure now the columns are one width: 264 less the 24 the box starts
+   at and the 24 the arrow is. Three hand-kept numbers were three chances to
+   drift, and they had already drifted by two pixels. */
+.w-one .arrow, .w-two .arrow,
+.w-three .arrow, .w-four .arrow { left: 216px; top: 174px; }
 
 /* The headline and the line under it are one block.
    They were two absolute positions kept in step by hand -- 46 and 84 on one
@@ -3246,9 +3273,8 @@ body {
    thing in view. On the frame the three cards sit in a row under a headline
    that has already said what they are, and the case is one press away. */
 .w-kind, .w-figs { display: none; }
-.w-one .w-said   { width: 300px; }
-.w-two .w-said   { width: 286px; }
-.w-three .w-said { width: 302px; }
+.w-one .w-said, .w-two .w-said,
+.w-three .w-said, .w-four .w-said { width: 216px; }
 .w-said .headline {
   position: static; width: auto; margin: 0;
   font-size: 17px; line-height: 23px;
@@ -5160,6 +5186,132 @@ body {
   color: rgba(var(--w), 0.42);
 }
 
+@keyframes cue-in { from { opacity: 0; } to { opacity: 1; } }
+
+/* --- the cue, and the sheet behind it -------------------------------------
+
+   Both pinned cards show one thing and hold five. The cue is the way to the
+   other four, and it is a queue glyph rather than a chevron because what is
+   behind it is a list and not a next. */
+.cue {
+  position: absolute;
+  right: 20px; top: 20px;
+  height: 28px;
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 0 11px 0 9px;
+  border: 1px solid rgba(var(--w), 0.20);
+  border-radius: 999px;
+  background: rgba(var(--w), 0.055);
+  color: rgba(var(--w), 0.68);
+  cursor: pointer;
+  /* The label sits in the frame's own small caps, which is what every other
+     count on this site is set in -- the shelf's 34, the writing's 8. */
+  font-family: var(--f-label);
+  font-size: 11px; line-height: 1;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+  transition: color var(--dur) var(--ease),
+              border-color var(--dur) var(--ease),
+              background-color var(--dur) var(--ease);
+}
+.cue:hover {
+  color: rgba(var(--w), 0.96);
+  border-color: rgba(var(--w), 0.42);
+  background: rgba(var(--w), 0.10);
+}
+.cue:focus-visible { outline: 2px solid rgb(var(--w)); outline-offset: 2px; }
+.cue svg { display: block; width: 14px; height: 14px; flex: none; }
+
+/* Up from the foot of the window, and only as tall as it needs to be.
+
+   Fixed rather than placed on the frame, for the same reason the plate is:
+   the frame is a 1920 drawing scaled into whatever window it is in, and a
+   sheet that came up from the foot of the drawing would stop somewhere in the
+   middle of the screen on a tall one. */
+.cue-sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 130;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.52);
+  -webkit-backdrop-filter: blur(10px);
+          backdrop-filter: blur(10px);
+  animation: cue-in 200ms var(--ease) both;
+}
+.cue-sheet[hidden] { display: none; }
+
+.cue-panel {
+  width: min(620px, 100%);
+  max-height: 76vh;
+  overflow-y: auto;
+  padding: 12px 26px 30px;
+  border-radius: 16px 16px 0 0;
+  /* Opaque. --card is mixed for a card sitting on the frame's own ground
+     with a lattice behind it; over a blurred screen it reads as a smear. */
+  background: var(--bg);
+  box-shadow: 0 -18px 50px -12px rgba(0, 0, 0, 0.8),
+              inset 0 1px 0 rgba(var(--w), 0.14);
+  animation: cue-up 320ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
+}
+@keyframes cue-up { from { transform: translateY(18px); } to { transform: none; } }
+
+.cue-grip {
+  width: 42px; height: 4px;
+  margin: 0 auto 18px;
+  border-radius: 2px;
+  background: rgba(var(--w), 0.20);
+}
+.cue-title {
+  margin: 0 0 14px;
+  font-family: var(--f-label);
+  font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+  color: rgba(var(--w), 0.42);
+}
+.cue-list { list-style: none; margin: 0; padding: 0; }
+.cue-list li { margin: 0; }
+.cue-list button {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 11px 0;
+  border: 0;
+  border-top: 1px solid rgba(var(--w), 0.10);
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  color: inherit;
+  transition: border-color var(--dur) var(--ease);
+}
+.cue-list li:last-child button { border-bottom: 1px solid rgba(var(--w), 0.10); }
+.cue-list button:hover { border-color: rgba(var(--w), 0.30); }
+.cue-list button:focus-visible { outline: 2px solid rgb(var(--w)); outline-offset: -2px; }
+.cue-thumb {
+  flex: 0 0 auto;
+  width: 62px; height: 40px;
+  border-radius: 2px;
+  background: var(--slot) center / cover no-repeat;
+  box-shadow: inset 0 0 0 1px rgba(var(--w), 0.12);
+}
+.cue-text { flex: 1 1 auto; min-width: 0; }
+.cue-text b {
+  display: block;
+  font-family: var(--f-body);
+  font-size: 14px; line-height: 19px; font-weight: 500;
+  color: rgba(var(--w), 0.90);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.cue-text span {
+  display: block;
+  margin-top: 1px;
+  font-family: var(--f-label);
+  font-size: 11px; line-height: 16px;
+  color: rgba(var(--w), 0.42);
+}
+.cue-on { color: rgba(var(--w), 0.42); font-size: 10px; letter-spacing: 0.12em; }
+
 /* ==========================================================================
    The switch
 
@@ -5306,8 +5458,6 @@ body {
 @property --ang  { syntax: "<angle>";     inherits: true; initial-value: 180deg; }
 /* The nav's lit cell, for the same reason: the wash is a gradient, so the
    cell has to interpolate as a length or the light teleports. */
-@property --nx { syntax: "<length>"; inherits: true; initial-value: 399px; }
-@property --nw { syntax: "<length>"; inherits: true; initial-value: 364px; }
 @property --tilt { syntax: "<number>";    inherits: true; initial-value: 0; }
 @property --px { syntax: "<length>"; inherits: true; initial-value: 960px; }
 @property --py { syntax: "<length>"; inherits: true; initial-value: 540px; }
@@ -5570,12 +5720,29 @@ a.arrow { text-decoration: none; }
    card that is standing still at the head of the screen. d comes up from
    Thoughts, 785,596,350x139, into the shelf: same left edge, up the frame,
    and three and a half times the height when it lands. */
-.ab-who        { left: 399px;  top: 91px;  width: 364px; height: 484px;
+/* About, in three bands.
+
+   Habits stood on the left under the who-card and the shelf ran across the
+   top, which put the two things on this screen you can actually read at a
+   glance -- the deck and the habit grid -- at opposite corners with
+   everything else between them. They belong together: both count something,
+   both are scanned rather than read, and side by side they make one band
+   instead of two orphans.
+
+   So: Now across the top, the two counters under it, and the shelf along the
+   foot as one unit the width of the frame -- empty for the moment and meant
+   to be. The who-card runs down the left of the first two bands, which is
+   what it was already doing and is why it is the only box here taller than it
+   is wide.
+
+   91 to 281, 305 to 661, 685 to 931: two gutters of 24 and the frame's own
+   931 at the foot. */
+.ab-who        { left: 399px;  top: 91px;  width: 364px; height: 570px;
                  --gx: 100%; --gy: 0%; --gw: 130%; --gh: 130%; --gs: 0.052; }
 /* Lately used to say what it had to say in a 366 corner. It has the whole
    bottom band now -- twice the width -- and the shelf keeps the height that
    thirty-four covers in two rows actually need. */
-.ab-shelf-card { left: 785px;  top: 91px;  width: 736px; height: 252px;
+.ab-shelf-card { left: 399px;  top: 685px; width: 1122px; height: 246px;
                  --gx: 34%; --gy: -6%; --gw: 120%; --gh: 125%; --gs: 0.048; }
 /* Two boxes rather than one with a line down it. A hairline between two
    grids on one card says they are two halves of a thing; two cards with the
@@ -5639,13 +5806,11 @@ a.arrow { text-decoration: none; }
    choice was a bigger gap or a shorter machine. This is the third option,
    and it costs nothing because 952 to 1010 is still fifty-eight clear
    pixels of frame before the nav. */
-.ab-habits     { left: 399px;  top: 596px; width: 364px; height: 356px;
+.ab-habits     { left: 785px;  top: 305px; width: 349px; height: 356px;
                  --gx: 22%; --gy: 0%; --gw: 110%; --gh: 150%; --gs: 0.05; }
-.ab-lately     { left: 785px;  top: 596px; width: 349px; height: 356px;
+.ab-now        { left: 785px;  top: 91px;  width: 736px; height: 190px;
                  --gx: 100%; --gy: 0%; --gw: 130%; --gh: 150%; --gs: 0.05; }
-.ab-now        { left: 785px;  top: 364px; width: 736px; height: 211px;
-                 --gx: 100%; --gy: 0%; --gw: 130%; --gh: 150%; --gs: 0.05; }
-.ab-music      { left: 1155px; top: 596px; width: 366px; height: 356px;
+.ab-music      { left: 1155px; top: 305px; width: 366px; height: 356px;
                  --gx: 20%; --gy: 100%; --gw: 120%; --gh: 140%; --gs: 0.05; }
 
 /* Both bands cross the mid pair now -- the shelf runs 785 to 1521 up top and
@@ -6011,8 +6176,90 @@ a.arrow { text-decoration: none; }
    the machine; there is air between them now, and the machine got the
    room the taller card freed rather than giving it up to the gap. */
 .ms-wk {
-  position: absolute; left: 24px; top: 78px;
+  /* 33 and not 24, which is the whole of the fix and was worth measuring
+     rather than eyeballing: the card is 366 and the deck is 300, so the two
+     margins are 33 apiece and there is no third figure that makes them
+     equal. It sat at 24 with 42 on the other side -- eighteen pixels out,
+     which is under the threshold for noticing a gap and well over it for
+     noticing that a machine is not square in its slot. Widening the deck was
+     the other way to close it and it would have meant re-cutting the well,
+     the stage, the strip and the keys, all of which are laid out to 300. */
+  position: absolute; left: 33px; top: 78px;
   width: 300px; height: 254px;
+
+  /* The case, as five figures.
+
+     There were nine, and eight of them were describing metal: a milled band
+     gradient, a chamfer colour for the lit edge and one for the shaded edge,
+     a screw, a key face with two colours of side wall under it, and a sheen.
+     Every one of those is a highlight, which is why the machine got louder
+     the lighter the room went -- a specular sweep on a dark panel is a hint
+     and the same sweep on a light one is a glare.
+
+     A panel, a hairline, and what a key is made of. The screen keeps
+     everything it had: it is backlit, it is the half of this that is
+     actually doing something, and it is dark in both rooms because a display
+     is dark when it is off whatever the lamp is doing. */
+  --wk-face: #17181b;
+  --wk-line: rgba(255, 255, 255, 0.10);
+  /* The screen, which is the one thing here that is dark on purpose. Kept as
+     a token because near-black is right in this room and much too hard a step
+     in the other: a black rectangle cut into a white panel is a hole. */
+  --wk-well: #0a0b0e;
+  /* And what a key is made of: a face, two colours of side wall under it, the
+     lip and the shade on its own edges, and what it throws on the panel. The
+     cast is the figure that was doing the damage -- see the light room. */
+  --wk-key: linear-gradient(180deg, #7d828c 0%, #474b53 54%, #34373d 100%);
+  --wk-key-a: #4b4f57;
+  --wk-key-b: #101115;
+  --wk-key-ink: rgba(255, 255, 255, 0.86);
+  --wk-key-lit: #fff;
+  --wk-key-top: rgba(255, 255, 255, 0.45);
+  --wk-key-bot: rgba(0, 0, 0, 0.40);
+  --wk-key-cast: 0 9px 10px rgba(0, 0, 0, 0.55);
+  --wk-key-down: 0 1px 3px rgba(0, 0, 0, 0.6);
+}
+
+/* And the same machine in a lit room. Aluminium rather than anodised: the
+   bands stay exactly where they are and only what they are made of changes,
+   so the milling, the chamfer and the brushing all still read -- it is the
+   same object under a different lamp, which is the only version of a light
+   theme worth having. */
+/* The same machine in a lit room, and every figure that is different here is
+   different for one reason: the range this room has is smaller. The panel
+   comes down a shade so the step to the screen is shorter, the screen comes up
+   a long way so it stops being a hole, and the shadow under a key is an eighth
+   of what it is in the dark instead of the same figure on a background eleven
+   times lighter. */
+:root[data-theme="light"] .ms-wk {
+  --wk-face: #e9ebef;
+  --wk-line: rgba(18, 20, 26, 0.11);
+  --wk-well: #2b2f36;
+  --wk-key: linear-gradient(180deg, #ffffff 0%, #eceef2 54%, #dcdfe4 100%);
+  --wk-key-a: #ced2d8;
+  --wk-key-b: #b4b9c1;
+  --wk-key-ink: rgba(20, 22, 30, 0.72);
+  --wk-key-lit: #14161e;
+  --wk-key-top: rgba(255, 255, 255, 0.9);
+  --wk-key-bot: rgba(0, 0, 0, 0.10);
+  --wk-key-cast: 0 7px 8px rgba(22, 26, 36, 0.13);
+  --wk-key-down: 0 1px 3px rgba(22, 26, 36, 0.16);
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme]) .ms-wk {
+    --wk-face: #e9ebef;
+    --wk-line: rgba(18, 20, 26, 0.11);
+    --wk-well: #2b2f36;
+    --wk-key: linear-gradient(180deg, #ffffff 0%, #eceef2 54%, #dcdfe4 100%);
+    --wk-key-a: #ced2d8;
+    --wk-key-b: #b4b9c1;
+    --wk-key-ink: rgba(20, 22, 30, 0.72);
+    --wk-key-lit: #14161e;
+    --wk-key-top: rgba(255, 255, 255, 0.9);
+    --wk-key-bot: rgba(0, 0, 0, 0.10);
+    --wk-key-cast: 0 7px 8px rgba(22, 26, 36, 0.13);
+    --wk-key-down: 0 1px 3px rgba(22, 26, 36, 0.16);
+  }
 }
 /* Square, everywhere, on purpose.
 
@@ -6022,73 +6269,27 @@ a.arrow { text-decoration: none; }
    a billet and has edges you would not want to run a thumb along. The card
    behind it keeps its own radius, which is what makes the difference read:
    a hard object sitting on a soft one. */
+/* A panel with a screen in it. One fill, one hairline, and a corner radius
+   that says it is a thing on the card rather than a thing machined out of a
+   billet. Nothing casts: the deck is not floating above the card, it is on
+   it, and three stacked shadows under a 300-pixel box were most of what made
+   this read as a photograph of hi-fi rather than as a control. */
 .ms-wk-face {
   position: absolute; inset: 0;
-  border-radius: 0;
-  /* Milled, not moulded. The bands are the point: a single flat fill is the
-     one thing that never looks like metal. */
-  background: linear-gradient(99deg,
-    #757a84 0%, #40444c 8%, #2a2d34 22%, #52575f 38%, #23262c 50%,
-    #3a3e46 66%, #62676f 82%, #262930 93%, #4a4e56 100%);
-  box-shadow:
-    /* the chamfer: lit along the top edge, shaded along the bottom */
-    inset 0 2px 0 rgba(255, 255, 255, 0.4),
-    inset 0 -3px 0 rgba(0, 0, 0, 0.7),
-    inset 2px 0 0 rgba(255, 255, 255, 0.1),
-    inset -2px 0 0 rgba(0, 0, 0, 0.35),
-    /* the rim of the shell, and the seam just inside it */
-    inset 0 0 0 1px rgba(0, 0, 0, 0.75),
-    inset 0 0 0 4px rgba(255, 255, 255, 0.05),
-    inset 0 0 14px 4px rgba(0, 0, 0, 0.34),
-    /* and what it does to the card underneath */
-    0 34px 46px -26px rgba(0, 0, 0, 0.92),
-    0 10px 18px -8px rgba(0, 0, 0, 0.5),
-    0 3px 6px rgba(0, 0, 0, 0.42);
+  border-radius: 8px;
+  background: var(--wk-face);
+  box-shadow: inset 0 0 0 1px var(--wk-line);
 }
-/* The moulding line around the face plate. A shell this size is two pieces
-   of metal and you can always see where they meet. */
-.ms-wk-face::before {
-  content: "";
-  position: absolute; inset: 5px;
-  border-radius: 0;
-  pointer-events: none;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.16),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.45),
-    0 1px 0 rgba(255, 255, 255, 0.07);
-}
-/* The brushing, and the lamp. Both under the controls rather than over them
-   -- a sheen that dims the writing on a key is on the wrong side of it. */
-.ms-wk-face::after {
-  content: "";
-  position: absolute; inset: 0;
-  z-index: 1;
-  border-radius: 0;
-  pointer-events: none;
-  background:
-    repeating-linear-gradient(99deg,
-      rgba(255, 255, 255, 0.035) 0 1px, rgba(0, 0, 0, 0.03) 1px 3px),
-    linear-gradient(99deg,
-      rgba(255, 255, 255, 0.24) 0%, rgba(255, 255, 255, 0) 12%,
-      rgba(255, 255, 255, 0) 32%, rgba(255, 255, 255, 0.18) 38%,
-      rgba(255, 255, 255, 0) 45%, rgba(255, 255, 255, 0) 76%,
-      rgba(255, 255, 255, 0.20) 83%, rgba(255, 255, 255, 0) 92%);
-}
+/* The moulding seam and the brushing both went with the metal. A seam is
+   where two pressings meet and there are no pressings here; a sheen is a lamp
+   reflected in something polished, and nothing is polished. */
+.ms-wk-face::before { content: none; }
+.ms-wk-face::after { content: none; }
 
-.ms-screw {
-  position: absolute;
-  z-index: 2;
-  width: 7px; height: 7px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 38% 32%, #9198a3 0%, #4a4e57 48%, #1d2025 100%);
-  box-shadow:
-    inset 0 0 0 1px rgba(0, 0, 0, 0.45),
-    0 1px 0 rgba(255, 255, 255, 0.2);
-}
-.ms-screw-1 { left: 7px;  top: 7px; }
-.ms-screw-2 { right: 7px; top: 7px; }
-.ms-screw-3 { left: 7px;  bottom: 7px; }
-.ms-screw-4 { right: 7px; bottom: 7px; }
+/* And the four screws are gone. They were the last of the argument that this
+   is a serviceable object, and it is not: nothing about a web page comes
+   apart with a screwdriver. Four grey dots in four corners, holding nothing
+   down. */
 
 /* --- the glass ---------------------------------------------------------- */
 .ms-well {
@@ -6096,15 +6297,14 @@ a.arrow { text-decoration: none; }
   z-index: 2;
   height: 152px;
   padding: 6px;
-  border-radius: 0;
+  /* Cut into the panel rather than sunk behind glass. The five shadows were
+     drawing a recess -- a lip above, a shade below, a highlight on the sill --
+     and a recess is a claim about thickness that a flat panel cannot support.
+     The screen is dark and the panel is not, which is the only edge it needs. */
+  border-radius: 6px;
   overflow: hidden;
-  background: #06070a;
-  box-shadow:
-    inset 0 5px 12px rgba(0, 0, 0, 0.98),
-    inset 0 -2px 6px rgba(0, 0, 0, 0.6),
-    inset 0 0 0 1px rgba(0, 0, 0, 0.85),
-    0 1px 0 rgba(255, 255, 255, 0.22),
-    0 2px 3px rgba(255, 255, 255, 0.05);
+  background: var(--wk-well);
+  box-shadow: inset 0 0 0 1px var(--wk-line);
 }
 .ms-top {
   position: relative;
@@ -6120,7 +6320,7 @@ a.arrow { text-decoration: none; }
   flex: none;
   width: 84px; height: 84px;
   overflow: hidden;
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.14);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.10);
 }
 .ms-tube { position: absolute; inset: 0; pointer-events: none; }
 .ms-tube iframe { display: block; width: 100%; height: 100%; border: 0; }
@@ -6284,6 +6484,151 @@ a.arrow { text-decoration: none; }
 /* OFF -- the sleeve, on its own, in the dark. */
 .viz-off .ms-viz { visibility: hidden; }
 
+/* --- the screen, redone ----------------------------------------------------
+
+   What was here: a square thumbnail in the middle, a nine-bar analyser either
+   side of it, and a two-line readout under all three, inside a well 152 tall.
+   Every one of those is a good idea and together they are four things fighting
+   over a space where one belongs. Nothing in it was big enough to look at, so
+   there was nothing to look at.
+
+   It is one picture now. The sleeve fills the glass; behind it the same image
+   is thrown out of focus and scaled past the edges, so the light in the well
+   comes off the record instead of off a lamp -- which is the whole difference
+   between a screen with something on it and a screen that is lit by what is on
+   it. The name lies over the foot of the picture under a gradient, and the
+   analyser is the spill along the bottom edge: eighteen bars of light with no
+   outline on any of them, which reads as level rather than as a chart.
+   ------------------------------------------------------------------------ */
+.ms-well { height: 168px; padding: 0; }
+
+/* The room the picture makes. Blurred hard and pushed past every edge, because
+   a blur that stops inside the box draws its own rectangle. */
+.ms-haze {
+  position: absolute;
+  inset: -22%;
+  background-position: center;
+  background-size: cover;
+  filter: blur(22px) saturate(1.7) brightness(0.72);
+  opacity: 0.9;
+  pointer-events: none;
+}
+
+/* And the sleeve itself, square and centred, standing off the haze. */
+.ms-well .ms-stage {
+  position: absolute;
+  left: 50%; top: 15px;
+  width: 104px; height: 104px;
+  margin-left: -52px;
+  flex: none;
+  z-index: 2;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.22),
+    0 10px 22px -6px rgba(0, 0, 0, 0.85),
+    0 2px 5px rgba(0, 0, 0, 0.6);
+}
+
+/* The foot of the picture, darkened so type can sit on it. */
+.ms-veil {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 58%;
+  z-index: 3;
+  pointer-events: none;
+  background: linear-gradient(180deg,
+    rgba(4, 6, 8, 0) 0%,
+    rgba(4, 6, 8, 0.55) 46%,
+    rgba(4, 6, 8, 0.92) 100%);
+}
+
+/* The name. Still the readout face, still lit, but set on the picture rather
+   than on a strip of its own. */
+.ms-well .ms-lcd {
+  position: absolute;
+  left: 14px; right: 14px; bottom: 20px;
+  z-index: 4;
+  display: block;
+  text-align: center;
+  background: none;
+  box-shadow: none;
+  padding: 0;
+  height: auto;
+}
+.ms-well .ms-lcd::before { display: none; }
+.ms-well .ms-lcd-a {
+  display: block;
+  font-size: 11px; line-height: 15px;
+  letter-spacing: 0.04em;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  text-shadow: 0 0 10px rgba(150, 255, 190, 0.55), 0 1px 2px rgba(0, 0, 0, 0.9);
+}
+.ms-well .ms-lcd-by {
+  display: block;
+  margin-top: 2px;
+  font-size: 9px; line-height: 13px;
+  letter-spacing: 0.1em;
+  opacity: 0.72;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
+}
+
+/* The level, as light along the bottom edge. Eighteen bars, no outlines, and
+   blurred just enough that what you read is a glow moving rather than blocks
+   counting. */
+/* Half the glass, not a strip along the bottom of it.
+
+   Twenty-six pixels of meter under a picture is a status bar. What the deck
+   wants is the light coming up off the record, so the bars run to the middle
+   of the screen and are blurred and screened over the sleeve rather than
+   sitting in front of it -- at full level they wash the bottom half of the
+   picture, which is what a loud passage does to a lit meter behind glass. */
+.ms-spill {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 62%;
+  z-index: 5;
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  padding: 0 6px 3px;
+  pointer-events: none;
+  filter: blur(2.4px);
+  mix-blend-mode: screen;
+  opacity: 0.92;
+}
+/* Driven, not looped.
+
+   Every bar was a CSS animation with its own period and phase, which is a
+   very good imitation of an analyser and is not one: nothing in it knows what
+   the music is doing, so eighteen bars wander at eighteen speeds and the
+   pattern is the same whatever is playing. The height is written by the
+   script now, once a frame, off the deck's own clock -- see the visualiser in
+   the music script for what is honest about that and what is not.
+
+   No transition on the height either. A bar that eases toward its value is a
+   bar that arrives late, and late is exactly the thing you can see. */
+.ms-spill i {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
+  height: 6%;
+  border-radius: 1px 1px 0 0;
+  background: linear-gradient(180deg,
+    #ffffff 0%,
+    rgba(184, 255, 214, 0.98) 22%,
+    rgba(96, 226, 156, 0.62) 62%,
+    rgba(52, 190, 128, 0) 100%);
+}
+
+/* And the grid on the glass, at a third of what it was. It was a pixel mask
+   over a thumbnail; over a photograph it is a screen door. */
+.ms-well .ms-pix { opacity: 0.30; z-index: 6; }
+
+@media (prefers-reduced-motion: reduce) {
+  .ms-spill i { height: 22% !important; }
+}
+
+
 /* --- the readout -------------------------------------------------------- */
 
 /* What text looks like on a screen this small.
@@ -6418,13 +6763,20 @@ a.arrow { text-decoration: none; }
   z-index: 2;
   height: 38px;
   padding: 0 12px;
+  /* No strip. It was a second recess under the first one, and six keys in a
+     row are already a row without a trough drawn round them. */
   border-radius: 0;
   display: flex; align-items: center; justify-content: center; gap: 8px;
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0.46), rgba(0, 0, 0, 0.2));
-  box-shadow:
-    inset 0 2px 5px rgba(0, 0, 0, 0.65),
-    0 1px 0 rgba(255, 255, 255, 0.15);
+  background: none;
+  box-shadow: none;
 }
+/* Keys, standing on six pixels of their own side wall.
+
+   These were flattened for a revision and it was the wrong call. Everything
+   else on this machine is decoration and can go; a key is the part that does
+   something, and it is the one place where looking pressable is not styling,
+   it is the control telling you what it is. The travel below is also the only
+   way the latch reads. */
 .ms-key {
   flex: none;
   width: 32px; height: 24px;
@@ -6433,21 +6785,28 @@ a.arrow { text-decoration: none; }
   margin: 0; padding: 0; border: 0;
   border-radius: 0;
   cursor: pointer;
-  color: rgba(255, 255, 255, 0.86);
-  background: linear-gradient(180deg, #7d828c 0%, #474b53 54%, #34373d 100%);
+  color: var(--wk-key-ink);
+  background: var(--wk-key);
   box-shadow:
-    0 3px 0 #4b4f57,
-    0 6px 0 #101115,
-    0 9px 10px rgba(0, 0, 0, 0.68),
-    inset 0 1px 0 rgba(255, 255, 255, 0.45),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.4);
+    0 3px 0 var(--wk-key-a),
+    0 6px 0 var(--wk-key-b),
+    var(--wk-key-cast),
+    inset 0 1px 0 var(--wk-key-top),
+    inset 0 -1px 0 var(--wk-key-bot);
   transition: transform 110ms var(--ease), box-shadow 110ms var(--ease),
               color 110ms var(--ease);
 }
-.ms-key:hover { color: #fff; }
+.ms-key:hover { color: var(--wk-key-lit); }
 .ms-key:focus-visible { outline: 2px solid #8ab4ff; outline-offset: 3px; }
 .ms-key svg { display: block; width: 13px; height: 13px; fill: currentColor; }
 
+/* Down is five pixels of travel and the loss of the wall that held it up.
+
+   Play and pause latch, and they latch against each other, which is the one
+   thing a tape deck does that no software player has bothered to do since:
+   press play and it stays in; press pause and play comes back out while
+   pause goes down; press stop and they both come up. The state is read off
+   the player, so it is true rather than decorative. */
 /* Down is five pixels of travel and the loss of the wall that held it up.
 
    Play and pause latch, and they latch against each other, which is the one
@@ -6460,13 +6819,13 @@ a.arrow { text-decoration: none; }
 .is-held .ms-key-pause {
   transform: translateY(6px);
   box-shadow:
-    0 0 0 #4b4f57,
-    0 0 0 #101115,
-    0 1px 3px rgba(0, 0, 0, 0.65),
-    inset 0 1px 0 rgba(255, 255, 255, 0.2),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.4);
+    0 0 0 var(--wk-key-a),
+    0 0 0 var(--wk-key-b),
+    var(--wk-key-down),
+    inset 0 1px 0 var(--wk-key-top),
+    inset 0 -1px 0 var(--wk-key-bot);
 }
-.is-going .ms-key-play, .is-held .ms-key-pause { color: #fff; }
+.is-going .ms-key-play, .is-held .ms-key-pause { color: var(--wk-key-lit); }
 
 /* A player that cannot get its audio buffers for ever and reports nothing.
    When the watchdog gives up, the controls go and the object stays. */
@@ -7005,195 +7364,6 @@ a.arrow { text-decoration: none; }
 .ab-late-i span { display: block; margin-top: 7px; }
 .ab-late-i i { display: block; margin-top: auto; font-style: normal; }
 
-/* --- the prints -----------------------------------------------------------
-
-   Everything else here is on the frame: 399 to 1521, twenty-two hairlines,
-   every box landing on a rule. That is the point of it and it is also a claim
-   about the person, and the claim is only half true. So seven prints are not on
-   the frame at all -- pinned up crooked all over the page, top edge to bottom
-   down both margins in pairs, each pair standing beside the card it is about,
-   at seven angles and seven sizes.
-
-   **They are behind the bento, not on top of it**, and that is the whole of
-   the effect. A print slides in behind a card and what you get is the corner
-   of a photograph in a margin with a hairline ruled across it. On top they
-   were things stuck to the front of a grid, which reads as decoration.
-   Behind, they read as the wall the grid is pinned to.
-
-   Behind **by document order**, and that is not a stylistic preference. The
-   first version said z-index -1, which is the obvious way to write it and put
-   every print behind its own ancestor's box -- and hit testing follows paint
-   order, so the stage took every pointer before the paper saw it. The prints
-   were not draggable, they were not even clickable, and a press on one
-   selected the page behind it. So the six figures are written first inside
-   the view and every card after them: positioned, z-index auto, painted in
-   tree order, which is one sheet of paper covering another. In front of the
-   stage, behind the bento, and pickable.
-
-   .rules-over is 5 and still rules across them. .rules-under now sits under
-   them rather than over, which costs nothing: the only pairs down there are
-   762/785 and 735/756, and all four are inside the content column where a
-   card covers them anyway.
-
-   Three of the six run off an edge of the frame and are cut by it. A print
-   that fits neatly into a margin is a fourth box; one that hangs off the edge
-   is something somebody put there afterwards. It is also why they carry no
-   captions -- a caption belongs at the bottom of a mount, and half the mounts
-   here have no bottom on screen. The note saying what the photograph will be
-   sits at the top of the frame instead, where it can be read.
-
-   **And none of them goes near the bar.** 399 to 1521 below 1010 is the nav,
-   and a photograph lying over it is a print that eats a link -- so the two at
-   the foot are out in the margins either side of it.
-
-   They take the room with them: a warm white mount under the lights, a dark
-   card stock in the dark.
-   ------------------------------------------------------------------------- */
-
-.ab-pin {
-  position: absolute;
-  width: var(--pw, 240px);
-  margin: 0;
-  padding: 12px;
-  background: var(--print);
-
-  /* Two properties rather than one, and that is the whole trick of the drag.
-     translate resolves before transform, so the print is moved in the frame's
-     own axes and only then turned about its own middle -- which is what a
-     hand does to a photograph and what one transform written in the other
-     order does not. It also means the two can be transitioned separately:
-     translate carries the pointer and is never eased, transform carries the
-     lift and always is. Written as one shorthand, easing the lift would have
-     put a quarter-second of lag between the cursor and the paper. */
-  translate: var(--dx, 0px) var(--dy, 0px);
-  transform: rotate(calc(var(--rot, -6deg) * var(--rot-k, 1))) scale(var(--pin-s, 1));
-
-  box-shadow: var(--print-cast);
-  cursor: grab;
-  touch-action: none;
-  -webkit-user-select: none;
-  user-select: none;
-  transition: transform 260ms var(--ease), box-shadow 260ms var(--ease);
-}
-
-/* Held. It comes off the wall: the shadow drops further and softens, it grows
-   by three per cent, and **it straightens up** -- the tilt eases to under half
-   of what it was, because a picked-up photograph is held square to the eye and
-   the angle it was hanging at is the angle it was left at, not a property of
-   the print.
-
-   z-index 4 for as long as it is in the air, and only that long. These live
-   behind the bento, and a print you are moving under a card you cannot see is
-   a print you have lost -- so it comes up over the cards while you hold it and
-   goes back behind them the moment you let go. */
-.ab-pin.is-held {
-  z-index: 4;
-  --rot-k: 0.42;
-  --pin-s: 1.03;
-  cursor: grabbing;
-  box-shadow: var(--print-held);
-}
-
-/* Going home, on a double click. translate is deliberately not transitioned
-   in the rule above -- it has to be instant under a pointer -- so the one
-   move that is not a drag turns it on for the length of the journey. */
-.ab-pin.is-homing { transition: translate 420ms var(--ease),
-                                transform 260ms var(--ease),
-                                box-shadow 260ms var(--ease); }
-
-.ab-pin-shot {
-  display: flex;
-  align-items: flex-start;
-  height: var(--ph, 168px);
-  padding: 9px 10px;
-  background-color: var(--print-shot);
-  background-image:
-    linear-gradient(to bottom right, transparent calc(50% - 0.5px),
-      var(--print-mark) 50%, transparent calc(50% + 0.5px)),
-    linear-gradient(to bottom left, transparent calc(50% - 0.5px),
-      var(--print-mark) 50%, transparent calc(50% + 0.5px));
-  font-family: var(--f-nav); letter-spacing: 0.06em; font-size: 9px; line-height: 13px;
-  text-transform: uppercase; color: var(--print-faint);
-  transform: rotate(0.8deg);
-}
-
-.ab-pin-tack {
-  position: absolute;
-  left: 50%; top: -9px;
-  width: 18px; height: 18px;
-  margin-left: -9px;
-  border-radius: 50%;
-  background:
-    radial-gradient(circle at 34% 28%,
-      #f0a49c 0%, #d4453c 38%, #a5241d 68%, #6e120e 100%);
-  box-shadow: 0 3px 5px -1px rgba(0, 0, 0, 0.55),
-              inset 0 -1px 2px rgba(0, 0, 0, 0.4);
-}
-.ab-pin-2 .ab-pin-tack {
-  background: radial-gradient(circle at 34% 28%,
-    #ffd9a0 0%, #e0a63f 38%, #a9761d 68%, #6b4a0e 100%);
-}
-.ab-pin-3 .ab-pin-tack {
-  background: radial-gradient(circle at 34% 28%,
-    #b9d8ee 0%, #5a92c4 38%, #2f5f8e 68%, #1b3a58 100%);
-}
-.ab-pin-4 .ab-pin-tack {
-  background: radial-gradient(circle at 34% 28%,
-    #c6e9c8 0%, #5aa863 38%, #2f6e39 68%, #1b421f 100%);
-}
-.ab-pin-5 .ab-pin-tack {
-  background: radial-gradient(circle at 34% 28%,
-    #e8cdf0 0%, #a45fc0 38%, #6d3184 68%, #421b50 100%);
-}
-.ab-pin-7 .ab-pin-tack {
-  background: radial-gradient(circle at 34% 28%,
-    #c8f0d2 0%, #4bbf72 38%, #2a7c47 68%, #17482a 100%);
-}
-.ab-pin-8 .ab-pin-tack {
-  background: radial-gradient(circle at 34% 28%,
-    #f2c4e6 0%, #c25fa4 38%, #8a3572 68%, #521a43 100%);
-}
-.ab-pin-6 .ab-pin-tack {
-  background: radial-gradient(circle at 34% 28%,
-    #f6e3b0 0%, #d8b348 38%, #94781f 68%, #574611 100%);
-}
-
-/* All over the page, and deliberately not at one pitch: a row of six evenly
-   spaced is a fourth grid. One comes down over the top edge behind the shelf;
-   two are piled in the left margin; two more are cut by the foot of the frame,
-   out either side of the bar; one tucks in behind Who I Am on the right. */
-/* There was a sixth here, at 648,-78 -- hung over the head of the frame and
-   down onto the top edge of the first card. It came off the wall for good.
-   Every other print in this set is in a margin, which is what makes them read
-   as the wall the grid is pinned to; one lying across the top of the lead card
-   was in the grid, and a photograph in the grid is a photograph that has to be
-   explained. The head of the screen is also the one part of it with nothing in
-   it -- the crumb line and 91 pixels of air -- and that emptiness is doing
-   work. */
-/* Seven, and each pair is beside the card it is about rather than scattered
-   at random: two games in the left margin next to Who I Am, two of the gym
-   further down the same margin next to Training, two in the right margin
-   beside the shelf, and one out to the right of the commits.
-
-   The margins are the only place they can go. 399 to 1521 is the content
-   column and 1010 down is the bar, so a print in either is a print over
-   something -- which is what put the sixth one, the one that used to hang off
-   the top edge, out of this set for good. */
-
-/* the left margin, beside Who I Am */
-.ab-pin-2 { left: 150px;  top: 146px; --pw: 244px; --ph: 168px; --rot: -6deg; }
-.ab-pin-3 { left: 46px;   top: 330px; --pw: 222px; --ph: 154px; --rot: 7deg; }
-
-/* the left margin, beside Training */
-.ab-pin-4 { left: 96px;   top: 622px; --pw: 238px; --ph: 164px; --rot: -4.5deg; }
-.ab-pin-7 { left: 178px;  top: 806px; --pw: 226px; --ph: 156px; --rot: 5.5deg; }
-
-/* the right margin, beside the shelf */
-.ab-pin-5 { left: 1560px; top: 144px; --pw: 246px; --ph: 170px; --rot: 6deg; }
-.ab-pin-8 { left: 1642px; top: 352px; --pw: 224px; --ph: 154px; --rot: -7deg; }
-
-/* and one out beyond the commits */
-.ab-pin-6 { left: 1574px; top: 688px; --pw: 236px; --ph: 162px; --rot: 4deg; }
 
 /* --- a cover, opened ------------------------------------------------------
 
@@ -8475,13 +8645,6 @@ a.arrow { text-decoration: none; }
 .x-lab .room,
 .x-piece .room { display: none; }
 
-.x-lab .nav-base,
-.x-piece .nav-base {
-  background: var(--bar-tape);
-  outline: none;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.32);
-}
-
 /* And the crumb keeps the ink it takes on the playground. */
 .x-piece .crumb,
 .x-piece .crumb-count { color: rgba(238, 244, 250, 0.62); }
@@ -8851,61 +9014,11 @@ a.arrow { text-decoration: none; }
     animation: arr-bar 620ms cubic-bezier(0.2, 0.7, 0.3, 1) var(--at, 1180ms) both;
   }
 
-  /* The lit cell, and it slides. One lozenge for the bar rather than one
-     each, so moving the selection is a single box travelling the width of a
-     cell instead of two boxes fading past each other -- which is the
-     difference between a control that answers and a control that redraws.
-     Which cell it stands in is read straight off whichever item carries
-     aria-current, so nothing has to be told twice; the overshoot in the curve
-     is the weight of the thing arriving. */
-  .nav { --ni: 0; }
-  .nav:has(.nav-work[aria-current="page"])  { --ni: 1; }
-  .nav:has(.nav-about[aria-current="page"]) { --ni: 2; }
-
-  .nav::before {
-    content: "";
-    position: absolute;
-    top: 6px;
-    bottom: 6px;
-    left: calc(6px + var(--ni) * (100% - 12px) / 3);
-    width: calc((100% - 12px) / 3);
-    /* It was already called a lozenge and already cast like one; square was
-       the only thing about it that was not. */
-    border-radius: 999px;
-    background: rgba(var(--w), 0.185);
-    box-shadow: var(--pill-cast);
-    transition: left 460ms cubic-bezier(0.34, 1.42, 0.5, 1);
-  }
-
-  /* And the labels. The frame places all three by hand -- absolute, top 1034,
-     left 557 and so on, because 1034 is where the bar sits in a 1080-pixel
-     frame -- and relative honours top and left as an offset from where the
-     box already is, so each label was laid out in the bar and then pushed a
-     thousand and thirty-four pixels below the bottom of the phone.
-
-     inset: auto is the whole fix. The rest is making them worth tapping: each
-     one takes a third of the bar and the full height of it, so the target is
-     the cell rather than the seven characters in the middle of it. */
-  .nav a {
-    position: relative;
-    inset: auto;
-    z-index: 1;                          /* over the lozenge, not under it */
-    flex: 1;
-    width: auto;
-    height: auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 14px;
-    letter-spacing: 0.07em;
-    -webkit-tap-highlight-color: transparent;
-  }
-  .nav-base, .nav-glow { display: none; }
-
-  /* The lozenge is the selection now, so the label only has to stop being
-     grey. No bloom: light on a pane comes off the pane. */
-  .nav a[aria-current="page"] { opacity: 1; text-shadow: none; }
-  .nav a:not([aria-current="page"]) { opacity: 0.55; }
+  /* The lozenge, the cells and the labels are the frame's now -- see .nav up
+     there, which is this rule set, promoted. What is left down here is what a
+     phone actually needs differently: a narrower bar, and cells that give up
+     their 104-pixel floor so that three of them still fit across 232. */
+  .nav a { min-width: 0; font-size: 14px; letter-spacing: 0.07em; }
 
   /* ---- the way back --------------------------------------------------- */
 
@@ -8990,7 +9103,8 @@ a.arrow { text-decoration: none; }
   .w-one   { order: 2; }
   .w-two   { order: 3; }
   .w-three { order: 4; }
-  .w-index { order: 5; }
+  .w-four  { order: 5; }
+  .w-index { order: 6; }
 
   .c-hero     { order: 1; }
   .c-side     { order: 2; }
@@ -9006,7 +9120,6 @@ a.arrow { text-decoration: none; }
   .ab-who        { order: 1; }
   .ab-shelf-card { order: 2; }
   .ab-habits     { order: 3; }
-  .ab-lately     { order: 4; }
 
   /* Everything About places by hand rejoins the flow, for the reason the
      L1 and L2 children do: a card is only relative here, so anything still
@@ -9125,7 +9238,7 @@ a.arrow { text-decoration: none; }
   .ab-facts dt { font-size: 13px; }
   .ab-facts dd { font-size: 16px; line-height: 23px; }
   .ab-half-say { font-size: 12px; }
-  .ab-por, .ab-pin-shot { font-size: 11px; line-height: 15px; }
+  .ab-por { font-size: 11px; line-height: 15px; }
 
   /* The tapes are fluid already -- sixty-three columns of 1fr -- so all a
      phone needs is for them to stop being placed by hand. */
@@ -9227,11 +9340,6 @@ a.arrow { text-decoration: none; }
     width: 80px; height: 101px;
     rotate: 22deg;
   }
-
-  /* And the prints go. They are pinned across the foot of a frame, and a
-     photograph hanging off the bottom of a page that scrolls is not a grid
-     being broken, it is a photograph nobody will ever reach. */
-  .ab-pin { display: none; }
 
   /* --- the playground, unpacked -------------------------------------------
 
@@ -10235,6 +10343,12 @@ a.arrow { text-decoration: none; }
     <div class="rules rules-under" aria-hidden="true">
       <i class="v" style="--lx:762px;height:1010px;--l-at:0.3969"></i>
       <i class="v" style="--lx:785px;height:1010px;--l-at:0.4089"></i>
+      <!-- The two gutters the row of four adds, under the cards: covered
+           everywhere but between the boxes. See .w-one. -->
+      <i class="v" style="--lx:663px;--l-at:0.3453"></i>
+      <i class="v" style="--lx:685px;--l-at:0.3568"></i>
+      <i class="v" style="--lx:949px;--l-at:0.4943"></i>
+      <i class="v" style="--lx:971px;--l-at:0.5057"></i>
       <i class="h" style="--ly:735px;--l-at:0.6806"></i>
       <i class="h" style="--ly:756px;--l-at:0.7000"></i>
       <!-- the foot of the switch, carried the width of the frame -->
@@ -10294,7 +10408,7 @@ a.arrow { text-decoration: none; }
       </span>
       <h2 class="headline">Reimagining linear player</h2>
       <p class="sub">Live TV, rebuilt around what is on now and what is next.</p>
-      <a class="chip" href="#work" data-route="work">+ 2 more</a>
+      <a class="chip" href="#work" data-route="work">+ 3 more</a>
 
       <a class="card-hit" href="#work" data-route="work" aria-label="Open Work"></a>
     </section>
@@ -10418,7 +10532,7 @@ a.arrow { text-decoration: none; }
         <span aria-hidden="true">/</span>
         <b>Work</b>
       </p>
-      <p class="crumb-count">03 projects &nbsp;/&nbsp; 8 writings</p>
+      <p class="crumb-count">04 projects &nbsp;/&nbsp; 8 writings</p>
 
       <!-- ------------------------- lead project ---------------------- -->
       <!-- Tile c is Home's own Playground card, 399,596,364x335: straight up
@@ -10432,7 +10546,6 @@ a.arrow { text-decoration: none; }
              stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h17M14 6l6 6-6 6"/></svg>
         </span>
         <h2 class="headline">Things I build to find out how they work.</h2>
-        <p class="sub">Ten small builds from ten weekends, each with a log of what it turned up.</p>
 
         <div class="w-shelf" aria-hidden="true">
           <span><i></i></span>
@@ -10513,6 +10626,27 @@ a.arrow { text-decoration: none; }
           <div class="w-fig"><dt>60fps</dt><dd>on a four-year-old phone</dd></div>
         </dl>
         <a class="card-hit" href="#case/bubbles" data-route="case" data-slug="bubbles" aria-label="Open Bubbles // a studio site"></a>
+      </section>
+
+      <!-- ------------------------ w-four ------------------------ -->
+      <!-- Tile e is Home's Connect card, the last one left. -->
+      <section class="card w-four" data-tile="e">
+        <span class="w-shot is-blank" aria-hidden="true"></span>
+        <p class="label">04</p>
+        <span class="arrow" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+             stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h17M14 6l6 6-6 6"/></svg>
+        </span>
+        <div class="w-said">
+          <p class="w-kind">Case study · 2025</p>
+          <h2 class="headline">Family safety, without the surveillance</h2>
+          <p class="sub">A safety product a teenager would agree to have on their phone.</p>
+        </div>
+        <dl class="w-figs">
+          <div class="w-fig"><dt>2</dt><dd>people have to say yes</dd></div>
+          <div class="w-fig"><dt>94%</dt><dd>still installed after a month</dd></div>
+        </dl>
+        <a class="card-hit" href="#case/family-safety" data-route="case" data-slug="family-safety" aria-label="Open Family safety, without the surveillance"></a>
       </section>
 
       <!-- -------------------------- the writing ---------------------- -->
@@ -10738,29 +10872,6 @@ a.arrow { text-decoration: none; }
 
     <!-- ============================= L2 about ======================== -->
     <div class="view view-about" data-view="about" hidden>
-
-      <!-- Six that are not on the frame: pinned all over the page and sitting
-           behind the bento rather than on it, so what shows of each one is
-           whatever a card and the lattice leave over. -->
-      <figure class="ab-pin ab-pin-2" aria-hidden="true">
-        <span class="ab-pin-tack"></span>
-        <span class="ab-pin-shot">a save file I will not delete</span>
-      </figure>
-
-      <figure class="ab-pin ab-pin-3" aria-hidden="true">
-        <span class="ab-pin-tack"></span>
-        <span class="ab-pin-shot">the shelf, mid-reorganise</span>
-      </figure>
-
-      <figure class="ab-pin ab-pin-4" aria-hidden="true">
-        <span class="ab-pin-tack"></span>
-        <span class="ab-pin-shot">rack pulls, badly</span>
-      </figure>
-
-      <figure class="ab-pin ab-pin-5" aria-hidden="true">
-        <span class="ab-pin-tack"></span>
-        <span class="ab-pin-shot">him, asleep</span>
-      </figure>
 
       <p class="crumb">
         <a href="#" data-route="home">Home</a>
@@ -11001,20 +11112,6 @@ a.arrow { text-decoration: none; }
       </section>
 
       <!-- ----------------------------- the desk ----------------------- -->
-      <section class="card ab-lately" data-tile="b">
-        <p class="nw-h ab-late-h">Lately</p>
-        <div class="ab-late">
-          <div class="ab-late-i">
-            <span class="ab-late-shot"></span>
-            <div>
-            <b class="ab-head">Wii, jailbroken</b>
-            <span class="ab-body">The Homebrew Channel, and every disc I own running off one drive.</span>
-            <i class="ab-sub">This month</i>
-            </div>
-          </div>
-        </div>
-      </section>
-
       <!-- ----------------------------- now ---------------------------- -->
       <section class="card ab-now" data-tile="b">
         <h2 class="nw-h nw-head">Now</h2>
@@ -11060,17 +11157,24 @@ a.arrow { text-decoration: none; }
 
       <!-- ---------------------------- music --------------------------- -->
       <section class="card ab-music" data-tile="f">
-        <p class="nw-h ms-h">Music</p>
+        <p class="nw-h ms-h">Pinned music</p>
+        <button type="button" class="cue" data-cue="music" aria-label="More pinned music, 5 tracks">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true">
+            <path d="M4 7h10M4 12h10M4 17h6"/><path d="M17 10l4 4-4 4"/></svg>
+          <span aria-hidden="true">5 tracks</span>
+        </button>
         <div class="ms-wk">
           <div class="ms-wk-face">
-          <span class="ms-screw ms-screw-1"></span>
-          <span class="ms-screw ms-screw-2"></span>
-          <span class="ms-screw ms-screw-3"></span>
-          <span class="ms-screw ms-screw-4"></span>
             <div class="ms-well">
-              <div class="ms-top">
-                <span class="ms-viz ms-viz-l" aria-hidden="true">
-                    <i style="--y:0.83;--d:979ms;--o:-921ms"></i>
+              <span class="ms-haze" aria-hidden="true"
+                    style="background-image:url('assets/covers/music-kid-a.jpg')"></span>
+              <span class="ms-stage">
+                <span class="ms-tube"><span data-ms-tube data-video="onRk0sjSgFU" data-bpm="101"></span></span>
+                <span class="ms-art" role="img" aria-label="Everything In Its Right Place"
+                      style="background-image:url('assets/covers/music-kid-a.jpg')"></span>
+              </span>
+              <span class="ms-veil" aria-hidden="true"></span>
+              <span class="ms-spill" aria-hidden="true">                    <i style="--y:0.83;--d:979ms;--o:-921ms"></i>
                     <i style="--y:0.35;--d:673ms;--o:-836ms"></i>
                     <i style="--y:0.81;--d:526ms;--o:-677ms"></i>
                     <i style="--y:0.37;--d:867ms;--o:-616ms"></i>
@@ -11078,15 +11182,7 @@ a.arrow { text-decoration: none; }
                     <i style="--y:0.56;--d:560ms;--o:-859ms"></i>
                     <i style="--y:0.96;--d:392ms;--o:-455ms"></i>
                     <i style="--y:0.29;--d:523ms;--o:-472ms"></i>
-                    <i style="--y:0.47;--d:534ms;--o:-305ms"></i>
-                </span>
-                <span class="ms-stage">
-                  <span class="ms-tube"><span data-ms-tube data-video="onRk0sjSgFU"></span></span>
-                  <span class="ms-art" role="img" aria-label="Everything In Its Right Place"
-                        style="background-image:url('assets/covers/music-kid-a.jpg')"></span>
-                </span>
-                <span class="ms-viz ms-viz-r" aria-hidden="true">
-                    <i style="--y:0.60;--d:392ms;--o:-314ms"></i>
+                    <i style="--y:0.47;--d:534ms;--o:-305ms"></i>                    <i style="--y:0.60;--d:392ms;--o:-314ms"></i>
                     <i style="--y:0.95;--d:642ms;--o:-802ms"></i>
                     <i style="--y:0.64;--d:832ms;--o:-449ms"></i>
                     <i style="--y:0.37;--d:606ms;--o:-630ms"></i>
@@ -11094,15 +11190,7 @@ a.arrow { text-decoration: none; }
                     <i style="--y:0.35;--d:529ms;--o:-537ms"></i>
                     <i style="--y:0.60;--d:610ms;--o:-637ms"></i>
                     <i style="--y:0.76;--d:870ms;--o:-247ms"></i>
-                    <i style="--y:0.95;--d:574ms;--o:-548ms"></i>
-                </span>
-              </div>
-              <div class="ms-lcd">
-                <span class="ms-lcd-a">Everything In Its Right Place</span>
-                <span class="ms-lcd-b">
-                  <span class="ms-lcd-by">Radiohead</span>
-                </span>
-              </div>
+                    <i style="--y:0.95;--d:574ms;--o:-548ms"></i></span>
               <span class="ms-pix"></span>
             </div>
             <div class="ms-bar" data-ms-bar role="slider" tabindex="0"
@@ -11122,6 +11210,16 @@ a.arrow { text-decoration: none; }
         </div>
       </section>
 
+    </div>
+
+
+    <!-- The queue behind the pinned card. One panel, handed a list. -->
+    <div class="cue-sheet" hidden>
+      <div class="cue-panel" role="dialog" aria-modal="true" aria-label="Pinned">
+        <div class="cue-grip" aria-hidden="true"></div>
+        <p class="cue-title" data-cue-title></p>
+        <ul class="cue-list" data-cue-list></ul>
+      </div>
     </div>
 
     <!-- ============================== L3 lab ========================= -->
@@ -11256,17 +11354,6 @@ a.arrow { text-decoration: none; }
       </article>
     </div>
 
-    <!-- =============================== nav ========================== -->
-    <nav class="nav">
-      <div class="nav-base" aria-hidden="true"></div>
-      <div class="nav-glow" aria-hidden="true"></div>
-      <!-- data-cell is the frame column the marker fills for each item: the
-           same 399/762, 785/1134 and 1155/1521 verticals the cards sit on. -->
-      <a class="nav-home"  href="#" data-cell="399 364" data-route="home" aria-current="page">Home</a>
-      <a class="nav-work"  href="#work" data-cell="785 350" data-route="work">Work</a>
-      <a class="nav-about" href="#about" data-cell="1155 366" data-route="about">About</a>
-    </nav>
-
     <!-- The switch. Outside every view, like the nav, because the room is a
          property of the site and not of the screen you happen to be on. -->
     <div class="room" role="radiogroup" aria-label="Colour scheme">
@@ -11379,6 +11466,18 @@ a.arrow { text-decoration: none; }
 
 
   </div>
+
+  <!-- =============================== nav ==============================
+       Outside the stage on purpose. The stage is scaled by a transform and a
+       transform makes a containing block for fixed descendants, so a bar that
+       said "fixed" inside it was fixed to the drawing -- 1920 wide, scaled by
+       whatever the window came to. Out here the figures on it are the figures
+       you get. data-cell is kept because the router selects on it. -->
+  <nav class="nav">
+    <a class="nav-home"  href="#" data-cell="399 364" data-route="home" aria-current="page">Home</a>
+    <a class="nav-work"  href="#work" data-cell="785 350" data-route="work">Work</a>
+    <a class="nav-about" href="#about" data-cell="1155 366" data-route="about">About</a>
+  </nav>
 </div>
 
 <script>
@@ -11777,6 +11876,86 @@ a.arrow { text-decoration: none; }
   // times the cosine of the angle, so inverting it with an arccosine keeps the
   // edge of the paper under the hand the whole way across, and the page slows
   // into the fold and out of it the way a real one does.
+  /* ---- the queue behind the pinned card ----------------------------------
+   *
+   * The deck shows one track and holds five. Choosing from the sheet puts a
+   * different tape in the same machine rather than opening a second one
+   * anywhere -- see __msPlay, which is the only way in.
+   *
+   * It was written for two machines, a deck and a television, and the sheet
+   * took whichever list belonged to the cue you pressed. The set has gone and
+   * the shape has not: HEAD and `on` are still keyed by kind, because the next
+   * thing that stands in that box will want a queue too.
+   */
+  (function () {
+    /* Written by build.js from content/about.json. */
+    var CUES = {"music":[{"id":"onRk0sjSgFU","a":"Everything In Its Right Place","b":"Radiohead","art":"assets/covers/music-kid-a.jpg","bpm":101},{"id":"onRk0sjSgFU","a":"Second pinned track","b":"Replace the id in about.json","art":"","bpm":100},{"id":"onRk0sjSgFU","a":"Third pinned track","b":"Replace the id in about.json","art":"","bpm":100},{"id":"onRk0sjSgFU","a":"Fourth pinned track","b":"Replace the id in about.json","art":"","bpm":100},{"id":"onRk0sjSgFU","a":"Fifth pinned track","b":"Replace the id in about.json","art":"","bpm":100}]};
+
+    var sheet = document.querySelector(".cue-sheet");
+    var panel = sheet && sheet.querySelector(".cue-panel");
+    var title = sheet && sheet.querySelector("[data-cue-title]");
+    var list  = sheet && sheet.querySelector("[data-cue-list]");
+    if (!sheet || !list) { return; }
+
+    /* The set that used to share this sheet is gone -- see the note where its
+       stylesheet was. What is left is one list and one machine. */
+    var HEAD = { music: "Pinned music" };
+    var on = { music: 0 };
+
+    function shut() {
+      if (sheet.hidden) { return false; }
+      sheet.hidden = true;
+      return true;
+    }
+
+    function open(kind) {
+      var rows = CUES[kind] || [];
+      title.textContent = HEAD[kind] || "";
+      list.textContent = "";
+      rows.forEach(function (it, i) {
+        var li = document.createElement("li");
+        var b = document.createElement("button");
+        b.type = "button";
+        var th = document.createElement("span");
+        th.className = "cue-thumb";
+        th.style.backgroundImage = "url(\"" +
+          (it.art || ("https://i.ytimg.com/vi/" + it.id + "/mqdefault.jpg")) + "\")";
+        var tx = document.createElement("span");
+        tx.className = "cue-text";
+        var bb = document.createElement("b"); bb.textContent = it.a;
+        var ss = document.createElement("span"); ss.textContent = it.b;
+        tx.appendChild(bb); tx.appendChild(ss);
+        b.appendChild(th); b.appendChild(tx);
+        if (i === on[kind]) {
+          var now = document.createElement("span");
+          now.className = "cue-on";
+          now.textContent = "ON DECK";
+          b.appendChild(now);
+        }
+        b.addEventListener("click", function () {
+          if (window.__msPlay && window.__msPlay(it.id, it.a, it.b, it.art)) {
+            on.music = i;
+          }
+          shut();
+        });
+        li.appendChild(b);
+        list.appendChild(li);
+      });
+      sheet.hidden = false;
+      var f = list.querySelector("button");
+      if (f) { f.focus(); }
+    }
+
+    document.addEventListener("click", function (e) {
+      var c = e.target.closest("[data-cue]");
+      if (c) { e.preventDefault(); open(c.getAttribute("data-cue")); return; }
+      if (!sheet.hidden && !e.target.closest(".cue-panel")) { shut(); }
+    });
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") { shut(); }
+    });
+  })();
+
   (function () {
     var card = document.querySelector('.bk');
     if (!card) { return; }
@@ -12882,30 +13061,10 @@ a.arrow { text-decoration: none; }
       });
     }
 
-    /* Two. Type where you live.
-       The word is on the card, four lines above, which is the only clue there
-       is going to be. The prints all straighten up for a moment and then go
-       back to lying however they were left -- the turn is a custom property
-       and the transition on it is the one the drag already uses, so this is
-       four lines and no new machinery.
-
-       Buffered rather than matched key by key, so it survives a typo, and
-       cleared whenever the screen is not on, so a word typed on the Work
-       screen cannot arrive here later. */
-    var WORD = 'bengaluru', typed = '';
-    document.addEventListener('keydown', function (e) {
-      if (view.hidden) { typed = ''; return; }
-      if (e.metaKey || e.ctrlKey || e.altKey || e.key.length !== 1) { return; }
-      typed = (typed + e.key.toLowerCase()).slice(-WORD.length);
-      if (typed !== WORD) { return; }
-      typed = '';
-
-      var pins = view.querySelectorAll('.ab-pin');
-      Array.prototype.forEach.call(pins, function (p) { p.style.setProperty('--rot-k', '0'); });
-      setTimeout(function () {
-        Array.prototype.forEach.call(pins, function (p) { p.style.removeProperty('--rot-k'); });
-      }, 2400);
-    });
+    /* Two was typing where you live, which straightened the prints for a
+       moment. It went with them: an easter egg whose payoff is a set of
+       objects that are no longer on the screen is a keystroke listener that
+       does nothing, and nobody will ever find out. */
   })();
 
   /* Written by build.js from content/tools.json -- read by ?place. */
@@ -14040,132 +14199,7 @@ a.arrow { text-decoration: none; }
     });
   })();
 
-  /* The prints come off the wall.
 
-     Seven photographs pinned behind a grid are a claim that the person is not
-     always on the grid, and a claim you can only look at is a decoration. So
-     they can be picked up and put somewhere else: press one, it lifts, it
-     follows the cursor exactly, and it settles back behind the bento wherever
-     you let go. Double click sends one home.
-
-     Nothing is persisted. A visitor who rearranges them and comes back finds
-     the wall as it was drawn, which is the right way round: the arrangement
-     is the author's and the rummaging is the visitor's.
-
-     Pointer events rather than mouse or touch: one code path, and
-     setPointerCapture is what keeps a fast drag attached to the print instead
-     of being lost the first time the cursor outruns the paper.
-
-     Guarded on the translate property, because the whole thing rests on
-     translate and transform being separate declarations. A browser without it
-     gets seven prints that do not move, which is what it had before. */
-  (function () {
-    var pins = document.querySelectorAll('.ab-pin');
-    if (!pins.length) { return; }
-    if (!(window.CSS && CSS.supports && CSS.supports('translate', '1px 1px'))) { return; }
-
-    var stage = document.querySelector('.stage');
-    if (!stage) { return; }
-
-    // The frame is scaled to fit the window, so a pointer that has moved a
-    // hundred real pixels has moved a hundred over the scale in the frame's
-    // own. Read off the box rather than off --s: it is the same number and it
-    // cannot be out of date.
-    function scale() {
-      var w = stage.getBoundingClientRect().width;
-      return w > 0 ? w / 1920 : 1;
-    }
-
-    // Never off the edge entirely. Ninety pixels of the print stay inside the
-    // frame on every side -- enough to see it and enough to grab it back.
-    var EDGE = 90;
-
-    Array.prototype.forEach.call(pins, function (pin) {
-      var held = false, id = 0;
-      var px = 0, py = 0, dx = 0, dy = 0, k = 1;
-      var minX = 0, maxX = 0, minY = 0, maxY = 0;
-
-      function bounds() {
-        // Authored position, which is what left/top still say: the print is
-        // moved by translate, and translate does not touch them.
-        var L = parseFloat(getComputedStyle(pin).left) || 0;
-        var T = parseFloat(getComputedStyle(pin).top) || 0;
-        var W = pin.offsetWidth, H = pin.offsetHeight;
-        minX = EDGE - (L + W);
-        maxX = (1920 - EDGE) - L;
-        minY = EDGE - (T + H);
-        maxY = (1080 - EDGE) - T;
-      }
-
-      function clamp(v, lo, hi) { return v < lo ? lo : (v > hi ? hi : v); }
-
-      pin.addEventListener('pointerdown', function (e) {
-        if (e.button !== undefined && e.button !== 0) { return; }
-        held = true;
-        id = e.pointerId;
-        k = scale();
-        px = e.clientX;
-        py = e.clientY;
-        bounds();
-        pin.classList.remove('is-homing');
-        pin.classList.add('is-held');
-        pin.setPointerCapture(id);
-        e.preventDefault();
-      });
-
-      // Where the paper is, for a given position of the hand. Both the move
-      // and the release go through this rather than the move alone: a release
-      // carries a position too, and not every source of pointer events sends
-      // a move between the press and it. Reading the last move only meant a
-      // drag whose events happened to coalesce put the print back where it
-      // started.
-      function put(e) {
-        var nx = clamp(dx + (e.clientX - px) / k, minX, maxX);
-        var ny = clamp(dy + (e.clientY - py) / k, minY, maxY);
-        pin.style.setProperty('--dx', nx + 'px');
-        pin.style.setProperty('--dy', ny + 'px');
-        return [nx, ny];
-      }
-
-      pin.addEventListener('pointermove', function (e) {
-        if (!held || e.pointerId !== id) { return; }
-        put(e);
-      });
-
-      function drop(e) {
-        if (!held || (e && e.pointerId !== id)) { return; }
-        held = false;
-        // Bank where it actually ended up, clamp and all, so the next drag
-        // starts from the paper rather than from where the cursor had got to.
-        //
-        // A cancel arrives without a position -- the system has taken the
-        // pointer away, it is not telling you where it went -- so that one is
-        // read back off the paper instead. Leaving it out was a real bug and
-        // an invisible one: the print stayed where the drag had left it and
-        // the count did not, so the next press on it jumped it back the whole
-        // distance of the cancelled drag.
-        if (e && typeof e.clientX === 'number') {
-          var at = put(e);
-          dx = at[0]; dy = at[1];
-        } else {
-          dx = parseFloat(pin.style.getPropertyValue('--dx')) || 0;
-          dy = parseFloat(pin.style.getPropertyValue('--dy')) || 0;
-        }
-        pin.classList.remove('is-held');
-      }
-
-      pin.addEventListener('pointerup', drop);
-      pin.addEventListener('pointercancel', drop);
-
-      pin.addEventListener('dblclick', function () {
-        dx = 0; dy = 0;
-        pin.classList.add('is-homing');
-        pin.style.setProperty('--dx', '0px');
-        pin.style.setProperty('--dy', '0px');
-        setTimeout(function () { pin.classList.remove('is-homing'); }, 460);
-      });
-    });
-  })();
 
   /* The wordmark decodes.
 
@@ -15789,6 +15823,42 @@ a.arrow { text-decoration: none; }
         screensT: 'Screens',
         screens: ['', '', ''],
         screensCap: 'The page at three widths, and the gesture that carries it.'
+      },
+
+      'family-safety': {
+        n: '04',
+        name: 'Family safety, without the surveillance', short: 'Family safety',
+        kind: 'Case study', year: '2025',
+        lede: 'Every product here is sold to the parent and installed on the child. We built the one both sides have to agree to, because the rest get uninstalled.',
+        glance: 'At a glance',
+        stats: [
+          ['2', 'people have to say yes'],
+          ['94%', 'still installed after a month'],
+          ['03', 'things it will not tell you'],
+          ['11wk', 'research to first release']
+        ],
+        processT: 'Process',
+        steps: [
+          ['Ask the child', 'Fourteen households, and both sides of each.'],
+          ['Name the limits', 'What it refuses to report is the product.'],
+          ['Two consents', 'Neither side can turn it on alone.'],
+          ['Ship the quiet one', 'No streaks, no scores, no daily digest.']
+        ],
+        note: 'A tracker a teenager turns off is worth less than a check-in they answer. The restraint is the feature, and it is the only part that cannot be added later.',
+        meta: [
+          ['Role', 'Product design, research'],
+          ['Year', '2025'],
+          ['Team', 'Airtel Entertainment']
+        ],
+        problemT: 'The problem', problem: 'Safety sold to one person and installed on another.',
+        problemTags: ['14 households', '2 consents'],
+        outcomeT: 'What shipped', outcome: 'A check-in, not a map.',
+        outcomeSub: 'Location on request rather than on a timer, an alert both sides can see, and a list of what the app will never report.',
+        outcomeTags: ['Android', 'iOS'],
+        hero: '',
+        screensT: 'Screens',
+        screens: ['', '', ''],
+        screensCap: 'The consent pair, the check-in, and the page that says what it will not do.'
       }
     };
 
@@ -16038,14 +16108,15 @@ a.arrow { text-decoration: none; }
 
     // Light a bar item. All three now have a screen behind them, so this is
     // only ever called from paint() with a name the router already resolved.
+    // The lozenge follows aria-current -- see .nav::before -- so lighting a
+    // cell is one attribute and no arithmetic. It used to write the cell's
+    // left and width onto the bar as well, for a pool of light that was cast
+    // on a panel that no longer exists.
     function light(a) {
-      var cell = a.getAttribute('data-cell').split(' ');
       Array.prototype.forEach.call(links, function (l) {
         l.removeAttribute('aria-current');
       });
       a.setAttribute('aria-current', 'page');
-      nav.style.setProperty('--nx', cell[0] + 'px');
-      nav.style.setProperty('--nw', cell[1] + 'px');
     }
 
     /* The playground is a dark room and does not follow the switch.
@@ -16756,6 +16827,105 @@ a.arrow { text-decoration: none; }
     if (!host || !deck || !play || !pause || !bar) { return; }
     var yt = null, ready = false, tick = 0, asked = false, guard = 0;
 
+    /* One machine, five tapes.
+
+       The cue behind this card holds the rest of the pinned music, and what
+       it does is put a different tape in this deck -- not open a second
+       player somewhere else. So the queue needs a way in, and this is it:
+       the id, and the two lines the readout shows.
+
+       loadVideoById when the player is already up, and a build when it is
+       not. Both start playing, because you only reach this from a press. */
+    var artEl = card.querySelector('.ms-art');
+    var lineA = card.querySelector('.ms-lcd-a');
+    var lineB = card.querySelector('.ms-lcd-by');
+
+    /* ---- the visualiser ------------------------------------------------
+     *
+     * What this is, and what it is not.
+     *
+     * It is not spectrum analysis. It cannot be. The sound is coming out of a
+     * YouTube iframe on another origin, and there is no way to reach the audio
+     * behind that boundary -- no MediaElement to hang a Web Audio node on, no
+     * samples, no FFT. Anybody who shows you a bar chart over a YouTube embed
+     * is showing you an animation, and the honest question is only which one.
+     *
+     * The one it was: eighteen CSS loops at eighteen periods, which is noise.
+     * It never lands on anything, because there is nothing to land on.
+     *
+     * The one it is: the deck's own clock against the track's tempo. The player
+     * reports where it is in the piece; the piece has a BPM; so the beat, the
+     * eighth and the sixteenth are all known, and every bar is a function of
+     * where we are between them. The kick drops on the beat and decays; the
+     * mids answer on the offbeat; the highs shimmer at sixteenths; and the
+     * whole thing swells over a four-bar phrase. It is a performance rather
+     * than a measurement -- but it is a performance of THIS track, in time
+     * with it, and it lands where the music lands.
+     *
+     * The BPM is a field in about.json. Get it wrong and the whole thing drifts
+     * out, which is the honest failure mode: it is the one number doing the
+     * work.
+     */
+    var bars = card.querySelectorAll('.ms-spill i');
+    var bpm = Number(host.getAttribute('data-bpm')) || 100;
+    var vRaf = 0, peak = [];
+
+    function shape(f, beat) {
+      // f: 0 at the low end of the row, 1 at the high
+      var kick   = Math.pow(1 - (beat % 1), 2.4);
+      var eighth = Math.pow(1 - ((beat * 2) % 1), 3.0);
+      var six    = Math.pow(1 - ((beat * 4) % 1), 3.6);
+      var phrase = 0.72 + 0.28 * Math.sin(beat * Math.PI / 4);
+
+      var low  = kick   * Math.pow(1 - f, 1.7);
+      var mid  = eighth * Math.max(0, 0.62 - Math.abs(f - 0.42) * 1.5);
+      var high = six    * Math.pow(f, 1.5) * 0.85;
+      // a standing shape so a quiet bar is still a bar
+      var bed  = 0.10 + 0.09 * Math.sin(f * 7.3 + beat * 1.9);
+      var v = (low * 1.15 + mid + high + bed) * phrase;
+      return v < 0.05 ? 0.05 : v > 1 ? 1 : v;
+    }
+
+    function paintViz() {
+      vRaf = 0;
+      if (!bars.length) { return; }
+      var going = deck.classList.contains('is-going') ||
+                  card.classList.contains('is-going');
+      var t = (yt && ready && yt.getCurrentTime) ? yt.getCurrentTime() : 0;
+      var beat = t * bpm / 60;
+      var i, v;
+      for (i = 0; i < bars.length; i++) {
+        v = going ? shape(bars.length > 1 ? i / (bars.length - 1) : 0, beat) : 0.05;
+        // the peak sits where the bar got to and falls slowly, which is the
+        // one part of a real meter that is not the level itself
+        peak[i] = Math.max(v, (peak[i] || 0) - 0.018);
+        bars[i].style.height = (peak[i] * 100).toFixed(1) + '%';
+      }
+      if (going) { vRaf = requestAnimationFrame(paintViz); }
+    }
+
+    function viz(on) {
+      if (vRaf) { cancelAnimationFrame(vRaf); vRaf = 0; }
+      if (matchMedia('(prefers-reduced-motion: reduce)').matches) { return; }
+      paintViz();
+      if (on && !vRaf) { vRaf = requestAnimationFrame(paintViz); }
+    }
+
+    window.__msPlay = function (id, track, by, art) {
+      if (!/^[A-Za-z0-9_-]{11}$/.test(String(id || ''))) { return false; }
+      host.setAttribute('data-video', id);
+      if (lineA) { lineA.textContent = track || ''; }
+      if (lineB) { lineB.textContent = by || ''; }
+      if (artEl) {
+        var src = art || ('https://i.ytimg.com/vi/' + id + '/hqdefault.jpg');
+        artEl.style.backgroundImage = 'url("' + src + '")';
+        artEl.setAttribute('aria-label', track || '');
+      }
+      if (yt && ready && yt.loadVideoById) { yt.loadVideoById(id); }
+      else { build(function () { if (yt && yt.playVideo) { yt.playVideo(); } }); }
+      return true;
+    };
+
     function time(s) {
       if (!isFinite(s) || s < 0) { s = 0; }
       var m = Math.floor(s / 60), r = Math.floor(s % 60);
@@ -16895,6 +17065,8 @@ a.arrow { text-decoration: none; }
       card.classList.toggle('is-held', held);
       play.setAttribute('aria-pressed', going ? 'true' : 'false');
       pause.setAttribute('aria-pressed', held ? 'true' : 'false');
+      // The meter is driven rather than looped, so it has to be told.
+      viz(going);
     }
     latch('idle');
 
