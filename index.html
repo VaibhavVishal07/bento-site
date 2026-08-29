@@ -17,10 +17,24 @@
      visitor back to the prefers-color-scheme query. localStorage throws
      rather than returning null in a browser set to block site data, so the
      whole of it is inside the try. */
-  try {
-    var r = localStorage.getItem('room');
-    if (r === 'light' || r === 'dark') { document.documentElement.setAttribute('data-theme', r); }
-  } catch (e) {}
+  /* One room, and it is this one.
+   *
+   * The site had two and a switch between them, and every surface on it was
+   * written twice: a token block for the lit room under [data-theme="light"],
+   * a second copy of the same block under prefers-color-scheme for the visitor
+   * who had never pressed the switch, and a handful of objects -- the machine,
+   * the mat, the screen -- that needed a third set of figures to be the same
+   * object under a different lamp. That is a lot of surface to keep true, and
+   * keeping it true is the whole cost of a second room.
+   *
+   * So the attribute is written here and never changed. Every lit rule in the
+   * stylesheet is reached as [data-theme="light"] or as :root:not([data-theme])
+   * inside a prefers-color-scheme query, and with dark pinned on the root from
+   * before the first paint neither can match again. Nothing is deleted: the
+   * figures are all still there and all still right, and if the lit room is
+   * ever wanted back it is this line and the switch's markup, not a rewrite.
+   */
+  document.documentElement.setAttribute('data-theme', 'dark');
 
   /* And the arrival, for the same reason one line up. .arriving holds the
      frame empty -- no cards, no lattice -- and it has to be on before the
@@ -393,10 +407,10 @@
      mat, and darkening the ground alone would have turned three photographs
      into the loudest thing on the card. */
   --mat: #0a1a15;
+  /* One weight. --mat-bold and --mat-tick went with the heavy grid and the
+     edge rulers; a mat with two weights of ruling on it is two grids. */
   --mat-fine: rgba(198, 240, 216, 0.055);
-  --mat-bold: rgba(198, 240, 216, 0.115);
   --mat-diag: rgba(198, 240, 216, 0.05);
-  --mat-tick: rgba(214, 246, 226, 0.30);
   --mat-ink:  rgba(214, 246, 226, 0.42);
   --mat-cut:  rgba(226, 250, 234, 0.19);
   /* The mat's own edge. The card is a piece cut out of a cutting mat and it
@@ -404,8 +418,13 @@
      belong to the object. Drawn in the mat's ink instead, a step up from the
      bold ruling so it reads as an edge and not as another rule. */
   --mat-edge: rgba(126, 226, 180, 0.20);
-    --lab-mount: #11322a;
-  --lab-plate: #0b241e;
+    /* The same two figures the table pins for its own prints -- see
+       :root.x-table. A print is one object: the ones lying on the Playground
+       and the ones lying on the Playground tile are the same photograph at two
+       sizes, and they were two greens a shade apart in the dark room and a
+       white against a bottle green in the lit one. */
+    --lab-mount: #17453a;
+  --lab-plate: #0f3229;
   --mat-type:  rgba(244, 253, 248, 0.96);
   --mat-label: rgba(226, 246, 236, 0.64);
   --mat-body:  rgba(226, 246, 236, 0.74);
@@ -655,24 +674,44 @@
      light. The photographs on it are white too, and what tells them from the
      table is the shadow under them, which is all that tells a photograph from
      a table in a lit room anyway. */
-  --mat: #ffffff;
-  --mat-fine: rgba(24, 62, 50, 0.075);
-  --mat-bold: rgba(24, 62, 50, 0.17);
-  --mat-diag: rgba(24, 62, 50, 0.08);
-  --mat-tick: rgba(24, 62, 50, 0.34);
-  --mat-ink:  rgba(24, 62, 50, 0.44);
-  --mat-cut:  rgba(24, 62, 50, 0.22);
-  --mat-edge: rgba(24, 62, 50, 0.21);
-        --lab-mount: #ffffff;
-      --lab-plate: #e8eeeb;
-    --mat-type:  rgba(14, 40, 32, 0.94);
-    --mat-label: rgba(22, 58, 47, 0.62);
-    --mat-body:  rgba(22, 58, 47, 0.76);
+  /* Green, and only just.
+     White was the wrong answer twice. A cutting mat is green -- that is a fact
+     about the object, and an object that is jade in one room and paper in the
+     other is two objects. But the dark room's jade on a lit page is a hole cut
+     in the screen, which is why it was white in the first place.
+     So it is the same mat bleached rather than replaced: a pale sage that is
+     unmistakably green against the page around it and light enough to read as
+     a surface under a window rather than a block on it. The ruling climbs with
+     it, in the green's own ink rather than in grey, so the grid belongs to the
+     mat instead of being drawn on top of one. */
+  /* A cutting mat, and the ruling on one is white.
+     This had it the wrong way round for two revisions: a pale green ground
+     with the grid drawn on it in dark ink, which is a sheet of graph paper.
+     Every self-healing mat ever made is a saturated green with the grid
+     printed on it in white -- the lines are lighter than the ground, not
+     darker -- and that is the whole of what makes it read as rubber rather
+     than as paper. So the ground goes to the green a mat actually is and the
+     grid turns over with it.
+     Which also makes the two rooms one object at last: the mat was already a
+     light grid on a dark green in the dark room, and this is the same
+     arrangement with the lamp on. */
+  --mat: #17876a;
+  --mat-fine: rgba(255, 255, 255, 0.30);
+  --mat-diag: rgba(255, 255, 255, 0.28);
+  --mat-ink:  rgba(240, 253, 247, 0.50);
+  --mat-cut:  rgba(240, 253, 247, 0.34);
+  --mat-edge: rgba(255, 255, 255, 0.22);
+        --lab-mount: #17453a;
+      --lab-plate: #0f3229;
+    --mat-type:  rgba(244, 253, 248, 0.96);
+    --mat-label: rgba(226, 246, 236, 0.64);
+    --mat-body:  rgba(226, 246, 236, 0.74);
     --lab-shadow: 0 16px 30px -14px rgba(22, 58, 47, 0.34),
                 0 2px 6px -2px rgba(22, 58, 47, 0.20);
-  --mat-type:  rgba(14, 40, 32, 0.94);
-  --mat-label: rgba(22, 58, 47, 0.62);
-  --mat-body:  rgba(22, 58, 47, 0.76);
+  /* Light on the mat in both rooms now, because the mat is dark in both. */
+  --mat-type:  rgba(244, 253, 248, 0.96);
+  --mat-label: rgba(226, 246, 236, 0.64);
+  --mat-body:  rgba(226, 246, 236, 0.74);
   --lab-shadow: 0 16px 30px -14px rgba(22, 58, 47, 0.34),
                   0 2px 6px -2px rgba(22, 58, 47, 0.20);
 
@@ -833,17 +872,18 @@
     --scrim-a: 0.55;
 
     /* See the mat under [data-theme="light"]. */
-        /* See the same block under [data-theme="light"]. */
-        --mat: #ffffff;
-    --mat-fine: rgba(24, 62, 50, 0.075);
-    --mat-bold: rgba(24, 62, 50, 0.17);
-    --mat-diag: rgba(24, 62, 50, 0.08);
-    --mat-tick: rgba(24, 62, 50, 0.34);
-    --mat-ink:  rgba(24, 62, 50, 0.44);
-    --mat-cut:  rgba(24, 62, 50, 0.22);
-    --mat-edge: rgba(24, 62, 50, 0.21);
-    --lab-mount: #ffffff;
-        --lab-plate: #e8eeeb;
+    /* The same figures as [data-theme="light"], and they have to be: a reader
+       whose machine is set to light and who has never touched the switch was
+       getting a white mat while the reader who pressed the switch got the sage
+       one, which is two lit rooms. */
+    --mat: #9db3a2;
+    --mat-fine: rgba(20, 48, 38, 0.16);
+    --mat-diag: rgba(20, 48, 38, 0.17);
+    --mat-ink:  rgba(16, 42, 33, 0.52);
+    --mat-cut:  rgba(16, 42, 33, 0.30);
+    --mat-edge: rgba(16, 42, 33, 0.28);
+    --lab-mount: #17453a;
+        --lab-plate: #0f3229;
 
     /* The mat's ink, which was written for the room it is pressed into and
        not for the room it is found in.
@@ -858,9 +898,9 @@
 
        A value that exists in one of the two light rooms and not the other is
        the whole of this bug, so they are stated in both. */
-    --mat-type:  rgba(14, 40, 32, 0.94);
-    --mat-label: rgba(22, 58, 47, 0.62);
-    --mat-body:  rgba(22, 58, 47, 0.76);
+    --mat-type:  rgba(244, 253, 248, 0.96);
+    --mat-label: rgba(226, 246, 236, 0.64);
+    --mat-body:  rgba(226, 246, 236, 0.74);
     --lab-shadow: 0 16px 30px -14px rgba(22, 58, 47, 0.34),
                   0 2px 6px -2px rgba(22, 58, 47, 0.20);
     --bar-tape: #e9efec;
@@ -1753,9 +1793,9 @@ body {
 }
 }
 
-.intro       { left: 400px;  top: 91px;  width: 733px; height: 481px;
+.intro       { left: 399px;  top: 91px;  width: 735px; height: 484px;
                --gx: 46%; --gy: -8%; --gw: 95%; --gh: 125%; --gs: 0.055; }
-.repo        { left: 1155px; top: 91px;  width: 366px; height: 483px;
+.repo        { left: 1155px; top: 91px;  width: 366px; height: 484px;
                --gx: 50%; --gy: 0%;  --gw: 140%; --gh: 90%;  --gs: 0.014; }
 .experiments { left: 399px;  top: 596px; width: 364px; height: 335px;
                --gx: 100%; --gy: 0%; --gw: 130%; --gh: 140%; --gs: 0.05; }
@@ -1763,7 +1803,7 @@ body {
                --gx: 68%; --gy: 0%;  --gw: 110%; --gh: 190%; --gs: 0.05; }
 .connect     { left: 785px;  top: 757px; width: 350px; height: 174px;
                --gx: 100%; --gy: 0%; --gw: 125%; --gh: 165%; --gs: 0.058; }
-.media       { left: 1155px; top: 596px; width: 364px; height: 335px;
+.media       { left: 1155px; top: 596px; width: 366px; height: 335px;
                --gx: 30%; --gy: 0%;  --gw: 125%; --gh: 130%; --gs: 0.042; }
 
 /* --- type ---------------------------------------------------------------- */
@@ -2172,11 +2212,16 @@ body {
 .experiments {
   --gs: 0;
   background-color: var(--mat);
+  /* The same one grid the table has -- see :root.x-table body. A piece cut out
+     of a mat has what the mat has and nothing it does not. */
+  /* At the table's own cell, not the frame's. See --mat-cell where it is
+     written: a piece cut out of a mat has the mat's grid at the mat's size,
+     and inside a scaled drawing that means dividing by the scale. */
   background-image:
-    repeating-linear-gradient(to right,  var(--mat-bold) 0 1px, transparent 1px 105px),
-    repeating-linear-gradient(to bottom, var(--mat-bold) 0 1px, transparent 1px 105px),
-    repeating-linear-gradient(to right,  var(--mat-fine) 0 1px, transparent 1px 21px),
-    repeating-linear-gradient(to bottom, var(--mat-fine) 0 1px, transparent 1px 21px);
+    repeating-linear-gradient(to right,  var(--mat-fine) 0 var(--mat-rule, 1px),
+      transparent var(--mat-rule, 1px) var(--mat-cell, 21px)),
+    repeating-linear-gradient(to bottom, var(--mat-fine) 0 var(--mat-rule, 1px),
+      transparent var(--mat-rule, 1px) var(--mat-cell, 21px));
   background-position: 12px 12px;
   outline-color: var(--mat-edge);
 }
@@ -2348,14 +2393,22 @@ body {
   left: 50%;
   /* Clear of the bottom of the window, and clear of whatever the hardware
      puts below that. max() rather than a sum: where there is a home indicator
-     the inset is already 34, and 22 + 34 would float the bar in the middle of
-     nowhere. */
-  bottom: max(22px, env(safe-area-inset-bottom, 0px));
+     the inset is already 34, and 42 + 34 would float the bar in the middle of
+     nowhere.
+
+     42 and not 22. The frame leaves 149 of its own below the bottom row and
+     the bar sat at the very foot of that band, which put it nearer the edge of
+     the window than the cards it belongs to. Twenty further up is the middle
+     of the band rather than the bottom of it. */
+  bottom: max(42px, env(safe-area-inset-bottom, 0px));
   transform: translateX(-50%);
   z-index: 60;
 
-  height: 54px;
-  padding: 6px;
+  /* A fifth larger, all through: the box, the padding round the cells, the
+     cells themselves and the type on them. A pill scaled by its height alone
+     is a pill with the same words in it looking cramped. */
+  height: 65px;
+  padding: 7px;
   display: flex;
   align-items: stretch;
   /* Fully round, which is the other half of reading as a floating pane. */
@@ -2383,10 +2436,10 @@ body {
 .nav::before {
   content: "";
   position: absolute;
-  top: 6px;
-  bottom: 6px;
-  left: calc(6px + var(--ni) * (100% - 12px) / 3);
-  width: calc((100% - 12px) / 3);
+  top: 7px;
+  bottom: 7px;
+  left: calc(7px + var(--ni) * (100% - 14px) / 3);
+  width: calc((100% - 14px) / 3);
   border-radius: 999px;
   background: rgba(var(--w), 0.17);
   box-shadow: var(--pill-cast);
@@ -2405,12 +2458,12 @@ body {
   position: relative;
   z-index: 1;                          /* over the lozenge, not under it */
   flex: 1;
-  min-width: 104px;
+  min-width: 125px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: var(--f-nav);
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 500;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -2775,7 +2828,7 @@ body {
    with no partner and fade. c is Home's own Playground card and it grows into
    the lead; a comes down out of the intro; f crosses the whole frame from the
    media strip. */
-.w-lab   { left: 399px;  top: 91px;  width: 733px; height: 483px; }
+.w-lab   { left: 399px;  top: 91px;  width: 735px; height: 484px; }
 
 /* Two boxes stood here and held the all-writing screen. It is gone.
 
@@ -2798,7 +2851,7 @@ body {
    that agree about where they end -- and the 596 the three below start at is
    the same 596 they already started at. See .idx-list for what the column does
    with the eight in the space that is left. */
-.w-index { left: 1155px; top: 91px;  width: 366px; height: 483px;
+.w-index { left: 1155px; top: 91px;  width: 366px; height: 484px;
            --gx: 50%; --gy: 0%;  --gw: 140%; --gh: 78%;  --gs: 0.022; }
 /* One row of four, a column each, 596 to the foot of the frame.
 
@@ -2848,11 +2901,14 @@ body {
      corner of a mat. A ruler belongs at the edge of the table. This card is a
      piece cut out of the middle of one, so it has the ruling and none of the
      furniture. */
+  /* At the table's own cell, not the frame's. See --mat-cell where it is
+     written: a piece cut out of a mat has the mat's grid at the mat's size,
+     and inside a scaled drawing that means dividing by the scale. */
   background-image:
-    repeating-linear-gradient(to right,  var(--mat-bold) 0 1px, transparent 1px 105px),
-    repeating-linear-gradient(to bottom, var(--mat-bold) 0 1px, transparent 1px 105px),
-    repeating-linear-gradient(to right,  var(--mat-fine) 0 1px, transparent 1px 21px),
-    repeating-linear-gradient(to bottom, var(--mat-fine) 0 1px, transparent 1px 21px);
+    repeating-linear-gradient(to right,  var(--mat-fine) 0 var(--mat-rule, 1px),
+      transparent var(--mat-rule, 1px) var(--mat-cell, 21px)),
+    repeating-linear-gradient(to bottom, var(--mat-fine) 0 var(--mat-rule, 1px),
+      transparent var(--mat-rule, 1px) var(--mat-cell, 21px));
   background-position: 12px 12px;
 }
 
@@ -3501,20 +3557,31 @@ body {
    fill laid over the glare reads as a different material sitting on top of it
    rather than as more light.
 
-   And it runs the whole width of the tile, stroke to stroke -- -24 and +24 on
-   a list inset 24 inside a 366 card, which is exactly 0 to 366. It used to
-   die before the right margin to keep clear of the count and the card's edge
-   light, and that was the wrong call twice over. A wash that stops two thirds
-   of the way across reads as a wash that has failed to arrive, not as one
-   drawn short on purpose; and a row is a whole row -- the thing being
-   selected is the line, so the light has to be the length of the line. The
+   And it runs the whole width of the tile, stroke to stroke -- which took two
+   goes. It was a child of the list, reaching for the strokes with -24 and a
+   width of 100% + 48; and the list clips, because the deck of pages slides
+   through it. So the reach was cut off at exactly the inset it was trying to
+   escape, and the wash stood 24 short at both ends -- a band that read as
+   deliberately inset and was in fact a rule losing to an overflow.
+
+   The band hangs off the card instead: 0 to 100% of the tile, which is the
+   whole of it by construction and has nothing between it and the strokes. The
+   cost is one addition -- see show(), which adds the list's own top to the
+   row's, the two no longer sharing a box to be measured in -- and that is the
+   right trade, because the other way out is asking the list not to clip, and
+   the deck is the reason it does.
+
+   A wash that stops short of the margin reads as a wash that has failed to
+   arrive, not as one drawn short on purpose; and a row is a whole row -- the
+   thing being selected is the line, so the light has to be the length of the
+   line. The
    count sits at y=24 and the first row starts at 64, so they never met in the
    first place, and the edge light is a pseudo-element on the card, which
    paints above this and is not touched by it. */
 .idx-cursor {
   position: absolute;
-  left: -24px;
-  width: calc(100% + 48px);
+  left: 0;
+  width: 100%;
   top: 0;
   height: 0;
   z-index: 0;
@@ -3656,7 +3723,7 @@ body {
    and you missed it.
    ========================================================================== */
 
-.c-hero    { left: 399px;  top: 91px;  width: 733px; height: 483px;
+.c-hero    { left: 399px;  top: 91px;  width: 735px; height: 484px;
              --gx: 40%; --gy: -6%; --gw: 100%; --gh: 125%; --gs: 0.052; }
 .c-side    { left: 1155px; top: 91px;  width: 366px; height: 840px;
              --gx: 50%; --gy: 0%;  --gw: 140%; --gh: 78%;  --gs: 0.022; }
@@ -5188,110 +5255,58 @@ body {
 
 @keyframes cue-in { from { opacity: 0; } to { opacity: 1; } }
 
-/* --- the cue, and the sheet behind it -------------------------------------
+/* --- the queue, on the sheet ----------------------------------------------
 
-   Both pinned cards show one thing and hold five. The cue is the way to the
-   other four, and it is a queue glyph rather than a chevron because what is
-   behind it is a list and not a next. */
-.cue {
-  position: absolute;
-  right: 20px; top: 20px;
-  height: 28px;
-  display: inline-flex; align-items: center; gap: 7px;
-  padding: 0 11px 0 9px;
-  border: 1px solid rgba(var(--w), 0.20);
-  border-radius: 999px;
-  background: rgba(var(--w), 0.055);
-  color: rgba(var(--w), 0.68);
-  cursor: pointer;
-  /* The label sits in the frame's own small caps, which is what every other
-     count on this site is set in -- the shelf's 34, the writing's 8. */
-  font-family: var(--f-label);
-  font-size: 11px; line-height: 1;
-  letter-spacing: 0.08em;
-  white-space: nowrap;
-  transition: color var(--dur) var(--ease),
-              border-color var(--dur) var(--ease),
-              background-color var(--dur) var(--ease);
-}
-.cue:hover {
-  color: rgba(var(--w), 0.96);
-  border-color: rgba(var(--w), 0.42);
-  background: rgba(var(--w), 0.10);
-}
-.cue:focus-visible { outline: 2px solid rgb(var(--w)); outline-offset: 2px; }
-.cue svg { display: block; width: 14px; height: 14px; flex: none; }
+   The cue itself is a key on the machine now -- see .ms-key-list -- and what
+   is left here is what is behind it: a list of records, on the shared sheet.
 
-/* Up from the foot of the window, and only as tall as it needs to be.
-
-   Fixed rather than placed on the frame, for the same reason the plate is:
-   the frame is a 1920 drawing scaled into whatever window it is in, and a
-   sheet that came up from the foot of the drawing would stop somewhere in the
-   middle of the screen on a tall one. */
-.cue-sheet {
-  position: fixed;
-  inset: 0;
-  z-index: 130;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  background: rgba(0, 0, 0, 0.52);
-  -webkit-backdrop-filter: blur(10px);
-          backdrop-filter: blur(10px);
-  animation: cue-in 200ms var(--ease) both;
-}
-.cue-sheet[hidden] { display: none; }
-
-.cue-panel {
-  width: min(620px, 100%);
-  max-height: 76vh;
-  overflow-y: auto;
-  padding: 12px 26px 30px;
-  border-radius: 16px 16px 0 0;
-  /* Opaque. --card is mixed for a card sitting on the frame's own ground
-     with a lattice behind it; over a blurred screen it reads as a smear. */
-  background: var(--bg);
-  box-shadow: 0 -18px 50px -12px rgba(0, 0, 0, 0.8),
-              inset 0 1px 0 rgba(var(--w), 0.14);
-  animation: cue-up 320ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
-}
-@keyframes cue-up { from { transform: translateY(18px); } to { transform: none; } }
-
-.cue-grip {
-  width: 42px; height: 4px;
-  margin: 0 auto 18px;
-  border-radius: 2px;
-  background: rgba(var(--w), 0.20);
-}
+   Cards rather than rows, and that is the sheet being end to end catching up
+   with its contents. A full-width panel with a list of full-width rows in it
+   is a column of thumbnails with two feet of nothing either side of every one;
+   the width has to be spent or it should not have been taken. So the entries
+   are laid on a grid that fits as many as the measure holds and no fewer than
+   one, and a row that was a line becomes a card with its cover, its title and
+   who it is by.
+   ------------------------------------------------------------------------ */
 .cue-title {
-  margin: 0 0 14px;
+  margin: 0 0 22px;
   font-family: var(--f-label);
   font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
   color: rgba(var(--w), 0.42);
 }
-.cue-list { list-style: none; margin: 0; padding: 0; }
-.cue-list li { margin: 0; }
+.cue-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 14px;
+  list-style: none;
+  margin: 0; padding: 0;
+}
+.cue-list li { margin: 0; min-width: 0; }
 .cue-list button {
   display: flex;
   align-items: center;
   gap: 14px;
   width: 100%;
-  padding: 11px 0;
-  border: 0;
-  border-top: 1px solid rgba(var(--w), 0.10);
-  background: transparent;
+  height: 100%;
+  padding: 12px;
+  border: 1px solid rgba(var(--w), 0.12);
+  border-radius: 10px;
+  background: rgba(var(--w), 0.03);
   text-align: left;
   cursor: pointer;
   color: inherit;
-  transition: border-color var(--dur) var(--ease);
+  transition: border-color var(--dur) var(--ease),
+              background-color var(--dur) var(--ease);
 }
-.cue-list li:last-child button { border-bottom: 1px solid rgba(var(--w), 0.10); }
-.cue-list button:hover { border-color: rgba(var(--w), 0.30); }
-.cue-list button:focus-visible { outline: 2px solid rgb(var(--w)); outline-offset: -2px; }
+.cue-list button:hover {
+  border-color: rgba(var(--w), 0.30);
+  background: rgba(var(--w), 0.07);
+}
+.cue-list button:focus-visible { outline: 2px solid rgb(var(--w)); outline-offset: 2px; }
 .cue-thumb {
   flex: 0 0 auto;
-  width: 62px; height: 40px;
-  border-radius: 2px;
+  width: 76px; height: 50px;
+  border-radius: 4px;
   background: var(--slot) center / cover no-repeat;
   box-shadow: inset 0 0 0 1px rgba(var(--w), 0.12);
 }
@@ -5305,12 +5320,450 @@ body {
 }
 .cue-text span {
   display: block;
-  margin-top: 1px;
+  margin-top: 2px;
   font-family: var(--f-label);
   font-size: 11px; line-height: 16px;
   color: rgba(var(--w), 0.42);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
-.cue-on { color: rgba(var(--w), 0.42); font-size: 10px; letter-spacing: 0.12em; }
+/* Which one the needle is on. Set on the card rather than beside the title,
+   because on a grid there is no column for it to be beside. */
+.cue-list button:has(.cue-on) {
+  border-color: rgba(var(--w), 0.34);
+  background: rgba(var(--w), 0.09);
+}
+.cue-on {
+  flex: none;
+  align-self: flex-start;
+  font-family: var(--f-label);
+  font-size: 9px; letter-spacing: 0.14em;
+  color: rgba(var(--w), 0.42);
+}
+
+@keyframes cue-in { from { opacity: 0; } to { opacity: 1; } }
+
+/* ==========================================================================
+   Sheets
+
+   One shape for anything that comes up over the page.
+
+   The shelf has had one for a while: press a cover and a panel arrives off the
+   bottom of the screen with the entry on it, the shelf still visible above it.
+   The repository drawer and the queue were built later and separately, and a
+   site with three ways of doing the same thing has no way of doing it. These
+   are the shelf's sheet, generalised -- same scrim, same edge, same handle,
+   same travel -- and the shelf's own panel keeps its rules because it lives
+   inside the scaled frame and these live in the window.
+
+   The travel is the part that was actually wrong. Both of these used to be
+   hidden outright on dismissal: the sheet arrived over four hundred and sixty
+   milliseconds and then vanished between two frames, which reads as the panel
+   having been shot rather than closed. A thing that slides in slides out. So
+   the panel is translated off the bottom edge and back, the wrapper clips it
+   so the closed state is off the window rather than beside it, and hidden is
+   only set once the travel is over -- see sheetUp and sheetDown in the script,
+   which is the whole of the mechanism and is shared.
+   ========================================================================== */
+.sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 130;
+  overflow: hidden;   /* so the closed sheet is off the window, not beside it */
+}
+.sheet[hidden] { display: none; }
+
+/* The room's own shade rather than black: in the dark room a deepening of what
+   is already there, in the lit one a warm grey over paper. */
+.sheet-scrim {
+  position: absolute;
+  inset: 0;
+  background: rgba(var(--shade), var(--scrim-a, 0.66));
+  opacity: 0;
+  transition: opacity 220ms var(--ease);
+}
+.sheet.is-open .sheet-scrim { opacity: 1; }
+
+.sheet-panel {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  max-height: 86vh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+
+  /* A measure, inside a panel that runs the width of the window.
+
+     The sheet is end to end because that is what a sheet is. The words in it
+     are not: a line of prose across two thousand pixels is one nobody can find
+     the start of twice. So the padding is whichever is larger -- the window's
+     own margin, or whatever brings the column down to its measure -- which
+     keeps the panel full bleed and the reading sane without a second box drawn
+     round anything. 980 for prose; is-wide gives 1320 to the two that carry
+     grids rather than paragraphs. */
+  padding-block: 34px clamp(30px, 4vw, 68px);
+  padding-inline: max(clamp(20px, 4vw, 56px), calc((100% - 980px) / 2));
+
+  background: var(--card-fill);
+  border-top: var(--card-edge) solid var(--card-line);
+  border-radius: 24px 24px 0 0;
+  box-shadow: 0 -50px 100px -34px rgba(var(--shade), calc(var(--cast-a, 0) + 0.34));
+
+  transform: translateY(100%);
+  transition: transform 460ms var(--ease);
+}
+.sheet-panel.is-wide {
+  padding-inline: max(clamp(20px, 4vw, 56px), calc((100% - 1320px) / 2));
+}
+.sheet-panel::-webkit-scrollbar { display: none; }
+.sheet.is-open .sheet-panel { transform: none; }
+
+/* The handle. Not draggable and not pretending to be -- it is the mark that
+   says which edge this came off, and every sheet anybody has used has one. */
+.sheet-panel::before {
+  content: "";
+  position: absolute;
+  left: 50%; top: 13px;
+  margin-left: -23px;
+  width: 46px; height: 4px;
+  border-radius: 2px;
+  background: rgba(var(--lift), 0.32);
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* The contents come up after the sheet has arrived, rather than standing there
+   finished inside a thing that is still moving. */
+.sheet-panel > * {
+  transition: opacity 240ms var(--ease),
+              transform 300ms var(--ease),
+              filter 240ms var(--ease);
+}
+.sheet:not(.is-lit) .sheet-panel > * {
+  opacity: 0;
+  transform: translateY(9px);
+  filter: blur(2px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sheet-panel { transition: none; }
+  .sheet-panel > * { transition: none; }
+  .sheet:not(.is-lit) .sheet-panel > * {
+    opacity: 1; transform: none; filter: none;
+  }
+}
+
+@media (max-width: 900px) {
+  .sheet-panel { max-height: 90vh; padding-inline: 20px; padding-block: 30px 30px; }
+  .sheet-panel.is-wide { padding-inline: 20px; }
+}
+
+/* --- the head ------------------------------------------------------------ *//* --- the head ------------------------------------------------------------ */
+
+.repo-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px 32px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(var(--w), 0.12);
+}
+.repo-title { margin: 0; min-width: 0; }
+.repo-title b {
+  display: block;
+  font-family: var(--f-body);
+  font-size: clamp(24px, 3vw, 38px);
+  line-height: 1.08;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  color: var(--heading);
+}
+/* The address, set as an address: the owner quiet and the repository not,
+   because the second half is the name of the thing and the first half is
+   only where it lives. */
+.repo-name {
+  margin: 9px 0 0;
+  font-family: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas,
+    "Liberation Mono", monospace;
+  font-size: 13px; line-height: 19px;
+  color: rgba(var(--w), 0.62);
+  word-break: break-word;
+}
+.repo-name i { font-style: normal; color: rgba(var(--w), 0.34); }
+
+/* Running, in use, shelved. A dot and a word: the dot is filled while a thing
+   is still alive and hollow when it is not, which is the whole of the state
+   and does not need a colour to say it. */
+.repo-state {
+  display: inline-flex; align-items: center; gap: 8px;
+  margin-left: 14px;
+  vertical-align: 3px;
+  font-family: var(--f-label);
+  font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase;
+  color: rgba(var(--w), 0.52);
+}
+.repo-state::before {
+  content: "";
+  width: 7px; height: 7px;
+  border-radius: 999px;
+  border: 1px solid rgba(var(--w), 0.55);
+}
+.repo-state.on::before { background: rgba(var(--w), 0.82); border-color: transparent; }
+
+.repo-ways { display: flex; flex-wrap: wrap; gap: 10px; }
+.repo-ways a {
+  display: inline-flex; align-items: center; gap: 8px;
+  height: 36px;
+  padding: 0 16px;
+  border: 1px solid rgba(var(--w), 0.20);
+  border-radius: 999px;
+  font-family: var(--f-label);
+  font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+  color: rgba(var(--w), 0.74);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color var(--dur) var(--ease), border-color var(--dur) var(--ease),
+              background-color var(--dur) var(--ease);
+}
+.repo-ways a:hover {
+  color: rgba(var(--w), 0.98);
+  border-color: rgba(var(--w), 0.44);
+  background: rgba(var(--w), 0.08);
+}
+.repo-ways a:focus-visible { outline: 2px solid rgb(var(--w)); outline-offset: 2px; }
+.repo-ways svg { width: 14px; height: 14px; flex: none; }
+
+/* --- the two halves ------------------------------------------------------ */
+
+.repo-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  gap: clamp(28px, 3.5vw, 68px);
+  margin-top: 26px;
+}
+@media (max-width: 900px) {
+  .repo-body { grid-template-columns: minmax(0, 1fr); gap: 30px; }
+  /* the panel's own phone rules are the sheet's now -- see .sheet-panel */
+}
+
+.repo-lede {
+  margin: 0 0 22px;
+  font-family: var(--f-body);
+  font-size: clamp(15px, 1.4vw, 19px);
+  line-height: 1.5;
+  color: var(--body);
+  text-wrap: pretty;
+  max-width: 62ch;
+}
+
+/* The photograph off the table, at the top of the drawer it opened. */
+.repo-shot {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1.46;
+  /* Capped. At the width of this column the print's own proportion comes to
+     five hundred pixels of photograph, which is a drawer you have to scroll
+     past a picture to read. */
+  max-height: clamp(190px, 26vh, 320px);
+  margin: 0 0 26px;
+  background: var(--slot) center / cover no-repeat;
+  box-shadow: inset 0 0 0 1px rgba(var(--w), 0.10);
+}
+
+/* --- the beats, which are the account of building it --------------------- */
+
+.repo-beats { margin: 0; padding: 0; list-style: none; }
+.repo-beats li {
+  padding: 18px 0;
+  border-top: 1px solid rgba(var(--w), 0.10);
+}
+.repo-beats li:first-child { border-top: 0; padding-top: 0; }
+.repo-beats h4 {
+  display: flex; align-items: baseline; gap: 12px;
+  margin: 0 0 8px;
+  font-family: var(--f-label);
+  font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+  font-weight: 400;
+  color: rgba(var(--w), 0.86);
+}
+.repo-beats h4 span { color: rgba(var(--w), 0.30); font-variant-numeric: tabular-nums; }
+.repo-beats p {
+  margin: 0;
+  font-family: var(--f-body);
+  font-size: 14px; line-height: 22px;
+  color: var(--body);
+  text-wrap: pretty;
+  max-width: 68ch;
+}
+
+/* What somebody decided, set as what somebody decided. */
+.repo-verdict {
+  margin: 26px 0 0;
+  padding: 20px 0 0;
+  border-top: 1px solid rgba(var(--w), 0.10);
+  font-family: var(--f-body);
+  font-size: clamp(15px, 1.3vw, 18px);
+  line-height: 1.45;
+  color: var(--heading);
+  text-wrap: pretty;
+  max-width: 58ch;
+}
+
+/* --- the rail ------------------------------------------------------------ */
+
+.repo-block { margin: 0 0 26px; }
+.repo-block:last-child { margin-bottom: 0; }
+.repo-h {
+  margin: 0 0 12px;
+  font-family: var(--f-label);
+  font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+  font-weight: 400;
+  color: rgba(var(--w), 0.34);
+}
+
+/* Every one of these is a number somebody can go and check. */
+.repo-facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(96px, 1fr));
+  gap: 14px 18px;
+  margin: 0;
+}
+.repo-facts div { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.repo-facts dt {
+  font-family: var(--f-label);
+  font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+  color: rgba(var(--w), 0.34);
+}
+.repo-facts dd {
+  margin: 0;
+  font-family: var(--f-body);
+  font-size: 14px; line-height: 20px;
+  color: rgba(var(--w), 0.88);
+  font-variant-numeric: tabular-nums;
+}
+
+/* What it is written in, by weight of bytes.
+
+   One bar rather than a list, because the interesting thing about a language
+   split is the proportion and a list of percentages makes you do the reading.
+   The steps are the frame's own ink, not GitHub's palette -- a page does not
+   get to borrow another site's colours to describe itself. */
+.repo-langs {
+  display: flex;
+  height: 6px;
+  overflow: hidden;
+  border-radius: 3px;
+  background: rgba(var(--w), 0.08);
+}
+.repo-langs i { display: block; height: 100%; }
+.repo-langs i:nth-child(1) { background: rgba(var(--w), 0.82); }
+.repo-langs i:nth-child(2) { background: rgba(var(--w), 0.52); }
+.repo-langs i:nth-child(3) { background: rgba(var(--w), 0.32); }
+.repo-langs i:nth-child(4) { background: rgba(var(--w), 0.18); }
+.repo-key {
+  display: flex; flex-wrap: wrap; gap: 5px 18px;
+  margin: 10px 0 0; padding: 0;
+  list-style: none;
+  font-family: var(--f-label);
+  font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+  color: rgba(var(--w), 0.44);
+}
+
+/* The repository's own topics, which is the one place the author has already
+   said what the thing is in single words. */
+.repo-chips { display: flex; flex-wrap: wrap; gap: 7px; margin: 0; padding: 0; list-style: none; }
+.repo-chips li {
+  padding: 5px 11px;
+  border: 1px solid rgba(var(--w), 0.16);
+  border-radius: 999px;
+  font-family: var(--f-label);
+  font-size: 10px; letter-spacing: 0.08em;
+  color: rgba(var(--w), 0.60);
+}
+
+/* The last few commits, which is the part of this that is alive.
+
+   A description is written once and a star is somebody else's opinion; a
+   commit message is the author saying what they did on a Tuesday, and five of
+   them in a row is the difference between a project that exists and a project
+   that is being worked on. Dates in the units somebody would say them in. */
+.repo-log { margin: 0; padding: 0; list-style: none; }
+.repo-log li { border-top: 1px solid rgba(var(--w), 0.08); }
+.repo-log li:first-child { border-top: 0; }
+.repo-log a {
+  display: flex; align-items: baseline; gap: 14px;
+  padding: 9px 0;
+  text-decoration: none;
+  color: inherit;
+}
+.repo-log a:hover .repo-msg { color: rgba(var(--w), 0.98); }
+.repo-log a:focus-visible { outline: 2px solid rgb(var(--w)); outline-offset: -2px; }
+.repo-msg {
+  flex: 1 1 auto; min-width: 0;
+  font-family: var(--f-body);
+  font-size: 13px; line-height: 19px;
+  color: rgba(var(--w), 0.76);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  transition: color var(--dur) var(--ease);
+}
+.repo-when {
+  flex: none;
+  font-family: var(--f-label);
+  font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;
+  color: rgba(var(--w), 0.30);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Three lines the author wrote about the making of it, kept short on purpose. */
+.repo-notes { margin: 0; padding: 0; list-style: none; }
+.repo-notes li {
+  padding: 8px 0;
+  border-top: 1px solid rgba(var(--w), 0.08);
+  font-family: var(--f-body);
+  font-size: 13px; line-height: 19px;
+  color: rgba(var(--w), 0.70);
+}
+.repo-notes li:first-child { border-top: 0; }
+
+/* The opening of the README, as prose and not as markdown.
+
+   Rendering the file properly would mean a markdown parser on a page that has
+   none and does not want one. What is worth having is the paragraph the author
+   wrote to say what this is, which is nearly always the first one under the
+   title -- so that is what is taken, and the drawer says where the rest is. */
+.repo-read {
+  margin: 0;
+  font-family: var(--f-body);
+  font-size: 13px; line-height: 21px;
+  color: rgba(var(--w), 0.62);
+  text-wrap: pretty;
+}
+
+/* While it is coming, and when it does not.
+
+   A drawer that opens empty and fills in is better than one that waits to
+   open, because the press has to be answered immediately -- so everything this
+   page already knows is printed at once and the repository lands underneath. */
+.repo-wait, .repo-fail {
+  margin: 0;
+  font-family: var(--f-label);
+  font-size: 11px; letter-spacing: 0.08em;
+  color: rgba(var(--w), 0.40);
+}
+.repo-wait::after {
+  content: "";
+  display: inline-block;
+  width: 5px; height: 5px;
+  margin-left: 9px;
+  vertical-align: 2px;
+  border-radius: 999px;
+  background: currentColor;
+  animation: repo-tick 1100ms steps(1, end) infinite;
+}
+@keyframes repo-tick { 0%, 60% { opacity: 1; } 61%, 100% { opacity: 0.15; } }
+@media (prefers-reduced-motion: reduce) {
+  .repo-wait::after { animation: none; }
+}
 
 /* ==========================================================================
    The switch
@@ -6019,7 +6472,7 @@ a.arrow { text-decoration: none; }
 }
 
 /* The card headings are .ab-head with a place to stand. */
-.nw-h, .ab-late-h, .ms-h, .ab-rack-t {
+.nw-h, .ab-late-h, .ab-rack-t {
   margin: 0;
   font-family: var(--f-sans);
   letter-spacing: normal;
@@ -6054,7 +6507,7 @@ a.arrow { text-decoration: none; }
    to read as a label is a label in the wrong place.
    ========================================================================== */
 
-.nw-head { position: absolute; left: 24px; top: 24px; }
+/* .nw-head is gone with the heading it placed -- see the note in build.js. */
 /* The one thing on this screen that is true to the minute. */
 .nw-where { font-variant-numeric: tabular-nums; }
 
@@ -6113,10 +6566,23 @@ a.arrow { text-decoration: none; }
 .nw-hit:focus-visible { outline: 2px solid rgb(var(--w)); outline-offset: 4px; }
 /* What it is: a line the frame has no room for. See the phone block. */
 .nw-kind { display: none; }
+/* 95 by 142, which is the card and not a figure.
+ *
+ * The heading came off the top -- see build.js -- and the covers took what it
+ * was standing in rather than the card keeping it as air: 24 of margin, the
+ * picture, 24 of margin, and the picture is whatever is left of 190. It was
+ * 80 by 120 with the heading above it and twenty-two pixels of nothing
+ * between the two, which is a thumbnail with a label over it.
+ *
+ * Two by three throughout. A book jacket, a game's key art and a film poster
+ * are not the same shape, and every one of them is cropped to this box -- so
+ * the box has to be a shape covers are printed in, or the crop reads as a
+ * mistake rather than as a frame. Growing the height alone would have taken
+ * the extra out of the tops and bottoms of all three. */
 .nw-plate {
   flex: none;
   display: block;
-  width: 80px; height: 120px;
+  width: 95px; height: 142px;
   background-color: var(--slot);
   background-size: cover;
   background-position: center;
@@ -6156,7 +6622,7 @@ a.arrow { text-decoration: none; }
    pretending. Everything on this card is either the player's state or a
    command to it.
    ------------------------------------------------------------------------ */
-.ms-h { position: absolute; left: 24px; top: 24px; }
+/* .ms-h is gone with the heading it placed -- see the note in build.js. */
 
 /* The deck, in dark metal, face on -- and wearing a Winamp skin.
 
@@ -6184,8 +6650,15 @@ a.arrow { text-decoration: none; }
      noticing that a machine is not square in its slot. Widening the deck was
      the other way to close it and it would have meant re-cutting the well,
      the stage, the strip and the keys, all of which are laid out to 300. */
-  position: absolute; left: 33px; top: 78px;
-  width: 300px; height: 254px;
+  /* 33 all round, and 290 tall.
+     The heading went from over the machine and the count from under it, so
+     there is nothing else on this card and the object can simply be centred in
+     it: 366 less 300 is 33 either side, and 356 less 290 is 33 above and
+     below. The height is the readout's -- 254 held the glass, the counter and
+     the keys, and the strip of dots wanted its own band rather than a share of
+     somebody else's. */
+  position: absolute; left: 33px; top: 33px;
+  width: 300px; height: 290px;
 
   /* The case, as five figures.
 
@@ -6200,8 +6673,21 @@ a.arrow { text-decoration: none; }
      everything it had: it is backlit, it is the half of this that is
      actually doing something, and it is dark in both rooms because a display
      is dark when it is off whatever the lamp is doing. */
+  /* The body: a ramp from head to foot, which is where the light in the room
+     falls off rather than a reflection of it, and a chamfer either end of it. */
   --wk-face: #17181b;
+  --wk-top:  #22242a;
+  --wk-foot: #0e0f12;
   --wk-line: rgba(255, 255, 255, 0.10);
+  --wk-lit:  #e8e8e8;
+  --wk-edge-hi: rgba(255, 255, 255, 0.17);
+  --wk-edge-lo: rgba(0, 0, 0, 0.62);
+  --wk-side-hi: rgba(255, 255, 255, 0.055);
+  --wk-side-lo: rgba(0, 0, 0, 0.38);
+  --wk-seam: rgba(255, 255, 255, 0.055);
+  --wk-cast:
+    0 20px 32px -18px rgba(0, 0, 0, 0.85),
+    0 5px 11px -4px rgba(0, 0, 0, 0.55);
   /* The screen, which is the one thing here that is dark on purpose. Kept as
      a token because near-black is right in this room and much too hard a step
      in the other: a black rectangle cut into a white panel is a hole. */
@@ -6231,25 +6717,85 @@ a.arrow { text-decoration: none; }
    a long way so it stops being a hole, and the shadow under a key is an eighth
    of what it is in the dark instead of the same figure on a background eleven
    times lighter. */
+/* The same object under a different lamp, and every figure that differs here
+   differs for one reason: this room has less range to spend. The chamfer, the
+   ramp, the seam and the cast are all present at a fraction of the contrast --
+   same geometry, less of it, because the eye reads a 20-per-cent edge on paper
+   the way it reads a 62-per-cent edge on charcoal. */
 :root[data-theme="light"] .ms-wk {
-  --wk-face: #e9ebef;
+  /* Darker aluminium, and that is the whole of the fix.
+
+     The lit room's machine was #e9ebef, which is a white object on a white
+     card: every figure on it -- the ramp down the body, the chamfer, the seam,
+     the side walls of the keys -- was doing its work inside three per cent of
+     tone, and three per cent is not a machine, it is an embossed area of the
+     page. You could see where it was and not what it was.
+
+     It stays aluminium. Making it graphite would have read better still and
+     would have made the two rooms two different objects, which is the one
+     thing this card has always got right: it is the same machine under a
+     different lamp. So the metal is simply darker -- a mid grey body that a
+     white card can hold, with the light still falling from the top -- and
+     every relationship on it is unchanged. What was a highlight is still a
+     highlight; there is now room underneath it for one. */
+  --wk-face: #b9bec7;
+  --wk-top:  #d2d6dd;
+  --wk-foot: #9aa0aa;
+  --wk-line: rgba(18, 20, 26, 0.20);
+  --wk-lit:  #23262e;
+  --wk-edge-hi: rgba(255, 255, 255, 0.72);
+  --wk-edge-lo: rgba(22, 26, 36, 0.30);
+  --wk-side-hi: rgba(255, 255, 255, 0.42);
+  --wk-side-lo: rgba(22, 26, 36, 0.16);
+  --wk-seam: rgba(255, 255, 255, 0.30);
+  /* And a shadow that puts it on the card rather than in it. */
+  --wk-cast:
+    0 20px 34px -16px rgba(22, 26, 36, 0.40),
+    0 6px 13px -5px rgba(22, 26, 36, 0.26);
+  /* Pale plastic on a metal body, which is what a key on one of these was.
+     They were white on white before and had nothing to stand out of; against
+     the darker body they are the lightest thing on the machine again, which is
+     what makes a key look pressable. */
+  --wk-key: linear-gradient(180deg, #ffffff 0%, #f0f2f5 54%, #dfe2e7 100%);
+  --wk-key-a: #b9bec7;
+  --wk-key-b: #8f959f;
+  --wk-key-ink: rgba(20, 22, 30, 0.78);
+  --wk-key-lit: #14161e;
+  --wk-key-top: rgba(255, 255, 255, 0.95);
+  --wk-key-bot: rgba(22, 26, 36, 0.14);
+  --wk-key-cast: 0 7px 9px rgba(22, 26, 36, 0.22);
+  --wk-key-down: 0 1px 3px rgba(22, 26, 36, 0.22);
   --wk-line: rgba(18, 20, 26, 0.11);
   --wk-well: #2b2f36;
-  --wk-key: linear-gradient(180deg, #ffffff 0%, #eceef2 54%, #dcdfe4 100%);
-  --wk-key-a: #ced2d8;
-  --wk-key-b: #b4b9c1;
-  --wk-key-ink: rgba(20, 22, 30, 0.72);
+  /* Pale plastic on a metal body, which is what a key on one of these was.
+     They were white on white before and had nothing to stand out of; against
+     the darker body they are the lightest thing on the machine again, which is
+     what makes a key look pressable. */
+  --wk-key: linear-gradient(180deg, #ffffff 0%, #f0f2f5 54%, #dfe2e7 100%);
+  --wk-key-a: #b9bec7;
+  --wk-key-b: #8f959f;
+  --wk-key-ink: rgba(20, 22, 30, 0.78);
   --wk-key-lit: #14161e;
-  --wk-key-top: rgba(255, 255, 255, 0.9);
-  --wk-key-bot: rgba(0, 0, 0, 0.10);
-  --wk-key-cast: 0 7px 8px rgba(22, 26, 36, 0.13);
-  --wk-key-down: 0 1px 3px rgba(22, 26, 36, 0.16);
+  --wk-key-top: rgba(255, 255, 255, 0.95);
+  --wk-key-bot: rgba(22, 26, 36, 0.14);
+  --wk-key-cast: 0 7px 9px rgba(22, 26, 36, 0.22);
+  --wk-key-down: 0 1px 3px rgba(22, 26, 36, 0.22);
 }
 @media (prefers-color-scheme: light) {
   :root:not([data-theme]) .ms-wk {
     --wk-face: #e9ebef;
+    --wk-top:  #f6f7f9;
+    --wk-foot: #d5d8de;
     --wk-line: rgba(18, 20, 26, 0.11);
-    --wk-well: #2b2f36;
+    --wk-lit:  #e8e8e8;
+    --wk-edge-hi: rgba(255, 255, 255, 0.95);
+    --wk-edge-lo: rgba(22, 26, 36, 0.20);
+    --wk-side-hi: rgba(255, 255, 255, 0.70);
+    --wk-side-lo: rgba(22, 26, 36, 0.09);
+    --wk-seam: rgba(22, 26, 36, 0.07);
+    --wk-cast:
+      0 16px 26px -16px rgba(22, 26, 36, 0.28),
+      0 4px 9px -4px rgba(22, 26, 36, 0.16);
     --wk-key: linear-gradient(180deg, #ffffff 0%, #eceef2 54%, #dcdfe4 100%);
     --wk-key-a: #ced2d8;
     --wk-key-b: #b4b9c1;
@@ -6269,21 +6815,41 @@ a.arrow { text-decoration: none; }
    a billet and has edges you would not want to run a thumb along. The card
    behind it keeps its own radius, which is what makes the difference read:
    a hard object sitting on a soft one. */
-/* A panel with a screen in it. One fill, one hairline, and a corner radius
-   that says it is a thing on the card rather than a thing machined out of a
-   billet. Nothing casts: the deck is not floating above the card, it is on
-   it, and three stacked shadows under a 300-pixel box were most of what made
-   this read as a photograph of hi-fi rather than as a control. */
+/* An object on the card, with a screen fitted into it.
+
+   Six declarations and every one of them is about the shape rather than about
+   the surface: the ramp is the falloff down the body, the first two insets are
+   the chamfer at the head and the foot, the next two are the side walls, the
+   hairline is the edge of the shell, and the last two are what a hundred and
+   fifty grams of something lying on a card does to the card. Move your head
+   and none of it changes, which is the test that separates form from shine. */
 .ms-wk-face {
   position: absolute; inset: 0;
-  border-radius: 8px;
-  background: var(--wk-face);
-  box-shadow: inset 0 0 0 1px var(--wk-line);
+  border-radius: 9px;
+  background: linear-gradient(180deg,
+    var(--wk-top) 0%, var(--wk-face) 38%,
+    var(--wk-face) 68%, var(--wk-foot) 100%);
+  box-shadow:
+    inset 0 1px 0 var(--wk-edge-hi),
+    inset 0 -2px 0 var(--wk-edge-lo),
+    inset 1px 0 0 var(--wk-side-hi),
+    inset -1px 0 0 var(--wk-side-lo),
+    inset 0 0 0 1px var(--wk-line),
+    var(--wk-cast);
 }
-/* The moulding seam and the brushing both went with the metal. A seam is
-   where two pressings meet and there are no pressings here; a sheen is a lamp
-   reflected in something polished, and nothing is polished. */
-.ms-wk-face::before { content: none; }
+/* The seam. A shell this size is two pieces and you can see where they meet:
+   one hairline in from the edge, lit on its upper side and shaded on its
+   lower, which is what a join looks like and costs two colours. The brushing
+   does not come back -- that one was a lamp on something polished. */
+.ms-wk-face::before {
+  content: "";
+  position: absolute; inset: 6px;
+  border-radius: 5px;
+  pointer-events: none;
+  box-shadow:
+    inset 0 1px 0 var(--wk-seam),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.14);
+}
 .ms-wk-face::after { content: none; }
 
 /* And the four screws are gone. They were the last of the argument that this
@@ -6301,10 +6867,19 @@ a.arrow { text-decoration: none; }
      drawing a recess -- a lip above, a shade below, a highlight on the sill --
      and a recess is a claim about thickness that a flat panel cannot support.
      The screen is dark and the panel is not, which is the only edge it needs. */
-  border-radius: 6px;
+  border-radius: 3px;
   overflow: hidden;
-  background: var(--wk-well);
-  box-shadow: inset 0 0 0 1px var(--wk-line);
+  /* Two values on it and no third, in either room -- but which two depends on
+     the room. Dark here, and paper in the lit one: see the inversion below,
+     which is where the whole of it is written down. */
+  background: #0b0b0b;
+  /* Cut in, and the two figures that say so: the wall of the recess going
+     down, and the lip of the panel catching light along the top of it. A
+     screen that is flush with the case is a sticker. */
+  box-shadow:
+    inset 0 0 0 1px rgba(0, 0, 0, 0.9),
+    inset 0 3px 7px rgba(0, 0, 0, 0.85),
+    0 1px 0 var(--wk-edge-hi);
 }
 .ms-top {
   position: relative;
@@ -6322,7 +6897,21 @@ a.arrow { text-decoration: none; }
   overflow: hidden;
   box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.10);
 }
-.ms-tube { position: absolute; inset: 0; pointer-events: none; }
+/* The player, and it is not a thing to look at.
+
+   It was covered rather than hidden -- the sleeve sits over it at z-index 1 --
+   and that held until the sleeve was handed the dither filter. A filtered
+   element is composited on its own, and Chrome will not order an out-of-process
+   frame against one: the iframe came up through the picture and put YouTube's
+   red button and its watermark in the middle of the artwork.
+
+   Covering it was the wrong idea in any case. Nothing on this card ever shows
+   the video -- the frame is here to make a sound -- so it is taken out of the
+   paint altogether, which is a fix nothing can stack its way out of and one
+   less full-size frame composited behind a picture nobody can see through. It
+   keeps its box: a player shrunk to nothing is a player some browsers stop
+   feeding. */
+.ms-tube { position: absolute; inset: 0; pointer-events: none; opacity: 0; }
 .ms-tube iframe { display: block; width: 100%; height: 100%; border: 0; }
 .ms-art {
   position: absolute; inset: 0;
@@ -6375,174 +6964,89 @@ a.arrow { text-decoration: none; }
   .is-going .ms-viz i { animation: none; height: calc(var(--y, 0.7) * 55%); }
 }
 
-/* --- five ways to draw the same nothing ---------------------------------
-
-   The sixth key cycles these. None of them is reading the audio -- it cannot
-   be read, the player is a cross-origin iframe -- so what changes is the
-   drawing, not the data. They are the four Winamp ever really had plus the
-   one where you turn it off.
+/* The nine ways of drawing the meter went with the meter. They were the four
+   Winamp ever really had plus the one where you turn it off plus four more,
+   and every one of them was a different drawing of the same nothing -- which
+   is nine answers to a question the card should not have been asking. The
+   sixth key does something now instead of choosing between them: see the note
+   over .ms-viz.
    ------------------------------------------------------------------------ */
 
-/* PEAK -- bars with the little marker riding on top of each one. */
-.viz-peak .ms-viz i::after {
-  content: "";
-  position: absolute; left: 0; right: 0; top: -4px;
-  height: 2px;
-  background: #e8f6ff;
-  box-shadow: 0 0 6px rgba(220, 242, 255, 0.9);
-}
+/* --- the screen, one bit deep ----------------------------------------------
 
-/* SCOPE -- struck from the middle instead of stood on the floor. */
-.viz-scope .ms-viz { align-items: center; }
-.viz-scope .ms-viz i {
-  background: linear-gradient(0deg, #14d9ff, #a6f2ff) center / 100% 100% no-repeat;
-  box-shadow: 0 0 7px rgba(60, 220, 255, 0.45);
-}
-.viz-scope .ms-viz::after { display: none; }
+   What was here first: a square thumbnail in the middle, a nine-bar analyser
+   either side of it, and a two-line readout under all three, inside a well 152
+   tall. Every one of those is a good idea and together they are four things
+   fighting over a space where one belongs. Nothing in it was big enough to
+   look at, so there was nothing to look at.
 
-/* FIRE -- no segments, hotter ramp, and quicker on its feet. */
-.viz-fire .ms-viz i {
-  background: linear-gradient(0deg,
-    #c81e00 0%, #ff6a00 32%, #ffb300 62%, #ffe680 84%, #fffdf2 100%)
-    bottom / 100% 84px no-repeat;
-}
-.viz-fire .ms-viz::after { display: none; }
-.viz-fire.is-going .ms-viz i { animation-duration: calc(var(--d, 700ms) * 0.55); }
-
-/* DROP -- hung from the ceiling instead of stood on the floor, and lit in
-   the colours no meter has ever been. */
-.viz-drop .ms-viz { align-items: flex-start; }
-.viz-drop .ms-viz i {
-  background: linear-gradient(180deg,
-    #6a12ff 0%, #b03cff 34%, #ff5ad2 70%, #ffd6f2 100%)
-    top / 100% 84px no-repeat;
-  box-shadow: 0 0 8px rgba(190, 70, 255, 0.45);
-}
-.viz-drop .ms-viz::after { display: none; }
-
-/* NEON -- a light organ. Every bar is full height all the time and what
-   moves is how hard each one is lit, which is the wrong way round for a
-   meter and exactly right for a wall of them. */
-.viz-neon .ms-viz i {
-  height: 100%;
-  background: linear-gradient(0deg, #ff17c1 0%, #9d4bff 46%, #00e9ff 100%);
-  box-shadow: 0 0 10px rgba(255, 40, 200, 0.55);
-}
-.viz-neon .ms-viz::after { display: none; }
-.viz-neon.is-going .ms-viz i { animation-name: ms-neon; }
-@keyframes ms-neon {
-  from { opacity: 0.1; }
-  to   { opacity: 1; }
-}
-/* Standing still it is a solid wall of colour, which is not a resting
-   meter -- so at rest it is dimmed to the same near-nothing it pulses
-   down to. */
-.viz-neon .ms-viz i { opacity: 0.14; }
-.viz-neon.is-going .ms-viz i { opacity: 1; }
-
-/* BOUNCE -- not a meter at all. The bars stop growing and start jumping:
-   every one is the same small block and what moves is where it is, which
-   no analyser has ever done and is the best thing on the dial. */
-.viz-bounce .ms-viz i {
-  height: 15%;
-  background: linear-gradient(0deg, #ff7a00 0%, #ffc61e 55%, #ffe98a 100%);
-  box-shadow: 0 0 8px rgba(255, 170, 40, 0.5);
-}
-.viz-bounce .ms-viz::after { display: none; }
-.viz-bounce.is-going .ms-viz i { animation-name: ms-bounce; }
-@keyframes ms-bounce {
-  from { transform: translateY(0); }
-  to   { transform: translateY(calc(var(--y, 0.7) * -430%)); }
-}
-
-/* STATIC -- the meter having a breakdown. The heights snap between seven
-   values instead of easing between two, because the timing function is
-   steps(1) and every keyframe is a jump cut. Kept its segment rows, which
-   is what makes it read as a display going wrong rather than a new
-   pattern. */
-.viz-static .ms-viz i {
-  background: linear-gradient(0deg,
-    #6f7780 0%, #cfd6dd 55%, #ffffff 100%) bottom / 100% 84px no-repeat;
-}
-.viz-static.is-going .ms-viz i {
-  animation-name: ms-static;
-  animation-duration: calc(var(--d, 700ms) * 0.42);
-  animation-direction: normal;
-  animation-timing-function: steps(1, end);
-}
-@keyframes ms-static {
-  0%   { height: 14%;  opacity: 0.55; }
-  14%  { height: 96%;  opacity: 1; }
-  28%  { height: 31%;  opacity: 0.7; }
-  42%  { height: 100%; opacity: 1; }
-  56%  { height: 19%;  opacity: 0.45; }
-  70%  { height: 74%;  opacity: 0.95; }
-  84%  { height: 42%;  opacity: 0.8; }
-  100% { height: 12%;  opacity: 0.6; }
-}
-
-/* OFF -- the sleeve, on its own, in the dark. */
-.viz-off .ms-viz { visibility: hidden; }
-
-/* --- the screen, redone ----------------------------------------------------
-
-   What was here: a square thumbnail in the middle, a nine-bar analyser either
-   side of it, and a two-line readout under all three, inside a well 152 tall.
-   Every one of those is a good idea and together they are four things fighting
-   over a space where one belongs. Nothing in it was big enough to look at, so
-   there was nothing to look at.
-
-   It is one picture now. The sleeve fills the glass; behind it the same image
-   is thrown out of focus and scaled past the edges, so the light in the well
-   comes off the record instead of off a lamp -- which is the whole difference
-   between a screen with something on it and a screen that is lit by what is on
-   it. The name lies over the foot of the picture under a gradient, and the
-   analyser is the spill along the bottom edge: eighteen bars of light with no
-   outline on any of them, which reads as level rather than as a chart.
+   It is one picture, and the picture is thresholded. The screen has two values
+   in it and no others, which is what makes it a screen rather than a small
+   television: a display of this size and this age did not have greys, it had
+   cells that were on or off, and a Bayer matrix is how a picture gets onto one.
+   Everything below follows from that -- the haze went because a blur is a
+   hundred greys, the veil went because there is no type on the glass, and the
+   cast under the sleeve went because a shadow is a soft edge.
    ------------------------------------------------------------------------ */
 .ms-well { height: 168px; padding: 0; }
 
-/* The room the picture makes. Blurred hard and pushed past every edge, because
-   a blur that stops inside the box draws its own rectangle. */
-.ms-haze {
-  position: absolute;
-  inset: -22%;
-  background-position: center;
-  background-size: cover;
-  filter: blur(22px) saturate(1.7) brightness(0.72);
-  opacity: 0.9;
-  pointer-events: none;
-}
+/* No haze. It was a blurred, saturated copy of the sleeve thrown behind the
+   sleeve so the light in the well came off the record -- which is a lovely
+   effect on a colour screen and is meaningless on a screen with two colours
+   in it. A blur is a hundred greys, and there are no greys here. */
+.ms-haze { display: none; }
 
-/* And the sleeve itself, square and centred, standing off the haze. */
+/* And the sleeve, square and centred and one bit deep. No cast: a shadow is a
+   soft edge and there are no soft edges on this screen.
+
+   148 and not 122. The eighteen bars of meter used to stand in the strip under
+   the picture and the picture was cut to leave room for them; they are gone,
+   nothing took the strip, and a sleeve with a band of empty glass beneath it
+   is a sleeve that has been made small for a reason that no longer exists. It
+   fills the well now, eight clear of the top and eight clear of the counter
+   that crosses the foot -- which is also twenty-six more pixels for the wave
+   to happen in, and the wave is the thing on this screen worth looking at. */
 .ms-well .ms-stage {
   position: absolute;
-  left: 50%; top: 15px;
-  width: 104px; height: 104px;
-  margin-left: -52px;
+  left: 50%; top: 8px;
+  width: 148px; height: 148px;
+  margin-left: -74px;
   flex: none;
   z-index: 2;
-  box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.22),
-    0 10px 22px -6px rgba(0, 0, 0, 0.85),
-    0 2px 5px rgba(0, 0, 0, 0.6);
+  box-shadow: none;
 }
+/* The threshold goes on the picture and not on the box round it.
 
-/* The foot of the picture, darkened so type can sit on it. */
-.ms-veil {
-  position: absolute;
-  left: 0; right: 0; bottom: 0;
-  height: 58%;
-  z-index: 3;
-  pointer-events: none;
-  background: linear-gradient(180deg,
-    rgba(4, 6, 8, 0) 0%,
-    rgba(4, 6, 8, 0.55) 46%,
-    rgba(4, 6, 8, 0.92) 100%);
-}
+   The box also holds the tube -- the player itself, which is taken out of the
+   paint entirely rather than covered; see .ms-tube for why. A filter on the
+   box would be a filter over every video frame arriving behind an opaque
+   picture nobody can see: a full compositing pass, sixty times a second, for
+   no visible pixels. On the picture it runs when the picture loads and then
+   never again. */
+/* And darker before it is thresholded.
+ *
+ * A screen in a dark room is a dark thing with a picture lit on it. This one
+ * was coming out the other way round: the matrix was clearing on better than
+ * half the cells of a mid-toned sleeve, so the glass was a bright block with
+ * some dark in it -- a lightbox, not a display. The picture was right and the
+ * ground was wrong.
+ *
+ * Seven tenths of the input, and the threshold does the rest. Fewer cells make
+ * it over, the ones that do are the parts of the picture that were actually
+ * bright, and what is left between them is the screen -- which is the way
+ * round a lit display has always been. Nothing about the dither changes; it is
+ * handed a darker picture. */
+.ms-well .ms-art { filter: brightness(0.7) url(#ms-dither); }
+
+/* The veil darkened the foot of the picture so type could sit on it. There is
+   no type on the picture any more -- see the note in build.js -- so there is
+   nothing for it to be under. */
+.ms-veil { display: none; }
 
 /* The name. Still the readout face, still lit, but set on the picture rather
-   than on a strip of its own. */
+   than on a strip of its own. Nothing emits it at the moment -- the sleeve
+   carries the record and the queue carries the list -- and the rules stay
+   because the element is one line of build.js away from coming back. */
 .ms-well .ms-lcd {
   position: absolute;
   left: 14px; right: 14px; bottom: 20px;
@@ -6572,62 +7076,95 @@ a.arrow { text-decoration: none; }
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
 }
 
-/* The level, as light along the bottom edge. Eighteen bars, no outlines, and
-   blurred just enough that what you read is a glow moving rather than blocks
-   counting. */
-/* Half the glass, not a strip along the bottom of it.
+/* The record used to develop as it played: everything behind the play head
+   resolved, everything to come with half its cells knocked out, and the edge
+   between them where you were. It was true and it was drawn on the artwork,
+   which is the one thing on this screen that should be left alone -- a sleeve
+   with a progress display printed across it is a sleeve somebody has written
+   on. Position is what the counter under the glass is for, and it has been
+   there all along.
 
-   Twenty-six pixels of meter under a picture is a status bar. What the deck
-   wants is the light coming up off the record, so the bars run to the middle
-   of the screen and are blurred and screened over the sleeve rather than
-   sitting in front of it -- at full level they wash the bottom half of the
-   picture, which is what a loud passage does to a lit meter behind glass. */
-.ms-spill {
+   What is left is below: the same dither, moved off the picture and into the
+   room around it.
+   ------------------------------------------------------------------------ */
+
+/* --- the visualiser, and it is a dither ----------------------------------
+
+   Everything on this screen is one bit deep: the sleeve is a photograph put
+   through a Bayer matrix, and every cell in it is ink or paper and nothing
+   between. That is the whole material this card has, so a visualiser drawn in
+   anything else -- a bar, a needle, a line -- is a second object standing on a
+   screen that cannot contain it. The visualiser is the same dither.
+
+   Around the record and never on it. It was over the sleeve for a revision
+   and that was wrong for a reason worth stating plainly: the artwork is the
+   one thing on this screen that is somebody else's, and putting a wave through
+   it is a caption written over a picture. So the wave is the room instead --
+   the screen the record is standing on -- and the rings come out from behind
+   the sleeve into the dark either side of it, which is what a thing radiating
+   from an object looks like and is a better idea than the one it replaced.
+
+   How it works, which is the same arithmetic the picture goes through. A
+   threshold surface is drawn across the well: a value between minus one and
+   one for every cell, made of a ripple travelling out from behind the record,
+   a sweep crossing it, and a slow rise up the frame. Each cell compares its
+   own value against the Bayer cell it sits on -- the same 4x4 matrix, on the
+   same two-pixel pitch, in the same phase as the sleeve -- and if it clears
+   it, the cell is forced: white where the surface is positive, black where it
+   is negative, left alone where it is neither. The room and the record are
+   broken up by one matrix on one grid, which is what makes them the same
+   screen rather than two things next to each other.
+
+   What drives it is time, and it says so. There is no audio here to read --
+   the sound is inside a cross-origin iframe and there is no way to reach a
+   sample of it -- so this is not a measurement and does not pretend to be one:
+   nothing in it claims to be a level. What it is is a machine that visibly
+   runs while a record is on and visibly stops when one is not, and the wave a
+   given record gets is seeded off its own video id, so two tracks do not look
+   the same and the same track looks like itself every time.
+
+   Cheap by construction. One canvas pixel is one cell, so the buffer is 74 by
+   74 and the whole frame is five and a half thousand comparisons -- and the
+   scaling up to the sleeve is done by the compositor, with image-rendering
+   telling it not to smooth. A canvas at the sleeve's real size would be twenty
+   times the work for a picture with no more information in it.
+   ------------------------------------------------------------------------ */
+.ms-viz {
   position: absolute;
-  left: 0; right: 0; bottom: 0;
-  height: 62%;
-  z-index: 5;
-  display: flex;
-  align-items: flex-end;
-  gap: 2px;
-  padding: 0 6px 3px;
+  inset: 0;
+  /* Under the record, over nothing. The sleeve is z-index 2 and opaque, so
+     this is the screen the record is standing on rather than a film over it --
+     and the painter does not draw a single cell inside the sleeve's box, so
+     the artwork is untouched by construction and not by luck. */
+  z-index: 1;
+  width: 100%; height: 100%;
   pointer-events: none;
-  filter: blur(2.4px);
-  mix-blend-mode: screen;
-  opacity: 0.92;
+  /* Nearest neighbour, and the two spellings that are needed to get it: a cell
+     is two pixels of a hard edge and a browser that smooths it has drawn a
+     grey, which is the one colour this screen does not have. */
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  opacity: 0;
+  transition: opacity 420ms var(--ease);
 }
-/* Driven, not looped.
-
-   Every bar was a CSS animation with its own period and phase, which is a
-   very good imitation of an analyser and is not one: nothing in it knows what
-   the music is doing, so eighteen bars wander at eighteen speeds and the
-   pattern is the same whatever is playing. The height is written by the
-   script now, once a frame, off the deck's own clock -- see the visualiser in
-   the music script for what is honest about that and what is not.
-
-   No transition on the height either. A bar that eases toward its value is a
-   bar that arrives late, and late is exactly the thing you can see. */
-.ms-spill i {
-  position: relative;
-  flex: 1 1 0;
-  min-width: 0;
-  height: 6%;
-  border-radius: 1px 1px 0 0;
-  background: linear-gradient(180deg,
-    #ffffff 0%,
-    rgba(184, 255, 214, 0.98) 22%,
-    rgba(96, 226, 156, 0.62) 62%,
-    rgba(52, 190, 128, 0) 100%);
-}
-
-/* And the grid on the glass, at a third of what it was. It was a pixel mask
-   over a thumbnail; over a photograph it is a screen door. */
-.ms-well .ms-pix { opacity: 0.30; z-index: 6; }
+/* On while the tape is running, and only then. A machine at rest is a sleeve.
+   Held is not going: pause stops the wave where it stands rather than fading
+   it, because the record has not gone anywhere. */
+.is-going .ms-viz { opacity: 1; }
+.is-held .ms-viz { opacity: 0.55; }
 
 @media (prefers-reduced-motion: reduce) {
-  .ms-spill i { height: 22% !important; }
+  .ms-viz { display: none; }
 }
 
+/* The count that used to stand under the machine has gone -- see the note in
+   build.js where it was written. How many are behind the sixth key is on the
+   sheet the key opens, which is where somebody asks the question. */
+
+/* And the grid comes back up. It was turned down to a third because over a
+   photograph a pixel mask is a screen door; over a thresholded picture it is
+   the other half of the same idea, and the two want to be on the same scale. */
+.ms-well .ms-pix { opacity: 0.38; z-index: 6; }
 
 /* --- the readout -------------------------------------------------------- */
 
@@ -6739,7 +7276,7 @@ a.arrow { text-decoration: none; }
   position: absolute; left: 0; top: 50%;
   height: 3px; margin-top: -1.5px; width: 0;
   border-radius: 0;
-  background: rgba(157, 255, 207, 0.8);
+  background: var(--wk-lit);
 }
 /* The handle goes square with everything else. A round one on a machine
    with no round corners on it is the one part you would notice. */
@@ -6747,12 +7284,226 @@ a.arrow { text-decoration: none; }
   position: absolute; top: 50%; left: 0;
   width: 7px; height: 11px; margin: -5.5px 0 0 -3.5px;
   border-radius: 0;
-  background: #dfffee;
+  background: var(--wk-lit);
   opacity: 0;
   transition: opacity var(--dur) var(--ease);
 }
 .ms-bar:hover .ms-knob, .ms-bar:focus-visible .ms-knob, .is-going .ms-knob { opacity: 1; }
-.ms-bar:focus-visible { outline: 1px solid rgba(157, 255, 207, 0.6); outline-offset: 3px; }
+.ms-bar:focus-visible { outline: 1px solid var(--wk-lit); outline-offset: 3px; }
+
+/* --- and the screen, in a lit room -----------------------------------------
+
+   Dark in both rooms was the old rule, and the argument for it was that a
+   display is off when it is off whatever the lamp over it is doing. True of a
+   television. Wrong for this: what makes the machine a machine in the lit room
+   is that the whole of it is aluminium and paper, and a black rectangle cut
+   into a white panel is not a screen that happens to be off, it is a hole in
+   the case.
+
+   So the display is a reflective one. It has always been a two-value screen --
+   there is no third colour on it anywhere -- and a two-value screen has two
+   ways to be: light on dark, which is a lamp behind glass, and dark on light,
+   which is ink on paper. The dark room gets the lamp and this room gets the
+   paper, and nothing about the arrangement changes: the same picture, through
+   the same Bayer matrix, at the same pitch, with the same wave coming out from
+   behind the record. Every cell that was lit is now inked and every cell that
+   was unlit is now the ground.
+
+   Which is four inversions and one ground colour, and no new drawing at all.
+   ------------------------------------------------------------------------ */
+:root[data-theme="light"] .ms-well,
+:root[data-theme="light"] .ms-str {
+  /* Not white. Paper with a little warmth in it, so the panel round it still
+     reads as the lighter of the two and the screen as something set into it. */
+  background: #e4e2dc;
+  box-shadow:
+    inset 0 0 0 1px rgba(22, 26, 36, 0.22),
+    inset 0 3px 7px rgba(22, 26, 36, 0.16),
+    0 1px 0 var(--wk-edge-hi);
+}
+/* The picture. The filter thresholds to black and white; on paper the two
+   want to be the other way round, which is one more step on the same chain
+   rather than a second filter. */
+/* The lit room needs none of that: paper is bright and the ink is the picture,
+   so the input is left where it is and only the output turns over. */
+:root[data-theme="light"] .ms-well .ms-art { filter: url(#ms-dither) invert(1); }
+/* And the wave, which paints white cells and black ones for the same reason
+   and is inverted for the same reason. */
+:root[data-theme="light"] .ms-viz { filter: invert(1); }
+/* The grid over the whole screen goes from black lines on a lit ground to
+   light ones on an inked one -- a reflective display's mask catches the lamp
+   rather than blocking it. */
+:root[data-theme="light"] .ms-pix {
+  background:
+    repeating-linear-gradient(90deg,
+      rgba(255, 255, 255, 0.42) 0 1px, rgba(255, 255, 255, 0) 1px 2px),
+    repeating-linear-gradient(180deg,
+      rgba(255, 255, 255, 0.42) 0 1px, rgba(255, 255, 255, 0) 1px 2px);
+}
+/* The legend strip is the same screen at half the pitch, so it turns over with
+   it: the amber goes to the ink it would be printed in, and the dot mask goes
+   from black to the ground showing through. */
+:root[data-theme="light"] .ms-run i {
+  color: #23262e;
+  text-shadow: none;
+}
+:root[data-theme="light"] .ms-str::after {
+  background:
+    repeating-linear-gradient(0deg, rgba(228, 226, 220, 0.6) 0 1px, rgba(228, 226, 220, 0) 1px 2px),
+    repeating-linear-gradient(90deg, rgba(228, 226, 220, 0.6) 0 1px, rgba(228, 226, 220, 0) 1px 2px);
+}
+/* The counter needs no override any more: --wk-lit carries it, and in this
+   room that token is the dark ink the mid-grey panel wants. */
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme]) .ms-well,
+  :root:not([data-theme]) .ms-str {
+    background: #e4e2dc;
+    box-shadow:
+      inset 0 0 0 1px rgba(22, 26, 36, 0.22),
+      inset 0 3px 7px rgba(22, 26, 36, 0.16),
+      0 1px 0 var(--wk-edge-hi);
+  }
+  :root:not([data-theme]) .ms-well .ms-art { filter: url(#ms-dither) invert(1); }
+  :root:not([data-theme]) .ms-viz { filter: invert(1); }
+  :root:not([data-theme]) .ms-pix {
+    background:
+      repeating-linear-gradient(90deg,
+        rgba(255, 255, 255, 0.42) 0 1px, rgba(255, 255, 255, 0) 1px 2px),
+      repeating-linear-gradient(180deg,
+        rgba(255, 255, 255, 0.42) 0 1px, rgba(255, 255, 255, 0) 1px 2px);
+  }
+  :root:not([data-theme]) .ms-run i { color: #23262e; text-shadow: none; }
+  :root:not([data-theme]) .ms-str::after {
+    background:
+      repeating-linear-gradient(0deg, rgba(228, 226, 220, 0.6) 0 1px, rgba(228, 226, 220, 0) 1px 2px),
+      repeating-linear-gradient(90deg, rgba(228, 226, 220, 0.6) 0 1px, rgba(228, 226, 220, 0) 1px 2px);
+  }
+
+}
+
+/* --- the readout -----------------------------------------------------------
+
+   A strip of dots across the front of the machine, and the name running past.
+
+   Every deck of this shape had one: a window narrower than the thing it had to
+   say, so it said it a letter at a time and went round again. That is not a
+   decorative choice here, it is the actual situation -- a hundred and twenty
+   pixels of glass and titles that are frequently three times that -- and the
+   answer a deck arrived at is still the right one.
+
+   It is a dot matrix and not type behind glass. The text is drawn, and then a
+   grid at a two-pixel pitch is laid over it that takes three quarters of every
+   cell away, so what is left is one lit dot per cell and the letters are made
+   of dots the way they were made of dots. The same trick the sleeve and the
+   wave use, at half the pitch, because a character is a smaller thing than a
+   record and wants a finer grid to survive.
+
+   Amber rather than the screen's green: the glass above is a display and this
+   is a legend strip, and every machine that had both had them in two colours.
+
+   The loop is two copies of the string and one translation. The pair is slid
+   exactly one copy to the left, so the second is arriving as the first leaves
+   and there is no frame where the strip is empty -- which is the whole reason
+   the text is written twice rather than animated from one edge to the other.
+   ------------------------------------------------------------------------ */
+.ms-str {
+  position: absolute;
+  left: 16px; right: 16px; top: 194px;
+  z-index: 2;
+  height: 26px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  /* Cut into the panel, like the glass above it and by the same two figures. */
+  background: #0a0b0e;
+  box-shadow:
+    inset 0 0 0 1px rgba(0, 0, 0, 0.9),
+    inset 0 2px 5px rgba(0, 0, 0, 0.8),
+    0 1px 0 var(--wk-edge-hi);
+}
+.ms-run {
+  display: flex;
+  flex: none;
+  white-space: nowrap;
+  animation: ms-run 14s linear infinite;
+}
+/* Big enough and thick enough to survive the mask.
+ *
+ * This was 11px at a normal weight, and unreadable -- which is arithmetic
+ * rather than taste. The grid over it takes a pixel out of every two in both
+ * directions, so any stroke thinner than two pixels can be erased outright,
+ * and at 11px a monospace stem is about one. Whole letters were going missing
+ * and what was left had to be guessed at.
+ *
+ * So the type is set to the grid rather than in spite of it: 13px and bold,
+ * which puts a stem at two pixels and guarantees a lit column inside every one
+ * of them, and the letterspacing comes in because the dots do the separating
+ * now and the tracking was only pushing characters further apart than the
+ * strip can afford. */
+.ms-run i {
+  display: block;
+  flex: none;
+  padding-right: 44px;
+  font-family: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas,
+    "Liberation Mono", monospace;
+  font-style: normal;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 26px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  /* White, not amber.
+     A legend strip on a real deck was orange because the LEDs were orange, and
+     that is a fact about 1983 rather than an argument. On this screen it was
+     dark ink on a dark ground: the strip is nearly black, the dot mask takes
+     three quarters of every character away, and what was left of #ffb648 after
+     both was not a colour anybody could read. The screen above it has exactly
+     one lit value and the strip is the same screen at half the pitch, so it
+     takes the same one. */
+  color: #f2f2f2;
+  text-shadow: 0 0 6px rgba(255, 255, 255, 0.32);
+}
+@keyframes ms-run { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+/* The grid that makes them dots. Over the letters, not under them, and it is
+   the strip's own so it can be finer than the screen's. */
+.ms-str::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  /* 0.55 and not 0.88. The mask is what makes the letters dots, and at nearly
+     opaque it was making them absences: three quarters of every character was
+     being taken out at full strength, so what survived was thinner than the
+     gaps between it. Just over half leaves the dots joined enough to read as
+     letters and separate enough to read as dots, which is the whole balance a
+     matrix display is. */
+  background:
+    repeating-linear-gradient(0deg, rgba(0,0,0,0.55) 0 1px, rgba(0,0,0,0) 1px 2px),
+    repeating-linear-gradient(90deg, rgba(0,0,0,0.55) 0 1px, rgba(0,0,0,0) 1px 2px);
+}
+
+/* A strip of dots is unreadable to a screen reader and the string is written
+   twice besides, so the name is given once, plainly, off the screen. */
+.ms-said {
+  position: absolute;
+  width: 1px; height: 1px;
+  margin: -1px; padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* A machine at rest holds the name where it stands rather than stopping
+   mid-word and jumping back, which is what pausing an animation does and what
+   a deck does. */
+.ab-music:not(.is-going) .ms-run { animation-play-state: paused; }
+
+@media (prefers-reduced-motion: reduce) {
+  .ms-run { animation: none; }
+}
 
 /* --- the keys, in their own sunken strip -------------------------------- */
 /* Centred in the strip rather than run up against the left end of it: six
@@ -6760,13 +7511,19 @@ a.arrow { text-decoration: none; }
    piling up on one side. */
 .ms-deck {
   position: absolute; left: 16px; right: 16px; bottom: 20px;
+  /* Unchanged: the machine grew upward from the keys, not downward onto
+     them -- see .ms-wk and .ms-str, which took the band between the counter
+     and this one.
+     The padding came in from 12 to 8 when the seventh key arrived: seven of
+     them and six gaps want 246 of the 252 that leaves, where six wanted 232
+     of 244 and had room to spare. */
   z-index: 2;
   height: 38px;
-  padding: 0 12px;
-  /* No strip. It was a second recess under the first one, and six keys in a
+  padding: 0 8px;
+  /* No strip. It was a second recess under the first one, and seven keys in a
      row are already a row without a trough drawn round them. */
   border-radius: 0;
-  display: flex; align-items: center; justify-content: center; gap: 8px;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
   background: none;
   box-shadow: none;
 }
@@ -6779,7 +7536,10 @@ a.arrow { text-decoration: none; }
    way the latch reads. */
 .ms-key {
   flex: none;
-  width: 32px; height: 24px;
+  /* 30 and not 32. A seventh key had to come from somewhere and two pixels a
+     key is the cheapest place to take it from: the target is still 30 by 24,
+     which is a key, and nothing about the row's rhythm changes. */
+  width: 30px; height: 24px;
   display: grid; place-items: center;
   appearance: none; -webkit-appearance: none;
   margin: 0; padding: 0; border: 0;
@@ -6799,6 +7559,11 @@ a.arrow { text-decoration: none; }
 .ms-key:hover { color: var(--wk-key-lit); }
 .ms-key:focus-visible { outline: 2px solid #8ab4ff; outline-offset: 3px; }
 .ms-key svg { display: block; width: 13px; height: 13px; fill: currentColor; }
+/* Two of the seven are drawn rather than filled -- three lines and a note
+   head, three arcs off a point -- so they want a stroke and the transport
+   glyphs do not. */
+.ms-key-list svg,
+.ms-key-viz svg { fill: none; width: 15px; height: 15px; }
 
 /* Down is five pixels of travel and the loss of the wall that held it up.
 
@@ -6827,8 +7592,25 @@ a.arrow { text-decoration: none; }
 }
 .is-going .ms-key-play, .is-held .ms-key-pause { color: var(--wk-key-lit); }
 
+/* --- and the queue, which is a caption ------------------------------------
+
+   Three places in three revisions, and the middle one was the worst. It began
+   as a pill in the corner of the card, up over the machine's shoulder; then it
+   was a wide key across the machine's foot, on the argument that everything
+   else you press on this card is a key. That argument is wrong in the part
+   that matters: the six keys work the tape, and this one does not touch the
+   tape. Giving it their face and their six pixels of travel made the least
+   important control on the card the largest thing on the object.
+
+   So it is neither a chip nor a key. It is one line under the machine, in the
+   frame's own small caps at the weight of a caption -- there when you look for
+   it, and not asking to be looked at. The count is the whole of it: "More
+   pinned music" is on the aria-label where a screen reader wants it, and five
+   tracks is both what is behind the line and the reason to press it. */
 /* A player that cannot get its audio buffers for ever and reports nothing.
-   When the watchdog gives up, the controls go and the object stays. */
+   When the watchdog gives up, the controls go and the object stays. The queue
+   stays too: it is a way to the other four records, and that is still true of
+   a machine that has stopped making a noise. */
 .is-mute .ms-deck, .is-mute .ms-bar { display: none; }
 .nw-cover {
   flex: none;
@@ -7097,7 +7879,14 @@ a.arrow { text-decoration: none; }
    in less ink, which is the trade a smaller tile buys. */
 .ab-half {
   position: absolute;
-  left: 24px; width: 316px;
+  /* Both strokes, rather than one stroke and a width that remembers a card
+     this no longer is. 316 was the 24s either side of the 364 tile the tally
+     used to stand in; it moved to the 349 slot and brought the width with it,
+     so the left gutter stayed 24 and the right one became 9 -- which does not
+     read as a margin, it reads as a chart that has slipped. Set from both
+     edges the two are equal at any card width, and the grid below is 1fr
+     columns and simply takes what is there. */
+  left: 24px; right: 24px;
   display: flex;
   flex-direction: column;
   gap: 22px;
@@ -7231,7 +8020,32 @@ a.arrow { text-decoration: none; }
 .ab-half-mark svg path { fill: currentColor; }
 .ab-half-gym .ab-half-mark svg path { fill: none; stroke: currentColor; }
 
-.ab-half-say { margin: 0; font-size: 13px; line-height: 19px; color: var(--quieter); }
+/* 12, which is what the phone has always set this at, and now what both rooms
+   set it at.
+
+   Setting the half from both strokes -- see .ab-half -- took 15 pixels out of
+   its width, and at 13 the key was already spending all of them: "Twenty-six
+   weeks of training, one square a day" wanted 264 of the 263 that were left,
+   and the commits line wanted 270. One pixel each, and each bought a second
+   line with one word alone on it.
+
+   Twelve is the size, rather than four pixels off the glyph beside it or two
+   off the gap: trimming the mark bought six and the second line was still a
+   pixel over, which is the tell that pixels were the wrong thing to be
+   counting. At 12 the longer of the two sits in 249 of 263 -- the same
+   fourteen pixels of slack the line had before the card changed width -- so
+   this is the figure holding, not squeaking.
+
+   And it is the right size on its own terms. This line is a key: it says what
+   one square means and is read once. It was set a pixel off the sentence on
+   the card beside it, which is the size for something you read; the two are
+   not the same kind of line and had no business being the same size.
+
+   text-wrap: balance is the net under all of that. If it ever does wrap -- a
+   longer count, a font that falls back wider -- it wraps into two lines of
+   roughly equal length rather than a full line and one orphaned word. */
+.ab-half-say { margin: 0; font-size: 12px; line-height: 18px; color: var(--quieter);
+               text-wrap: balance; }
 
 /* --- nine weeks ----------------------------------------------------------
 
@@ -7812,36 +8626,28 @@ a.arrow { text-decoration: none; }
    pixels of mat grid stay twenty-one real pixels at any window size.
    ========================================================================== */
 
+/* --- the mat, and it is a grid ---------------------------------------------
+
+   It carried five things: two edge rulers in major and minor ticks, a bold
+   grid every 105, a fine one every 21, and a pair of 45s in the bottom
+   corners. Every one of them is a real marking on a real cutting mat and
+   together they are a texture rather than a surface -- five patterns crossing
+   each other, none of which anybody was reading, all of which the photographs
+   had to be seen against.
+
+   One grid. Twenty-one pixels, one pixel wide, one weight, edge to edge. That
+   is a cutting mat: the thing it has on it is a grid, and the rest was
+   furniture drawn round it. The 105 grid went with the rest -- a heavy line
+   every fifth is exactly the thick ruling that was making the ground busy, and
+   a grid with two weights in it is two grids.
+   ------------------------------------------------------------------------ */
 :root.x-table body {
   background-color: var(--mat);
   background-image:
-    /* the two edge rulers, major ticks over minor */
-    repeating-linear-gradient(to right,  var(--mat-tick) 0 1px, transparent 1px 105px),
-    repeating-linear-gradient(to right,  var(--mat-tick) 0 1px, transparent 1px 21px),
-    repeating-linear-gradient(to bottom, var(--mat-tick) 0 1px, transparent 1px 105px),
-    repeating-linear-gradient(to bottom, var(--mat-tick) 0 1px, transparent 1px 21px),
-    /* the bold grid */
-    repeating-linear-gradient(to right,  var(--mat-bold) 0 1px, transparent 1px 105px),
-    repeating-linear-gradient(to bottom, var(--mat-bold) 0 1px, transparent 1px 105px),
-    /* and the fine one under it */
     repeating-linear-gradient(to right,  var(--mat-fine) 0 1px, transparent 1px 21px),
-    repeating-linear-gradient(to bottom, var(--mat-fine) 0 1px, transparent 1px 21px),
-    /* 45s, in the two bottom corners only -- which is where they are on a mat,
-       because that is the corner you square a sheet into before you cut it */
-    repeating-linear-gradient(45deg,  var(--mat-diag) 0 1px, transparent 1px 42px),
-    repeating-linear-gradient(-45deg, var(--mat-diag) 0 1px, transparent 1px 42px);
-  background-size:
-    100% 17px, 100% 9px,
-    17px 100%, 9px 100%,
-    100% 100%, 100% 100%,
-    100% 100%, 100% 100%,
-    420px 340px, 420px 340px;
-  background-position:
-    0 0, 0 0,
-    0 0, 0 0,
-    0 0, 0 0,
-    0 0, 0 0,
-    100% 100%, 0 100%;
+    repeating-linear-gradient(to bottom, var(--mat-fine) 0 1px, transparent 1px 21px);
+  background-size: 100% 100%, 100% 100%;
+  background-position: 0 0, 0 0;
   background-repeat:
     no-repeat, no-repeat,
     no-repeat, no-repeat,
@@ -7903,6 +8709,28 @@ a.arrow { text-decoration: none; }
   --print-rule:  rgba(232, 249, 240, 0.17);
 }
 
+/* A pair rules only where its boxes are.
+
+   The lattice is one set of lines and five screens stand on it, so a pair that
+   is a real gutter on one is a line ruled across an empty field on the next.
+   data-on names the screens a pair belongs to; this takes it out of every
+   other one.
+
+   display and not opacity, for a reason worth writing down: the arrival
+   animates every line's opacity with both fill modes on, and an animation
+   beats a declaration -- so an opacity rule here would be ignored for the four
+   seconds the arrival owns the property, which is exactly the four seconds
+   somebody is looking at the frame being drawn. Nothing animates display.
+
+   No transition either, and none is wanted: a crossing rubs the whole lattice
+   out and rules it back in, so a line that is not on the screen being crossed
+   to has already been erased by the time this hides it. */
+.x-home    .rules i[data-on]:not([data-on~="home"]),
+.x-work    .rules i[data-on]:not([data-on~="work"]),
+.x-about   .rules i[data-on]:not([data-on~="about"]),
+.x-case    .rules i[data-on]:not([data-on~="case"]),
+.x-article .rules i[data-on]:not([data-on~="article"]) { display: none; }
+
 /* The lattice goes, and it fades rather than switching off: the crossing is
    still ruling it back in when this class lands, and a set of lines that
    vanishes on one frame in the middle of being drawn reads as a fault. */
@@ -7914,13 +8742,13 @@ a.arrow { text-decoration: none; }
 
    Every type token on this site is mixed from --w against the room's ground:
    near-white on black up one end, near-black on paper down the other. The mat
-   is neither. It is a dark green in both rooms -- the one surface here whose
-   colour is a fact about the object rather than a decision about the page --
-   so type lying on it has to be light in both, or the lit room gets a
+   is neither. It is a saturated green in both rooms -- the one surface here
+   whose colour is a fact about the object rather than a decision about the
+   page -- so type lying on it is light in both, or the lit room gets a
    breadcrumb in charcoal on bottle green and nobody reads it twice.
 
-   Which is the same argument the status chips make from inside a photograph,
-   and they carry the same figures. */
+   It was dark here for one revision, while the lit mat was a pale sage. The
+   mat is a mat again and this is light again with it. */
 .x-lab .crumb,
 .x-lab .crumb-count { color: rgba(238, 244, 250, 0.62); }
 .x-lab .crumb a     { color: rgba(238, 244, 250, 0.72); }
@@ -7933,6 +8761,24 @@ a.arrow { text-decoration: none; }
    markup is a frame pixel like every other figure on the site.
 
    It sits under the photographs in tree order and needs no z-index for it. */
+/* The instruments stay. The drawing on the mat does not.
+
+   Three things were on this surface and only one of them was wanted. The
+   pattern printed on the mat -- two edge rulers, a heavy grid every fifth
+   line, a pair of 45s in the corners -- went first, and that was right. The
+   instruments lying on it -- the scalpel, the rulers, the pencils, the set
+   square -- came off with them for a revision, and that was wrong: they are
+   not pattern, they are the objects on a cutting table, and a cutting table
+   with nothing on it is a sheet of rubber. They are back.
+
+   What is gone for good is this: a protractor arc with seven rays off it and
+   a scattering of blade cuts, drawn on the mat in the mat own ink. They read
+   as neither -- not the surface, because they are figures, and not an object,
+   because they are flat -- so what they came to on screen was a semicircle
+   and some short lines lying about with nothing to do with anything. The
+   markup and the rules stay where they are and nothing renders them. */
+.lab-marks { display: none; }
+
 .lab-marks {
   position: absolute;
   left: 0; top: 0;
@@ -8266,20 +9112,23 @@ a.arrow { text-decoration: none; }
 .lab-pin-1 { left: 421px; top: 184px; rotate: -3.4deg; }
 .lab-pin-2 { left: 792px; top: 200px; rotate: 2.6deg; }
 .lab-pin-3 { left: 1163px; top: 195px; rotate: 1.6deg; }
-.lab-pin-4 { left: 607px; top: 604px; rotate: 0.6deg; }
-.lab-pin-5 { left: 978px; top: 599px; rotate: -0.4deg; }
+.lab-pin-4 { left: 421px; top: 604px; rotate: 0.6deg; }
+.lab-pin-5 { left: 792px; top: 599px; rotate: -0.4deg; }
+.lab-pin-6 { left: 1163px; top: 615px; rotate: -1.4deg; }
 
 .lab-pin-1 > .lab-tape { rotate: -3.8deg; }
 .lab-pin-2 > .lab-tape { rotate: -2.8deg; }
 .lab-pin-3 > .lab-tape { rotate: -1.8deg; }
 .lab-pin-4 > .lab-tape { rotate: -0.8deg; }
 .lab-pin-5 > .lab-tape { rotate: 0.2deg; }
+.lab-pin-6 > .lab-tape { rotate: 1.2deg; }
 
 .view-lab > .lab-pin-1 { --x-delay: calc(var(--x-step) + var(--pin-deal) * 0); }
 .view-lab > .lab-pin-2 { --x-delay: calc(var(--x-step) + var(--pin-deal) * 1); }
 .view-lab > .lab-pin-3 { --x-delay: calc(var(--x-step) + var(--pin-deal) * 2); }
 .view-lab > .lab-pin-4 { --x-delay: calc(var(--x-step) + var(--pin-deal) * 3); }
 .view-lab > .lab-pin-5 { --x-delay: calc(var(--x-step) + var(--pin-deal) * 4); }
+.view-lab > .lab-pin-6 { --x-delay: calc(var(--x-step) + var(--pin-deal) * 5); }
 
 /* ==========================================================================
    L4 -- one experiment, on the same table
@@ -8642,8 +9491,8 @@ a.arrow { text-decoration: none; }
 /* The switch goes with it. A control that cannot change anything is worse
    than no control: it says the page has two rooms and then refuses to show
    you the second one. */
-.x-lab .room,
-.x-piece .room { display: none; }
+/* The switch stays. It was hidden on these two because they held the dark
+   room whatever it said -- see lamp() in the script, which no longer does. */
 
 /* And the crumb keeps the ink it takes on the playground. */
 .x-piece .crumb,
@@ -8962,7 +9811,9 @@ a.arrow { text-decoration: none; }
     /* Fully round. The pill is the other half of reading as a floating pane;
        see the corners rule above, which lets these two out of the square. */
     border-radius: 999px;
-    padding: 6px;
+    /* 7 to match the frame's, because the lozenge is inset by one figure in
+       both rooms -- see .nav::before, which is not written twice. */
+    padding: 7px;
     display: flex;
     align-items: stretch;
 
@@ -8994,25 +9845,10 @@ a.arrow { text-decoration: none; }
     pointer-events: none;
   }
 
-  /* And the arrival had to learn it too, which nothing had noticed because
-     the bar is only centred by a transform down here.
-     All four ways in animate one, and all four fill both ways: for the
-     1180ms of delay before the arrival starts, and for good afterwards, the
-     keyframe's transform is the bar's transform -- so translateX(-50%) was
-     gone from first paint, and the bar stood with its left edge on the middle
-     of the screen and the rest of it off the side of the phone. It only came
-     back the moment something else wrote the property, which is to say the
-     first time the reader scrolled and nav-away fired.
-     There is nothing on this bar worth blurring or scaling in any case -- it
-     is 300 pixels of glass with three words on it -- so on a phone all four
-     arrivals hand it the one thing they were really doing, and leave the
-     property that holds it up alone. Written at (0,3,0) to meet them. */
-  .arriving.arr-focus .nav,
-  .arriving.arr-decode .nav,
-  .arriving.arr-register .nav,
-  .arriving.arr-wipe .nav {
-    animation: arr-bar 620ms cubic-bezier(0.2, 0.7, 0.3, 1) var(--at, 1180ms) both;
-  }
+  /* The arrival's exception for the bar was written here, on the argument
+     that the bar is only centred by a transform down here. It is centred by
+     one in both rooms, and it was landing half a width out in both -- see
+     arr-bar in the stylesheet above, which is this rule set, promoted. */
 
   /* The lozenge, the cells and the labels are the frame's now -- see .nav up
      there, which is this rule set, promoted. What is left down here is what a
@@ -9046,8 +9882,6 @@ a.arrow { text-decoration: none; }
   .back[hidden] { display: none; }
   .back svg { width: 17px; height: 17px; flex: none; }
   .back:active { transform: scale(0.96); }
-
-  @keyframes arr-bar { from { opacity: 0; } to { opacity: 1; } }
 
   /* The rim on the two controls. A pane of glass is not lit evenly round its
      edge: the light is above and a little to one side, so the top corner
@@ -9125,7 +9959,7 @@ a.arrow { text-decoration: none; }
      L1 and L2 children do: a card is only relative here, so anything still
      absolute sizes itself against the card rather than sitting in it. */
   .ab-por, .ab-lede, .ab-facts, .ab-shelf,
-  .nw-head, .nw-row, .ab-late-h, .ab-late, .ms-h, .ms-wk {
+  .nw-row, .ab-late-h, .ab-late, .ms-wk {
     position: static; left: auto; top: auto;
     right: auto; bottom: auto; width: auto; height: auto;
   }
@@ -9147,7 +9981,10 @@ a.arrow { text-decoration: none; }
   .nw-row {
     grid-template-columns: 1fr;
     gap: 0;
-    margin-top: 12px;
+    /* Nought, not twelve. The twelve was clearing the heading; with that gone
+       the first row would be sitting a heading's worth of air below the top
+       of the card and nothing above it. */
+    margin-top: 0;
   }
   .nw-item + .nw-item { border-top: 1px solid rgba(var(--w), 0.10); }
   .nw-hit {
@@ -9190,9 +10027,17 @@ a.arrow { text-decoration: none; }
      asks for. They flex to the width now, 44 tall, which is the floor. */
   .ms-wk {
     position: relative;
-    height: 272px;
+    /* 336: the same 272 with the queue key and its air under it, at the size a
+       thumb asks for rather than the 26 the frame gives it. */
+    height: 336px;
     margin: 20px 0 0;
   }
+  .ms-wk .cue {
+    top: 270px; bottom: auto;
+    height: 44px;
+    font-size: 11px;
+  }
+  .ms-wk .cue svg { width: 15px; height: 15px; }
   .ms-bar {
     top: 178px;
     height: 12px;                    /* scrubbing with a thumb, not a cursor */
@@ -9237,7 +10082,6 @@ a.arrow { text-decoration: none; }
      they name to a size you read rather than decipher. */
   .ab-facts dt { font-size: 13px; }
   .ab-facts dd { font-size: 16px; line-height: 23px; }
-  .ab-half-say { font-size: 12px; }
   .ab-por { font-size: 11px; line-height: 15px; }
 
   /* The tapes are fluid already -- sixty-three columns of 1fr -- so all a
@@ -9297,24 +10141,11 @@ a.arrow { text-decoration: none; }
        only the layers left both of these grey with a grid on them. */
     background-color: var(--mat);
     border-color: var(--mat-edge);
+    /* One grid here too. See :root.x-table body. */
     background-image:
-      /* the ruled edge: majors every 105, minors every 21, in two bands */
-      repeating-linear-gradient(to right, var(--mat-tick) 0 1px, transparent 1px 105px),
-      repeating-linear-gradient(to right, var(--mat-cut) 0 1px, transparent 1px 21px),
-      /* the guides */
-      linear-gradient(45deg, transparent calc(50% - 0.5px),
-                var(--mat-diag) 50%, transparent calc(50% + 0.5px)),
-      linear-gradient(-45deg, transparent calc(50% - 0.5px),
-                var(--mat-diag) 50%, transparent calc(50% + 0.5px)),
-      /* and the ground the rest of it is drawn on, unchanged */
-      repeating-linear-gradient(to right,  var(--mat-bold) 0 1px, transparent 1px 105px),
-      repeating-linear-gradient(to bottom, var(--mat-bold) 0 1px, transparent 1px 105px),
       repeating-linear-gradient(to right,  var(--mat-fine) 0 1px, transparent 1px 21px),
       repeating-linear-gradient(to bottom, var(--mat-fine) 0 1px, transparent 1px 21px);
-    background-size:
-      100% 15px, 100% 9px,
-      100% 100%, 100% 100%,
-      auto, auto, auto, auto;
+    background-size: 100% 100%, 100% 100%;
     background-position:
       12px 0, 12px 0,
       0 0, 0 0,
@@ -9989,6 +10820,34 @@ a.arrow { text-decoration: none; }
 .arriving.arr-wipe .card[data-tile="f"] { --at: 1275ms; }
 .arriving.arr-wipe .nav  { --at: 1340ms; }
 .arriving.arr-wipe .room { --at: 1400ms; }
+
+/* --- and the bar, which is the exception ---------------------------------
+
+   It is centred by a transform, and all four ways in animate transform with
+   both fill modes on: for the delay before the arrival starts, and for good
+   afterwards, the keyframe's transform is the bar's transform. translateX(-50%)
+   is gone from first paint, so the bar stands with its left edge on the middle
+   of the window -- half its width to the right of where it belongs -- and only
+   comes back the moment something else writes the property, which on a desktop
+   is never. What you see is a bar that loads off-centre and jumps left when
+   the class comes off.
+
+   The phone found this first and grew a keyframe of its own for it. This is
+   that rule promoted, because it was never a phone bug: the phone was only
+   where it was noticed, the bar being narrow enough there to walk off the side
+   of the screen. There is nothing on this bar worth blurring or scaling in any
+   case -- it is a strip of glass with three words on it -- so all four arrivals
+   hand it the one thing they were really doing, and leave the property that
+   holds it up alone.
+
+   Written at (0,3,0) to meet the four, and set after them to win. */
+.arriving.arr-focus .nav,
+.arriving.arr-decode .nav,
+.arriving.arr-register .nav,
+.arriving.arr-wipe .nav {
+  animation: arr-bar 620ms cubic-bezier(0.2, 0.7, 0.3, 1) var(--at, 1180ms) both;
+}
+@keyframes arr-bar { from { opacity: 0; } to { opacity: 1; } }
 /* Reduced motion is handed the page. The lattice and the cards go to where
    they belong in one short fade and nothing is drawn. */
 @media (prefers-reduced-motion: reduce) {
@@ -10076,8 +10935,6 @@ a.arrow { text-decoration: none; }
     pointer-events: none;
     background-color: var(--mat);
     background-image:
-      repeating-linear-gradient(to right,  var(--mat-bold) 0 1px, transparent 1px 105px),
-      repeating-linear-gradient(to bottom, var(--mat-bold) 0 1px, transparent 1px 105px),
       repeating-linear-gradient(to right,  var(--mat-fine) 0 1px, transparent 1px 21px),
       repeating-linear-gradient(to bottom, var(--mat-fine) 0 1px, transparent 1px 21px);
     background-position: 12px 12px;
@@ -10324,6 +11181,30 @@ a.arrow { text-decoration: none; }
 <body>
 
 
+<!-- The screen's palette. See the note in the stylesheet above .ms-art. -->
+  <svg class="ms-filter" aria-hidden="true" focusable="false"
+       width="0" height="0" style="position:absolute">
+    <filter id="ms-dither" x="0" y="0" width="100%" height="100%"
+            color-interpolation-filters="sRGB">
+      <feColorMatrix type="saturate" values="0" result="grey"/>
+      <feComponentTransfer in="grey" result="stretched">
+        <feFuncR type="linear" slope="1.35" intercept="-0.14"/>
+        <feFuncG type="linear" slope="1.35" intercept="-0.14"/>
+        <feFuncB type="linear" slope="1.35" intercept="-0.14"/>
+      </feComponentTransfer>
+      <feImage href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' shape-rendering='crispEdges'%3E%3Crect x='0' y='0' width='2' height='2' fill='rgb(8,8,8)'/%3E%3Crect x='2' y='0' width='2' height='2' fill='rgb(135,135,135)'/%3E%3Crect x='4' y='0' width='2' height='2' fill='rgb(40,40,40)'/%3E%3Crect x='6' y='0' width='2' height='2' fill='rgb(167,167,167)'/%3E%3Crect x='0' y='2' width='2' height='2' fill='rgb(199,199,199)'/%3E%3Crect x='2' y='2' width='2' height='2' fill='rgb(72,72,72)'/%3E%3Crect x='4' y='2' width='2' height='2' fill='rgb(231,231,231)'/%3E%3Crect x='6' y='2' width='2' height='2' fill='rgb(104,104,104)'/%3E%3Crect x='0' y='4' width='2' height='2' fill='rgb(56,56,56)'/%3E%3Crect x='2' y='4' width='2' height='2' fill='rgb(183,183,183)'/%3E%3Crect x='4' y='4' width='2' height='2' fill='rgb(24,24,24)'/%3E%3Crect x='6' y='4' width='2' height='2' fill='rgb(151,151,151)'/%3E%3Crect x='0' y='6' width='2' height='2' fill='rgb(247,247,247)'/%3E%3Crect x='2' y='6' width='2' height='2' fill='rgb(120,120,120)'/%3E%3Crect x='4' y='6' width='2' height='2' fill='rgb(215,215,215)'/%3E%3Crect x='6' y='6' width='2' height='2' fill='rgb(88,88,88)'/%3E%3C/svg%3E" x="0" y="0" width="8" height="8" result="cell"
+               preserveAspectRatio="none"/>
+      <feTile in="cell" result="map"/>
+      <feComposite in="stretched" in2="map" operator="arithmetic"
+                   k1="0" k2="1" k3="-1" k4="0.5" result="sum"/>
+      <feComponentTransfer in="sum">
+        <feFuncR type="discrete" tableValues="0 1"/>
+        <feFuncG type="discrete" tableValues="0 1"/>
+        <feFuncB type="discrete" tableValues="0 1"/>
+      </feComponentTransfer>
+    </filter>
+  </svg>
+
 <div class="viewport">
   <div class="stage" id="stage">
 
@@ -10340,43 +11221,69 @@ a.arrow { text-decoration: none; }
     <span class="lamp" aria-hidden="true"></span>
 
     <!-- behind the cards: these two pairs show only in the gutters -->
+    <!-- ============================ the lattice =======================
+         Two lines to an edge, and no line without one.
+
+         Every rule here is half of a pair, and every pair brackets a gutter --
+         the line on one box's edge and the line on the next box's, twenty-one
+         apart. That is the whole grammar of it, and what it had drifted away
+         from in two directions at once.
+
+         Lines with nothing to rule. Eight of them: the two margin pairs out at
+         68/89 and 1829/1850, the pair at the foot at 988/1009, the single at
+         1629 that marked the right edge of the switch, and the single at 135
+         that marked its foot. Handsome, and none of them within a hundred
+         pixels of a box on any screen -- so on every screen they were lines
+         ruled across a page for their own sake.
+
+         Edges with no line. The four-up row on Work had gutters ruled at
+         663/685 and 949/971 and nothing at all at 1235/1257, so two of its
+         three gutters were drawn and the third was not; and About was rebuilt
+         around a shelf and a tally without anybody ruling the two bands it
+         cut -- 281/305 and 661/685 -- so the whole of that screen's horizontal
+         structure was unmarked.
+
+         And a pair rules only where its boxes are. The lattice is one set of
+         lines shared by five screens, so a pair that is a gutter on Work is a
+         line across an empty field on About; data-on names the screens a pair
+         belongs to and the stylesheet takes it out of the others. That is what
+         made the frame read as ruled all across rather than ruled to the
+         boxes: not one wrong line, but the right lines on the wrong screen. -->
     <div class="rules rules-under" aria-hidden="true">
-      <i class="v" style="--lx:762px;height:1010px;--l-at:0.3969"></i>
-      <i class="v" style="--lx:785px;height:1010px;--l-at:0.4089"></i>
-      <!-- The two gutters the row of four adds, under the cards: covered
+      <i class="v" data-on="home about case" style="--lx:762px;height:1010px;--l-at:0.3969"></i>
+      <i class="v" data-on="home about case" style="--lx:785px;height:1010px;--l-at:0.4089"></i>
+      <!-- The three gutters the row of four adds, under the cards: covered
            everywhere but between the boxes. See .w-one. -->
-      <i class="v" style="--lx:663px;--l-at:0.3453"></i>
-      <i class="v" style="--lx:685px;--l-at:0.3568"></i>
-      <i class="v" style="--lx:949px;--l-at:0.4943"></i>
-      <i class="v" style="--lx:971px;--l-at:0.5057"></i>
-      <i class="h" style="--ly:735px;--l-at:0.6806"></i>
-      <i class="h" style="--ly:756px;--l-at:0.7000"></i>
-      <!-- the foot of the switch, carried the width of the frame -->
-      <i class="h" style="--ly:135px;--l-at:0.1250"></i>
+      <i class="v" data-on="work" style="--lx:663px;--l-at:0.3453"></i>
+      <i class="v" data-on="work" style="--lx:685px;--l-at:0.3568"></i>
+      <i class="v" data-on="work" style="--lx:949px;--l-at:0.4943"></i>
+      <i class="v" data-on="work" style="--lx:971px;--l-at:0.5057"></i>
+      <i class="v" data-on="work" style="--lx:1235px;--l-at:0.6432"></i>
+      <i class="v" data-on="work" style="--lx:1257px;--l-at:0.6547"></i>
+      <i class="h" data-on="home case" style="--ly:735px;--l-at:0.6806"></i>
+      <i class="h" data-on="home case" style="--ly:756px;--l-at:0.7000"></i>
+      <!-- About's two bands: the Now card's foot against the tally's head, and
+           the tally's foot against the shelf's head. -->
+      <i class="h" data-on="about" style="--ly:281px;--l-at:0.2602"></i>
+      <i class="h" data-on="about" style="--ly:305px;--l-at:0.2824"></i>
+      <i class="h" data-on="about" style="--ly:661px;--l-at:0.6120"></i>
+      <i class="h" data-on="about" style="--ly:685px;--l-at:0.6343"></i>
     </div>
 
     <!-- over everything -->
     <div class="rules rules-over" aria-hidden="true">
-      <i class="v" style="--lx:68px;--l-at:0.0354"></i>
-      <i class="v" style="--lx:89px;--l-at:0.0464"></i>
-      <i class="v" style="--lx:377px;--l-at:0.1964"></i>
-      <i class="v" style="--lx:398px;--l-at:0.2073"></i>
-      <i class="v v-mid" style="--lx:1134px;height:1010px;--l-at:0.5906"></i>
-      <i class="v v-mid" style="--lx:1155px;height:1010px;--l-at:0.6016"></i>
-      <i class="v" style="--lx:1520px;--l-at:0.7917"></i>
-      <i class="v" style="--lx:1541px;--l-at:0.8026"></i>
-      <!-- the right edge of the switch, 1541 + 88 -->
-      <i class="v" style="--lx:1629px;--l-at:0.8484"></i>
-      <i class="v" style="--lx:1829px;--l-at:0.9526"></i>
-      <i class="v" style="--lx:1850px;--l-at:0.9635"></i>
-      <i class="h" style="--ly:70px;--l-at:0.0648"></i>
-      <i class="h" style="--ly:91px;--l-at:0.0843"></i>
-      <i class="h h-mid" style="--ly:575px;--l-at:0.5324"></i>
-      <i class="h h-mid" style="--ly:596px;--l-at:0.5519"></i>
-      <i class="h" style="--ly:931px;--l-at:0.8620"></i>
-      <i class="h" style="--ly:952px;--l-at:0.8815"></i>
-      <i class="h" style="--ly:988px;--l-at:0.9148"></i>
-      <i class="h" style="--ly:1009px;--l-at:0.9343"></i>
+      <i class="v" data-on="home work about case article" style="--lx:377px;--l-at:0.1964"></i>
+      <i class="v" data-on="home work about case article" style="--lx:398px;--l-at:0.2073"></i>
+      <i class="v v-mid" data-on="home work about case" style="--lx:1134px;height:1010px;--l-at:0.5906"></i>
+      <i class="v v-mid" data-on="home work about case" style="--lx:1155px;height:1010px;--l-at:0.6016"></i>
+      <i class="v" data-on="home work about case article" style="--lx:1520px;--l-at:0.7917"></i>
+      <i class="v" data-on="home work about case article" style="--lx:1541px;--l-at:0.8026"></i>
+      <i class="h" data-on="home work about case article" style="--ly:70px;--l-at:0.0648"></i>
+      <i class="h" data-on="home work about case article" style="--ly:91px;--l-at:0.0843"></i>
+      <i class="h h-mid" data-on="home work case" style="--ly:575px;--l-at:0.5324"></i>
+      <i class="h h-mid" data-on="home work case" style="--ly:596px;--l-at:0.5519"></i>
+      <i class="h" data-on="home work about case article" style="--ly:931px;--l-at:0.8620"></i>
+      <i class="h" data-on="home work about case article" style="--ly:952px;--l-at:0.8815"></i>
     </div>
 
     <!-- ============================= L1 home ========================= -->
@@ -11114,7 +12021,6 @@ a.arrow { text-decoration: none; }
       <!-- ----------------------------- the desk ----------------------- -->
       <!-- ----------------------------- now ---------------------------- -->
       <section class="card ab-now" data-tile="b">
-        <h2 class="nw-h nw-head">Now</h2>
         <ul class="nw-row">
           <li class="nw-item" data-now="reading">
             <button type="button" class="nw-hit" data-piece="piranesi"
@@ -11157,40 +12063,18 @@ a.arrow { text-decoration: none; }
 
       <!-- ---------------------------- music --------------------------- -->
       <section class="card ab-music" data-tile="f">
-        <p class="nw-h ms-h">Pinned music</p>
-        <button type="button" class="cue" data-cue="music" aria-label="More pinned music, 5 tracks">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true">
-            <path d="M4 7h10M4 12h10M4 17h6"/><path d="M17 10l4 4-4 4"/></svg>
-          <span aria-hidden="true">5 tracks</span>
-        </button>
         <div class="ms-wk">
           <div class="ms-wk-face">
             <div class="ms-well">
+              <canvas class="ms-viz" aria-hidden="true"></canvas>
               <span class="ms-haze" aria-hidden="true"
                     style="background-image:url('assets/covers/music-kid-a.jpg')"></span>
               <span class="ms-stage">
-                <span class="ms-tube"><span data-ms-tube data-video="onRk0sjSgFU" data-bpm="101"></span></span>
+                <span class="ms-tube"><span data-ms-tube data-video="onRk0sjSgFU"></span></span>
                 <span class="ms-art" role="img" aria-label="Everything In Its Right Place"
                       style="background-image:url('assets/covers/music-kid-a.jpg')"></span>
               </span>
               <span class="ms-veil" aria-hidden="true"></span>
-              <span class="ms-spill" aria-hidden="true">                    <i style="--y:0.83;--d:979ms;--o:-921ms"></i>
-                    <i style="--y:0.35;--d:673ms;--o:-836ms"></i>
-                    <i style="--y:0.81;--d:526ms;--o:-677ms"></i>
-                    <i style="--y:0.37;--d:867ms;--o:-616ms"></i>
-                    <i style="--y:0.73;--d:598ms;--o:-287ms"></i>
-                    <i style="--y:0.56;--d:560ms;--o:-859ms"></i>
-                    <i style="--y:0.96;--d:392ms;--o:-455ms"></i>
-                    <i style="--y:0.29;--d:523ms;--o:-472ms"></i>
-                    <i style="--y:0.47;--d:534ms;--o:-305ms"></i>                    <i style="--y:0.60;--d:392ms;--o:-314ms"></i>
-                    <i style="--y:0.95;--d:642ms;--o:-802ms"></i>
-                    <i style="--y:0.64;--d:832ms;--o:-449ms"></i>
-                    <i style="--y:0.37;--d:606ms;--o:-630ms"></i>
-                    <i style="--y:0.88;--d:715ms;--o:-228ms"></i>
-                    <i style="--y:0.35;--d:529ms;--o:-537ms"></i>
-                    <i style="--y:0.60;--d:610ms;--o:-637ms"></i>
-                    <i style="--y:0.76;--d:870ms;--o:-247ms"></i>
-                    <i style="--y:0.95;--d:574ms;--o:-548ms"></i></span>
               <span class="ms-pix"></span>
             </div>
             <div class="ms-bar" data-ms-bar role="slider" tabindex="0"
@@ -11198,13 +12082,21 @@ a.arrow { text-decoration: none; }
               <span class="ms-fill" data-ms-fill></span>
               <span class="ms-knob" data-ms-knob></span>
             </div>
+            <div class="ms-str" aria-hidden="true">
+              <span class="ms-run" data-ms-run>
+                <i>Everything In Its Right Place  ·  Radiohead</i>
+                <i>Everything In Its Right Place  ·  Radiohead</i>
+              </span>
+            </div>
+            <p class="ms-said">Everything In Its Right Place by Radiohead</p>
             <div class="ms-deck">
-              <button type="button" class="ms-key ms-key-back" data-ms-back aria-label="Back ten seconds"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 18V6l-8.5 6 8.5 6zm.5-6l8.5 6V6l-8.5 6z"/></svg></button>
+              <button type="button" class="ms-key ms-key-prev" data-ms-prev aria-label="Previous track"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h3v14H6zm13 0v14l-9-7z"/></svg></button>
               <button type="button" class="ms-key ms-key-play" data-ms-play aria-label="Play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></button>
               <button type="button" class="ms-key ms-key-pause" data-ms-pause aria-label="Pause"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/></svg></button>
               <button type="button" class="ms-key ms-key-stop" data-ms-stop aria-label="Stop"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5h11v11h-11z"/></svg></button>
-              <button type="button" class="ms-key ms-key-fwd" data-ms-fwd aria-label="Forward ten seconds"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 6v12l8.5-6L13 6zm-.5 6L4 6v12l8.5-6z"/></svg></button>
-              <button type="button" class="ms-key ms-key-mode" data-ms-mode aria-label="Change the meters"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 14h3v6H3zm5-5h3v11H8zm5-6h3v17h-3zm5 9h3v8h-3z"/></svg></button>
+              <button type="button" class="ms-key ms-key-next" data-ms-next aria-label="Next track"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5v14l9-7zm10 0h3v14h-3z"/></svg></button>
+              <button type="button" class="ms-key ms-key-viz" data-ms-viz aria-label="Change the visualiser"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="6" cy="12" r="1.6" fill="currentColor" stroke="none"/><path d="M10 8.4a5.5 5.5 0 0 1 0 7.2M14 5.6a9.5 9.5 0 0 1 0 12.8M18 3.2a13.2 13.2 0 0 1 0 17.6"/></svg></button>
+              <button type="button" class="ms-key ms-key-list" data-cue="music" aria-label="The playlist, 5 tracks"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h11M4 12h11M4 17h7"/><path d="M18 10v8"/><circle cx="19.6" cy="17.6" r="1.9" fill="currentColor" stroke="none"/></svg></button>
             </div>
           </div>
         </div>
@@ -11213,14 +12105,8 @@ a.arrow { text-decoration: none; }
     </div>
 
 
-    <!-- The queue behind the pinned card. One panel, handed a list. -->
-    <div class="cue-sheet" hidden>
-      <div class="cue-panel" role="dialog" aria-modal="true" aria-label="Pinned">
-        <div class="cue-grip" aria-hidden="true"></div>
-        <p class="cue-title" data-cue-title></p>
-        <ul class="cue-list" data-cue-list></ul>
-      </div>
-    </div>
+    <!-- Both drawers used to stand here and have moved out of the stage --
+         see below the bar, which is where they are and why. -->
 
     <!-- ============================== L3 lab ========================= -->
     <!-- Reached from the Playground card on Home and nowhere else, which is
@@ -11301,7 +12187,7 @@ a.arrow { text-decoration: none; }
         <span class="lab-pshot" role="img" aria-label="Photograph placeholder"></span>
         <figcaption><b>Holo</b>
           <span>Any graphic, turned into a holographic sticker.</span></figcaption>
-        <a class="lab-hit" href="#lab/holo" data-route="piece" data-slug="holo"
+        <a class="lab-hit" href="#lab/holo" data-route="piece" data-slug="holo" data-repo="VaibhavVishal07/holo"
            aria-label="Open Holo"></a>
       </figure>
 
@@ -11320,8 +12206,17 @@ a.arrow { text-decoration: none; }
         </span>
         <figcaption><b>Lenticard</b>
           <span>Two to six photographs become one card you have to tilt.</span></figcaption>
-        <a class="lab-hit" href="#lab/lenticard" data-route="piece" data-slug="lenticard"
+        <a class="lab-hit" href="#lab/lenticard" data-route="piece" data-slug="lenticard" data-repo="VaibhavVishal07/lenticard"
            aria-label="Open Lenticard"></a>
+      </figure>
+
+      <figure class="lab-pin lab-pin-6">
+        <span class="lab-tape" aria-hidden="true"></span>
+        <span class="lab-pshot" role="img" aria-label="Ocarina" style="background-image:url('assets/lab-ocarina.jpg');background-size:cover;background-position:center;background-repeat:no-repeat"></span>
+        <figcaption><b>Ocarina</b>
+          <span>A playable ocarina, and a synth built for one cavity.</span></figcaption>
+        <a class="lab-hit" href="#lab/ocarina" data-route="piece" data-slug="ocarina" data-repo="VaibhavVishal07/ocarina"
+           aria-label="Open Ocarina"></a>
       </figure>
     </div>
 
@@ -11354,26 +12249,9 @@ a.arrow { text-decoration: none; }
       </article>
     </div>
 
-    <!-- The switch. Outside every view, like the nav, because the room is a
-         property of the site and not of the screen you happen to be on. -->
-    <div class="room" role="radiogroup" aria-label="Colour scheme">
-      <button class="room-c" type="button" data-room="dark" role="radio"
-              aria-checked="true" aria-label="Dark">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
-             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>
-        </svg>
-      </button>
-      <button class="room-c" type="button" data-room="light" role="radio"
-              aria-checked="false" aria-label="Light">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
-             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <circle cx="12" cy="12" r="4.1"/>
-          <path d="M12 2.4v2.1M12 19.5v2.1M4.2 4.2l1.5 1.5M18.3 18.3l1.5 1.5
-                   M2.4 12h2.1M19.5 12h2.1M4.2 19.8l1.5-1.5M18.3 5.7l1.5-1.5"/>
-        </svg>
-      </button>
-    </div>
+    <!-- The switch stood here and is gone with the room it opened. Its script
+         is still below and asks for .room before it does anything, so it now
+         returns on its first line and costs nothing. -->
 
     <!-- The way back, on a phone only. A floating control rather than a line
          of type at the top of a document: it has to be reachable from three
@@ -11478,6 +12356,59 @@ a.arrow { text-decoration: none; }
     <a class="nav-work"  href="#work" data-cell="785 350" data-route="work">Work</a>
     <a class="nav-about" href="#about" data-cell="1155 366" data-route="about">About</a>
   </nav>
+
+  <!-- ============================= the drawers ========================
+       Out here for the reason the bar is out here, and it took a drawer tall
+       enough to reach the bar to notice. Both of these say position: fixed and
+       carry a z-index well above it; inside the stage neither figure meant
+       what it said. A transform makes a containing block for fixed
+       descendants, so "fixed" was fixed to the drawing rather than to the
+       window -- and it makes a stacking context, so a z-index of 130 was 130
+       among the stage's own children and the whole stage then met the bar as
+       one box with no z-index at all. The bar won, and sat on top of a modal.
+
+       Out here both figures are the figures you get: the drawer is fixed to
+       the window, and 130 is above the bar's 60. -->
+
+  <!-- One shape, three times.
+
+       The shelf has had a sheet off the bottom for a while -- press a cover
+       and a panel comes up under the strip with the entry on it -- and these
+       two were built later and separately, which is how a site ends up with
+       three ways of doing the same thing. They are the same thing now: the
+       same scrim, the same panel off the same edge, the same handle at the
+       top of it, and the same four hundred and sixty milliseconds of travel
+       in both directions. See .sheet in the stylesheet.
+
+       Out here rather than in the stage, and it took a drawer tall enough to
+       reach the bar to notice why that matters. Both of these say position
+       fixed and carry a z-index well above the bar; inside the stage neither
+       figure meant what it said. A transform makes a containing block for
+       fixed descendants, so "fixed" was fixed to the drawing rather than to
+       the window -- and it makes a stacking context, so a z-index of 130 was
+       130 among the stage's own children, and the whole stage then met the
+       bar as one box with no z-index at all. The bar won, and sat on top of a
+       modal. -->
+
+  <!-- The repository, over the table. One drawer, handed a name: what is in
+       it is fetched when it opens and nothing about it is built here. -->
+  <div class="sheet repo-sheet" hidden>
+    <div class="sheet-scrim" aria-hidden="true"></div>
+    <div class="sheet-panel is-wide" role="dialog" aria-modal="true" aria-label="Repository"
+         tabindex="-1" data-repo-panel>
+      <div data-repo-body></div>
+    </div>
+  </div>
+
+  <!-- The queue behind the pinned card. One panel, handed a list. -->
+  <div class="sheet cue-sheet" hidden>
+    <div class="sheet-scrim" aria-hidden="true"></div>
+    <div class="sheet-panel is-wide" role="dialog" aria-modal="true" aria-label="Pinned"
+         tabindex="-1">
+      <p class="cue-title" data-cue-title></p>
+      <ul class="cue-list" data-cue-list></ul>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -11510,6 +12441,20 @@ a.arrow { text-decoration: none; }
       if (s === last) { return; }
       last = s;
       stage.style.setProperty('--s', s);
+      /* And the mat's cell, in frame pixels, so that it lands at the same
+         size on the glass as the table's does.
+
+         The table is the window's own background and rules itself at 21 real
+         pixels. The two tiles that are a piece of it are inside the drawing,
+         which is scaled to fit -- so the same 21 came out at 24 with a line a
+         pixel and a bit wide, which is a heavier grid at a coarser pitch on
+         what is meant to be the same surface. Dividing by the scale here puts
+         both back to 21 and 1 wherever the window is.
+
+         Written under its own name because --s does not reach a card: it is
+         registered, and registered properties do not inherit. */
+      stage.style.setProperty('--mat-cell', (21 / s).toFixed(3) + 'px');
+      stage.style.setProperty('--mat-rule', (1 / s).toFixed(3) + 'px');
     }
 
     function fit() { if (!frame) { frame = requestAnimationFrame(paint); } }
@@ -11753,7 +12698,10 @@ a.arrow { text-decoration: none; }
     var band = document.createElement('span');
     band.className = 'idx-cursor cold';
     band.setAttribute('aria-hidden', 'true');
-    list.insertBefore(band, list.firstChild);
+    // On the card, not in the list. The list clips -- the deck of pages
+    // slides through it -- so a band inside it can never reach the strokes.
+    // See .idx-cursor.
+    card.insertBefore(band, card.firstChild);
 
     var on = null, ox = 0, oy = 0, known = false;
 
@@ -11775,7 +12723,9 @@ a.arrow { text-decoration: none; }
       on = row;
       if (!row) { band.classList.remove('on'); band.classList.add('cold'); return; }
       row.classList.add('on');
-      band.style.top = row.offsetTop + 'px';
+      // Two offsets, since the band hangs off the card and the row stands in
+      // the list: the row's top inside its page, and the list's inside the card.
+      band.style.top = (list.offsetTop + row.offsetTop) + 'px';
       band.style.height = row.offsetHeight + 'px';
       // Committed before the class that reveals it, so a band arriving from
       // nowhere appears at the right row rather than travelling to it.
@@ -11887,12 +12837,54 @@ a.arrow { text-decoration: none; }
    * the shape has not: HEAD and `on` are still keyed by kind, because the next
    * thing that stands in that box will want a queue too.
    */
+  /* ------------------------------------------------------------- sheets --
+
+     How a sheet arrives and how it leaves, once, for all of them.
+
+     Leaving is the reason this exists. Both drawers used to be hidden outright
+     on dismissal: four hundred and sixty milliseconds of travel on the way in
+     and nothing at all on the way out, which reads as the panel having been
+     shot rather than closed. A thing that slides in slides out.
+
+     Three beats in and three out, and the second is the one worth writing
+     down. Unhide and open in the same frame and the browser has nothing to
+     interpolate -- the panel is simply there -- so the sheet is unhidden, a
+     layout read forces the start state to exist, and only then does the class
+     that moves it go on. Coming back it is the same run backwards: the type
+     goes, the panel goes, and hidden is set once the travel is over, because
+     hiding it on the way out would take the travel with it.
+
+     The figures are the shelf's, which had this right first: 460 to travel,
+     the contents lit at 160 while the panel is still most of the way on, and
+     480 before it is taken out of the tree. */
+  window.sheetUp = function (box, focus) {
+    if (!box) { return; }
+    clearTimeout(box.__shutting);
+    clearTimeout(box.__lighting);
+    box.hidden = false;
+    box.classList.remove('is-lit');
+    void box.offsetWidth;
+    box.classList.add('is-open');
+    box.__lighting = setTimeout(function () { box.classList.add('is-lit'); }, 160);
+    if (focus && focus.focus) { focus.focus({ preventScroll: true }); }
+  };
+
+  window.sheetDown = function (box) {
+    if (!box || box.hidden || !box.classList.contains('is-open')) { return false; }
+    clearTimeout(box.__lighting);
+    box.classList.remove('is-lit');
+    box.classList.remove('is-open');
+    box.__shutting = setTimeout(function () { box.hidden = true; }, 480);
+    return true;
+  };
+
   (function () {
     /* Written by build.js from content/about.json. */
-    var CUES = {"music":[{"id":"onRk0sjSgFU","a":"Everything In Its Right Place","b":"Radiohead","art":"assets/covers/music-kid-a.jpg","bpm":101},{"id":"onRk0sjSgFU","a":"Second pinned track","b":"Replace the id in about.json","art":"","bpm":100},{"id":"onRk0sjSgFU","a":"Third pinned track","b":"Replace the id in about.json","art":"","bpm":100},{"id":"onRk0sjSgFU","a":"Fourth pinned track","b":"Replace the id in about.json","art":"","bpm":100},{"id":"onRk0sjSgFU","a":"Fifth pinned track","b":"Replace the id in about.json","art":"","bpm":100}]};
+    window.CUES = {"music":[{"id":"onRk0sjSgFU","a":"Everything In Its Right Place","b":"Radiohead","art":"assets/covers/music-kid-a.jpg","bpm":101},{"id":"onRk0sjSgFU","a":"Second pinned track","b":"Replace the id in about.json","art":"","bpm":100},{"id":"onRk0sjSgFU","a":"Third pinned track","b":"Replace the id in about.json","art":"","bpm":100},{"id":"onRk0sjSgFU","a":"Fourth pinned track","b":"Replace the id in about.json","art":"","bpm":100},{"id":"onRk0sjSgFU","a":"Fifth pinned track","b":"Replace the id in about.json","art":"","bpm":100}]};
+    var CUES = window.CUES;
 
     var sheet = document.querySelector(".cue-sheet");
-    var panel = sheet && sheet.querySelector(".cue-panel");
+    var panel = sheet && sheet.querySelector(".sheet-panel");
     var title = sheet && sheet.querySelector("[data-cue-title]");
     var list  = sheet && sheet.querySelector("[data-cue-list]");
     if (!sheet || !list) { return; }
@@ -11902,15 +12894,67 @@ a.arrow { text-decoration: none; }
     var HEAD = { music: "Pinned music" };
     var on = { music: 0 };
 
-    function shut() {
-      if (sheet.hidden) { return false; }
-      sheet.hidden = true;
-      return true;
+    function shut() { return window.sheetDown(sheet); }
+
+    /* Names for ids.
+     *
+     * A playlist hands the page a column of eleven-character ids and nothing
+     * else: the IFrame API knows the title of the record that is playing and
+     * of no other one. YouTube's oEmbed endpoint will say what any public
+     * video is called, needs no key, and answers cross-origin -- so the rows go
+     * up immediately with their thumbnails and their numbers, and each name
+     * lands in its own row when it arrives.
+     *
+     * Kept for the visit, because a name does not change while somebody is
+     * reading a list, and asked for only the rows actually drawn. */
+    var named = {};
+    function nameFor(id, into) {
+      if (named[id]) { into.textContent = named[id].a; return; }
+      var url = "https://www.youtube.com/oembed?url=" +
+        encodeURIComponent("https://www.youtube.com/watch?v=" + id) + "&format=json";
+      fetch(url).then(function (r) {
+        if (!r.ok) { throw new Error(r.status); }
+        return r.json();
+      }).then(function (j) {
+        named[id] = { a: j.title || "", b: j.author_name || "" };
+        if (into.isConnected) { into.textContent = named[id].a; }
+        var by = into.parentNode && into.parentNode.querySelector("span");
+        if (by && by.isConnected) { by.textContent = named[id].b; }
+      }).catch(function () { /* a private or pulled entry keeps its number */ });
+    }
+
+    /* The rows, from whichever list the machine is actually holding.
+     *
+     * Twenty is the cap and it is a real one: a playlist can be two hundred
+     * long, every row is a thumbnail, and a drawer that fetches two hundred
+     * pictures to show you the next few is a drawer nobody asked for. What
+     * somebody wants from a queue is what is coming, so the window starts at
+     * the record on the deck and runs forward from there. */
+    var SHOW = 20;
+
+    function rowsFor(kind) {
+      var q = kind === "music" && window.__msQueue ? window.__msQueue() : null;
+      if (q) {
+        var out = [], i, at;
+        for (i = 0; i < Math.min(SHOW, q.ids.length); i++) {
+          at = (q.at + i) % q.ids.length;
+          out.push({
+            id: q.ids[at], index: at, live: true,
+            a: named[q.ids[at]] ? named[q.ids[at]].a : "Track " + (at + 1),
+            b: named[q.ids[at]] ? named[q.ids[at]].b : "",
+            art: ""
+          });
+        }
+        return { rows: out, live: true, total: q.ids.length, at: q.at };
+      }
+      return { rows: CUES[kind] || [], live: false };
     }
 
     function open(kind) {
-      var rows = CUES[kind] || [];
-      title.textContent = HEAD[kind] || "";
+      var found = rowsFor(kind);
+      var rows = found.rows;
+      title.textContent = (HEAD[kind] || "") +
+        (found.live ? "  ·  " + found.total + (found.total === 1 ? " track" : " tracks") : "");
       list.textContent = "";
       rows.forEach(function (it, i) {
         var li = document.createElement("li");
@@ -11926,30 +12970,35 @@ a.arrow { text-decoration: none; }
         var ss = document.createElement("span"); ss.textContent = it.b;
         tx.appendChild(bb); tx.appendChild(ss);
         b.appendChild(th); b.appendChild(tx);
-        if (i === on[kind]) {
+        if (found.live ? i === 0 : i === (kind === "music" ? (window.__msIndex || 0) : on[kind])) {
           var now = document.createElement("span");
           now.className = "cue-on";
           now.textContent = "ON DECK";
           b.appendChild(now);
         }
         b.addEventListener("click", function () {
-          if (window.__msPlay && window.__msPlay(it.id, it.a, it.b, it.art)) {
+          if (found.live) {
+            if (window.__msAt) { window.__msAt(it.index); }
+          } else if (window.__msPlay && window.__msPlay(it.id, it.a, it.b, it.art)) {
+            /* The transport steps through the same list from its own keys, so
+               which one is on the deck is kept where both can see it. */
             on.music = i;
+            window.__msIndex = i;
           }
           shut();
         });
         li.appendChild(b);
         list.appendChild(li);
+        if (found.live) { nameFor(it.id, bb); }
       });
-      sheet.hidden = false;
-      var f = list.querySelector("button");
-      if (f) { f.focus(); }
+      if (panel) { panel.scrollTop = 0; }
+      window.sheetUp(sheet, panel);
     }
 
     document.addEventListener("click", function (e) {
       var c = e.target.closest("[data-cue]");
       if (c) { e.preventDefault(); open(c.getAttribute("data-cue")); return; }
-      if (!sheet.hidden && !e.target.closest(".cue-panel")) { shut(); }
+      if (!sheet.hidden && !e.target.closest(".sheet-panel")) { shut(); }
     });
     document.addEventListener("keydown", function (e) {
       if (e.key === "Escape") { shut(); }
@@ -13844,6 +14893,24 @@ a.arrow { text-decoration: none; }
       ],
       verdict: 'The pair on the front page are the same element as the one in this window. If it looked wrong here I would have found out.',
       facts: ['Two to six frames', 'Ships four ways', 'Draws on a canvas']
+    },
+
+    'ocarina': {
+      name: 'Ocarina',
+      kit: 'Three.js · Web Audio · React',
+      state: 'live', label: 'Running',
+      shot: 'assets/lab-ocarina.jpg',
+      lede: 'An ocarina you can play in the browser, sounded by a synthesiser built for one cavity.',
+      beats: [
+        ['What I wanted', 'Every browser ocarina I found was a keyboard with a picture of one over it. I wanted the instrument: the real mesh, the five buttons the game gives you, and a sound generated rather than a folder of samples played back.',
+         'the five buttons, in a diamond', ''],
+        ['What it does', 'The five buttons sound D, F, A and B, which is every song the game has, because they were written for them. Finish one it knows and it answers — dimmed scene, the name written out, the phrase back on a struck voice that is plainly not yours.',
+         'the songbook, eighteen songs deep', ''],
+        ['What happened', 'It was a reed organ for a week. 440 Hz sat under a label reading A5, so every note played an octave beneath its own name; and the synth had a detuned double, a sub-octave and a filter. A vessel flute is nearly a sine.',
+         'the octave it had been playing in', '']
+      ],
+      verdict: 'Four pitch classes is a chord, not a scale. Most of the series cannot go on it, and forcing one teaches the wrong tune.',
+      facts: ['Eighteen songs, six of them warps', 'No audio files', 'Three evenings']
     }
   };
 
@@ -16130,17 +17197,21 @@ a.arrow { text-decoration: none; }
      * the way out, including the case where they had never pressed the switch
      * at all: that visitor has no attribute on the root and gets none back.
      */
-    var lamps = null;
-    function lamp(dark) {
-      if (dark) {
-        if (lamps === null) { lamps = root.getAttribute('data-theme') || ''; }
-        root.setAttribute('data-theme', 'dark');
-      } else if (lamps !== null) {
-        if (lamps) { root.setAttribute('data-theme', lamps); }
-        else { root.removeAttribute('data-theme'); }
-        lamps = null;
-      }
-    }
+    /* The playground used to hold the dark room whatever the reader had
+     * chosen, and hide the switch while it did. The argument was that a mat is
+     * green rubber in any light and a lit version of it would be the same
+     * object at half its saturation -- a different claim from the one every
+     * other screen makes about the two rooms.
+     *
+     * The mat has a lit colour of its own now: not the jade turned down, but
+     * the same rubber bleached, which is what green rubber under a window
+     * actually looks like. So there is nothing left to protect, and holding
+     * one screen in the other room was the visible cost of it -- press About,
+     * put the lights on, walk to the Playground and the site went dark under
+     * you. The screen follows the room like every other screen, and the switch
+     * is on it like every other screen.
+     */
+    function lamp() {}
 
     function paint(name) {
       for (var k in views) { views[k].hidden = k !== name; }
@@ -16153,7 +17224,7 @@ a.arrow { text-decoration: none; }
       stage.classList.toggle('x-article', name === 'article');
       stage.classList.toggle('x-lab', name === 'lab');
       stage.classList.toggle('x-piece', name === 'piece');
-      lamp(name === 'lab' || name === 'piece');
+      lamp();
       // The playground's ground is a cutting mat rather than paper, and the
       // ground is the body -- which the stage is inside -- so this one goes
       // on the root. See :root.x-table.
@@ -16789,6 +17860,443 @@ a.arrow { text-decoration: none; }
   }, 4000);
 })();
 
+
+  /* ------------------------------------------------------- the repository --
+
+     A print with a repository behind it opens it here rather than crossing to
+     a screen -- see the repo sheet in the stylesheet for why.
+
+     Three things worth writing down.
+
+     The click is taken in the capture phase and stopped there. The router is a
+     delegated listener on the document and it reads data-route off whatever it
+     was handed; a print's link carries data-route="piece" because that is
+     where it goes without a script and where it still goes for the entries
+     with nothing to open. Letting the router see this click and then trying to
+     undo the route afterwards is a screen that flickers. Taking it first is
+     one line and no flicker.
+
+     Nothing is cached at build time. A description, a language split and a
+     date of last push are facts about a repository now; a copy of them baked
+     into this page is a fact about the day the build ran. Two requests per
+     opening, unauthenticated -- sixty an hour from one address -- and the
+     answer is kept for the session so opening the same print twice costs
+     nothing.
+
+     And it fails visibly. Rate limited, offline, repository renamed: the
+     drawer still opens, still prints the address, and says it could not reach
+     it. A drawer that opens empty and stays empty is worse than no drawer.
+     ---------------------------------------------------------------------- */
+  (function () {
+    var sheet = document.querySelector('.repo-sheet');
+    var panel = sheet && sheet.querySelector('.sheet-panel');
+    var body  = sheet && sheet.querySelector('[data-repo-body]');
+    if (!sheet || !body) { return; }
+
+    var kept = {};                       /* name -> the answer, for this visit */
+    var back = null;                     /* what to give focus back to */
+
+    /* What the drawer is made of, and where each half comes from.
+     *
+     * Two sources, and they are different in kind. PIECES is this site's own
+     * file -- the three beats, the verdict, the notes, the photograph -- and it
+     * is already on the page because the write-up screen is built from it. The
+     * repository is fetched: description, languages, topics, the counts, and
+     * the last five commit messages, none of which anybody should be keeping a
+     * copy of in a JSON file in another repository.
+     *
+     * The site's half is painted immediately and the repository's half lands
+     * underneath when it arrives, so a press is answered in the same frame it
+     * was made in. */
+
+    function el(tag, cls, text) {
+      var e = document.createElement(tag);
+      if (cls) { e.className = cls; }
+      if (text != null) { e.textContent = text; }
+      return e;
+    }
+
+    function block(head, node) {
+      var d = el('div', 'repo-block');
+      if (head) { d.appendChild(el('p', 'repo-h', head)); }
+      d.appendChild(node);
+      return d;
+    }
+
+    function shut() {
+      var went = window.sheetDown(sheet);
+      if (went && back && back.focus) { back.focus(); }
+      back = null;
+      return went;
+    }
+
+    /* How long ago, in the units somebody would say it in. */
+    function since(iso) {
+      var then = Date.parse(iso);
+      if (!then) { return ''; }
+      var days = Math.floor((Date.now() - then) / 86400000);
+      if (days <= 0) { return 'today'; }
+      if (days === 1) { return 'yesterday'; }
+      if (days < 30) { return days + ' days ago'; }
+      var months = Math.round(days / 30.44);
+      if (months < 24) { return months + (months === 1 ? ' month ago' : ' months ago'); }
+      return Math.round(days / 365.25) + ' years ago';
+    }
+
+    function when(iso) {
+      var t = Date.parse(iso);
+      if (!t) { return ''; }
+      var d = new Date(t);
+      return d.toLocaleDateString(undefined, { month: 'short', year: 'numeric' });
+    }
+
+    function mark() {
+      var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      svg.setAttribute('viewBox', '0 0 16 16');
+      svg.setAttribute('aria-hidden', 'true');
+      svg.setAttribute('fill', 'currentColor');
+      var p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      p.setAttribute('d', 'M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 ' +
+        '0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 ' +
+        '1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 ' +
+        '0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 ' +
+        '2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 ' +
+        '3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z');
+      svg.appendChild(p);
+      return svg;
+    }
+
+    function arrow() {
+      var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      svg.setAttribute('viewBox', '0 0 24 24');
+      svg.setAttribute('aria-hidden', 'true');
+      svg.setAttribute('fill', 'none');
+      svg.setAttribute('stroke', 'currentColor');
+      svg.setAttribute('stroke-width', '2');
+      svg.setAttribute('stroke-linecap', 'round');
+      var p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      p.setAttribute('d', 'M7 17 17 7M9 7h8v8');
+      svg.appendChild(p);
+      return svg;
+    }
+
+    /* The paragraph the author wrote to say what this is.
+     *
+     * Which is nearly always the first one under the title: so the heading
+     * lines, the badges, the fenced blocks, the lists and the tables are
+     * dropped, and the first run of ordinary prose is kept. Not a markdown
+     * renderer -- there is none on this page and this does not need one -- and
+     * the few marks that survive into a sentence are taken back out by hand.
+     *
+     * The backtick is built rather than typed. This whole script is written
+     * inside a template that is itself assembled, and a literal one in here is
+     * one more thing for something upstream to eat. */
+    var TICK = String.fromCharCode(96);
+    var FENCE = TICK + TICK + TICK;
+    var SPAN = new RegExp(TICK + '([^' + TICK + ']*)' + TICK, 'g');
+
+    function opening(md) {
+      var lines = String(md || '').split('\n');
+      var out = [], started = false, fenced = false, i, line;
+      for (i = 0; i < lines.length && out.length < 6; i++) {
+        line = lines[i];
+        if (line.replace(/^\s+/, '').indexOf(FENCE) === 0) {
+          fenced = !fenced;
+          if (started) { break; }
+          continue;
+        }
+        if (fenced) { continue; }
+        if (/^\s*$/.test(line)) { if (started) { break; } continue; }
+        if (/^\s*(#|>|\||-{3,}|={3,}|!\[|<)/.test(line)) { if (started) { break; } continue; }
+        if (/^\s*[-*+]\s/.test(line) || /^\s*\d+\.\s/.test(line)) { if (started) { break; } continue; }
+        started = true;
+        out.push(line.trim());
+      }
+      return out.join(' ')
+        .replace(/!?\[([^\]]*)\]\([^)]*\)/g, '$1')   /* links and images */
+        .replace(SPAN, '$1')                          /* code spans */
+        .replace(/\*\*([^*]*)\*\*/g, '$1')
+        .replace(/\*([^*]*)\*/g, '$1')
+        .replace(/_([^_]*)_/g, '$1')
+        .replace(/\s+/g, ' ')
+        .trim();
+    }
+
+    function ways(name, slug, r) {
+      var wrap = el('div', 'repo-ways');
+      if (name) {
+        var a = el('a', null, 'Open on GitHub');
+        a.href = (r && r.html_url) || ('https://github.com/' + name);
+        a.target = '_blank'; a.rel = 'noopener noreferrer';
+        a.insertBefore(mark(), a.firstChild);
+        wrap.appendChild(a);
+      }
+
+      /* A repository's homepage field is where somebody puts the thing itself,
+         and a link to the running version is worth more than any of the rest of
+         this. Only when it is set: an empty one is not a demo. */
+      if (r && r.homepage) {
+        var live = el('a', null, 'See it running');
+        live.href = r.homepage;
+        live.target = '_blank'; live.rel = 'noopener noreferrer';
+        live.insertBefore(arrow(), live.firstChild);
+        wrap.appendChild(live);
+      }
+
+      /* The write-up used to be a link at the foot of this, back to the screen
+         a print opened before the sheet did. It has gone with the route: the
+         sheet carries the whole of that screen now -- the three beats, the
+         verdict, the notes -- so a link out to a second copy of what somebody
+         is already reading is a door to the room they are standing in. */
+      return wrap;
+    }
+
+    function paint(name, slug, data) {
+      var p = (window.PIECES && window.PIECES[slug]) || null;
+      var r = (data && data.repo) || null;
+      var none = !!(data && data.none);        /* nothing to fetch, by design */
+      body.textContent = '';
+
+      /* ---- the head ---------------------------------------------------- */
+      var head = el('div', 'repo-head');
+      var title = el('div', 'repo-title');
+      var h = el('b', null, (p && p.name) || (name.split('/')[1] || name));
+      if (p && p.label) {
+        var badge = el('span', 'repo-state' + (p.state === 'live' || p.state === 'used' ? ' on' : ''),
+          p.label);
+        h.appendChild(badge);
+      }
+      title.appendChild(h);
+
+      /* The address, when there is one. Where there is not, the line under the
+         name is the kit on its own -- which is the same line doing the same
+         job with one fact fewer, rather than an empty space where an address
+         would have been. */
+      var addr = el('p', 'repo-name');
+      if (name) {
+        var cut = name.split('/');
+        addr.appendChild(el('i', null, cut[0] + '/'));
+        addr.appendChild(document.createTextNode(cut[1] || ''));
+        if (p && p.kit) { addr.appendChild(el('i', null, '  ·  ' + p.kit)); }
+      } else if (p && p.kit) {
+        addr.appendChild(el('i', null, p.kit));
+      }
+      if (addr.childNodes.length) { title.appendChild(addr); }
+
+      head.appendChild(title);
+      head.appendChild(ways(name, slug, r));
+      body.appendChild(head);
+
+      /* ---- the two halves ---------------------------------------------- */
+      var grid = el('div', 'repo-body');
+      var main = el('div');
+      var rail = el('div');
+
+      /* what it is, in one sentence: the repository's own description if it
+         has one, and this site's line if it has not */
+      var lede = (r && r.description) || (p && p.lede) || '';
+      if (lede) { main.appendChild(el('p', 'repo-lede', lede)); }
+
+      if (p && p.shot) {
+        var shotEl = el('span', 'repo-shot');
+        shotEl.style.backgroundImage = 'url("' + p.shot + '")';
+        main.appendChild(shotEl);
+      }
+
+      /* the three beats */
+      if (p && p.beats && p.beats.length) {
+        var beats = el('ul', 'repo-beats');
+        p.beats.forEach(function (b, i) {
+          var li = document.createElement('li');
+          var hh = document.createElement('h4');
+          hh.appendChild(el('span', null, '0' + (i + 1)));
+          hh.appendChild(document.createTextNode(b[0]));
+          li.appendChild(hh);
+          li.appendChild(el('p', null, b[1]));
+          beats.appendChild(li);
+        });
+        main.appendChild(beats);
+      }
+
+      if (p && p.verdict) { main.appendChild(el('p', 'repo-verdict', p.verdict)); }
+
+      /* ---- the rail ----------------------------------------------------- */
+      if (none) {
+        /* Nothing from GitHub, and nothing said about that. An entry with no
+           repository is an entry somebody has written about and not published,
+           which is a fact about the work rather than a gap in the page -- so
+           the rail carries what there is and no apology. */
+      } else if (!data) {
+        rail.appendChild(block(null, el('p', 'repo-wait', 'Reading the repository')));
+      } else if (data.failed) {
+        rail.appendChild(block(null, el('p', 'repo-fail',
+          'Could not reach GitHub just now. The address above is the same one.')));
+      } else {
+        var facts = el('dl', 'repo-facts');
+        function fact(k, v) {
+          if (v == null || v === '') { return; }
+          var d = document.createElement('div');
+          d.appendChild(el('dt', null, k));
+          d.appendChild(el('dd', null, String(v)));
+          facts.appendChild(d);
+        }
+        fact('Language', r.language);
+        fact('Stars', r.stargazers_count);
+        fact('Forks', r.forks_count);
+        fact('Open issues', r.open_issues_count);
+        fact('Licence', r.license && r.license.spdx_id !== 'NOASSERTION' ? r.license.spdx_id : null);
+        fact('Started', when(r.created_at));
+        fact('Last push', since(r.pushed_at));
+        if (facts.children.length) { rail.appendChild(block('The repository', facts)); }
+
+        /* the split, by weight of bytes, and only the four worth a band --
+           the tail of a language list is one pixel and a name nobody needed */
+        var langs = data.langs || {};
+        var names = Object.keys(langs).sort(function (a, b) { return langs[b] - langs[a]; });
+        var total = names.reduce(function (t, k) { return t + langs[k]; }, 0);
+        if (total > 0) {
+          var wrap = document.createElement('div');
+          var top = names.slice(0, 4);
+          var bar = el('div', 'repo-langs');
+          var key = el('ul', 'repo-key');
+          top.forEach(function (k) {
+            var pct = langs[k] / total * 100;
+            var i = el('i');
+            i.style.width = pct.toFixed(1) + '%';
+            bar.appendChild(i);
+            key.appendChild(el('li', null, k + ' ' + Math.round(pct) + '%'));
+          });
+          bar.setAttribute('role', 'img');
+          bar.setAttribute('aria-label', top.map(function (k) {
+            return k + ' ' + Math.round(langs[k] / total * 100) + ' per cent';
+          }).join(', '));
+          wrap.appendChild(bar);
+          wrap.appendChild(key);
+          if (r.topics && r.topics.length) {
+            var chips = el('ul', 'repo-chips');
+            r.topics.slice(0, 10).forEach(function (t) { chips.appendChild(el('li', null, t)); });
+            chips.style.marginTop = '14px';
+            wrap.appendChild(chips);
+          }
+          rail.appendChild(block('Written in', wrap));
+        }
+
+        /* the last five commits */
+        var log = data.log || [];
+        if (log.length) {
+          var list = el('ul', 'repo-log');
+          log.forEach(function (c) {
+            var li = document.createElement('li');
+            var a = document.createElement('a');
+            a.href = c.url; a.target = '_blank'; a.rel = 'noopener noreferrer';
+            a.appendChild(el('span', 'repo-msg', c.msg));
+            a.appendChild(el('span', 'repo-when', c.when));
+            li.appendChild(a);
+            list.appendChild(li);
+          });
+          rail.appendChild(block('Lately', list));
+        }
+
+        var lead = opening(data.readme);
+        if (lead) { rail.appendChild(block('From the readme', el('p', 'repo-read', lead))); }
+      }
+
+      /* three lines about the making of it, which no API has */
+      if (p && p.facts && p.facts.length) {
+        var notes = el('ul', 'repo-notes');
+        p.facts.forEach(function (f) { notes.appendChild(el('li', null, f)); });
+        rail.appendChild(block('Notes', notes));
+      }
+
+      grid.appendChild(main);
+      grid.appendChild(rail);
+      body.appendChild(grid);
+    }
+
+    /* Four requests, and three of them are allowed to fail on their own. A
+       repository with no readme, no commits anybody can list, or no language
+       breakdown is still a repository, and the drawer should not go red over
+       any of them. */
+    function fetchRepo(name) {
+      var api = 'https://api.github.com/repos/' + name;
+      var json = function (url, accept) {
+        return fetch(url, { headers: { Accept: accept || 'application/vnd.github+json' } })
+          .then(function (r) { if (!r.ok) { throw new Error(r.status); } return r; });
+      };
+      return Promise.all([
+        json(api).then(function (r) { return r.json(); }),
+        json(api + '/languages').then(function (r) { return r.json(); })
+          .catch(function () { return {}; }),
+        json(api + '/readme', 'application/vnd.github.raw')
+          .then(function (r) { return r.text(); })
+          .catch(function () { return ''; }),
+        json(api + '/commits?per_page=5').then(function (r) { return r.json(); })
+          .catch(function () { return []; })
+      ]).then(function (all) {
+        var log = (Array.isArray(all[3]) ? all[3] : []).map(function (c) {
+          var m = String((c.commit && c.commit.message) || '').split('\n')[0];
+          return {
+            msg: m,
+            when: since((c.commit && c.commit.author && c.commit.author.date) || ''),
+            url: c.html_url || ('https://github.com/' + name)
+          };
+        }).filter(function (c) { return c.msg; });
+        return { repo: all[0], langs: all[1], readme: all[2], log: log };
+      }).catch(function () {
+        return { failed: true };
+      });
+    }
+
+    function open(name, slug, from) {
+      back = from || null;
+      /* No repository is not a failure and must not be drawn as one: the sheet
+         opens on what the file has and asks GitHub nothing. */
+      paint(name, slug, name ? (kept[name] || null) : { none: true });
+      if (panel) { panel.scrollTop = 0; }
+      window.sheetUp(sheet, panel);
+      if (!name || kept[name]) { return; }
+      fetchRepo(name).then(function (data) {
+        kept[name] = data;
+        /* Only if the drawer is still open on the same one: a reader who has
+           pressed escape and opened another print should not have this land
+           on top of it. */
+        if (!sheet.hidden && body.dataset.on === name) { paint(name, slug, data); }
+      });
+    }
+
+    /* Every print, and stopped here. See the note at the top.
+     *
+     * It used to be only the three with a repository behind them, and the
+     * other three went to a screen of their own -- which meant pressing two
+     * photographs on the same table did two different things, and the reader
+     * had no way of telling which was which before pressing. So the sheet is
+     * what a print opens, always. Where there is a repository it carries a
+     * repository; where there is not it carries what this site knows, which is
+     * the same three beats and the same verdict the screen was showing.
+     *
+     * The screen is still there and a deep link still resolves to it. Nothing
+     * points at it any more: the href on every print stays #lab/<slug> because
+     * that is the only thing a visitor with no script can follow, and this
+     * handler takes the click before the router sees it. */
+    document.addEventListener('click', function (e) {
+      var hit = e.target.closest && e.target.closest('.lab-hit');
+      if (hit) {
+        if (e.metaKey || e.ctrlKey || e.shiftKey || e.button > 0) { return; }
+        e.preventDefault();
+        e.stopPropagation();
+        var repo = hit.getAttribute('data-repo') || '';
+        body.dataset.on = repo;
+        open(repo, hit.getAttribute('data-slug'), hit);
+        return;
+      }
+      if (!sheet.hidden && !e.target.closest('.sheet-panel')) { shut(); }
+    }, true);
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') { shut(); }
+    });
+  })();
+
   /* --------------------------------------------------------------- music --
 
      YouTube runs the audio; the card runs the controls.
@@ -16822,10 +18330,18 @@ a.arrow { text-decoration: none; }
     var fill = card.querySelector('[data-ms-fill]');
     var knob = card.querySelector('[data-ms-knob]');
     var clock = card.querySelector('[data-ms-clock]');
-    var modeKey = card.querySelector('[data-ms-mode]');
-    var modeTag = card.querySelector('[data-ms-mode-tag]');
     if (!host || !deck || !play || !pause || !bar) { return; }
     var yt = null, ready = false, tick = 0, asked = false, guard = 0;
+
+    /* A record, or a list of them.
+     *
+     * build.js writes one attribute or the other -- see tube() there, which
+     * takes an id or an address and works out which it was given. Everything
+     * below that differs between the two hangs off this one variable, and
+     * there are only four things: what the player is constructed with, where
+     * the sleeve and the two lines of readout come from, what the sixth key
+     * does, and what is in the queue behind the line under the machine. */
+    var list = host.getAttribute('data-list') || '';
 
     /* One machine, five tapes.
 
@@ -16836,95 +18352,399 @@ a.arrow { text-decoration: none; }
 
        loadVideoById when the player is already up, and a build when it is
        not. Both start playing, because you only reach this from a press. */
-    var artEl = card.querySelector('.ms-art');
+    /* What the strip says, and how long it takes to say it.
+     *
+     * Two copies of one string, so the loop is seamless -- see .ms-str. The
+     * duration is set from the length rather than left at a constant, because
+     * a fixed fourteen seconds is a crawl for three words and a blur for
+     * twelve: roughly forty pixels a second, which is the speed a legend strip
+     * on a deck actually ran at and is slow enough to read without waiting.
+     *
+     * Whatever the machine is playing and nothing else goes in here. */
+    var runEl = card.querySelector('[data-ms-run]');
+    var saidEl = card.querySelector('.ms-said');
+    /* What the strip is saying when nothing is interrupting it, so that an
+       interruption knows what to put back. */
+    var saying = '';
+
+    /* One line, written twice, at about forty pixels a second.
+       The width is measured after the text is in and guarded, because a card
+       that is not on screen measures zero and a duration of zero is a strip
+       that stands still. */
+    function write(line) {
+      if (!runEl || !line) { return; }
+      var pair = runEl.children;
+      if (pair[0]) { pair[0].textContent = line; }
+      if (pair[1]) { pair[1].textContent = line; }
+      var w = pair[0] ? pair[0].getBoundingClientRect().width : 0;
+      if (w > 4) { runEl.style.animationDuration = Math.max(8, w / 40).toFixed(1) + 's'; }
+    }
+
+    /* Nothing interrupts it. There was a flash() here that put a word on the
+       strip for a moment and then gave it back; the strip belongs to the
+       record, so there is nothing left to give it back from. */
+    function say(track, by) {
+      if (!runEl) { return; }
+      var line = String(track || '').trim();
+      if (by) { line += (line ? '  ·  ' : '') + String(by).trim(); }
+      if (!line) { return; }
+      saying = line;
+      if (saidEl) { saidEl.textContent = track + (by ? ' by ' + by : ''); }
+      write(line);
+    }
+
+    var artEl = card.querySelector('.ms-art');    var artEl = card.querySelector('.ms-art');
     var lineA = card.querySelector('.ms-lcd-a');
     var lineB = card.querySelector('.ms-lcd-by');
 
-    /* ---- the visualiser ------------------------------------------------
+    /* ---- the visualiser --------------------------------------------------
      *
-     * What this is, and what it is not.
+     * See .ms-viz in the stylesheet for what this is and why it is a dither
+     * rather than a meter. What is here is the arithmetic.
      *
-     * It is not spectrum analysis. It cannot be. The sound is coming out of a
-     * YouTube iframe on another origin, and there is no way to reach the audio
-     * behind that boundary -- no MediaElement to hang a Web Audio node on, no
-     * samples, no FFT. Anybody who shows you a bar chart over a YouTube embed
-     * is showing you an animation, and the honest question is only which one.
+     * One canvas pixel is one two-pixel cell, so the buffer is the well divided
+     * by two and the compositor does the scaling. It is only sized when the
+     * well's box changes, because allocating an ImageData a frame is the one
+     * expensive thing in a loop this small.
      *
-     * The one it was: eighteen CSS loops at eighteen periods, which is noise.
-     * It never lands on anything, because there is nothing to land on.
-     *
-     * The one it is: the deck's own clock against the track's tempo. The player
-     * reports where it is in the piece; the piece has a BPM; so the beat, the
-     * eighth and the sixteenth are all known, and every bar is a function of
-     * where we are between them. The kick drops on the beat and decays; the
-     * mids answer on the offbeat; the highs shimmer at sixteenths; and the
-     * whole thing swells over a four-bar phrase. It is a performance rather
-     * than a measurement -- but it is a performance of THIS track, in time
-     * with it, and it lands where the music lands.
-     *
-     * The BPM is a field in about.json. Get it wrong and the whole thing drifts
-     * out, which is the honest failure mode: it is the one number doing the
-     * work.
+     * Four fields and one threshold. Every mode below is a function that
+     * answers, for a cell and a moment, one number between minus one and one;
+     * the loop that calls it does not know or care which mode it is in, and the
+     * comparison against the Bayer matrix afterwards is the same either way.
+     * That is the whole reason there can be four of them for the price of one:
+     * a mode is a surface, not a drawing.
      */
-    var bars = card.querySelectorAll('.ms-spill i');
-    var bpm = Number(host.getAttribute('data-bpm')) || 100;
-    var vRaf = 0, peak = [];
+    var vizEl = card.querySelector('.ms-viz');
+    var vctx = vizEl && vizEl.getContext ? vizEl.getContext('2d') : null;
+    var vraf = 0, vimg = null, vw = 0, vh = 0, vt0 = 0;
+    var vcx = 0, vcy = 0, vhalf = 0;      /* where the record sits, in cells */
 
-    function shape(f, beat) {
-      // f: 0 at the low end of the row, 1 at the high
-      var kick   = Math.pow(1 - (beat % 1), 2.4);
-      var eighth = Math.pow(1 - ((beat * 2) % 1), 3.0);
-      var six    = Math.pow(1 - ((beat * 4) % 1), 3.6);
-      var phrase = 0.72 + 0.28 * Math.sin(beat * Math.PI / 4);
+    /* The same 4x4 the picture is thresholded with, in the same phase. The
+       sleeve and the room around it are broken up by one matrix on one grid,
+       which is what makes them the same screen rather than two. */
+    var BAYER = [
+      [0, 8, 2, 10],
+      [12, 4, 14, 6],
+      [3, 11, 1, 9],
+      [15, 7, 13, 5]
+    ];
 
-      var low  = kick   * Math.pow(1 - f, 1.7);
-      var mid  = eighth * Math.max(0, 0.62 - Math.abs(f - 0.42) * 1.5);
-      var high = six    * Math.pow(f, 1.5) * 0.85;
-      // a standing shape so a quiet bar is still a bar
-      var bed  = 0.10 + 0.09 * Math.sin(f * 7.3 + beat * 1.9);
-      var v = (low * 1.15 + mid + high + bed) * phrase;
-      return v < 0.05 ? 0.05 : v > 1 ? 1 : v;
+    /* A record's own wave.
+     *
+     * Seeded off the video id, so the same track is the same shape every time
+     * and two tracks are not the same shape. It is a hash and nothing cleverer:
+     * three frequencies and two phases, each nudged inside a range that still
+     * reads as the same instrument. */
+    var vseed = { a: 0.55, b: 0.22, c: 0.13, p: 0, q: 0 };
+    function seedFrom(id) {
+      var h = 0, i;
+      id = String(id || '');
+      for (i = 0; i < id.length; i++) { h = (h * 31 + id.charCodeAt(i)) | 0; }
+      function pick(shift, lo, hi) {
+        var v = ((h >> shift) & 255) / 255;
+        return lo + v * (hi - lo);
+      }
+      vseed = {
+        a: pick(0, 0.34, 0.60),      /* how tight the rings are */
+        b: pick(8, 0.14, 0.26),      /* how tight the sweep is */
+        c: pick(16, 0.09, 0.19),     /* the slow rise */
+        p: pick(4, 0, 6.283),
+        q: pick(12, 0, 6.283)
+      };
     }
 
-    function paintViz() {
-      vRaf = 0;
-      if (!bars.length) { return; }
-      var going = deck.classList.contains('is-going') ||
-                  card.classList.contains('is-going');
-      var t = (yt && ready && yt.getCurrentTime) ? yt.getCurrentTime() : 0;
-      var beat = t * bpm / 60;
-      var i, v;
-      for (i = 0; i < bars.length; i++) {
-        v = going ? shape(bars.length > 1 ? i / (bars.length - 1) : 0, beat) : 0.05;
-        // the peak sits where the bar got to and falls slowly, which is the
-        // one part of a real meter that is not the level itself
-        peak[i] = Math.max(v, (peak[i] || 0) - 0.018);
-        bars[i].style.height = (peak[i] * 100).toFixed(1) + '%';
+    /* --- the four surfaces ------------------------------------------------
+     *
+     * Each is handed a cell's offset from the middle of the record, how far out
+     * that is, the cell's own coordinates, and the time. Each answers one
+     * number. Nothing in any of them draws anything.
+     */
+
+    /* RINGS. A ripple running out from behind the record, a sweep crossing the
+       well, and a slow rise up it so the surface is never flat. The one this
+       started as, and still the one that reads most like sound leaving an
+       object. */
+    function fRings(dx, dy, r, x, y, t) {
+      return 0.62 * Math.sin(r * vseed.a - t * 4.1 + vseed.p) +
+             0.26 * Math.sin(x * vseed.b - t * 1.7) +
+             0.16 * Math.sin(y * vseed.c + t * 1.05 + vseed.q);
+    }
+
+    /* TRIPLIGHT. Three sources on the rim of the record, a third of a turn
+       apart, each throwing its own ring -- and the three of them turning
+       together. Where two arrive at once the cells go over the threshold hard
+       and a lobe stands out of the field for a moment, which is the whole
+       effect: it is interference, not three copies of the same thing. */
+    function fTri(dx, dy, r, x, y, t) {
+      var v = 0, i, a, sx, sy, ddx, ddy, dr;
+      var spin = t * 0.55;
+      for (i = 0; i < 3; i++) {
+        a = spin + i * 2.0944;                      /* a third of a turn */
+        sx = vcx + Math.cos(a) * vhalf * 0.92;
+        sy = vcy + Math.sin(a) * vhalf * 0.92;
+        ddx = x - sx; ddy = y - sy;
+        dr = Math.sqrt(ddx * ddx + ddy * ddy);
+        v += 0.42 * Math.sin(dr * (vseed.a * 0.9) - t * 3.4 + i * 1.9);
       }
-      if (going) { vRaf = requestAnimationFrame(paintViz); }
+      return v;
+    }
+
+    /* LIGHT. One broad band crossing the well and going round again, with a
+       hard bright edge on its leading side and a long tail behind it -- a lamp
+       being carried past rather than a wave. The quietest of the four, and the
+       one that leaves the record most alone. */
+    function fLight(dx, dy, r, x, y, t) {
+      var span = vw + vh * 0.6;
+      var head = ((t * 0.30) % 1) * span - vh * 0.3;   /* where the edge is */
+      var d = (x + y * 0.55) - head;                   /* raked, not vertical */
+      if (d > 4 || d < -34) { return -0.16; }          /* dark either side */
+      var v = d > 0 ? 1 - d / 4                        /* the edge itself */
+                    : Math.pow(1 + d / 34, 2.2);       /* and what trails it */
+      return v * 1.25 - 0.2;
+    }
+
+    /* FILLER. The well fills from the floor and drains again, and the line
+       where it stops is not a line -- it is the threshold falling through the
+       matrix, so the surface breaks up into froth for the two or three cells
+       either side of it. A level, drawn the only way this screen can draw a
+       level. */
+    function fFill(dx, dy, r, x, y, t) {
+      var level = vh * (0.5 - 0.42 * Math.cos(t * 0.9));
+      var d = (vh - y) - level;                        /* under, or over */
+      var swell = Math.sin(x * 0.19 - t * 2.3) * 1.6;  /* and it is not flat */
+      d -= swell;
+      if (d < -3) { return 0.72; }                     /* well under: filled */
+      if (d > 3) { return -0.30; }                     /* well over: empty */
+      return 0.72 - (d + 3) / 6 * 1.02;                /* and the froth */
+    }
+
+    var MODES = [
+      { key: 'rings', f: fRings },
+      { key: 'triplight', f: fTri },
+      { key: 'light', f: fLight },
+      { key: 'filler', f: fFill }
+    ];
+    var vmode = 0;
+
+    function vsize() {
+      if (!vizEl) { return false; }
+      /* Measured in the frame's own scale rather than on screen: the well is
+         inside a drawing that is scaled to the window, so halving the rendered
+         box would give a different cell count at every window width -- and a
+         cell that is not two pixels of the frame is a cell that does not line
+         up with the dither on the sleeve beside it. */
+      var wellEl = card.querySelector('.ms-well');
+      var stageEl = card.querySelector('.ms-stage');
+      if (!wellEl || !stageEl) { return false; }
+      var cw = parseFloat(getComputedStyle(wellEl).width);
+      var ch = parseFloat(getComputedStyle(wellEl).height);
+      var side = parseFloat(getComputedStyle(stageEl).width);
+      var top = parseFloat(getComputedStyle(stageEl).top) || 0;
+      if (!cw || !ch) { return false; }
+
+      var w = Math.max(8, Math.round(cw / 2));
+      var h = Math.max(8, Math.round(ch / 2));
+      /* Where the record is, so the field can be built around it rather than
+         around the middle of a rectangle it happens to sit in. */
+      vcx = (w - 1) / 2;
+      vcy = (top + side / 2) / 2;
+      vhalf = side / 4;                 /* half the sleeve, in cells */
+      if (w === vw && h === vh) { return true; }
+      vw = w; vh = h;
+      vizEl.width = vw;
+      vizEl.height = vh;
+      vimg = vctx.createImageData(vw, vh);
+      return true;
+    }
+
+    function vpaint(now) {
+      vraf = 0;
+      if (!vctx || !vsize()) { return; }
+      if (!vt0) { vt0 = now; }
+      var t = (now - vt0) / 1000;
+
+      var field = MODES[vmode].f;
+      var d = vimg.data;
+      var x, y, i = 0, dx, dy, r, v, b, on, fade;
+      /* How far out the field still carries: to the far corner and no further. */
+      var far = Math.max(vcy, vh - vcy);
+      var reach = Math.sqrt(vcx * vcx + far * far) * 1.05;
+
+      for (y = 0; y < vh; y++) {
+        dy = y - vcy;
+        for (x = 0; x < vw; x++) {
+          dx = x - vcx;
+
+          /* Nothing under the record. The sleeve is opaque and sits over this,
+             so every cell it covers is a cell drawn for nobody -- and skipping
+             them is a third of the loop. It is also the guarantee the picture
+             asked for: no mode can touch the artwork, because none of them is
+             ever asked what to put there. */
+          if (dx > -vhalf - 1 && dx < vhalf + 1 && dy > -vhalf - 1 && dy < vhalf + 1) {
+            d[i + 3] = 0; i += 4; continue;
+          }
+
+          r = Math.sqrt(dx * dx + dy * dy);
+          v = field(dx, dy, r, x, y, t);
+
+          /* Strongest against the edge of the record and gone by the corners,
+             which is the shape a thing radiating from an object has. */
+          fade = 1 - Math.min(1, Math.max(0, (r - vhalf) / (reach - vhalf)));
+          v *= 0.35 + 0.65 * fade;
+          /* And held well under one. At full amplitude nearly every cell clears
+             its threshold and the field stops being light in a room and becomes
+             a pattern with a room behind it. */
+          v *= 0.75;
+
+          b = (BAYER[y & 3][x & 3] + 0.5) / 16;
+          on = v > 0 ? (v > b ? 255 : -1) : (-v > b ? 0 : -1);
+          if (on < 0) { d[i + 3] = 0; }
+          else { d[i] = d[i + 1] = d[i + 2] = on; d[i + 3] = 255; }
+          i += 4;
+        }
+      }
+      vctx.putImageData(vimg, 0, 0);
+      if (card.classList.contains('is-going')) { vraf = requestAnimationFrame(vpaint); }
     }
 
     function viz(on) {
-      if (vRaf) { cancelAnimationFrame(vRaf); vRaf = 0; }
+      if (!vctx) { return; }
       if (matchMedia('(prefers-reduced-motion: reduce)').matches) { return; }
-      paintViz();
-      if (on && !vRaf) { vRaf = requestAnimationFrame(paintViz); }
+      if (vraf) { cancelAnimationFrame(vraf); vraf = 0; }
+      if (on) { vraf = requestAnimationFrame(vpaint); }
     }
+
+    /* Put a record on, from anywhere.
+     *
+     * The drawer behind the sixth key and the two outer keys both do the same
+     * thing to this machine -- take the tape out and put another one in -- and
+     * neither of them is inside it, so this is the way in and the only one.
+     * An id that is not eleven characters is refused rather than loaded, which
+     * is what keeps a playlist id out of a slot that holds one record.
+     *
+     * loadVideoById when the player is already up, and a build when it is not.
+     * Both start playing, because you only ever reach this from a press.
+     */
+    /* What the deck is holding, for whatever wants to list it.
+     *
+     * The drawer under the sixth key used to show one thing: the pinned set
+     * out of about.json, which is right until a playlist is loaded and then is
+     * a list of five records nobody put in the machine. So the machine answers
+     * the question instead. With a playlist it hands back the ids the player
+     * reports and where in them it is; without one it says so, and the drawer
+     * falls back to the file it has always used.
+     *
+     * Ids and an index and nothing else. Titles are not the machine's to give
+     * -- the IFrame API knows the name of the record that is playing and of no
+     * other -- and where the drawer gets them from is the drawer's business. */
+    window.__msQueue = function () {
+      if (!list || !ready) { return null; }
+      var ids = [], at = -1;
+      try {
+        ids = (yt.getPlaylist && yt.getPlaylist()) || [];
+        at = yt.getPlaylistIndex ? yt.getPlaylistIndex() : -1;
+      } catch (e) { return null; }
+      if (!ids.length) { return null; }
+      return { ids: ids, at: at < 0 ? 0 : at };
+    };
+
+    /* And a way to put the needle on one of them. */
+    window.__msAt = function (i) {
+      if (!list || !ready || !yt.playVideoAt) { return false; }
+      watch();
+      yt.playVideoAt(i);
+      return true;
+    };
 
     window.__msPlay = function (id, track, by, art) {
       if (!/^[A-Za-z0-9_-]{11}$/.test(String(id || ''))) { return false; }
       host.setAttribute('data-video', id);
       if (lineA) { lineA.textContent = track || ''; }
       if (lineB) { lineB.textContent = by || ''; }
+      say(track, by);
       if (artEl) {
         var src = art || ('https://i.ytimg.com/vi/' + id + '/hqdefault.jpg');
         artEl.style.backgroundImage = 'url("' + src + '")';
         artEl.setAttribute('aria-label', track || '');
       }
+      seedFrom(id);
       if (yt && ready && yt.loadVideoById) { yt.loadVideoById(id); }
       else { build(function () { if (yt && yt.playVideo) { yt.playVideo(); } }); }
       return true;
     };
+
+    /* What is on the deck, asked of the deck.
+     *
+     * A pinned record is three fields in about.json and the card is built from
+     * them. A playlist is one id, and what is playing under it is a thing only
+     * the player knows -- so the sleeve and the two lines are filled in from
+     * getVideoData() the moment it reports, and again every time the list moves
+     * on. It is the same three values arriving from a different direction.
+     *
+     * The picture is the thumbnail of whatever is playing, which is the one
+     * cover a playlist can be sure of. A cover given in about.json still wins:
+     * somebody who has put a real sleeve on the card meant it for the card. */
+    var pinnedArt = artEl && artEl.style.backgroundImage ? true : false;
+
+    function fromPlayer() {
+      if (!ready || !yt || !yt.getVideoData) { return; }
+      var d = {};
+      try { d = yt.getVideoData() || {}; } catch (e) { return; }
+      if (!d.video_id) { return; }
+      if (lineA && d.title) { lineA.textContent = d.title; }
+      if (lineB && d.author) { lineB.textContent = d.author; }
+      if (artEl && !pinnedArt) {
+        artEl.style.backgroundImage =
+          'url("https://i.ytimg.com/vi/' + d.video_id + '/hqdefault.jpg")';
+        if (d.title) { artEl.setAttribute('aria-label', d.title); }
+      }
+      /* Only when a playlist is running. A pinned record has a track and an
+         artist written for it in about.json, and those are somebody's own
+         words for their own record -- "Everything In Its Right Place" and
+         "Radiohead", rather than whatever the upload happens to be titled.
+         A playlist has no such file behind it, so there the player is the
+         only source there is. */
+      if (list) { say(d.title, d.author); }
+      /* A different record gets a different wave. See seedFrom(). */
+      seedFrom(d.video_id);
+    }
+
+    /* How many are behind the line, when the line is in front of a playlist.
+     * The count is written at build time from about.json's own list, and a
+     * playlist's length is not known until the player has loaded it -- so the
+     * label is corrected once, in place, rather than guessed at. */
+    function countTracks() {
+      var el = card.querySelector('[data-cue-count]');
+      if (!el || !list || !ready || !yt.getPlaylist) { return; }
+      var ids = [];
+      try { ids = yt.getPlaylist() || []; } catch (e) { return; }
+      if (!ids.length) { return; }
+      el.textContent = ids.length + (ids.length === 1 ? ' track' : ' tracks');
+    }
+
+    /* A cued list answers late.
+     *
+     * onReady means the player exists, not that it knows what is on the list:
+     * with listType the frame is handed a playlist and fetches it afterwards,
+     * so getPlaylist() and getVideoData() are both empty at the moment the
+     * card is told it is ready. Nothing fires when they stop being empty --
+     * a cued list is not a state change -- so this asks a few times and then
+     * stops. Six seconds is longer than the fetch and short enough that a
+     * list that is never coming does not leave a timer behind. */
+    function settleList() {
+      fromPlayer();
+      countTracks();
+      if (!list) { return; }
+      var tries = 0;
+      var again = setInterval(function () {
+        tries++;
+        var ids = [];
+        try { ids = (yt && yt.getPlaylist && yt.getPlaylist()) || []; } catch (e) { ids = []; }
+        fromPlayer();
+        countTracks();
+        if (ids.length || tries > 12) { clearInterval(again); }
+      }, 500);
+    }
 
     function time(s) {
       if (!isFinite(s) || s < 0) { s = 0; }
@@ -17008,12 +18828,23 @@ a.arrow { text-decoration: none; }
     function build(then) {
       if (yt) { return; }
       api(function () {
-        yt = new YT.Player(host, {
-          videoId: host.getAttribute('data-video'),
-          playerVars: { playsinline: 1, rel: 0, controls: 0 },
-          events: {
+        /* listType and list rather than videoId, when it is a list. The two
+           are exclusive: given both, the API plays the list and ignores the
+           id, so writing only the one that applies is the difference between
+           a player that is doing what it was asked and one that happens to be
+           doing the right thing. */
+        var vars = { playsinline: 1, rel: 0, controls: 0 };
+        var opts = { playerVars: vars, events: {} };
+        /* One or the other, and the key is absent rather than undefined when
+           it does not apply: the API reads the option object by presence, and
+           a videoId of undefined sitting beside a list is enough for it to
+           build the frame and never give it a source. */
+        if (list) { vars.listType = 'playlist'; vars.list = list; }
+        else { opts.videoId = host.getAttribute('data-video'); }
+        opts.events = {
             onReady: function () {
               ready = true;
+              settleList();
               draw();
               if (want) { want = false; yt.playVideo(); }
               if (then) { then(); }
@@ -17023,12 +18854,17 @@ a.arrow { text-decoration: none; }
               var playing = e.data === YT.PlayerState.PLAYING;
               var held = e.data === YT.PlayerState.PAUSED;
               if (playing) { clearTimeout(guard); }
+              /* The list moving on is a state change and nothing else, so this
+                 is where a new sleeve comes from. Cheap enough to ask every
+                 time: it is a property read on an object the player already
+                 has, not a request. */
+              if (list) { fromPlayer(); countTracks(); }
               latch(playing ? 'going' : held ? 'held' : 'idle');
               follow(playing);
               draw();
             }
-          }
-        });
+        };
+        yt = new YT.Player(host, opts);
       });
     }
 
@@ -17065,33 +18901,13 @@ a.arrow { text-decoration: none; }
       card.classList.toggle('is-held', held);
       play.setAttribute('aria-pressed', going ? 'true' : 'false');
       pause.setAttribute('aria-pressed', held ? 'true' : 'false');
-      // The meter is driven rather than looped, so it has to be told.
+      /* The wave is driven rather than looped, so it has to be told. Held
+         leaves it where it stands: the stylesheet takes it down to a little
+         over half and the loop stops, which is a paused machine rather than a
+         stopped one. */
       viz(going);
     }
     latch('idle');
-
-    /* Five ways of drawing it, and a key to walk through them.
-
-       The mode is a class on the card and the stylesheet does the rest, so
-       nothing here knows what a bar looks like. It is written on the display
-       as well: a control with no readout is a control you press twice to
-       find out what it did. */
-    var MODES = ['bars', 'peak', 'scope', 'fire', 'drop', 'neon',
-                 'bounce', 'static', 'off'];
-    var mode = 0;
-
-    function meters(i) {
-      mode = (i + MODES.length) % MODES.length;
-      for (var n = 0; n < MODES.length; n++) {
-        card.classList.toggle('viz-' + MODES[n], n === mode);
-      }
-      if (modeTag) { modeTag.textContent = MODES[mode]; }
-    }
-    meters(0);
-
-    if (modeKey) {
-      modeKey.addEventListener('click', function () { meters(mode + 1); });
-    }
 
     var want = false;
     play.addEventListener('click', function () {
@@ -17115,28 +18931,6 @@ a.arrow { text-decoration: none; }
         yt.pauseVideo();
         yt.seekTo(0, true);
         latch('idle');
-
-    /* Five ways of drawing it, and a key to walk through them.
-
-       The mode is a class on the card and the stylesheet does the rest, so
-       nothing here knows what a bar looks like. It is written on the display
-       as well: a control with no readout is a control you press twice to
-       find out what it did. */
-    var MODES = ['bars', 'peak', 'scope', 'fire', 'off'];
-    var mode = 0;
-
-    function meters(i) {
-      mode = (i + MODES.length) % MODES.length;
-      for (var n = 0; n < MODES.length; n++) {
-        card.classList.toggle('viz-' + MODES[n], n === mode);
-      }
-      if (modeTag) { modeTag.textContent = MODES[mode]; }
-    }
-    meters(0);
-
-    if (modeKey) {
-      modeKey.addEventListener('click', function () { meters(mode + 1); });
-    }
         draw();
       });
     }
@@ -17147,12 +18941,64 @@ a.arrow { text-decoration: none; }
       yt.seekTo(Math.max(0, Math.min(d, yt.getCurrentTime() + by)), true);
       draw();
     }
+
+    /* The two outer keys, and what they mean depends on what is in the machine.
+     *
+     * A playlist has a previous and a next of its own and the player knows
+     * them. A pinned set does not: it is a list this page holds, so stepping
+     * through it is loading the entry either side of the one on the deck --
+     * which is what the drawer's rows do when you press them, arrived at from
+     * a key instead. Both wrap, because a transport that stops dead at the end
+     * of a list is a transport that has run out rather than one that has gone
+     * round, and there is nothing at either end of five records worth being
+     * strict about.
+     *
+     * previousVideo() on the first track of a playlist is a no-op in the API,
+     * so the wrap is done here for both cases rather than being left to it. */
+    function step(by) {
+      if (list && ready) {
+        var at = yt.getPlaylistIndex ? yt.getPlaylistIndex() : -1;
+        var ids = [];
+        try { ids = (yt.getPlaylist && yt.getPlaylist()) || []; } catch (e) { ids = []; }
+        watch();
+        if (ids.length && at >= 0 && yt.playVideoAt) {
+          yt.playVideoAt((at + by + ids.length) % ids.length);
+        } else if (by > 0 && yt.nextVideo) { yt.nextVideo(); }
+        else if (yt.previousVideo) { yt.previousVideo(); }
+        return;
+      }
+      var rows = (window.CUES && window.CUES.music) || [];
+      if (!rows.length) { return; }
+      var to = ((window.__msIndex || 0) + by + rows.length) % rows.length;
+      var it = rows[to];
+      if (window.__msPlay && window.__msPlay(it.id, it.a, it.b, it.art)) {
+        window.__msIndex = to;
+      }
+    }
+
+    /* The seventh key, and it says nothing.
+     *
+     * It printed the name of the mode on the strip for a second and a half,
+     * on the argument that a control needs a readout. It does not, when what
+     * it controls is the largest thing on the card: press it and the screen
+     * changes, which is a better answer than a word about the screen changing.
+     * And the strip is the record's. One display with two things on it means
+     * the record's name is gone every time somebody touches a button that has
+     * nothing to do with the record, which is the display working for the
+     * software rather than for the music. */
+    var vizKey = card.querySelector('[data-ms-viz]');
+    if (vizKey) {
+      vizKey.addEventListener('click', function () {
+        vmode = (vmode + 1) % MODES.length;
+      });
+    }
+
     /* Bound only if they are actually there. A missing control is a card with
        one fewer button on it; a throw here is a page with no router. */
-    var back = card.querySelector('[data-ms-back]');
-    var fwd = card.querySelector('[data-ms-fwd]');
-    if (back) { back.addEventListener('click', function () { nudge(-10); }); }
-    if (fwd) { fwd.addEventListener('click', function () { nudge(10); }); }
+    var prevKey = card.querySelector('[data-ms-prev]');
+    var nextKey = card.querySelector('[data-ms-next]');
+    if (prevKey) { prevKey.addEventListener('click', function () { step(-1); }); }
+    if (nextKey) { nextKey.addEventListener('click', function () { step(1); }); }
 
     function seek(x) {
       if (!ready) { return; }
@@ -17176,9 +19022,27 @@ a.arrow { text-decoration: none; }
       nudge(by);
     });
 
-    /* Music from a screen you have left is the rudest thing a site does. */
+    /* Music from a screen you have left is the rudest thing a site does.
+     *
+     * This listened for hashchange, which is a event the router does not
+     * cause: crossing from About to Work is a pushState, and pushState fires
+     * nothing. So the deck kept playing on every screen on the site, and the
+     * only way to stop it was to press stop -- on a card you had left.
+     *
+     * The card watches its own screen instead. Whatever route the reader took
+     * -- the bar, a link, the back button, a deep link -- the router ends by
+     * hiding the view this card is on, so that is the one signal that cannot
+     * be missed. Pause rather than stop: coming back to the screen should
+     * find the record where it was left.
+     */
+    var mine = card.closest('.view');
+    if (mine) {
+      new MutationObserver(function () {
+        if (mine.hidden && ready && yt.pauseVideo) { yt.pauseVideo(); }
+      }).observe(mine, { attributes: true, attributeFilter: ['hidden'] });
+    }
     window.addEventListener('hashchange', function () {
-      if (ready && yt.pauseVideo) { yt.pauseVideo(); }
+      if (mine && mine.hidden && ready && yt.pauseVideo) { yt.pauseVideo(); }
     });
   })();
 
