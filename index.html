@@ -5798,6 +5798,13 @@ body {
   outline: 1px solid var(--nav-line);
 }
 
+/* One cell rather than two, now that what stands here is a switch and not a
+   choice between two rooms. It keeps the left edge the pair had, which is the
+   1541 rule, and gives up the half of its width the other room sat in. After
+   .room and not before it: both are one class deep, so the one written second
+   is the one that holds. */
+.room-one { width: 44px; grid-template-columns: 1fr; }
+
 /* Two drawings rather than two words.
 
    They are the frame's own icon idiom and not a borrowed set: 24 x 24, no
@@ -5829,6 +5836,18 @@ body {
 }
 
 .room-c[aria-checked="true"] { color: rgb(var(--w)); }
+
+/* The two halves of the speaker, and one of them at a time: the waves coming
+   off it while it is making a noise, the cross where the waves were while it
+   is not. Two paths in one glyph rather than two glyphs, so the speaker
+   itself does not move when the state changes -- only what is beside it.
+   And the switch is lit while the sound is on, which is the reading the room
+   switch gave: the state it is in, not the state it would take you to. */
+.room-c[data-hush] { color: rgb(var(--w)); }
+.hush-off { display: none; }
+.is-hushed .hush-on { display: none; }
+.is-hushed .hush-off { display: block; }
+.room-c.is-hushed { color: rgba(var(--w), 0.34); }
 
 @media (hover: hover) and (pointer: fine) {
   .room-c:hover { color: rgba(var(--w), 0.72); }
@@ -12249,9 +12268,26 @@ a.arrow { text-decoration: none; }
       </article>
     </div>
 
-    <!-- The switch stood here and is gone with the room it opened. Its script
-         is still below and asks for .room before it does anything, so it now
-         returns on its first line and costs nothing. -->
+    <!-- The room switch stood here and is gone with the room it opened. Its
+         script is still below and asks for .room before it does anything, so
+         it returns on its first line and costs nothing.
+
+         What is here now is the one control the sounds need. A page that makes
+         a noise and gives you no way to stop it is a page people close, and it
+         is the only thing on this site that reaches out of the screen -- so it
+         gets the corner, at the size the room switch had, drawn by the same
+         hand as every other icon here. -->
+    <div class="room room-one">
+      <button class="room-c" type="button" data-hush aria-pressed="false"
+              aria-label="Turn interface sounds off">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M4 9.5h3.2L12 5.4v13.2L7.2 14.5H4z"/>
+          <path class="hush-on" d="M15.8 9.4a3.7 3.7 0 0 1 0 5.2M18.4 6.8a7.4 7.4 0 0 1 0 10.4"/>
+          <path class="hush-off" d="M16.2 10.2l4.4 3.6M20.6 10.2l-4.4 3.6"/>
+        </svg>
+      </button>
+    </div>
 
     <!-- The way back, on a phone only. A floating control rather than a line
          of type at the top of a document: it has to be reachable from three
@@ -18295,6 +18331,220 @@ a.arrow { text-decoration: none; }
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape') { shut(); }
     });
+  })();
+
+  /* --------------------------------------------------------------- sound --
+
+     The little noises a console makes.
+
+     Every one of them is generated. There is not a file in this, for the same
+     reason the ocarina on the playground has none: a blip is four numbers and
+     an envelope, and four numbers do not need a network request, a decoder, or
+     a folder in assets to keep in step with the code that plays them.
+
+     What makes these read as a console rather than as a computer beeping is
+     the envelope and nothing else. A hard attack and a flat sustain is an
+     alarm; what a Switch does is a four-millisecond rise onto a sine, a small
+     bend in the pitch, and an exponential fall that is over inside a tenth of
+     a second -- struck rather than sounded, like something wooden. The second
+     partial a fifth or an octave up, at a third of the gain, is what stops it
+     being a test tone.
+
+     Four voices and they are the four a console has: a tick as the cursor
+     moves over something, a brighter two-note blip when you take it, a lower
+     one when you back out, and a pair of rising notes when the screen changes.
+     The machine's own keys get a fifth -- a click rather than a note, because
+     a transport key is a piece of plastic and not a chime.
+
+     Three rules about when it may make a sound at all.
+
+     Not before a gesture. The context is built on the first press and not on
+     load -- which is also the only way a browser will let it run, and the
+     reason nothing is heard on arrival.
+
+     Not for a click nobody made. isTrusted, because this page dispatches its
+     own clicks in a few places -- the queue puts a record on, the router
+     crosses a screen -- and a site that blips at itself is a site that sounds
+     possessed.
+
+     And not at all, if the reader says so. The switch is in the corner the
+     room control used to stand in, and what it decides is kept.
+     ---------------------------------------------------------------------- */
+  (function () {
+    var HUSH = 'hush';
+    var off = false;
+    try { off = localStorage.getItem(HUSH) === '1'; } catch (e) {}
+
+    var ac = null, out = null;
+
+    /* Built on the first press, because a context made before one is a context
+       the browser starts suspended and never resumes. */
+    function wake() {
+      if (ac) {
+        if (ac.state === 'suspended') { ac.resume(); }
+        return ac;
+      }
+      var C = window.AudioContext || window.webkitAudioContext;
+      if (!C) { return null; }
+      ac = new C();
+      /* One lowpass over everything. These are small bright sounds and the
+         corner is only there to take the glassy edge off the top partial. */
+      var lp = ac.createBiquadFilter();
+      lp.type = 'lowpass';
+      lp.frequency.value = 7200;
+      out = ac.createGain();
+      out.gain.value = 0.5;
+      out.connect(lp);
+      lp.connect(ac.destination);
+      return ac;
+    }
+
+    /* One struck note.
+     *
+     * a -> b is the bend, and it is what makes a blip a blip: a note that
+     * holds its pitch for eighty milliseconds is a beep, and one that moves a
+     * tone and a half in that time is a thing being pressed.
+     */
+    function note(a, b, dur, gain, type, at) {
+      if (!ac) { return; }
+      var t = ac.currentTime + (at || 0);
+      var o = ac.createOscillator();
+      var g = ac.createGain();
+      o.type = type || 'sine';
+      o.frequency.setValueAtTime(a, t);
+      o.frequency.exponentialRampToValueAtTime(b, t + dur);
+      /* Four milliseconds on, then down the curve. Ramping to zero is not
+         allowed on an exponential, hence the floor. */
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(gain, t + 0.004);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+      o.connect(g); g.connect(out);
+      o.start(t); o.stop(t + dur + 0.02);
+    }
+
+    /* And the plastic one. No pitch to speak of -- a short band of noise for
+       the edge of the key and a low sine under it for the body of it. */
+    function knock() {
+      if (!ac) { return; }
+      var t = ac.currentTime, n = 0.045;
+      var buf = ac.createBuffer(1, Math.ceil(ac.sampleRate * n), ac.sampleRate);
+      var d = buf.getChannelData(0), i;
+      for (i = 0; i < d.length; i++) { d[i] = (Math.random() * 2 - 1); }
+      var src = ac.createBufferSource(); src.buffer = buf;
+      var bp = ac.createBiquadFilter();
+      bp.type = 'bandpass'; bp.frequency.value = 1900; bp.Q.value = 1.1;
+      var g = ac.createGain();
+      g.gain.setValueAtTime(0.16, t);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + n);
+      src.connect(bp); bp.connect(g); g.connect(out);
+      src.start(t); src.stop(t + n);
+      note(190, 120, 0.05, 0.09, 'sine');
+    }
+
+    var VOICE = {
+      /* the cursor passing over something */
+      move: function () { note(2050, 1960, 0.032, 0.05, 'sine'); },
+      /* taking it: two partials a fifth apart, the upper one quieter */
+      select: function () {
+        note(1046, 1120, 0.085, 0.15, 'sine');
+        note(1568, 1660, 0.070, 0.05, 'triangle', 0.004);
+      },
+      /* backing out of it */
+      back: function () {
+        note(784, 588, 0.105, 0.13, 'sine');
+        note(392, 294, 0.105, 0.05, 'triangle');
+      },
+      /* and the screen changing: two notes, up */
+      page: function () {
+        note(784, 800, 0.075, 0.12, 'sine');
+        note(1174, 1200, 0.105, 0.11, 'sine', 0.055);
+        note(1568, 1600, 0.090, 0.035, 'triangle', 0.055);
+      },
+      key: knock
+    };
+
+    function play(which) {
+      if (off) { return; }
+      if (!wake()) { return; }
+      var v = VOICE[which];
+      if (v) { v(); }
+    }
+
+    /* What counts as something you can press. Deliberately a list rather than
+       "anything with a click handler": the page has delegated handlers on the
+       document itself, and a rule that catches those catches every click on
+       the page including the ones on nothing. */
+    var HIT = 'a[href], button, [role="button"], [data-route], [data-piece],' +
+              ' .lab-hit, .idx-row, .ab-item, .nw-hit';
+
+    function hit(e) {
+      return e.target.closest ? e.target.closest(HIT) : null;
+    }
+
+    /* The cursor, and only a real one. A finger has no hover, and a tick under
+       a finger that has not pressed anything yet is a sound with no cause. */
+    var last = null, when = 0;
+    document.addEventListener('pointerover', function (e) {
+      if (off || e.pointerType !== 'mouse') { return; }
+      var el = hit(e);
+      if (!el || el === last) { return; }
+      last = el;
+      var now = Date.now();
+      if (now - when < 45) { return; }   /* a fast sweep is one tick, not ten */
+      when = now;
+      play('move');
+    }, true);
+    document.addEventListener('pointerout', function (e) {
+      if (!e.relatedTarget || !hit(e)) { last = null; }
+    }, true);
+
+    /* The press. Capture, so it is heard whether or not something further in
+       stops the event -- the sheets and the router both do. */
+    document.addEventListener('pointerdown', function (e) {
+      if (!e.isTrusted) { return; }
+      wake();                                   /* the gesture that allows it */
+      if (off) { return; }
+      var el = hit(e);
+      if (!el) { return; }
+      if (el.closest('.ms-key')) { play('key'); return; }
+      if (el.matches('[data-route]') || el.closest('.nav')) { play('page'); return; }
+      if (el.matches('[data-hush]')) { return; }   /* it speaks for itself */
+      play('select');
+    }, true);
+
+    /* Backing out: the scrim of a sheet, and the key that does the same. */
+    document.addEventListener('pointerdown', function (e) {
+      if (!e.isTrusted || off) { return; }
+      if (e.target.closest && e.target.closest('.sheet-scrim, .zoom-scrim')) { play('back'); }
+    }, true);
+    document.addEventListener('keydown', function (e) {
+      if (!e.isTrusted) { return; }
+      wake();
+      if (off) { return; }
+      if (e.key !== 'Escape') { return; }
+      var open = document.querySelector('.sheet:not([hidden]), .zoom:not([hidden])');
+      if (open) { play('back'); }
+    }, true);
+
+    /* And the switch. */
+    var btn = document.querySelector('[data-hush]');
+    if (btn) {
+      var paint = function () {
+        btn.setAttribute('aria-pressed', off ? 'true' : 'false');
+        btn.classList.toggle('is-hushed', off);
+        btn.setAttribute('aria-label', off ? 'Turn interface sounds on'
+                                           : 'Turn interface sounds off');
+      };
+      paint();
+      btn.addEventListener('click', function () {
+        off = !off;
+        try { localStorage.setItem(HUSH, off ? '1' : '0'); } catch (e) {}
+        paint();
+        /* Answer the press that turned it back on, so the control proves
+           itself rather than being taken on trust. */
+        if (!off) { wake(); play('select'); }
+      });
+    }
   })();
 
   /* --------------------------------------------------------------- music --
