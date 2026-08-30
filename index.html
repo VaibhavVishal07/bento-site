@@ -2586,7 +2586,19 @@ body {
    The lozenge is the selection, so the lit label only has to stop being grey.
    The bloom went with the pool it belonged to -- light on a pane comes off the
    pane, and a word glowing on a piece of glass is a word on fire. */
-.nav a {
+/* a[data-cell] and not a.
+
+   The bar has an anchor in it that is not one of its cells: the sleeve on the
+   record is a link to About -- see .disc-b -- and as a bare  inside .nav it
+   was picking up everything a cell wears. flex: 1 and min-width: 104 stretched
+   a 42-pixel circle to a hundred and four and pushed the artwork off it, which
+   is the artwork sitting outside its circle; and the same box then lay over
+   the transport key, so the one control in there could not be pressed.
+
+   The three real cells all carry data-cell -- the lozenge already reads it --
+   so naming it here costs nothing and shuts the door on the next anchor
+   anybody puts in this bar. */
+.nav a[data-cell] {
   position: relative;
   z-index: 1;                          /* over the lozenge, not under it */
   flex: 1;
@@ -2605,7 +2617,7 @@ body {
   -webkit-tap-highlight-color: transparent;
   transition: opacity 200ms ease;
 }
-.nav a:hover { opacity: 0.85; }
+.nav a[data-cell]:hover { opacity: 0.85; }
 
 /* ==========================================================================
    The record in the bar
@@ -2720,11 +2732,22 @@ body {
     inset 0 -1px 0 rgba(var(--shade), 0.5);
   animation: disc-spin 5.5s linear infinite;
 }
+/* Dead centre, and a tenth larger than the circle that holds it.
+
+   cover already fills the box, but a 16:9 thumbnail cropped to a circle
+   loses most of its width and what is left sits against the edge on both
+   sides -- so the picture reads as pushed rather than placed. Ten per cent
+   over, scaled about its own centre, gives the crop a margin to lose instead
+   of the subject. The circle does not move: the scale is on the picture and
+   the clip is on the circle. */
 .disc-art {
   position: absolute;
   inset: 0;
   border-radius: 50%;
-  background: center / cover no-repeat;
+  background-position: 50% 50%;
+  background-size: cover;
+  background-repeat: no-repeat;
+  transform: scale(1.1);
 }
 /* The spindle. One pixel of the ground showing through the middle. */
 .disc-rec::after {
@@ -2831,8 +2854,8 @@ body {
    says which screen you are on -- the bar is a sibling of the stage, so this
    is the class it already sets doing one more job. */
 #stage.x-about ~ .nav .disc { display: none; }
-.nav a[aria-current="page"] { opacity: 1; }
-.nav a:focus-visible {
+.nav a[data-cell][aria-current="page"] { opacity: 1; }
+.nav a[data-cell]:focus-visible {
   outline: 2px solid rgb(var(--w));
   outline-offset: -2px;
   border-radius: 999px;
@@ -3056,7 +3079,6 @@ body {
    long enough that a light dimming would read as the page having stalled --
    over that length the contents have to be visibly gone. */
 .view .card > *,
-.bk-turn,
 .crumb,
 .crumb-count {
   transition: opacity var(--x-fade) var(--x-ease),
@@ -3066,7 +3088,6 @@ body {
 }
 
 .x-empty .view .card > *,
-.x-empty .bk-turn,
 /* The way back was in this list and is not any more. It has two lattice
    rules hanging off it now, and those are struck and ruled across a crossing
    like every other line on the frame -- so fading the box as well drew the
@@ -5674,50 +5695,6 @@ body {
 }
 /* --- the turn ------------------------------------------------------------- */
 
-/* Below the book, not on it.
-
-   The pair of arrows and the count used to sit astride the fold at the foot of
-   the spread, inside the card and above the leaves, which put a fixed strip of
-   furniture across the one region a page has to be able to turn through. Under
-   the book they are out of the paper's way entirely, and the leaf is free to be
-   the whole page from its head to its folio. Seventy-nine pixels of clear
-   frame between the book and the nav bar, and the row sits square in the
-   middle of it -- thirty clear above and thirty below. */
-.bk-turn {
-  position: absolute;
-  left: 399px; top: 960px; width: 1122px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
-  font-family: var(--f-nav); letter-spacing: 0.06em;
-  font-size: var(--t-meta);
-  line-height: 20px;
-  color: var(--quiet);
-}
-
-.bk-turn button {
-  display: block;
-  width: 24px; height: 24px;
-  padding: 0;
-  border: 0;
-  background: none;
-  color: var(--icon);
-  cursor: pointer;
-  transition: color var(--dur) var(--ease), opacity var(--dur) var(--ease);
-}
-.bk-turn button svg { display: block; width: 24px; height: 24px; }
-.bk-turn button:hover:not(:disabled) { color: rgba(var(--w), 0.82); }
-/* Held rather than removed: the pair is a fixed landmark at the foot of every
-   spread, and a control that disappears at the ends moves the other one. */
-.bk-turn button:disabled { opacity: 0.22; cursor: default; }
-.bk-turn button:focus-visible { outline: 2px solid rgb(var(--w)); outline-offset: 3px; }
-
-.bk-count {
-  min-width: 58px;
-  text-align: center;
-  color: rgba(var(--w), 0.42);
-}
 
 @keyframes cue-in { from { opacity: 0; } to { opacity: 1; } }
 
@@ -9667,6 +9644,80 @@ a.arrow { text-decoration: none; }
    empty and this one is not. What stays is the ground, which is the same dark
    the other ten photographs are printed on: the card is standing in a print,
    not floating on the table. */
+/* A window with a component standing in it rather than a picture pasted into
+   it. The ground and the size are the print's own -- written on the element by
+   build.js out of the content -- and the machine is laid out at the size it is
+   drawn at and then scaled down whole, so every figure inside it stays in the
+   proportion it was designed in. Nothing in here is pressable: the print has
+   one target and it is the anchor over the top of it. */
+.lab-pshot-live {
+  background-image: none;
+  /* The ground every other print on this mat stands on, unless the content
+     names one. --print-shot is the green the lenticular card sits in. */
+  background-color: var(--live-bg, var(--print-shot));
+  display: grid;
+  place-items: center;
+}
+/* The holder is the size the machine ends up, and the machine is scaled
+   inside it from its own top left.
+
+   Scaling the holder itself is the obvious way and it is wrong: a transform
+   does not change the box the layout uses, so the grid went on centring a
+   366 by 356 element in a 336 by 212 window -- which does not fit, so it was
+   centred on an overflow and the shrunk picture landed low and to the right
+   of where it looked like it should be. Sizing the holder to the result and
+   scaling the contents means the thing being centred is the thing you see. */
+/* Two boxes, and the machine is neither of them.
+
+   .ms-wk is 300 by 290 at 33,33 inside the card's 366 by 356 -- and those
+   four figures are the object. The first version of this resized .ms-wk to
+   fill 366 by 356, which stretched the case to a shape it was never drawn
+   at and threw away the 33 the case is centred by: a different machine,
+   which is exactly how it looked.
+
+   So the machine is not touched. The inner box is the card's coordinate
+   space at full size and is scaled whole, margins and all, from its top
+   left; the outer box is the size that comes out of that, so what the
+   window centres is what you actually see. */
+/* A machine used as a picture, at whatever size the thing holding it has.
+
+   Two boxes, and the machine is neither of them. .ms-wk is 300 by 290 at
+   33,33 inside the card's 366 by 356, and those four figures are the
+   object -- resizing it to fill the box stretches the case to a shape it
+   was never drawn at and throws away the margin it is centred by, which is
+   a different machine. So the machine is not touched: the inner box is the
+   card's coordinate space at full size and is scaled whole, margins and
+   all, from its top left, and the outer box is the size that comes out --
+   so what a layout centres is what you actually see.
+
+   One pair of classes, because there are two of these now: the print on the
+   mat and the first mount in the row on the Work tile. */
+.wk-mini {
+  position: relative;
+  flex: none;
+  width:  calc(366px * var(--wk-mini, 0.58));
+  height: calc(356px * var(--wk-mini, 0.58));
+  pointer-events: none;
+}
+.wk-mini-in {
+  position: absolute;
+  left: 0; top: 0;
+  width: 366px; height: 356px;
+  transform: scale(var(--wk-mini, 0.58));
+  transform-origin: 0 0;
+}
+
+/* And the mount it stands in on the Work tile. The plate loses its crossing
+   for the reason the middle one does: a crossed box is how this row says a
+   window is empty, and this one is not. */
+.w-shelf-wk > i {
+  position: relative;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background-image: none;
+}
+
 .lab-pshot-lens {
   /* The ground the card stands in, and the box that cuts it off. display is
      back to the block .lab-pshot already is: the case is placed at a
@@ -10675,7 +10726,7 @@ a.arrow { text-decoration: none; }
      there, which is this rule set, promoted. What is left down here is what a
      phone actually needs differently: a narrower bar, and cells that give up
      their 104-pixel floor so that three of them still fit across 232. */
-  .nav a { min-width: 0; font-size: 14px; letter-spacing: 0.07em; }
+  .nav a[data-cell] { min-width: 0; font-size: 14px; letter-spacing: 0.07em; }
 
   /* ---- the way back --------------------------------------------------- */
 
@@ -11233,7 +11284,7 @@ a.arrow { text-decoration: none; }
      one continuous column and the apparatus that reported them -- the running
      head, the crease, the folios, the turn -- goes with the spread it was
      describing. */
-  .bk-chr, .bk-crease, .bk-turn, .bk-shut, .bk-blk, .bk-fore, .bk-stamp,
+  .bk-chr, .bk-crease, .bk-shut, .bk-blk, .bk-fore, .bk-stamp,
   .bk-flip, .bk-cast, .bk-page-r { display: none; }
   /* Back into the flow, all of it. Everything from the body down was absolute
      so that a spread could be laid out to the pixel, and absolute children
@@ -11381,7 +11432,7 @@ a.arrow { text-decoration: none; }
    and none of the choreography. The script drops straight to the swap; the
    blanket `transition: none` above takes care of the rest. */
 @media (prefers-reduced-motion: reduce) {
-  .x-empty .view .card > *, .x-empty .bk-turn, .x-empty .crumb,
+  .x-empty .view .card > *, .x-empty .crumb,
   .x-empty .crumb-count, .x-solo {
     opacity: 1; transform: none; filter: none;
   }
@@ -12244,7 +12295,46 @@ a.arrow { text-decoration: none; }
         <h2 class="headline">Things I build to find out how they work.</h2>
 
         <div class="w-shelf" aria-hidden="true">
-          <span><i></i></span>
+          <span class="w-shelf-wk"><i><span class="wk-mini walkman" style="--wk-mini:0.375"><span class="wk-mini-in">        <div class="ms-wk">
+          <div class="ms-wk-face">
+            <div class="ms-well">
+              <canvas class="ms-viz" aria-hidden="true"></canvas>
+              <span class="ms-haze" aria-hidden="true"
+                    style="background-image:url('https://i.ytimg.com/vi/McwKd0KlBxg/mqdefault.jpg')"></span>
+              <span class="ms-stage">
+                <span class="ms-tube"><span data-ms-tube data-video="McwKd0KlBxg"></span></span>
+                <span class="ms-art" role="img" aria-label="Corridors of Time"
+                      style="background-image:url('https://i.ytimg.com/vi/McwKd0KlBxg/mqdefault.jpg')"></span>
+              </span>
+              <span class="ms-veil" aria-hidden="true"></span>
+              <span class="ms-pix"></span>
+            </div>
+            <div class="ms-bar" data-ms-bar role="slider" tabindex="0"
+                 aria-label="Seek" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+              <span class="ms-fill" data-ms-fill></span>
+              <span class="ms-knob" data-ms-knob></span>
+            </div>
+            <div class="ms-str" aria-hidden="true">
+              <span class="ms-run" data-ms-run>
+                <i>Corridors of Time  ·  Luke Pickman</i>
+                <i>Corridors of Time  ·  Luke Pickman</i>
+              </span>
+            </div>
+            <p class="ms-said">Corridors of Time by Luke Pickman</p>
+            <div class="ms-deck">
+              <span class="ms-set">
+              <button type="button" class="ms-key ms-key-prev" data-ms-prev aria-label="Previous track"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h3v14H6zm13 0v14l-9-7z"/></svg></button>
+              <button type="button" class="ms-key ms-key-play" data-ms-play aria-label="Play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></button>
+              <button type="button" class="ms-key ms-key-pause" data-ms-pause aria-label="Pause"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/></svg></button>
+              <button type="button" class="ms-key ms-key-next" data-ms-next aria-label="Next track"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5v14l9-7zm10 0h3v14h-3z"/></svg></button>
+              </span>
+              <span class="ms-set">
+              <button type="button" class="ms-key ms-key-viz" data-ms-viz aria-label="Change the visualiser"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="6" cy="12" r="1.6" fill="currentColor" stroke="none"/><path d="M10 8.4a5.5 5.5 0 0 1 0 7.2M14 5.6a9.5 9.5 0 0 1 0 12.8M18 3.2a13.2 13.2 0 0 1 0 17.6"/></svg></button>
+              <button type="button" class="ms-key ms-key-list" data-cue="music" aria-label="The playlist, 0 tracks"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h11M4 12h11M4 17h7"/><path d="M18 10v8"/><circle cx="19.6" cy="17.6" r="1.9" fill="currentColor" stroke="none"/></svg></button>
+              </span>
+            </div>
+          </div>
+        </div></span></span></i></span>
           <span class="w-shelf-lens"><i>
             <div class="play-case w-shelf-case">
               <lenticular-card class="play-lens"
@@ -12526,15 +12616,6 @@ a.arrow { text-decoration: none; }
         </div>
 
       </section>
-
-      <!-- Under the book rather than on it: the leaf needs the whole page. -->
-      <div class="bk-turn">
-        <button type="button" class="bk-prev" aria-label="Previous spread">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12H4M10 6l-6 6 6 6"/></svg></button>
-        <span class="bk-count" aria-live="polite">01 / 01</span>
-        <button type="button" class="bk-next" aria-label="Next spread">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h17M14 6l6 6-6 6"/></svg></button>
-      </div>
 
     </div>
 
@@ -12952,7 +13033,48 @@ a.arrow { text-decoration: none; }
 
       <figure class="lab-pin lab-pin-3">
         <span class="lab-tape" aria-hidden="true"></span>
-        <span class="lab-pshot" role="img" aria-label="Walkman" style="background-image:url('assets/lab-walkman.jpg');background-size:cover;background-position:center;background-repeat:no-repeat"></span>
+        <span class="lab-pshot lab-pshot-live" aria-hidden="true" style="--wk-mini:0.58">
+          <span class="wk-mini walkman"><span class="wk-mini-in">        <div class="ms-wk">
+          <div class="ms-wk-face">
+            <div class="ms-well">
+              <canvas class="ms-viz" aria-hidden="true"></canvas>
+              <span class="ms-haze" aria-hidden="true"
+                    style="background-image:url('https://i.ytimg.com/vi/McwKd0KlBxg/mqdefault.jpg')"></span>
+              <span class="ms-stage">
+                <span class="ms-tube"><span data-ms-tube data-video="McwKd0KlBxg"></span></span>
+                <span class="ms-art" role="img" aria-label="Corridors of Time"
+                      style="background-image:url('https://i.ytimg.com/vi/McwKd0KlBxg/mqdefault.jpg')"></span>
+              </span>
+              <span class="ms-veil" aria-hidden="true"></span>
+              <span class="ms-pix"></span>
+            </div>
+            <div class="ms-bar" data-ms-bar role="slider" tabindex="0"
+                 aria-label="Seek" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+              <span class="ms-fill" data-ms-fill></span>
+              <span class="ms-knob" data-ms-knob></span>
+            </div>
+            <div class="ms-str" aria-hidden="true">
+              <span class="ms-run" data-ms-run>
+                <i>Corridors of Time  ·  Luke Pickman</i>
+                <i>Corridors of Time  ·  Luke Pickman</i>
+              </span>
+            </div>
+            <p class="ms-said">Corridors of Time by Luke Pickman</p>
+            <div class="ms-deck">
+              <span class="ms-set">
+              <button type="button" class="ms-key ms-key-prev" data-ms-prev aria-label="Previous track"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h3v14H6zm13 0v14l-9-7z"/></svg></button>
+              <button type="button" class="ms-key ms-key-play" data-ms-play aria-label="Play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></button>
+              <button type="button" class="ms-key ms-key-pause" data-ms-pause aria-label="Pause"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/></svg></button>
+              <button type="button" class="ms-key ms-key-next" data-ms-next aria-label="Next track"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5v14l9-7zm10 0h3v14h-3z"/></svg></button>
+              </span>
+              <span class="ms-set">
+              <button type="button" class="ms-key ms-key-viz" data-ms-viz aria-label="Change the visualiser"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="6" cy="12" r="1.6" fill="currentColor" stroke="none"/><path d="M10 8.4a5.5 5.5 0 0 1 0 7.2M14 5.6a9.5 9.5 0 0 1 0 12.8M18 3.2a13.2 13.2 0 0 1 0 17.6"/></svg></button>
+              <button type="button" class="ms-key ms-key-list" data-cue="music" aria-label="The playlist, 0 tracks"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h11M4 12h11M4 17h7"/><path d="M18 10v8"/><circle cx="19.6" cy="17.6" r="1.9" fill="currentColor" stroke="none"/></svg></button>
+              </span>
+            </div>
+          </div>
+        </div></span></span>
+        </span>
         <figcaption><b>Walkman</b>
           <span>A tape deck for a YouTube link, on npm.</span></figcaption>
         <a class="lab-hit" href="#lab/walkman" data-route="piece" data-slug="walkman" data-repo="VaibhavVishal07/bento-portfolio"
@@ -14626,7 +14748,6 @@ a.arrow { text-decoration: none; }
     card.addEventListener('pointerdown', function (e) {
       if (phone() || still() || e.button !== 0) { return; }
       if (live) { return; }
-      if (e.target.closest('.bk-turn')) { return; }
 
       var x = rawX(e), y = rawY(e);
       if (x < 4 || x > 1074 || y < 0 || y > H) { return; }
@@ -15662,7 +15783,7 @@ a.arrow { text-decoration: none; }
       name: 'Walkman',
       kit: 'npm · Vanilla JS · CSS',
       state: 'live', label: 'On npm',
-      shot: 'assets/lab-walkman.jpg',
+      shot: '',
       lede: 'A cassette deck that plays a YouTube video or a playlist, drawn entirely in CSS, and installable in one line.',
       beats: [
         ['What I wanted', 'The deck on my About page was a thousand lines of stylesheet and eight hundred of script welded into one site. It was the best thing on the page and nobody else could have it.',
