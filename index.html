@@ -3789,7 +3789,7 @@ body {
    27 under another, and would have run a two-line headline straight through
    the line below it. One box, one margin, and the gap is the same on all four
    however many lines the headline takes. */
-.w-said { position: absolute; left: 24px; top: 260px; }
+.w-said { position: absolute; left: 24px; top: 256px; }
 
 /* One line each, and an ellipsis where the rest was.
  *
@@ -3799,12 +3799,24 @@ body {
  * naming. "Family safety, without the surveillance" is cut on this screen.
  * The whole of it is on the case study one press away, and on a phone, where
  * the card is the only thing in view and has all the room it wants. */
-.w-said .headline,
-.w-said .sub {
+/* The name wraps again, because what is under it now is one short line
+   rather than a sentence: 24 above the window, 216 of window, 16 of air,
+   two lines of name at 23, eight, and seventeen is 327 of a 335 card. The
+   line itself is held to one -- a team and a year that wrapped would be a
+   caption pretending to be copy. */
+.w-said .w-by {
+  margin: 8px 0 0;
+  font-family: var(--f-label);
+  font-size: var(--t-meta);
+  line-height: var(--lh-meta);
+  color: var(--icon);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
+/* The sentence is the phone's. On the frame the square took its room and
+   the line above is what a card of this size can carry. */
+.w-said .sub { display: none; }
 /* Both of these are written for the phone, where a project card is the only
    thing in view. On the frame the three cards sit in a row under a headline
    that has already said what they are, and the case is one press away. */
@@ -9732,15 +9744,35 @@ a.arrow { text-decoration: none; }
   transform-origin: 0 0;
 }
 
-/* And the mount it stands in on the Work tile. The plate loses its crossing
-   for the reason the middle one does: a crossed box is how this row says a
-   window is empty, and this one is not. */
-.w-shelf-wk > i {
+/* The two mounts that are not the card.
+
+   Both lose the crossing on their plate, for the reason the card's mount
+   has none: a crossed box is how this row says a window is empty, and
+   these are not. Both clip, because both objects run off the bottom.
+
+   The machine is centred and half size -- 366 by 356 at 0.5 is 183 across
+   in a 232 window, and 178 down a window of 137, so a little over three
+   quarters of it shows. That is the fraction the card is cut to, worked
+   out from the holder rather than picked, and matching it is the whole
+   point: three objects on one table, cut on one line. */
+.w-shelf-wk > i,
+.w-shelf-oc > i {
   position: relative;
-  display: grid;
-  place-items: center;
   overflow: hidden;
   background-image: none;
+}
+.w-shelf-wk .wk-mini {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  transform: translateX(-50%);
+}
+/* The ocarina is a photograph and always was, so it fills its window and
+   is cut by it in the ordinary way. The shot itself is written on the
+   element by build.js. */
+.w-shelf-oc > i {
+  background-size: cover;
+  background-position: 50% 42%;
 }
 
 .lab-pshot-lens {
@@ -10603,11 +10635,12 @@ a.arrow { text-decoration: none; }
   /* The clamp is the frame's, and the frame's reason for it -- a square window
      in a 335-pixel card -- does not exist down here, where the card is as tall
      as its contents. */
-  .w-said .headline, .w-said .sub {
-    white-space: normal;
-    overflow: visible;
-    text-overflow: clip;
-  }
+  /* The card is as tall as its contents down here, so it carries the
+     sentence -- and the team and the year go, because the case study is one
+     tap away and a card with a name, a line and two figures on it is
+     already saying enough. */
+  .w-said .sub { display: block; }
+  .w-said .w-by { display: none; }
 
   .card > .arrow { display: none; }
   .label { display: block; margin-bottom: 18px; }
@@ -12328,7 +12361,18 @@ a.arrow { text-decoration: none; }
         <h2 class="headline">Things I build to find out how they work.</h2>
 
         <div class="w-shelf" aria-hidden="true">
-          <span class="w-shelf-wk"><i><span class="wk-mini walkman" style="--wk-mini:0.375"><span class="wk-mini-in">        <div class="ms-wk">
+          <span class="w-shelf-lens"><i>
+            <div class="play-case w-shelf-case">
+              <lenticular-card class="play-lens"
+                images="assets/lenticard/chandra-1.jpg,assets/lenticard/chandra-2.jpg,assets/lenticard/chandra-3.jpg"
+                lenticules="32" tilt="0" float="0" radius="4" sheen="0.18"
+                interlace="0.14" blend="0.85" lens="0.32"
+                parallax="1.2" idle-sweep="3400" motion="pointer"></lenticular-card>
+              <span class="play-glass" aria-hidden="true"></span>
+              <span class="play-foot" aria-hidden="true">FULL BLEED &middot; Torch Of Defiance</span>
+            </div>
+          </i><b class="w-shelf-hand">lenticular</b></span>
+          <span class="w-shelf-wk"><i><span class="wk-mini walkman" style="--wk-mini:0.5"><span class="wk-mini-in">        <div class="ms-wk">
           <div class="ms-wk-face">
             <div class="ms-well">
               <canvas class="ms-viz" aria-hidden="true"></canvas>
@@ -12367,19 +12411,8 @@ a.arrow { text-decoration: none; }
               </span>
             </div>
           </div>
-        </div></span></span></i></span>
-          <span class="w-shelf-lens"><i>
-            <div class="play-case w-shelf-case">
-              <lenticular-card class="play-lens"
-                images="assets/lenticard/chandra-1.jpg,assets/lenticard/chandra-2.jpg,assets/lenticard/chandra-3.jpg"
-                lenticules="32" tilt="0" float="0" radius="4" sheen="0.18"
-                interlace="0.14" blend="0.85" lens="0.32"
-                parallax="1.2" idle-sweep="3400" motion="pointer"></lenticular-card>
-              <span class="play-glass" aria-hidden="true"></span>
-              <span class="play-foot" aria-hidden="true">FULL BLEED &middot; Torch Of Defiance</span>
-            </div>
-          </i><b class="w-shelf-hand">lenticular</b></span>
-          <span><i></i></span>
+        </div></span></span></i><b class="w-shelf-hand">walkman</b></span>
+          <span class="w-shelf-oc"><i style="background-image:url('assets/lab-ocarina.jpg');background-size:cover;background-position:center;background-repeat:no-repeat"></i><b class="w-shelf-hand">ocarina</b></span>
         </div>
 
         <a class="card-hit" href="#lab" data-route="lab" aria-label="Open the Playground"></a>
@@ -12393,6 +12426,7 @@ a.arrow { text-decoration: none; }
           <p class="w-kind">Case study · 2025</p>
           <h2 class="headline">Reimagining linear player</h2>
           <p class="sub">Live TV, rebuilt around what is on now and what is next.</p>
+          <p class="w-by">Airtel Entertainment · 2025</p>
         </div>
         <dl class="w-figs">
           <div class="w-fig"><dt>38%</dt><dd>fewer taps from open to playing</dd></div>
@@ -12408,6 +12442,7 @@ a.arrow { text-decoration: none; }
           <p class="w-kind">Case study · 2024</p>
           <h2 class="headline">Xstream creative toolkit</h2>
           <p class="sub">A kit of parts for a team shipping faster than a design system can keep up with.</p>
+          <p class="w-by">Airtel Entertainment · 2024</p>
         </div>
         <dl class="w-figs">
           <div class="w-fig"><dt>08</dt><dd>catalogues on one set of rules</dd></div>
@@ -12424,6 +12459,7 @@ a.arrow { text-decoration: none; }
           <p class="w-kind">Case study · 2024</p>
           <h2 class="headline">Bubbles // a studio site</h2>
           <p class="sub">A studio site that reads like a place to walk around rather than a list of work.</p>
+          <p class="w-by">Bubbles · 2024</p>
         </div>
         <dl class="w-figs">
           <div class="w-fig"><dt>01</dt><dd>page, start to finish</dd></div>
@@ -12440,6 +12476,7 @@ a.arrow { text-decoration: none; }
           <p class="w-kind">Case study · 2025</p>
           <h2 class="headline">Family safety, without the surveillance</h2>
           <p class="sub">A safety product a teenager would agree to have on their phone.</p>
+          <p class="w-by">Airtel Entertainment · 2025</p>
         </div>
         <dl class="w-figs">
           <div class="w-fig"><dt>2</dt><dd>people have to say yes</dd></div>
