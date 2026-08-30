@@ -7351,6 +7351,62 @@ a.arrow { text-decoration: none; }
   position: absolute; left: 33px; top: 33px;
   width: 300px; height: 290px;
 
+  /* --- picking it up ------------------------------------------------------
+
+     The card underneath does not lean -- see the note where it excludes
+     itself -- and this does instead, which is both cheaper and truer. Cheaper
+     because it is one element on its own layer: the screen, its filter, the
+     dot grid and the keys are rasterised once and the layer is then turned by
+     the compositor, where the card's version re-ran the filter every frame.
+     Truer because a machine is a thing you pick up, and what a thing you pick
+     up does is turn toward you and cast further.
+
+     Six degrees, which is the most it can take before the keys start to read
+     as a photograph of keys taken from one side. --wk-rx and --wk-ry are
+     written by the pointer handler and are zero until something writes them,
+     so the resting state is exactly what it was.
+
+     will-change is the whole of the performance argument and is deliberate
+     rather than superstitious: without it the browser has no reason to give
+     this a layer of its own, and the first frame of the first tilt pays for
+     rasterising all of it. */
+  transform:
+    perspective(900px)
+    rotateX(var(--wk-rx, 0deg))
+    rotateY(var(--wk-ry, 0deg))
+    translateZ(0);
+  transform-origin: 50% 55%;
+  will-change: transform;
+  transition: transform 420ms var(--ease), box-shadow 420ms var(--ease);
+}
+
+/* Under the pointer it is being held, so it settles faster than it returns --
+   a hand arrives quickly and lets go slowly -- and the cast lengthens, which
+   is the half of depth that is not the turn. */
+.walkman.is-lifted .ms-wk {
+  transition: transform 120ms linear, box-shadow 420ms var(--ease);
+  box-shadow:
+    0 34px 44px -22px rgba(0, 0, 0, 0.9),
+    0 10px 18px -6px rgba(0, 0, 0, 0.6);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ms-wk { transform: none; transition: none; will-change: auto; }
+  .walkman.is-lifted .ms-wk { transform: none; }
+}
+
+/* A print is not picked up. The mounts on the Work tile and the mat carry the
+   machine as a picture and take no pointer at all -- see .wk-mini -- but the
+   layer would still be promoted for nothing, so it is handed back. */
+.wk-mini .ms-wk {
+  transform: none;
+  will-change: auto;
+  transition: none;
+}
+
+/* This closes the rule the tilt opened; the body of the case follows. */
+.ms-wk {
+
   /* The case, as five figures.
 
      There were nine, and eight of them were describing metal: a milled band
@@ -13559,6 +13615,23 @@ a.arrow { text-decoration: none; }
       // and paper does not lean toward your cursor or catch the light like
       // glass. It keeps the resting glare the frame authored and nothing else.
       if (card.classList.contains('bk')) { return; }
+
+      /* Nor the machine, and for the same reason written one card along.
+       *
+       * The lean is a transform on the card, so every pointer move
+       * re-rasterises everything inside it -- and inside this one is a screen
+       * running an SVG filter, a dot grid over the whole well, a backlit
+       * readout and a row of keys with four shadows apiece. An SVG filter is
+       * re-run on every repaint, not cached across one, so the card was
+       * repainting the most expensive thing on the page sixty times a second.
+       * That is the flicker: not a state going on and off, but frames being
+       * dropped and caught up.
+       *
+       * It is also the wrong gesture. A tile of type leaning toward the cursor
+       * reads as a card catching the light; a machine leaning reads as a card
+       * with a machine printed on it. The machine tilts instead, on its own,
+       * as an object -- see .ms-wk and the pointer handler in walkman.js. */
+      if (card.classList.contains('walkman')) { return; }
 
       var frame = 0, nx = 0, ny = 0, ang = 180;
 
@@ -20732,6 +20805,64 @@ a.arrow { text-decoration: none; }
         attributes: true, attributeFilter: ['hidden'],
       });
     }
+    /* ---- picking it up ----------------------------------------------------
+
+       The machine turns toward the pointer and casts further while it is held.
+       Two custom properties and a class; the stylesheet does the rest -- see
+       .ms-wk, which puts them on a compositor layer so the screen and its
+       filter are rasterised once rather than on every frame.
+
+       Read off the case and not off the host: the card the machine stands on
+       is bigger than the machine, and a lean measured from the card's centre
+       has the object at full tilt while the pointer is still on the paper
+       beside it. Measured from the case, the middle of the case is level.
+
+       One rAF at a time. A pointermove arrives more often than a frame does,
+       and the last one before the frame is the only one that is true. */
+    var wkFrame = 0, wkX = 0, wkY = 0;
+    var wkTiltable = false;
+    try {
+      wkTiltable = window.matchMedia('(hover: hover) and (pointer: fine)').matches &&
+                   !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    } catch (e) {}
+
+    function wkPaint() {
+      wkFrame = 0;
+      var wk = card.querySelector('.ms-wk');
+      if (!wk) { return; }
+      /* Six either way, and the signs are what makes it a real object: the
+         pointer above the middle tips the head away from you, and the pointer
+         to the right turns the right edge away. Inverting either one is the
+         difference between holding a thing and looking at a picture of one. */
+      wk.style.setProperty('--wk-rx', (wkY * -6).toFixed(2) + 'deg');
+      wk.style.setProperty('--wk-ry', (wkX * 6).toFixed(2) + 'deg');
+    }
+
+    if (wkTiltable) {
+      card.addEventListener('pointermove', function (e) {
+        var wk = card.querySelector('.ms-wk');
+        if (!wk) { return; }
+        var r = wk.getBoundingClientRect();
+        if (!r.width) { return; }
+        wkX = Math.max(-0.5, Math.min(0.5, (e.clientX - r.left) / r.width - 0.5));
+        wkY = Math.max(-0.5, Math.min(0.5, (e.clientY - r.top) / r.height - 0.5));
+        card.classList.add('is-lifted');
+        if (!wkFrame) { wkFrame = requestAnimationFrame(wkPaint); }
+      }, { passive: true });
+
+      card.addEventListener('pointerleave', function () {
+        if (wkFrame) { cancelAnimationFrame(wkFrame); wkFrame = 0; }
+        card.classList.remove('is-lifted');
+        var wk = card.querySelector('.ms-wk');
+        if (wk) {
+          /* Removed rather than set to zero, so the resting state is the
+             stylesheet's own and there is nothing inline to go stale. */
+          wk.style.removeProperty('--wk-rx');
+          wk.style.removeProperty('--wk-ry');
+        }
+      });
+    }
+
     /* Where the machine is standing in its queue, readable and settable.
        It is a property and not a number because a drawer built elsewhere on
        the page has to agree with the transport about it, and two copies of a
