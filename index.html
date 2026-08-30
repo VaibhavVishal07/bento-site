@@ -6820,20 +6820,30 @@ a.arrow { text-decoration: none; }
    both are scanned rather than read, and side by side they make one band
    instead of two orphans.
 
-   So: Now across the top, the two counters under it, and the shelf along the
-   foot as one unit the width of the frame -- empty for the moment and meant
-   to be. The who-card runs down the left of the first two bands, which is
-   what it was already doing and is why it is the only box here taller than it
-   is wide.
+   So: Now across the top, the two counters under it, and the shelf under
+   those -- all three in the right-hand column, all three the same width, one
+   above another. The who-card is the left column, and it is the whole of it.
+
+   That last part is the change. The who-card used to stop at the foot of the
+   second band and leave a 364 by 246 hole beneath it that the shelf reached
+   across to fill, which made the shelf an L-shape lying under two columns and
+   the who-card a box that ran out before the page did. Now the left column is
+   one object from the top of the frame to the bottom of it and the right
+   column is three stacked on the same axis, which is a simpler thing to
+   describe and a much simpler thing to look at.
 
    91 to 281, 305 to 661, 685 to 931: two gutters of 24 and the frame's own
-   931 at the foot. */
-.ab-who        { left: 399px;  top: 91px;  width: 364px; height: 570px;
+   931 at the foot. The who-card spans all three of those bands and both
+   gutters -- 91 to 931, which is 840. */
+.ab-who        { left: 399px;  top: 91px;  width: 364px; height: 840px;
                  --gx: 100%; --gy: 0%; --gw: 130%; --gh: 130%; --gs: 0.052; }
-/* Lately used to say what it had to say in a 366 corner. It has the whole
-   bottom band now -- twice the width -- and the shelf keeps the height that
-   thirty-four covers in two rows actually need. */
-.ab-shelf-card { left: 399px;  top: 685px; width: 1122px; height: 246px;
+/* The shelf sits under the pair, on the same left edge and at the same width
+   as everything else in this column: 785 to 1521, which is what Now is and
+   what the two counters add up to across their gutter. A band that started
+   386 to the left of the three above it was a fourth measurement on a screen
+   that only needs two, and the eye had to re-find the left margin at the one
+   place on the page where it should not have to. */
+.ab-shelf-card { left: 785px;  top: 685px; width: 736px; height: 246px;
                  --gx: 34%; --gy: -6%; --gw: 120%; --gh: 125%; --gs: 0.048; }
 /* Two boxes rather than one with a line down it. A hairline between two
    grids on one card says they are two halves of a thing; two cards with the
@@ -6904,9 +6914,10 @@ a.arrow { text-decoration: none; }
 .ab-music      { left: 1155px; top: 305px; width: 366px; height: 356px;
                  --gx: 20%; --gy: 100%; --gw: 120%; --gh: 140%; --gs: 0.05; }
 
-/* Both bands cross the mid pair now -- the shelf runs 785 to 1521 up top and
-   the tally runs 399 to 1521 below it -- so the gap opens down the whole
-   screen rather than across one row of it. Ten pixels clear at the head and
+/* The right column is one width from top to bottom -- 785 to 1521 for Now,
+   for the pair, and for the shelf under them -- so the gap between the columns
+   opens down the whole screen rather than across one row of it. Ten clear at
+   the head and
    the foot, the figure the article's gap uses.
 
    The 762/785 pair is a different case and is left alone. It stands in the
