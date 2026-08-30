@@ -2646,7 +2646,14 @@ body {
   place-items: center;
   padding: 0;
   background: var(--card-fill);
-  border: 1px solid var(--nav-line);
+  /* outline and not border, for the same reason .room uses one -- and
+     because the two have to agree. A border sits inside a border-box, which
+     put this control's padding box a pixel shallower than the switch's and
+     its foot rule a pixel higher: two hairlines meant to be one line across
+     the frame, 134 on the left and 135 on the right. Same box model, same
+     foot. The focus ring still lands on this element and replaces the
+     hairline while it shows, which is what a focus ring is for. */
+  outline: 1px solid var(--card-line-lit);   /* the lit step; see .room */
   color: rgb(var(--w));
   text-decoration: none;
   -webkit-tap-highlight-color: transparent;
@@ -6020,7 +6027,18 @@ body {
   display: grid;
   grid-template-columns: 1fr 1fr;
   background: var(--card-fill);
-  outline: 1px solid var(--nav-line);
+  /* --card-line-lit, not --nav-line. The ramp here runs #161616 for the
+     lattice, #171717 for the nav's stroke, #1a1a1a for a card's edge and
+     #262626 for a card's edge with the pointer on it -- and this control was
+     sitting at the bottom of it, a box drawn fainter than the hairlines
+     around it and very nearly invisible on a near-black ground.
+
+     The lit step is the right one and not merely the brightest. It is what a
+     card's edge becomes when it is live, and these two are the only things on
+     the frame that are always live: every card is a link that waits to be
+     pointed at, and these are pressed where they stand. An edge that says so
+     permanently is the same sentence the cards say intermittently. */
+  outline: 1px solid var(--card-line-lit);
 }
 
 /* One cell rather than two, now that what stands here is a switch and not a
@@ -6029,6 +6047,28 @@ body {
    .room and not before it: both are one class deep, so the one written second
    is the one that holds. */
 .room-one { width: 44px; grid-template-columns: 1fr; }
+
+.room::before,
+.back::before {
+  content: "";
+  position: absolute;
+  top: 100%;                                /* the foot of the box, at 135 */
+  height: 1px;
+  background: var(--rule);
+  pointer-events: none;
+}
+/* Out to the frame's own edge on the side the control's margin runs to: 1585
+   to 1920 on the right, 333 to 0 on the left. Both figures are the frame's
+   width less the control's outer edge, which is the only place either of them
+   could stop. */
+.room::before { left: 0; right: -335px; }
+.back::before { right: 0; left: -333px; }
+
+/* The playground and a piece take the lattice off the frame entirely -- see
+   .x-lab .rules -- so a rule belonging to it goes with it. The controls stay;
+   it is the ruling that is not drawn on a cutting mat. */
+.x-lab .room::before,  .x-piece .room::before,
+.x-lab .back::before,  .x-piece .back::before { display: none; }
 
 /* Two drawings rather than two words.
 
@@ -10175,7 +10215,10 @@ a.arrow { text-decoration: none; }
   /* What the frame's square sets, and a pill has to give back: a width drawn
      by its own padding rather than a fixed 44, the label the frame has no room
      for, and the heavier stroke the arrow is drawn at down here. */
-  .back { width: auto; }
+  /* The pill takes the glass border from the .nav, .back rule above, so the
+     frame's hairline has to come off or it draws a square around a capsule. */
+  .back { width: auto; outline: 0; }
+  .room::before, .back::before { display: none; }
   .back-t { display: inline; }
   .back svg { width: 17px; height: 17px; flex: none; stroke-width: 1.9; }
   .back:active { transform: scale(0.96); }
