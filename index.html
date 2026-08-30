@@ -2464,11 +2464,19 @@ body {
   transform: translateX(-50%) scale(var(--ns, 1));
   z-index: 60;
 
-  /* A fifth larger, all through: the box, the padding round the cells, the
-     cells themselves and the type on them. A pill scaled by its height alone
-     is a pill with the same words in it looking cramped. */
-  height: 65px;
-  padding: 7px;
+  /* 54 and not 65. The bar was made a fifth larger back when it was the one
+     piece of the drawing still measured in real pixels: on a laptop that drew
+     the frame at two thirds, a bar that did not shrink with it was already
+     the largest thing on the screen, and a fifth on top of that was a
+     compensation aimed at something else.
+
+     It takes the frame's scale now, so the compensation has doubled up. On
+     any window wider than the sheet the bar is a fifth larger than a bar that
+     has already been scaled up, which is what reads as a control borrowed
+     from a different screen. Back to the figures the cells were drawn at:
+     6 of padding round a cell of 104 by 42. */
+  height: 54px;
+  padding: 6px;
   display: flex;
   align-items: stretch;
   /* Fully round, which is the other half of reading as a floating pane. */
@@ -2496,10 +2504,10 @@ body {
 .nav::before {
   content: "";
   position: absolute;
-  top: 7px;
-  bottom: 7px;
-  left: calc(7px + var(--ni) * (100% - 14px) / 3);
-  width: calc((100% - 14px) / 3);
+  top: 6px;
+  bottom: 6px;
+  left: calc(6px + var(--ni) * (100% - 12px) / 3);
+  width: calc((100% - 12px) / 3);
   border-radius: 999px;
   background: rgba(var(--w), 0.17);
   box-shadow: var(--pill-cast);
@@ -2518,12 +2526,12 @@ body {
   position: relative;
   z-index: 1;                          /* over the lozenge, not under it */
   flex: 1;
-  min-width: 125px;
+  min-width: 104px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: var(--f-nav);
-  font-size: 16px;
+  font-size: 13px;
   font-weight: 500;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -9896,9 +9904,9 @@ a.arrow { text-decoration: none; }
     /* Fully round. The pill is the other half of reading as a floating pane;
        see the corners rule above, which lets these two out of the square. */
     border-radius: 999px;
-    /* 7 to match the frame's, because the lozenge is inset by one figure in
+    /* 6 to match the frame's, because the lozenge is inset by one figure in
        both rooms -- see .nav::before, which is not written twice. */
-    padding: 7px;
+    padding: 6px;
     display: flex;
     align-items: stretch;
 
@@ -18453,11 +18461,20 @@ a.arrow { text-decoration: none; }
      partial a fifth or an octave up, at a third of the gain, is what stops it
      being a test tone.
 
-     Four voices and they are the four a console has: a tick as the cursor
-     moves over something, a brighter two-note blip when you take it, a lower
-     one when you back out, and a pair of rising notes when the screen changes.
-     The machine's own keys get a fifth -- a click rather than a note, because
-     a transport key is a piece of plastic and not a chime.
+     Three voices, and they answer presses: a two-note blip when you take
+     something, a lower one when you back out of it, and a pair of rising
+     notes when the screen changes. The machine's own keys get a fourth -- a
+     click rather than a note, because a transport key is a piece of plastic
+     and not a chime.
+
+     There was a fifth, a tick under the cursor as it passed over things, and
+     it is gone. A console ticks under a cursor because the cursor is the
+     selection: the stick moves the highlight from one thing to the next and
+     the tick is the highlight landing, one sound per deliberate move. A mouse
+     is not that. It crosses six things on the way to the one it wants, and a
+     page that sounds at each of them is not accompanying the reader, it is
+     talking over them. Sound belongs to the press, which is the only moment
+     the reader has actually chosen something.
 
      Three rules about when it may make a sound at all.
 
@@ -18483,10 +18500,7 @@ a.arrow { text-decoration: none; }
     /* Built on the first press, because a context made before one is a context
        the browser starts suspended -- and everything scheduled into a suspended
        context is scheduled against a clock that is not running, so it does not
-       play quietly, it queues. The tick under a cursor that has not pressed
-       anything yet used to build the context, find it asleep, and leave a note
-       on the doormat; the first press then resumed it and forty of those notes
-       arrived at once.
+       play quietly, it queues.
 
        So this is called from a gesture and from nowhere else, and play() below
        refuses to sound at all until it has been. */
@@ -18553,24 +18567,6 @@ a.arrow { text-decoration: none; }
     }
 
     var VOICE = {
-      /* The cursor passing over something.
-
-         It is the one voice that has to be heard without being listened for,
-         and it was the one voice nobody could hear: a thirty-two millisecond
-         sine at a twentieth of full scale is thirteen decibels under the press
-         it precedes, which on a laptop speaker at a normal volume is a tick
-         you can measure and cannot hear.
-
-         Twice the gain, half as long again, and a fifth of the way down the
-         keyboard -- two kilohertz is where a small speaker starts giving up.
-         The partial above it is the same trick the press uses and does the
-         same job: it stops a short sine reading as a fault rather than as a
-         sound. Five decibels under the press, which is where it belongs --
-         subordinate to it, and above the floor. */
-      move: function () {
-        note(1760, 1670, 0.052, 0.10, 'sine');
-        note(2640, 2505, 0.036, 0.025, 'triangle', 0.002);
-      },
       /* taking it: two partials a fifth apart, the upper one quieter */
       select: function () {
         note(1046, 1120, 0.085, 0.15, 'sine');
@@ -18611,30 +18607,10 @@ a.arrow { text-decoration: none; }
       return e.target.closest ? e.target.closest(HIT) : null;
     }
 
-    /* The cursor, and only a real one. A finger has no hover, and a tick under
-       a finger that has not pressed anything yet is a sound with no cause. */
-    var last = null, when = 0;
-    document.addEventListener('pointerover', function (e) {
-      if (off || e.pointerType !== 'mouse') { return; }
-      var el = hit(e);
-      if (!el || el === last) { return; }
-      last = el;
-      var now = Date.now();
-      if (now - when < 45) { return; }   /* a fast sweep is one tick, not ten */
-      when = now;
-      play('move');
-    }, true);
-    /* And leaving it has to forget it. This asked whether the thing being left
-       was a target, which it always is -- it is the thing that was ticked --
-       so nothing was ever forgotten: move off a card into the gutter, move
-       back onto the same card, and it was still what the cursor was last on
-       and the return was silent. What matters is where the cursor has gone: out
-       of the element, or only from one part of it to another. */
-    document.addEventListener('pointerout', function (e) {
-      if (!last) { return; }
-      var to = e.relatedTarget;
-      if (!to || !last.contains(to)) { last = null; }
-    }, true);
+    /* Nothing listens to the cursor. Passing over a thing is not choosing it,
+       and a page that says so out loud every time the mouse crosses a card is
+       a page you turn the sound off on -- which loses the presses too. See the
+       note at the top of this block. */
 
     /* The press. Capture, so it is heard whether or not something further in
        stops the event -- the sheets and the router both do. */
