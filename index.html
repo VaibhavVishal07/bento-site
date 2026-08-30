@@ -183,6 +183,45 @@
      The same face on forty labels is a theme. */
   --f-nav: var(--f-sans);
 
+  /* --- the scale --------------------------------------------------------
+
+     Four steps, and no screen uses more than three of them.
+
+     There were twenty-seven. Not four voices set at twenty-seven sizes --
+     twenty-seven sizes, most of them a pixel from a neighbour and none of
+     them agreeing with anything: 15, 15.5, 16.5 and 17.5 inside one essay;
+     10, 11, 12 and 13 all doing the work of a caption; 17, 18, 20, 22, 24,
+     25, 27, 28, 31, 34, 36 and 46 all doing the work of a headline. A reader
+     cannot see the difference between 15 and 15.5 and is not meant to. What
+     they can see is that nothing on the page agrees with anything else about
+     how big a small thing is, and that is what reads as the page having been
+     assembled rather than drawn.
+
+     This is the argument the pixel face lost a few lines up, made about size
+     instead of about face. Three steps say everything a card has to say --
+     what this box is, what the thing in it is called, and what it is -- and
+     the fourth exists for one job only: a screen that is a single thing
+     rather than a grid of them sets its one title large, without borrowing
+     the size a grid of headlines uses.
+
+     Hence the second half of the rule, which is the half that keeps it
+     honest. A screen of cards takes heading, body and meta. A screen that is
+     one thing -- a case study, a piece, a title page -- takes display, body
+     and meta. Never both title steps at once, because a page with two sizes
+     of title has not decided which one is the title.
+
+     What this does not govern is anything that contains text without being
+     the page talking. The wordmark is a signature; the hand on the playground
+     print is a note somebody left; the marks on the cutting mat are a ruler;
+     the readout on the deck is a device; and the book's own page is a reading
+     measure, which wants a reading size and not a card size. Those are
+     drawings that happen to have letters in them. See --f-word, --f-hand,
+     .lab-tape, .ms-lcd-a and .bk-flow. */
+  --t-display: 28px; --lh-display: 34px;
+  --t-heading: 17px; --lh-heading: 23px;
+  --t-body:    14px; --lh-body:    20px;
+  --t-meta:    12px; --lh-meta:    17px;
+
 
 
   /* Interaction. The frame's own micro-states run at 160ms; a whole card is a
@@ -1843,20 +1882,38 @@ body {
 
 /* --- type ---------------------------------------------------------------- */
 
+/* The three roles, and the three steps that carry them. Nearly every screen
+   on this site is built out of these three classes already, which is why the
+   scale could be put in underneath them rather than beside them: the markup
+   had the hierarchy right the whole time and the stylesheet kept overruling
+   it a card at a time.
+
+   .label was 16 and sentence case, which is the size and the shape of a
+   sentence -- so a card's own name for itself was set exactly like the line
+   of copy three rows below it, and the two competed. It is the meta step now
+   and uppercase, which is what the crumb above it and the bar below it have
+   always been. The card labels, the crumb and the bar are one voice.
+
+   A screen with a single title lifts .headline to the display step. That is
+   two declarations, on the two cards that are a whole screen -- see
+   .w-lab .headline and .c-hero .headline -- and it is the only place the
+   fourth step is ever spent. */
 .label {
   position: absolute;
   margin: 0;
   font-family: var(--f-label);
-  font-size: 16px;
-  line-height: 20px;
-  color: var(--label);
+  font-size: var(--t-meta);
+  line-height: var(--lh-meta);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--icon);
 }
 
 .headline {
   position: absolute;
   margin: 0;
-  font-size: 18px;
-  line-height: 28px;
+  font-size: var(--t-heading);
+  line-height: var(--lh-heading);
   font-weight: 600;
   color: var(--heading);
 }
@@ -1864,8 +1921,8 @@ body {
 .sub {
   position: absolute;
   margin: 0;
-  font-size: 16px;
-  line-height: 23px;
+  font-size: var(--t-body);
+  line-height: var(--lh-body);
   font-weight: 300;
   color: var(--sub);
 }
@@ -1943,10 +2000,15 @@ body {
   left: 60px;
   top: 206px;
   margin: 0;
-  width: 637px;
+  /* 500 and not 637. The step down to the body size is the whole of this
+     change and it takes the measure with it: 637 pixels of 14-point runs to
+     ninety-five characters a line, which is half again what anybody reads
+     comfortably and about twice what the cards below this one are set to.
+     Five hundred is seventy, and seventy is the figure every manual gives. */
+  width: 500px;
   font-family: var(--f-body);
-  font-size: 16px;
-  line-height: 28px;
+  font-size: var(--t-body);
+  line-height: 24px;
   color: var(--body);
 }
 
@@ -1955,10 +2017,10 @@ body {
   left: 60px;
   top: 312px;
   margin: 0;
-  width: 621px;
+  width: 500px;
   font-family: var(--f-body);
-  font-size: 16px;
-  line-height: 28px;
+  font-size: var(--t-body);
+  line-height: 24px;
   color: var(--body);
 }
 
@@ -1977,8 +2039,10 @@ body {
   border: 0;
   border-radius: 0;
   font-family: var(--f-sans);
-  font-size: 16px;
-  line-height: 28px;
+  /* A control rather than copy, but there is no reason for it to be a size
+     the page does not otherwise use. The weight is what makes it a button. */
+  font-size: var(--t-body);
+  line-height: var(--lh-body);
   font-weight: 500;
   text-decoration: none;
   cursor: pointer;
@@ -2214,8 +2278,8 @@ body {
   height: 35px;
   padding: 6px 0 0 14px;
   background: rgba(217, 217, 217, 0.05);
-  font-size: 14px;
-  line-height: 23px;
+  font-size: var(--t-meta);
+  line-height: var(--lh-meta);
   font-weight: 600;
   color: rgb(var(--w));
   text-decoration: none;
@@ -2549,9 +2613,72 @@ body {
   border-radius: 999px;
 }
 
-/* A phone control. The frame has a breadcrumb ranged with the cards and a bar
-   ruled into the lattice; neither wants a floating button over the top of it. */
-.back { display: none; }
+/* --- the way back ---------------------------------------------------------
+
+   The switch out at 1541 answers a question the frame had already asked. A
+   control that belongs to the whole site rather than to any screen on it goes
+   in a margin column, off the 399 -> 1521 the cards occupy -- and there are
+   two of those columns, of which one was being used.
+
+   So the way back stands in the other one, and it is the switch's mirror
+   rather than a second design: the same 44 square, hung from the same 91
+   horizontal, with its outer edge on the lattice line that brackets the gutter
+   on its own side -- 1541 there, 377 here. Both hang off a rule that is
+   actually ruled rather than off a line drawn to look like one.
+
+   The breadcrumb stays, and is not doing this job. It says where you are,
+   ranged with the cards and reading as type; this is the press, ranged with
+   the frame and reading as a control, and a reader looking for the way out of
+   a screen looks at the edge of it before they read anything.
+
+   It carries no words, for the reason the switch carries none: at 18 pixels
+   inside a 44 box there is room for a drawing and not for a label. The words
+   are still written -- paint() puts them in aria-label, naming the screen the
+   press actually lands on -- and .back-t is the phone's, where the control is
+   a pill with the width to say it out loud.
+
+   Hidden on Home, which has nothing above it. See PARENT in paint(). */
+.back {
+  position: absolute;
+  left: 333px; top: 91px;                   /* 377, less its own width */
+  width: 44px; height: 44px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  background: var(--card-fill);
+  border: 1px solid var(--nav-line);
+  color: rgb(var(--w));
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+  /* Its own transition rather than the shared one below that carries the
+     crumb: this one has a colour to move as well, and that shorthand would
+     throw it away. The three crossing figures are the same figures, so the
+     button still leaves and arrives on the contents' tempo -- including the
+     deep tempo, which only changes what these resolve to. */
+  transition: color var(--dur) var(--ease),
+              opacity var(--x-fade) var(--x-ease),
+              transform var(--x-fade) var(--x-ease),
+              filter var(--x-fade) var(--x-ease);
+}
+
+/* A class rule beats the UA's [hidden], so display has to be said again. */
+.back[hidden] { display: none; }
+
+/* The frame's own icon idiom, at the size the switch beside it is drawn: 24 x
+   24, no fill, currentColor at 1.5 with round caps and joins. The markup
+   carries 1.9 because the phone's pill wants the heavier line at 17; on the
+   frame that is a bolder stroke than anything else drawn here. */
+.back svg { display: block; width: 18px; height: 18px; stroke-width: 1.5; }
+.back-t { display: none; }
+
+/* Full strength at rest and down to 0.72 under the pointer, which is the pair
+   the switch already uses -- it is lit while the sound is on, and dims when a
+   pointer is over it. A way out of a screen has no state to report, so it
+   sits at the lit value and answers the same way. */
+@media (hover: hover) and (pointer: fine) {
+  .back:hover { color: rgba(var(--w), 0.72); }
+}
+.back:focus-visible { outline: 2px solid rgb(var(--w)); outline-offset: -4px; }
 
 /* ==========================================================================
    Views -- L1 home and L2 work, in one document
@@ -2709,7 +2836,13 @@ body {
 .x-empty .view .card > *,
 .x-empty .bk-turn,
 .x-empty .crumb,
-.x-empty .crumb-count {
+.x-empty .crumb-count,
+/* The way back is outside the views -- it stands over the frame, like the
+   switch and the bar -- so nothing above reaches it, and it would otherwise
+   appear and vanish on the single frame paint() swaps the views. It is the
+   crumb's companion and goes when the crumb goes. Its transition is declared
+   on itself; see .back. */
+.x-empty .back {
   opacity: 0;
   transform: translateY(var(--x-sink));
   filter: blur(var(--x-blur));
@@ -3154,9 +3287,11 @@ body {
    lead and should read as the lead -- twenty-four does that, and leaves the
    four project cards beside it looking like its neighbours rather than its
    footnotes. */
+/* One of the two places the display step is spent: this card is the whole of
+   the Playground screen's top half and carries the only title on it. */
 .w-lab .headline {
   left: 40px; top: 58px; width: 430px;
-  font-size: 24px; line-height: 32px;
+  font-size: var(--t-display); line-height: var(--lh-display);
   letter-spacing: -0.012em;
   color: var(--mat-type);
 }
@@ -3301,8 +3436,8 @@ body {
   align-items: center;
   gap: 10px;
   font-family: var(--f-nav); letter-spacing: 0.06em;
-  font-size: 13px;
-  line-height: 18px;
+  font-size: var(--t-meta);
+  line-height: var(--lh-meta);
   text-transform: uppercase;
   color: var(--icon);
 }
@@ -3318,8 +3453,8 @@ body {
   right: 399px;
   top: 40px;
   font-family: var(--f-nav); letter-spacing: 0.06em;
-  font-size: 13px;
-  line-height: 18px;
+  font-size: var(--t-meta);
+  line-height: var(--lh-meta);
   text-transform: uppercase;
   color: var(--icon);
 }
@@ -3340,8 +3475,8 @@ body {
   padding: 7px 0;
   border-top: 1px solid var(--rule);
   font-family: var(--f-label);
-  font-size: 13px;
-  line-height: 18px;
+  font-size: var(--t-meta);
+  line-height: var(--lh-meta);
 }
 .w-meta dt { width: 54px; flex: none; color: var(--icon); margin: 0; }
 .w-meta dd { margin: 0; color: var(--body); }
@@ -3351,7 +3486,7 @@ body {
   left: 24px; bottom: 22px;
   display: inline-flex; align-items: center; gap: 8px;
   font-family: var(--f-label);
-  font-size: 14px; line-height: 20px;
+  font-size: var(--t-body); line-height: var(--lh-body);
   color: var(--label);
   text-decoration: none;
   transition: color var(--dur) var(--ease);
@@ -3376,15 +3511,24 @@ body {
    else.
    ------------------------------------------------------------------------- */
 
-/* Under the picture, which is 128 tall and starts on the card own 24. */
-.w-one .label, .w-two .label,
-.w-three .label, .w-four .label { left: 24px; top: 176px; }
+/* The row that stood between the picture and the headline is gone, and with
+   it both halves of it.
 
-/* One figure now the columns are one width: 264 less the 24 the box starts
-   at and the 24 the arrow is. Three hand-kept numbers were three chances to
-   drift, and they had already drifted by two pixels. */
-.w-one .arrow, .w-two .arrow,
-.w-three .arrow, .w-four .arrow { left: 216px; top: 174px; }
+   The number went because it was a number: 01 to 04 down a row of four, which
+   is a count of what is in front of you, arrived at by counting it. The arrow
+   went with it because the arrow was the other end of that line -- the label
+   ranged left and the mark ranged right, which is the pattern every card on
+   Home still keeps and which needs a left half to be a pattern at all. One
+   arrow alone over an empty line is not the pattern minus a number, it is a
+   mark hanging off nothing.
+
+   Nothing is lost by it. The whole card is a link -- see .card-hit, which
+   covers the box and carries the accessible name -- and it lifts under the
+   pointer like every other card here. The arrow was telling a reader
+   something the card was already saying with its whole surface.
+
+   So the picture ends at 152 and the title starts at 176: twenty-four under
+   it, which is the margin the card starts at on every other side. */
 
 /* The headline and the line under it are one block.
    They were two absolute positions kept in step by hand -- 46 and 84 on one
@@ -3392,21 +3536,18 @@ body {
    27 under another, and would have run a two-line headline straight through
    the line below it. One box, one margin, and the gap is the same on all four
    however many lines the headline takes. */
-.w-said { position: absolute; left: 24px; top: 204px; }
+.w-said { position: absolute; left: 24px; top: 176px; }
 /* Both of these are written for the phone, where a project card is the only
    thing in view. On the frame the three cards sit in a row under a headline
    that has already said what they are, and the case is one press away. */
 .w-kind, .w-figs { display: none; }
 .w-one .w-said, .w-two .w-said,
 .w-three .w-said, .w-four .w-said { width: 216px; }
-.w-said .headline {
-  position: static; width: auto; margin: 0;
-  font-size: 17px; line-height: 23px;
-}
-.w-said .sub {
-  position: static; width: auto; margin: 13px 0 0;
-  font-size: 14px; line-height: 20px;
-}
+/* These two carried 17/23 and 14/20 by hand, which is exactly the heading and
+   body steps -- the row of four had arrived at the scale on its own and was
+   the only screen that had. Nothing but the box remains to be said here. */
+.w-said .headline { position: static; width: auto; margin: 0; }
+.w-said .sub      { position: static; width: auto; margin: 13px 0 0; }
 
 /* No widows.
    A title that breaks with one word alone on the second line reads as a
@@ -3460,8 +3601,8 @@ body {
   display: flex;
   gap: 8px;
   font-family: var(--f-label);
-  font-size: 12px;
-  line-height: 16px;
+  font-size: var(--t-meta);
+  line-height: var(--lh-meta);
   color: var(--icon);
 }
 /* The project cards carried two small facts along the foot -- a count and a
@@ -3481,7 +3622,7 @@ body {
 .w-index .label { left: 24px; top: 24px; }
 .w-index .idx-count {
   position: absolute; right: 24px; top: 24px;
-  font-family: var(--f-nav); letter-spacing: 0.06em; font-size: 12px; line-height: 20px; color: var(--icon);
+  font-family: var(--f-nav); letter-spacing: 0.06em; font-size: var(--t-meta); line-height: var(--lh-meta); color: var(--icon);
 }
 
 /* --- five at a time, and the rest a page away ----------------------------
@@ -3541,7 +3682,8 @@ body {
 .idx-of {
   margin: 0;
   font-family: var(--f-nav); letter-spacing: 0.08em;
-  font-size: 10px; line-height: 18px;
+  /* Was ten, which is a step the scale does not have. */
+  font-size: var(--t-meta); line-height: var(--lh-meta);
   text-transform: uppercase; color: var(--label);
 }
 .idx-arrows { display: flex; gap: 8px; }
@@ -3585,10 +3727,14 @@ body {
    contents are centred in the box rather than pinned to its top, so a
    one-line row sits in the middle of its own space instead of leaving the
    whole gap underneath and reading as a mistake. */
+/* One column. It was 28 and 1fr: a gutter for a two-digit number that said
+   nothing the row above and the row below did not already say -- eight rows
+   counted in a list of eight, next to a tally that had already counted them.
+   The titles have the gutter now, which is 36 more pixels of measure and
+   most of a word per line. */
 .idx-row {
   display: grid;
-  grid-template-columns: 28px 1fr;
-  column-gap: 8px;
+  grid-template-columns: 1fr;
   align-content: center;
   box-sizing: border-box;
   height: 70px;
@@ -3674,30 +3820,26 @@ body {
 
 /* What the light does to the row it is under. The number slides, the title
    lifts, the meta warms -- all of it inside boxes that hold still. */
-.idx-row.on .idx-n { color: rgba(var(--w), 0.52); transform: translateX(3px); }
 .idx-row.on .idx-t { color: rgb(var(--w)); }
 .idx-row.on .idx-m { color: rgba(var(--w), 0.46); }
 
-.idx-n {
-  font-family: var(--f-nav); letter-spacing: 0.06em;
-  font-size: 11px;
-  line-height: 19px;
-  color: var(--quieter);
-  transition: color var(--dur) var(--ease), transform var(--dur) var(--ease);
-}
+/* The heading step, which is what this always wanted and twice failed to
+   reach: the comment here used to argue for 16 over 13 while the rule said
+   15. These are titles of things you can open, exactly like the four project
+   names in the row below -- the same object in a list instead of on a card --
+   so they are set at the same step, and the argument stops being made one
+   size at a time.
 
-/* 16 rather than 13. Thirteen is a caption size and these are titles: ten
-   pieces of writing set smaller than the sentence on the card beside them,
-   which is the wrong way round for the only list on the site that is entirely
-   made of things to read. */
-/* Two lines and no more. A third would make the row it is in taller than the
+   Two lines and no more. A third would make the row it is in taller than the
    four beside it, and no title in the file needs one -- but a list is a thing
    people add to, and the row should hold its shape the day somebody writes a
-   long one. */
+   long one. Seventeen over eighteen inside a 70-pixel row leaves the date its
+   line and four clear underneath. */
 .idx-t {
   font-family: var(--f-body);
-  font-size: 15px;
-  line-height: 19px;
+  font-size: var(--t-heading);
+  line-height: 22px;
+  font-weight: 600;
   text-wrap: pretty;
   letter-spacing: -0.005em;
   color: var(--heading);
@@ -3708,12 +3850,14 @@ body {
   transition: color var(--dur) var(--ease);
 }
 
+/* Column one now the numbers have gone, and the meta step -- the same size
+   and the same job as the date on any other card. */
 .idx-m {
-  grid-column: 2;
+  grid-column: 1;
   margin-top: 3px;
   font-family: var(--f-label);
-  font-size: 12px;
-  line-height: 15px;
+  font-size: var(--t-meta);
+  line-height: var(--lh-meta);
   color: var(--quiet);
   transition: color var(--dur) var(--ease);
 }
@@ -3724,8 +3868,8 @@ body {
   bottom: 26px;
   display: inline-flex; align-items: center; gap: 8px;
   font-family: var(--f-label);
-  font-size: 14px;
-  line-height: 20px;
+  font-size: var(--t-body);
+  line-height: var(--lh-body);
   color: var(--label);
   text-decoration: none;
   transition: color var(--dur) var(--ease);
@@ -3809,18 +3953,23 @@ body {
    now, so the art has to sit exactly where the lead's art sat or the one
    thing on the tile with a hard edge is the one thing that jumps. */
 .c-hero .slot-lead { left: 349px; top: 76px; width: 360px; height: 383px; }
+/* The other place the display step is spent. It was already 28 -- the case
+   study is where the scale's top step was measured from. */
 .c-hero .headline  { left: 40px; top: 104px; width: 288px;
-                     font-size: 28px; line-height: 34px; font-weight: 600; }
+                     font-size: var(--t-display); line-height: var(--lh-display); }
 /* 304, for the reason the lead's is: at 284 the standfirst overran the table
    under it by a line, on both screens, at full size. */
-.c-hero .sub       { left: 40px; top: 200px; width: 304px; font-size: 15px; line-height: 24px; }
+.c-hero .sub       { left: 40px; top: 200px; width: 304px; }
 .c-hero .w-meta    { top: 300px; }
 
 /* --- the rail: readings, then process ------------------------------------ */
 
 .c-side .label   { left: 24px; top: 24px; }
+/* A second .label by another name, and now at the same step as the first. */
 .c-side .label-2 { position: absolute; left: 24px; top: 392px; margin: 0;
-                   font-family: var(--f-label); font-size: 16px; line-height: 20px;
+                   font-family: var(--f-label);
+                   font-size: var(--t-meta); line-height: var(--lh-meta);
+                   letter-spacing: 0.06em; text-transform: uppercase;
                    color: var(--label); }
 
 .c-stats { position: absolute; left: 24px; top: 64px; width: 318px; }
@@ -3902,10 +4051,12 @@ body {
 .view-case:not([hidden]) .c-stat:nth-child(3) b { --c-lag: 160ms; }
 .view-case:not([hidden]) .c-stat:nth-child(4) b { --c-lag: 240ms; }
 
+/* The figure beside this is a reading on a dot-matrix panel and keeps its own
+   size -- it is a device, not the page talking. Its caption is the page. */
 .c-stat span {
   font-family: var(--f-label);
-  font-size: 12px;
-  line-height: 17px;
+  font-size: var(--t-meta);
+  line-height: var(--lh-meta);
   color: var(--label);
 }
 
@@ -3919,12 +4070,17 @@ body {
   border-top: 1px solid var(--rule);
 }
 .c-step:first-child { border-top: 0; }
-.c-step i { font-style: normal; font-family: var(--f-nav); letter-spacing: 0.06em; font-size: 11px;
-            line-height: 17px; color: var(--quieter); }
-.c-step b { font-family: var(--f-body); font-weight: 500; font-size: 13px;
-            line-height: 17px; color: var(--heading); }
+/* Eleven, thirteen and eleven again inside one row: three sizes to set a
+   number, a title and a line, none of which the rest of the screen used. The
+   step's own name is the body step carrying weight, which is what a run-in
+   heading has always been, and the two small things either side of it are
+   meta -- the same size as every other small thing on the page. */
+.c-step i { font-style: normal; font-family: var(--f-nav); letter-spacing: 0.06em;
+            font-size: var(--t-meta); line-height: var(--lh-meta); color: var(--quieter); }
+.c-step b { font-family: var(--f-body); font-weight: 600;
+            font-size: var(--t-body); line-height: var(--lh-body); color: var(--heading); }
 .c-step span { grid-column: 2; margin-top: 2px; font-family: var(--f-label);
-               font-size: 11px; line-height: 15px; color: var(--quiet); }
+               font-size: var(--t-meta); line-height: var(--lh-meta); color: var(--quiet); }
 
 .c-note {
   position: absolute;
@@ -3933,8 +4089,8 @@ body {
   width: 318px;
   margin: 0;
   font-family: var(--f-body);
-  font-size: 13px;
-  line-height: 21px;
+  font-size: var(--t-body);
+  line-height: var(--lh-body);
   color: var(--body);
 }
 
@@ -3942,11 +4098,12 @@ body {
 
 .c-problem .label, .c-outcome .label { left: 24px; top: 20px; }
 .c-problem .arrow, .c-outcome .arrow { left: 302px; top: 16px; }
+/* 17/23 and 14/20 by hand were the heading and body steps by another name. */
 .c-problem .headline, .c-outcome .headline {
-  left: 24px; top: 46px; width: 296px; font-size: 17px; line-height: 23px;
+  left: 24px; top: 46px; width: 296px;
 }
 .c-problem .w-tags { top: 100px; }
-.c-outcome .sub    { left: 24px; top: 78px; width: 296px; font-size: 14px; line-height: 20px; }
+.c-outcome .sub    { left: 24px; top: 78px; width: 296px; }
 .c-outcome .w-tags { top: 132px; }
 
 /* --- screens ------------------------------------------------------------- */
@@ -3965,8 +4122,8 @@ body {
   width: 316px;
   margin: 0;
   font-family: var(--f-label);
-  font-size: 12px;
-  line-height: 17px;
+  font-size: var(--t-meta);
+  line-height: var(--lh-meta);
   color: var(--icon);
 }
 
@@ -4105,8 +4262,8 @@ body {
      printed page: it is the one piece of furniture the reader sees on every
      leaf, so it has to be cut from the same block as the text under it. */
   font-family: var(--f-book);
-  font-size: 12.5px;
-  line-height: 16px;
+  font-size: var(--t-meta);
+  line-height: var(--lh-meta);
   font-variant-caps: all-small-caps;
   font-weight: 500;
   letter-spacing: 0.16em;
@@ -4989,7 +5146,7 @@ body {
 .bk-flow .bk-kicker {
   margin: 0 0 26px;
   font-family: var(--f-book);
-  font-size: 12px;
+  font-size: var(--t-meta);
   line-height: 16px;
   letter-spacing: 0.22em;
   text-indent: 0.22em;                  /* the tracking is a space on the right */
@@ -5002,7 +5159,7 @@ body {
 .bk-title h2 {
   margin: 0;
   font-family: var(--f-book);
-  font-size: 31px;
+  font-size: var(--t-display);
   line-height: 40px;
   font-style: italic;
   font-weight: 400;
@@ -5068,7 +5225,7 @@ body {
   orphans: 2;
   widows: 2;
   font-family: var(--f-book);
-  font-size: 17.5px;
+  font-size: var(--t-heading);
   line-height: 29px;
   /* Lifted off the frame's body value. 0.70 is right for four lines on a tile
      and thin for twenty-three on a page: over a column this long the eye is
@@ -5110,7 +5267,7 @@ body {
   margin: 58px 0 29px;
   font-family: var(--f-book);
   font-weight: 500;
-  font-size: 15px;
+  font-size: var(--t-heading);
   line-height: 29px;
   font-variant-caps: small-caps;
   letter-spacing: 0.13em;
@@ -5124,7 +5281,7 @@ body {
   text-indent: 0;
   font-family: var(--f-book);
   font-style: italic;
-  font-size: 16.5px;
+  font-size: var(--t-heading);
   line-height: 29px;
   letter-spacing: 0.004em;
   color: rgba(var(--w), 0.86);
@@ -5163,8 +5320,8 @@ body {
   margin-top: 12px;
   font-family: var(--f-book);
   font-style: italic;
-  font-size: 13px;
-  line-height: 19px;
+  font-size: var(--t-meta);
+  line-height: var(--lh-meta);
   color: var(--icon);
 }
 
@@ -5229,7 +5386,7 @@ body {
   margin: 0 0 29px;
   text-indent: 0;
   font-family: var(--f-book);
-  font-size: 15.5px;
+  font-size: var(--t-heading);
   line-height: 29px;
   color: var(--label);
 }
@@ -5241,7 +5398,7 @@ body {
   margin: 0 0 6px;
   font-family: var(--f-book);
   font-weight: 500;
-  font-size: 13px;
+  font-size: var(--t-meta);
   line-height: 29px;
   font-variant-caps: all-small-caps;
   letter-spacing: 0.15em;
@@ -5255,8 +5412,8 @@ body {
   padding: 10px 0;
   border-top: 1px solid var(--rule);
   font-family: var(--f-book);
-  font-size: 15px;
-  line-height: 21px;
+  font-size: var(--t-heading);
+  line-height: 24px;
   color: var(--heading);
 }
 .bk-shelf li span {
@@ -5270,8 +5427,8 @@ body {
   margin: 0;
   font-family: var(--f-book);
   font-style: italic;
-  font-size: 14px;
-  line-height: 23px;
+  font-size: var(--t-meta);
+  line-height: var(--lh-meta);
   color: var(--icon);
 }
 /* --- the turn ------------------------------------------------------------- */
@@ -5293,7 +5450,7 @@ body {
   justify-content: center;
   gap: 16px;
   font-family: var(--f-nav); letter-spacing: 0.06em;
-  font-size: 11px;
+  font-size: var(--t-meta);
   line-height: 20px;
   color: var(--quiet);
 }
@@ -5339,7 +5496,7 @@ body {
 .cue-title {
   margin: 0 0 22px;
   font-family: var(--f-label);
-  font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+  font-size: var(--t-meta); letter-spacing: 0.16em; text-transform: uppercase;
   color: rgba(var(--w), 0.42);
 }
 .cue-list {
@@ -5382,7 +5539,7 @@ body {
 .cue-text b {
   display: block;
   font-family: var(--f-body);
-  font-size: 14px; line-height: 19px; font-weight: 500;
+  font-size: var(--t-body); line-height: var(--lh-body); font-weight: 500;
   color: rgba(var(--w), 0.90);
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
@@ -5390,7 +5547,7 @@ body {
   display: block;
   margin-top: 2px;
   font-family: var(--f-label);
-  font-size: 11px; line-height: 16px;
+  font-size: var(--t-meta); line-height: var(--lh-meta);
   color: rgba(var(--w), 0.42);
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
@@ -5404,7 +5561,7 @@ body {
   flex: none;
   align-self: flex-start;
   font-family: var(--f-label);
-  font-size: 9px; letter-spacing: 0.14em;
+  font-size: var(--t-meta); letter-spacing: 0.14em;
   color: rgba(var(--w), 0.42);
 }
 
@@ -5553,7 +5710,7 @@ body {
   margin: 9px 0 0;
   font-family: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas,
     "Liberation Mono", monospace;
-  font-size: 13px; line-height: 19px;
+  font-size: var(--t-meta); line-height: var(--lh-meta);
   color: rgba(var(--w), 0.62);
   word-break: break-word;
 }
@@ -5567,7 +5724,7 @@ body {
   margin-left: 14px;
   vertical-align: 3px;
   font-family: var(--f-label);
-  font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase;
+  font-size: var(--t-meta); letter-spacing: 0.16em; text-transform: uppercase;
   color: rgba(var(--w), 0.52);
 }
 .repo-state::before {
@@ -5586,7 +5743,7 @@ body {
   border: 1px solid rgba(var(--w), 0.20);
   border-radius: 999px;
   font-family: var(--f-label);
-  font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+  font-size: var(--t-meta); letter-spacing: 0.1em; text-transform: uppercase;
   color: rgba(var(--w), 0.74);
   text-decoration: none;
   white-space: nowrap;
@@ -5650,7 +5807,7 @@ body {
   display: flex; align-items: baseline; gap: 12px;
   margin: 0 0 8px;
   font-family: var(--f-label);
-  font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+  font-size: var(--t-meta); letter-spacing: 0.16em; text-transform: uppercase;
   font-weight: 400;
   color: rgba(var(--w), 0.86);
 }
@@ -5658,7 +5815,7 @@ body {
 .repo-beats p {
   margin: 0;
   font-family: var(--f-body);
-  font-size: 14px; line-height: 22px;
+  font-size: var(--t-body); line-height: var(--lh-body);
   color: var(--body);
   text-wrap: pretty;
   max-width: 68ch;
@@ -5684,7 +5841,7 @@ body {
 .repo-h {
   margin: 0 0 12px;
   font-family: var(--f-label);
-  font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+  font-size: var(--t-meta); letter-spacing: 0.18em; text-transform: uppercase;
   font-weight: 400;
   color: rgba(var(--w), 0.34);
 }
@@ -5699,13 +5856,13 @@ body {
 .repo-facts div { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
 .repo-facts dt {
   font-family: var(--f-label);
-  font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+  font-size: var(--t-meta); letter-spacing: 0.12em; text-transform: uppercase;
   color: rgba(var(--w), 0.34);
 }
 .repo-facts dd {
   margin: 0;
   font-family: var(--f-body);
-  font-size: 14px; line-height: 20px;
+  font-size: var(--t-body); line-height: var(--lh-body);
   color: rgba(var(--w), 0.88);
   font-variant-numeric: tabular-nums;
 }
@@ -5733,7 +5890,7 @@ body {
   margin: 10px 0 0; padding: 0;
   list-style: none;
   font-family: var(--f-label);
-  font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+  font-size: var(--t-meta); letter-spacing: 0.1em; text-transform: uppercase;
   color: rgba(var(--w), 0.44);
 }
 
@@ -5745,7 +5902,7 @@ body {
   border: 1px solid rgba(var(--w), 0.16);
   border-radius: 999px;
   font-family: var(--f-label);
-  font-size: 10px; letter-spacing: 0.08em;
+  font-size: var(--t-meta); letter-spacing: 0.08em;
   color: rgba(var(--w), 0.60);
 }
 
@@ -5769,7 +5926,7 @@ body {
 .repo-msg {
   flex: 1 1 auto; min-width: 0;
   font-family: var(--f-body);
-  font-size: 13px; line-height: 19px;
+  font-size: var(--t-meta); line-height: var(--lh-meta);
   color: rgba(var(--w), 0.76);
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
   transition: color var(--dur) var(--ease);
@@ -5777,7 +5934,7 @@ body {
 .repo-when {
   flex: none;
   font-family: var(--f-label);
-  font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;
+  font-size: var(--t-meta); letter-spacing: 0.08em; text-transform: uppercase;
   color: rgba(var(--w), 0.30);
   font-variant-numeric: tabular-nums;
 }
@@ -5788,7 +5945,7 @@ body {
   padding: 8px 0;
   border-top: 1px solid rgba(var(--w), 0.08);
   font-family: var(--f-body);
-  font-size: 13px; line-height: 19px;
+  font-size: var(--t-meta); line-height: var(--lh-meta);
   color: rgba(var(--w), 0.70);
 }
 .repo-notes li:first-child { border-top: 0; }
@@ -5802,7 +5959,7 @@ body {
 .repo-read {
   margin: 0;
   font-family: var(--f-body);
-  font-size: 13px; line-height: 21px;
+  font-size: var(--t-meta); line-height: var(--lh-meta);
   color: rgba(var(--w), 0.62);
   text-wrap: pretty;
 }
@@ -5815,7 +5972,7 @@ body {
 .repo-wait, .repo-fail {
   margin: 0;
   font-family: var(--f-label);
-  font-size: 11px; letter-spacing: 0.08em;
+  font-size: var(--t-meta); letter-spacing: 0.08em;
   color: rgba(var(--w), 0.40);
 }
 .repo-wait::after {
@@ -6455,7 +6612,8 @@ a.arrow { text-decoration: none; }
      the card's own padding is -- and --pad rather than 24, so the label and
      the card cannot drift apart on a phone. */
   padding-left: var(--pad, 24px);
-  font-size: 13px; line-height: 18px;
+  /* Overruled below by the card-heading rule; the size lived here only to
+     be beaten by it. See .nw-h, .ab-late-h, .ab-rack-t. */
   color: var(--quieter);
 }
 .ab-rack-t b { font-weight: 600; color: var(--quieter); }
@@ -6542,25 +6700,30 @@ a.arrow { text-decoration: none; }
    ========================================================================== */
 .ab-title {
   margin: 0;
-  font-size: 28px; line-height: 34px; font-weight: 600;
+  font-size: var(--t-display); line-height: var(--lh-display); font-weight: 600;
   letter-spacing: -0.015em;
   color: var(--heading);
   text-wrap: balance;
 }
+/* Sixteen, sixteen, fourteen and thirteen were four sizes inside one card,
+   and three of them were doing one job. They are the heading, the body and
+   the meta step, which is what the card had all along -- a name, a sentence
+   and a note under it. */
 .ab-head {
   margin: 0;
-  font-size: 16px; line-height: 24px; font-weight: 600;
+  font-size: var(--t-heading); line-height: var(--lh-heading); font-weight: 600;
   color: var(--heading);
 }
-.ab-work { margin: 0; font-size: 16px; line-height: 22px; font-weight: 600; color: var(--heading); }
+.ab-work { margin: 0; font-size: var(--t-heading); line-height: var(--lh-heading);
+           font-weight: 600; color: var(--heading); }
 .ab-body {
   margin: 0;
-  font-size: 14px; line-height: 21px; font-weight: 400;
+  font-size: var(--t-body); line-height: var(--lh-body); font-weight: 400;
   color: var(--body);
 }
 .ab-sub {
   margin: 0;
-  font-size: 13px; line-height: 19px; font-weight: 400;
+  font-size: var(--t-meta); line-height: var(--lh-meta); font-weight: 400;
   color: var(--quieter);
 }
 
@@ -6570,7 +6733,7 @@ a.arrow { text-decoration: none; }
   font-family: var(--f-sans);
   letter-spacing: normal;
   text-transform: none;
-  font-size: 16px; line-height: 24px; font-weight: 600;
+  font-size: var(--t-heading); line-height: var(--lh-heading); font-weight: 600;
   color: var(--heading);
 }
 
@@ -7853,7 +8016,7 @@ a.arrow { text-decoration: none; }
       rgba(var(--w), 0.06) 50%, transparent calc(50% + 0.5px));
   display: flex; align-items: flex-end;
   padding: 10px 12px;
-  font-size: 13px; line-height: 19px; color: var(--quieter);
+  font-size: var(--t-meta); line-height: var(--lh-meta); color: var(--quieter);
 }
 
 /* Under the frame. It leads the screen but it does not get a display size to
@@ -7866,7 +8029,7 @@ a.arrow { text-decoration: none; }
 .ab-lede {
   position: absolute; margin: 0;
   left: 24px; top: 277px; width: 316px;
-  font-size: 16px; line-height: 24px; font-weight: 600;
+  font-size: var(--t-heading); line-height: var(--lh-heading); font-weight: 600;
   color: var(--heading);
 }
 
@@ -7878,10 +8041,11 @@ a.arrow { text-decoration: none; }
   font-family: var(--f-sans);
   letter-spacing: normal;
   text-transform: none;
-  font-size: 13px; line-height: 19px; font-weight: 400;
+  font-size: var(--t-meta); line-height: var(--lh-meta); font-weight: 400;
   color: var(--quieter);
 }
-.ab-facts dd { margin: 0; font-size: 14px; line-height: 21px; color: var(--body); }
+.ab-facts dd { margin: 0; font-size: var(--t-body); line-height: var(--lh-body);
+               color: var(--body); }
 
 /* Off the foot rather than at a measured top: the lede above it is three
    lines at one width and four at another, and a fixed top is a collision
@@ -8137,7 +8301,8 @@ a.arrow { text-decoration: none; }
    text-wrap: balance is the net under all of that. If it ever does wrap -- a
    longer count, a font that falls back wider -- it wraps into two lines of
    roughly equal length rather than a full line and one orphaned word. */
-.ab-half-say { margin: 0; font-size: 12px; line-height: 18px; color: var(--quieter);
+.ab-half-say { margin: 0; font-size: var(--t-meta); line-height: var(--lh-meta);
+               color: var(--quieter);
                text-wrap: balance; }
 
 /* --- nine weeks ----------------------------------------------------------
@@ -8433,10 +8598,11 @@ a.arrow { text-decoration: none; }
 /* Book or game, which the cover says too, but not in a word. */
 /* Sentence case, and no box round it. A capitalised chip reading GAME over a
    picture of a game was a label on a label. */
-.zoom-pill { margin: 0 0 8px; font-size: 13px; line-height: 19px; color: var(--quieter); }
+.zoom-pill { margin: 0 0 8px; font-size: var(--t-meta); line-height: var(--lh-meta);
+             color: var(--quieter); }
 .zoom-title {
   margin: 0 0 8px;
-  font-size: 28px; line-height: 34px; font-weight: 600;
+  font-size: var(--t-display); line-height: var(--lh-display); font-weight: 600;
   letter-spacing: -0.015em;
   color: var(--heading);
   text-wrap: balance;
@@ -8446,7 +8612,7 @@ a.arrow { text-decoration: none; }
    which is three lines to say what a caption says in one. */
 .zoom-meta {
   margin: 0 0 16px;
-  font-size: 13px; line-height: 19px;
+  font-size: var(--t-meta); line-height: var(--lh-meta);
   color: var(--quieter);
 }
 
@@ -8465,7 +8631,7 @@ a.arrow { text-decoration: none; }
 .zoom-chips li {
   padding: 4px 10px;
   border: 1px solid rgba(var(--w), 0.12);
-  font-size: 13px; line-height: 19px;
+  font-size: var(--t-meta); line-height: var(--lh-meta);
   color: var(--quieter);
 }
 
@@ -8474,7 +8640,7 @@ a.arrow { text-decoration: none; }
    wrote, and it is the whole difference between a shelf and a catalogue. */
 .zoom-tag {
   margin: 0 0 16px;
-  font-size: 16px; line-height: 24px; font-weight: 600;
+  font-size: var(--t-heading); line-height: var(--lh-heading); font-weight: 600;
   color: var(--heading);
   text-wrap: pretty;
 }
@@ -8485,7 +8651,7 @@ a.arrow { text-decoration: none; }
 .zoom-what {
   margin: 0;
   max-width: 64ch;
-  font-size: 14px; line-height: 21px;
+  font-size: var(--t-body); line-height: var(--lh-body);
   color: var(--body);
 }
 
@@ -8498,7 +8664,7 @@ a.arrow { text-decoration: none; }
   display: inline-block;
   padding: 7px 12px;
   background: rgba(var(--w), 0.07);
-  font-size: 13px; line-height: 19px;
+  font-size: var(--t-meta); line-height: var(--lh-meta);
   color: var(--heading);
   text-decoration: none;
   transition: background var(--dur) var(--ease);
@@ -8536,7 +8702,7 @@ a.arrow { text-decoration: none; }
 .zoom-sec > * { grid-column: 2; }
 .zoom-sec:last-child { margin-bottom: 0; }
 .zoom-sec[hidden] { display: none; }
-.zoom-sec p { margin: 0; max-width: 64ch; font-size: 14px; line-height: 21px; color: var(--body); }
+.zoom-sec p { margin: 0; max-width: 64ch; font-size: var(--t-body); line-height: var(--lh-body); color: var(--body); }
 .zoom-sec p + p { margin-top: 12px; }
 
 .zoom-h {
@@ -8545,8 +8711,8 @@ a.arrow { text-decoration: none; }
   align-self: start;
   margin: 0;
   text-align: right;
-  font-size: 13px;
-  line-height: 21px;
+  font-size: var(--t-meta);
+  line-height: var(--lh-meta);
   font-weight: 400;
   color: var(--quieter);
   text-wrap: balance;
@@ -8585,13 +8751,13 @@ a.arrow { text-decoration: none; }
 }
 .zoom-facts dd {
   margin: 0;
-  font-size: 16px; line-height: 24px; font-weight: 600;
+  font-size: var(--t-heading); line-height: var(--lh-heading); font-weight: 600;
   color: var(--heading);
 }
 .zoom-facts dt {
   margin: 0;
   order: 2;
-  font-size: 13px; line-height: 19px;
+  font-size: var(--t-meta); line-height: var(--lh-meta);
   color: var(--quieter);
 }
 
@@ -8635,8 +8801,8 @@ a.arrow { text-decoration: none; }
 .zoom-still figcaption {
   margin: 10px 0 0;
   padding: 0 16px;
-  font-size: 13px;
-  line-height: 19px;
+  font-size: var(--t-meta);
+  line-height: var(--lh-meta);
   color: var(--quieter);
 }
 /* The first one lines up with the type above it; the rest sit in their own
@@ -8648,8 +8814,8 @@ a.arrow { text-decoration: none; }
 .zoom-near li {
   padding: 10px 0;
   border-top: 1px solid rgba(var(--w), 0.08);
-  font-size: 14px;
-  line-height: 21px;
+  font-size: var(--t-body);
+  line-height: var(--lh-body);
   color: var(--body);
 }
 .zoom-near li:first-child { border-top: 0; padding-top: 0; }
@@ -9102,7 +9268,10 @@ a.arrow { text-decoration: none; }
 .lab-pin figcaption span {
   display: block;
   text-align: center;
-  font-size: 13.5px; line-height: 20px; color: var(--print-faint);
+  /* The name above this is written in the hand and keeps its own size -- it
+     is a note on a print, not the page talking. The line under it is the
+     page. */
+  font-size: var(--t-meta); line-height: var(--lh-meta); color: var(--print-faint);
 }
 
 /* A strip over the head of each one, half on the paper and half on the mat,
@@ -9387,17 +9556,25 @@ a.arrow { text-decoration: none; }
    kind belongs.
    ------------------------------------------------------------------------- */
 
+/* The sheet is one thing with one title on it, so this is the display step --
+   the same 28 the case study opens at and the Playground card carries. It was
+   46, which is a size nothing else on the site has ever used and which was
+   set against a lede at 22 and a paragraph at 16: three sizes down the left
+   edge of one sheet, none of them a step of anything. */
 .pc-title {
   margin: 0 0 14px;
-  font-size: 46px; line-height: 54px; font-weight: 600;
+  font-size: var(--t-display); line-height: var(--lh-display); font-weight: 600;
   letter-spacing: -0.015em;
   color: var(--print-name);
 }
 
+/* 500 with the size. Seven hundred and sixty pixels of 14-point is a hundred
+   and thirteen characters to a line -- see .blurb, which had the same problem
+   and the same answer. */
 .pc-lede {
   margin: 0 0 44px;
-  max-width: 760px;
-  font-size: 22px; line-height: 33px;
+  max-width: 500px;
+  font-size: var(--t-body); line-height: 24px;
   letter-spacing: -0.004em;
   color: var(--print-ink);
 }
@@ -9423,7 +9600,7 @@ a.arrow { text-decoration: none; }
   margin: 0 0 12px;
   display: flex; align-items: baseline; gap: 14px;
   font-family: var(--f-nav); letter-spacing: 0.06em;
-  font-size: 11px; line-height: 18px;
+  font-size: var(--t-meta); line-height: var(--lh-meta);
   text-transform: uppercase;
   color: var(--print-faint);
 }
@@ -9433,10 +9610,14 @@ a.arrow { text-decoration: none; }
   letter-spacing: 0.1em;
 }
 
-.pc-beat p {
+/* :not(), because the heading in this row is a <p> as well -- the script
+   builds both -- so ".pc-beat p" matched it, outweighed ".pc-beat-h" by a
+   tag, and set it to the body size. The heading rule above has been asking
+   for 11 and then for 12 and getting neither since the row was written. */
+.pc-beat p:not(.pc-beat-h) {
   margin: 0;
-  max-width: 560px;
-  font-size: 16px; line-height: 27px;
+  max-width: 500px;
+  font-size: var(--t-body); line-height: 24px;
   color: var(--print-ink);
 }
 
@@ -9471,7 +9652,7 @@ a.arrow { text-decoration: none; }
 .pc-beat figcaption {
   flex: none;
   margin-top: 9px;
-  font-size: 12.5px; line-height: 18px; color: var(--print-faint);
+  font-size: var(--t-meta); line-height: var(--lh-meta); color: var(--print-faint);
 }
 
 /* --- the verdict and the small print -------------------------------------- */
@@ -9480,8 +9661,11 @@ a.arrow { text-decoration: none; }
   margin: 40px 0 0;
   padding-top: 34px;
   border-top: 1px solid var(--print-rule);
-  max-width: 760px;
-  font-size: 24px; line-height: 35px; font-weight: 600;
+  max-width: 560px;
+  /* The body step carrying weight, which is what a closing line is: it is a
+     sentence, not a title, and the sheet already has its title at the top.
+     A run-in heading is the same move -- see .c-step b. */
+  font-size: var(--t-body); line-height: 24px; font-weight: 600;
   letter-spacing: -0.008em;
   color: var(--print-name);
 }
@@ -9490,7 +9674,7 @@ a.arrow { text-decoration: none; }
   margin: 26px 0 0;
   display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px;
   font-family: var(--f-nav); letter-spacing: 0.06em;
-  font-size: 10px; line-height: 18px;
+  font-size: var(--t-meta); line-height: var(--lh-meta);
   text-transform: uppercase;
   color: var(--print-faint);
 }
@@ -9502,7 +9686,7 @@ a.arrow { text-decoration: none; }
   flex: none;
   padding: 3px 9px;
   font-family: var(--f-nav); letter-spacing: 0.06em;
-  font-size: 10px; line-height: 18px;
+  font-size: var(--t-meta); line-height: var(--lh-meta);
   text-transform: uppercase;
   color: var(--st-ink);
   background: var(--st-fill);
@@ -9607,6 +9791,30 @@ a.arrow { text-decoration: none; }
 
 @media (max-width: 900px) {
   body { overflow: auto; }
+
+  /* --- the scale, on a phone --------------------------------------------
+
+     The same four names, redrawn once, rather than forty rules each naming
+     its own phone size. That is what was here: .headline 20, .sub 15, .idx-t
+     16, .pc-title 30, .pc-lede 18, .ab-lede 20, .bk-title 22, .crumb 13 --
+     every one of them a considered figure, and no two of them considered
+     together. A screen that is a third the width does want smaller type, but
+     it wants it as a scale and not as forty opinions.
+
+     Display comes down hardest, because a phone has no room for a 28-pixel
+     line and the frame's cards are stacked in a column where the title has
+     the reader's whole attention anyway. Body and meta barely move: they were
+     already at the size a hand-held screen reads at, which is most of why
+     the frame's own body step is 14 and not 16.
+
+     Everything downstream follows without being told, which is the point --
+     the rules that matter are written once, up there, in design pixels. */
+  :root {
+    --t-display: 24px; --lh-display: 30px;
+    --t-heading: 16px; --lh-heading: 22px;
+    --t-body:    14px; --lh-body:    21px;
+    --t-meta:    12px; --lh-meta:    17px;
+  }
 
   /* A ground for the glass to stand on. Fixed and behind everything, on its
      own box rather than on the body, so that it does not scroll with the
@@ -9790,19 +9998,10 @@ a.arrow { text-decoration: none; }
 
   .card > .arrow { display: none; }
   .label { display: block; margin-bottom: 18px; }
-  .headline { margin-bottom: 8px; font-size: 20px; line-height: 28px; }
+  .headline { margin-bottom: 8px; }
   .media .headline { line-height: 28px; }
-  .sub { margin-bottom: 16px; font-size: 15px; line-height: 22px; }
+  .sub { margin-bottom: 16px; }
   .chip { display: inline-block; padding: 6px 14px; }
-
-  /* The same lift on the screens that carry lists rather than cards: the
-     writing index, the breadcrumbs, and the two small figures on a project. */
-  .idx-t { font-size: 16px; line-height: 22px; }
-  .idx-m { font-size: 13px; }
-  .idx-n { font-size: 12px; }
-  .idx-count { font-size: 13px; }
-  .crumb, .crumb-count { font-size: 13px; }
-  .w-tags span { font-size: 13px; }
 
   .avatar { position: static; }
   .wordmark { margin: 22px 0 12px; }
@@ -9973,7 +10172,12 @@ a.arrow { text-decoration: none; }
     transition: transform 220ms var(--ease);
   }
   .back[hidden] { display: none; }
-  .back svg { width: 17px; height: 17px; flex: none; }
+  /* What the frame's square sets, and a pill has to give back: a width drawn
+     by its own padding rather than a fixed 44, the label the frame has no room
+     for, and the heavier stroke the arrow is drawn at down here. */
+  .back { width: auto; }
+  .back-t { display: inline; }
+  .back svg { width: 17px; height: 17px; flex: none; stroke-width: 1.9; }
   .back:active { transform: scale(0.96); }
 
   /* The rim on the two controls. A pane of glass is not lit evenly round its
@@ -10093,13 +10297,11 @@ a.arrow { text-decoration: none; }
      it is rather than as a smaller copy of the sentence under it. */
   .nw-when {
     font-family: var(--f-label);
-    font-size: 11px; line-height: 15px;
     letter-spacing: 0.08em;
     text-transform: uppercase;
     margin-bottom: 5px;
   }
-  .nw-what { font-size: 17px; line-height: 22px; }
-  .nw-kind { display: block; margin-top: 3px; font-size: 12px; }
+  .nw-kind { display: block; margin-top: 3px; }
 
   .ab-late { display: flex; margin-top: 20px; }
 
@@ -10163,19 +10365,9 @@ a.arrow { text-decoration: none; }
      --pad rather than 24, so the margin and the card cannot drift apart. */
 
   .ab-por  { height: 190px; margin-bottom: 20px; }
-  .ab-lede { margin-bottom: 20px; font-size: 20px; line-height: 30px; }
+  .ab-lede { margin-bottom: 20px; }
   .ab-facts { grid-template-columns: 110px 1fr; gap: 10px 14px; }
-
-  /* The small end of the scale, lifted.
-     The figures on the frame were drawn for a screen you sit back from, where
-     10px of caps under a 20px headline is a quiet second voice. A phone is
-     held at a third of that distance and the same figure is not quiet, it is
-     small -- and the two lists on this screen are all second voice. So the
-     floor comes up: nothing under 11, the names in both lists to 12, and what
-     they name to a size you read rather than decipher. */
-  .ab-facts dt { font-size: 13px; }
-  .ab-facts dd { font-size: 16px; line-height: 23px; }
-  .ab-por { font-size: 11px; line-height: 15px; }
+  .ab-por { font-size: var(--t-meta); line-height: var(--lh-meta); }
 
   /* The tapes are fluid already -- sixty-three columns of 1fr -- so all a
      phone needs is for them to stop being placed by hand. */
@@ -10365,8 +10557,7 @@ a.arrow { text-decoration: none; }
     left: 0; right: 0; bottom: 0;
     top: auto; width: auto; height: 3px;
   }
-  .pc-title { font-size: 30px; line-height: 38px; }
-  .pc-lede { font-size: 18px; line-height: 28px; margin-bottom: 30px; }
+  .pc-lede { margin-bottom: 30px; }
 
   /* The photograph comes out of the margin and sits under the beat it belongs
      to, because on a phone there is no margin to put it in. */
@@ -10378,9 +10569,9 @@ a.arrow { text-decoration: none; }
   }
   .pc-beat figure { grid-column: 1; grid-row: auto; margin-top: 18px; }
   .pc-beat-shot { height: 190px; }
-  .pc-beat p { font-size: 15.5px; line-height: 25px; }
+  .pc-beat p:not(.pc-beat-h) { font-size: var(--t-body); line-height: 24px; }
 
-  .pc-verdict { margin-top: 30px; padding-top: 26px; font-size: 20px; line-height: 30px; }
+  .pc-verdict { margin-top: 30px; padding-top: 26px; }
 
   /* An opened cover takes the whole screen, because there is no frame here for
      it to be a panel on -- the stage is a column as wide as the phone and a
@@ -10417,7 +10608,6 @@ a.arrow { text-decoration: none; }
   .zoom-getit { margin-top: 20px; }
 
   .zoom-read { margin-top: 30px; padding: 0 var(--pad); }
-  .zoom-title { font-size: 27px; line-height: 34px; }
   .zoom-facts { grid-template-columns: auto 1fr; }
 
   /* One across, not two: a still half the width of a phone is a smudge with a
@@ -10479,7 +10669,6 @@ a.arrow { text-decoration: none; }
     position: static;
     left: auto; top: auto;
     margin: 46px 0 4px;
-    font-size: 15px;
     letter-spacing: 0.04em;
   }
   .x-lab .crumb a, .x-lab .crumb span { display: none; }
@@ -10515,7 +10704,7 @@ a.arrow { text-decoration: none; }
   /* The lead headline is set larger than the shared one, and that override is
      specific enough to survive into the phone layout, so hand it back. */
   .w-lab .headline,
-  .c-hero .headline { font-size: 20px; line-height: 28px; width: auto; }
+  .c-hero .headline { width: auto; }
   .w-one .headline, .w-two .headline, .w-three .headline,
   .c-problem .headline, .c-outcome .headline { width: auto; }
   .w-lab .sub, .w-one .sub, .w-two .sub, .w-three .sub,
@@ -10581,7 +10770,6 @@ a.arrow { text-decoration: none; }
     transform: none !important;
   }
   .bk-title { break-after: auto; display: block; height: auto; padding-top: 0; }
-  .bk-title h2 { font-size: 22px; line-height: 30px; }
   .bk-colophon { break-before: auto; padding-top: 26px; }
   .bk-flow blockquote { margin-left: 16px; margin-right: 16px; }
   /* One column and no page to run short: the plate is back in the flow. */
@@ -10620,7 +10808,6 @@ a.arrow { text-decoration: none; }
     display: block;
     margin: 0 0 7px;
     font-family: var(--f-label);
-    font-size: 11px; line-height: 15px;
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--quiet);
@@ -10649,14 +10836,12 @@ a.arrow { text-decoration: none; }
   }
   .w-fig dt {
     font-family: var(--f-label);
-    font-size: 19px; line-height: 24px;
     font-weight: 600;
     font-variant-numeric: tabular-nums;
     color: var(--heading);
   }
   .w-fig dd {
     margin: 0;
-    font-size: 13px; line-height: 18px;
     color: var(--sub);
   }
 
@@ -10685,8 +10870,6 @@ a.arrow { text-decoration: none; }
      -- "Why video games are the", and then a year. The row is sized by what is
      in it now, which is what the clamp was always for. */
   .idx-row { height: auto; padding: 16px 0; }
-  .idx-t { font-size: 17px; line-height: 24px; }
-  .idx-m { font-size: 13px; line-height: 17px; }
   /* The count is a figure standing beside the word it counts, and the two of
      them start at the same line: the card's own inside margin, not the 24 the
      frame happens to use. */
@@ -10797,7 +10980,8 @@ a.arrow { text-decoration: none; }
    and a stop is the jitter this was rebuilt to get rid of. */
 .arriving .card,
 .arriving .nav,
-.arriving .room {
+.arriving .room,
+.arriving .back {
   animation: arrive-card 500ms var(--ease) var(--at, 1180ms) both;
 }
 @keyframes arrive-card { from { opacity: 0; } to { opacity: 1; } }
@@ -10809,7 +10993,10 @@ a.arrow { text-decoration: none; }
 .arriving .card[data-tile="e"] { --at: 1700ms; }
 .arriving .card[data-tile="f"] { --at: 1780ms; }
 .arriving .nav  { --at: 1860ms; }
-.arriving .room { --at: 1930ms; }
+/* The pair in the margins land together, and last. On Home the way back is
+   hidden and there is nothing to land; on a deep link there is. */
+.arriving .room,
+.arriving .back { --at: 1930ms; }
 
 
 
@@ -10950,7 +11137,8 @@ a.arrow { text-decoration: none; }
   .arriving .rules i.v, .arriving .rules i.h { --w-b: initial; }
   .arriving .card,
   .arriving .nav,
-  .arriving .room { animation: arrive-card 240ms linear 60ms both !important; }
+  .arriving .room,
+  .arriving .back { animation: arrive-card 240ms linear 60ms both !important; }
 }
 
 /* --- crossing, on a phone -------------------------------------------------
@@ -11577,11 +11765,6 @@ a.arrow { text-decoration: none; }
       <!-- Tile a comes down out of Home's intro card. -->
       <section class="card w-one" data-tile="a">
         <span class="w-shot is-blank" aria-hidden="true"></span>
-        <p class="label">01</p>
-        <span class="arrow" aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
-             stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h17M14 6l6 6-6 6"/></svg>
-        </span>
         <div class="w-said">
           <p class="w-kind">Case study · 2025</p>
           <h2 class="headline">Reimagining linear player</h2>
@@ -11597,11 +11780,6 @@ a.arrow { text-decoration: none; }
       <!-- ------------------------ w-two ------------------------ -->
       <section class="card w-two" data-tile="d">
         <span class="w-shot is-blank" aria-hidden="true"></span>
-        <p class="label">02</p>
-        <span class="arrow" aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
-             stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h17M14 6l6 6-6 6"/></svg>
-        </span>
         <div class="w-said">
           <p class="w-kind">Case study · 2024</p>
           <h2 class="headline">Xstream creative toolkit</h2>
@@ -11618,11 +11796,6 @@ a.arrow { text-decoration: none; }
       <!-- Tile f crosses the whole frame from Home's media strip. -->
       <section class="card w-three" data-tile="f">
         <span class="w-shot is-blank" aria-hidden="true"></span>
-        <p class="label">03</p>
-        <span class="arrow" aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
-             stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h17M14 6l6 6-6 6"/></svg>
-        </span>
         <div class="w-said">
           <p class="w-kind">Case study · 2024</p>
           <h2 class="headline">Bubbles // a studio site</h2>
@@ -11639,11 +11812,6 @@ a.arrow { text-decoration: none; }
       <!-- Tile e is Home's Connect card, the last one left. -->
       <section class="card w-four" data-tile="e">
         <span class="w-shot is-blank" aria-hidden="true"></span>
-        <p class="label">04</p>
-        <span class="arrow" aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
-             stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h17M14 6l6 6-6 6"/></svg>
-        </span>
         <div class="w-said">
           <p class="w-kind">Case study · 2025</p>
           <h2 class="headline">Family safety, without the surveillance</h2>
@@ -11664,44 +11832,36 @@ a.arrow { text-decoration: none; }
         <div class="idx-list" data-idx>
           <div class="idx-page is-on" style="--at: 0">
             <a class="idx-row" href="#read/ultimate-art-form" data-route="article" data-slug="ultimate-art-form">
-              <span class="idx-n">01</span>
               <span class="idx-t">Why video games are the ultimate form of art</span>
               <span class="idx-m">2025 &middot; 9 min</span>
             </a>
             <a class="idx-row" href="#read/taste-is-the-last-moat" data-route="article" data-slug="taste-is-the-last-moat">
-              <span class="idx-n">02</span>
               <span class="idx-t">Taste is the last moat</span>
               <span class="idx-m">2025 &middot; 6 min</span>
             </a>
             <a class="idx-row" href="#read/what-a-linear-player-taught-me-about-time" data-route="article" data-slug="what-a-linear-player-taught-me-about-time">
-              <span class="idx-n">03</span>
               <span class="idx-t">What a linear player taught me about time</span>
               <span class="idx-m">2025 &middot; 11 min</span>
             </a>
             <a class="idx-row" href="#read/the-interface-is-not-the-product" data-route="article" data-slug="the-interface-is-not-the-product">
-              <span class="idx-n">04</span>
               <span class="idx-t">The interface is not the product</span>
               <span class="idx-m">2025 &middot; 7 min</span>
             </a>
             <a class="idx-row" href="#read/designing-for-the-ten-foot-experience" data-route="article" data-slug="designing-for-the-ten-foot-experience">
-              <span class="idx-n">05</span>
               <span class="idx-t">Designing for the ten-foot experience</span>
               <span class="idx-m">2024 &middot; 12 min</span>
             </a>
           </div>
           <div class="idx-page" style="--at: 1" aria-hidden="true">
             <a class="idx-row" href="#read/systems-thinking-is-noticing-twice" data-route="article" data-slug="systems-thinking-is-noticing-twice" tabindex="-1">
-              <span class="idx-n">06</span>
               <span class="idx-t">Systems thinking is noticing twice</span>
               <span class="idx-m">2024 &middot; 5 min</span>
             </a>
             <a class="idx-row" href="#read/against-the-infinite-canvas" data-route="article" data-slug="against-the-infinite-canvas" tabindex="-1">
-              <span class="idx-n">07</span>
               <span class="idx-t">Against the infinite canvas</span>
               <span class="idx-m">2024 &middot; 8 min</span>
             </a>
             <a class="idx-row" href="#read/ship-the-boring-version-first" data-route="article" data-slug="ship-the-boring-version-first" tabindex="-1">
-              <span class="idx-n">08</span>
               <span class="idx-t">Ship the boring version first</span>
               <span class="idx-m">2024 &middot; 4 min</span>
             </a>
@@ -12370,11 +12530,15 @@ a.arrow { text-decoration: none; }
       </button>
     </div>
 
-    <!-- The way back, on a phone only. A floating control rather than a line
-         of type at the top of a document: it has to be reachable from three
-         thousand pixels down an essay, and a thumb reaches the bottom corners
-         of a phone, not the top ones. Its route and its label are written by
-         paint(); on Home it has nowhere to go and is hidden. -->
+    <!-- The way back. Two shapes for one control: on the frame it is the
+         switch's mirror, a 44 square in the left margin column -- see .back in
+         the stylesheet; on a phone it is a floating pill with the word in it,
+         because there is no margin column down there and the control has to be
+         reachable from three thousand pixels down an essay. Out here with the
+         switch and the bar rather than inside a view, for the same reason they
+         are: it stands over the frame rather than on a screen. Its route, its
+         word and its label are written by paint(); on Home it has nowhere to
+         go and is hidden. -->
     <a class="back" href="#" data-route="home" hidden>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"
            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -17389,15 +17553,21 @@ a.arrow { text-decoration: none; }
       // The button is a link like any other -- it is the click handler's
       // a[data-route] and goes through go() with everything else -- so the
       // only thing a screen change owes it is where it points and what it
-      // says. It is display: none above 900, so this costs a phone nothing
-      // and a desktop two attribute writes it never reads.
+      // says. It says it twice, because it is two shapes: a pill on the phone
+      // with the word in it, and a 44 square on the frame with only the arrow,
+      // where the word has to live in the label instead. Written on both
+      // either way -- two attribute writes are cheaper than asking which
+      // layout is in force -- and the label carries the visible word inside
+      // it, so the two names cannot disagree.
       if (back) {
         var up = PARENT[name];
         back.hidden = !up;
         if (up) {
+          var upName = UP[up] || up;
           back.setAttribute('data-route', up);
           back.setAttribute('href', hashOf(up) || '#');
-          if (backT) { backT.textContent = UP[up] || up; }
+          back.setAttribute('aria-label', 'Back to ' + upName);
+          if (backT) { backT.textContent = upName; }
         }
       }
 
