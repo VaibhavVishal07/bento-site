@@ -1257,7 +1257,28 @@ body {
               opacity var(--x-out) var(--x-ease);
 }
 
-.rules i.v { width: 1px; top: 0; height: 1080px; left: var(--lx); }
+/* Both axes overshoot the frame, and for one reason: a window is hardly ever
+   16:9, so the frame is letterboxed on one axis or the other and the lattice
+   has to reach the edge of the glass rather than the edge of the drawing.
+
+   The horizontals have always done it -- 3000 either side, which is more than
+   any window can show past the frame's margins. The verticals did not: they
+   ran 0 -> 1080 exactly, so in any window taller than 16:9 they stopped at the
+   frame's top and foot with the horizontals still running out to the window's,
+   which is a lattice ruled to the drawing crossing one ruled to the room.
+
+   --vb is their share of it. 330 rather than 3000 because a vertical's sweep
+   is its whole length and a horizontal's is the middle of one -- see the four
+   keyframes -- and 330 is what covers the band above and below the frame in
+   any window down to 1.1:1, which is every window this frame is drawn in.
+   Below 900 the lattice is not drawn at all. */
+.rules i.v {
+  --vb: 330px;
+  width: 1px;
+  left: var(--lx);
+  top: calc(-1 * var(--vb));
+  height: calc(1080px + 2 * var(--vb));
+}
 .rules i.h { height: 1px; left: -3000px; width: 7000px; top: var(--ly); }
 
 /* Each line samples one frame-wide light field. The gradient is sized to the
@@ -1265,7 +1286,7 @@ body {
    single 1920 x 1080 coordinate space and a lit patch crosses them coherently
    rather than each lighting on its own. Horizontals start 3000px left of the
    frame, hence the offset the other way. */
-.rules i.v { background-position: calc(-1 * var(--lx)) 0; }
+.rules i.v { background-position: calc(-1 * var(--lx)) var(--vb); }
 .rules i.h { background-position: 3000px calc(-1 * var(--ly)); }
 
 /* Every line is masked, always, by a window with a soft edge at each end: the
@@ -1290,13 +1311,20 @@ body {
    Which end moves is what makes a pass a rubbing-out or a ruling, and it is
    the only difference between them. Move --w-a and the line is eaten from its
    start; move --w-b and it is grown from its start, or taken back to it. */
+/* Every figure in --w-a and --w-b is a frame coordinate -- 0 is the frame's
+   top edge, not the element's -- and the bleed is added here, once, at the two
+   places they are read. That keeps the four keyframes and the gap figures
+   below written in the coordinates everything else on this page is written
+   in, rather than in the element's own space plus an offset to remember. */
 .rules i.v {
   -webkit-mask-image: linear-gradient(180deg,
-                      transparent 0 var(--w-a), #000 calc(var(--w-a) + 70px) var(--w-b),
-                      transparent calc(var(--w-b) + 70px));
+                      transparent 0 calc(var(--w-a) + var(--vb)),
+                      #000 calc(var(--w-a) + var(--vb) + 70px) calc(var(--w-b) + var(--vb)),
+                      transparent calc(var(--w-b) + var(--vb) + 70px));
   mask-image: linear-gradient(180deg,
-              transparent 0 var(--w-a), #000 calc(var(--w-a) + 70px) var(--w-b),
-              transparent calc(var(--w-b) + 70px));
+              transparent 0 calc(var(--w-a) + var(--vb)),
+              #000 calc(var(--w-a) + var(--vb) + 70px) calc(var(--w-b) + var(--vb)),
+              transparent calc(var(--w-b) + var(--vb) + 70px));
 }
 
 .rules i.h {
@@ -1362,19 +1390,25 @@ body {
 .rules i.v-mid {
   --vgap-y: 1200px;
   --vgap-h: 0px;
-  -webkit-mask-image: linear-gradient(to bottom, #000 0 var(--vgap-y),
-                      transparent var(--vgap-y) calc(var(--vgap-y) + var(--vgap-h)),
-                      #000 calc(var(--vgap-y) + var(--vgap-h))),
+  -webkit-mask-image: linear-gradient(to bottom,
+                      #000 0 calc(var(--vgap-y) + var(--vb)),
+                      transparent calc(var(--vgap-y) + var(--vb))
+                                  calc(var(--vgap-y) + var(--vb) + var(--vgap-h)),
+                      #000 calc(var(--vgap-y) + var(--vb) + var(--vgap-h))),
                       linear-gradient(180deg,
-                      transparent 0 var(--w-a), #000 calc(var(--w-a) + 70px) var(--w-b),
-                      transparent calc(var(--w-b) + 70px));
+                      transparent 0 calc(var(--w-a) + var(--vb)),
+                      #000 calc(var(--w-a) + var(--vb) + 70px) calc(var(--w-b) + var(--vb)),
+                      transparent calc(var(--w-b) + var(--vb) + 70px));
   -webkit-mask-composite: source-in;
-  mask-image: linear-gradient(to bottom, #000 0 var(--vgap-y),
-              transparent var(--vgap-y) calc(var(--vgap-y) + var(--vgap-h)),
-              #000 calc(var(--vgap-y) + var(--vgap-h))),
+  mask-image: linear-gradient(to bottom,
+              #000 0 calc(var(--vgap-y) + var(--vb)),
+              transparent calc(var(--vgap-y) + var(--vb))
+                          calc(var(--vgap-y) + var(--vb) + var(--vgap-h)),
+              #000 calc(var(--vgap-y) + var(--vb) + var(--vgap-h))),
               linear-gradient(180deg,
-              transparent 0 var(--w-a), #000 calc(var(--w-a) + 70px) var(--w-b),
-              transparent calc(var(--w-b) + 70px));
+              transparent 0 calc(var(--w-a) + var(--vb)),
+              #000 calc(var(--w-a) + var(--vb) + 70px) calc(var(--w-b) + var(--vb)),
+              transparent calc(var(--w-b) + var(--vb) + 70px));
   mask-composite: intersect;
   transition: --px 340ms cubic-bezier(0.22, 1, 0.36, 1),
               --py 340ms cubic-bezier(0.22, 1, 0.36, 1),
@@ -1447,16 +1481,17 @@ body {
    window's near end past the bottom, the ruling opens with its far end above
    the top.
 
-   A vertical is exactly as long as its line, so its figures are 1150 and -70
-   -- 1080 and the tail, either side. A horizontal is not: it is 7000 long and
-   starts 3000 left of the frame, all so it can reach the window edge whatever
-   the frame is scaled to, and only the middle of that is ever on screen.
+   A vertical is exactly as long as its line, so its figures are 1480 and -400
+   -- the frame's 1080 with 330 of bleed at either end of it, and the tail
+   outside that. A horizontal is not: it is 7000 long and starts 3000 left of
+   the frame, all so it can reach the window edge whatever the frame is scaled
+   to, and only the middle of that is ever on screen.
    Running it end to end would spend most of the sweep out of sight, so it
    works between 2400 and 6200 -- frame -600 to 3200, past the margin of any
    window that letterboxes this frame -- and the rest is left standing, out
    where there is nothing to watch. */
-@keyframes rub-v  { from { --w-a: -400px; } to { --w-a: 1150px; } }
-@keyframes rule-v { from { --w-b:  -70px; } to { --w-b: 1150px; } }
+@keyframes rub-v  { from { --w-a: -400px; } to { --w-a: 1480px; } }
+@keyframes rule-v { from { --w-b: -400px; } to { --w-b: 1480px; } }
 @keyframes rub-h  { from { --w-b: 6200px; } to { --w-b: 2400px; } }
 @keyframes rule-h { from { --w-b: 2400px; } to { --w-b: 6200px; } }
 
@@ -2391,17 +2426,42 @@ body {
 .nav {
   position: fixed;
   left: 50%;
-  /* Clear of the bottom of the window, and clear of whatever the hardware
-     puts below that. max() rather than a sum: where there is a home indicator
+  /* Clear of the foot of the frame, and clear of whatever the hardware puts
+     below the window. max() rather than a sum: where there is a home indicator
      the inset is already 34, and 42 + 34 would float the bar in the middle of
      nowhere.
 
      42 and not 22. The frame leaves 149 of its own below the bottom row and
      the bar sat at the very foot of that band, which put it nearer the edge of
      the window than the cards it belongs to. Twenty further up is the middle
-     of the band rather than the bottom of it. */
-  bottom: max(42px, env(safe-area-inset-bottom, 0px));
-  transform: translateX(-50%);
+     of the band rather than the bottom of it.
+
+     --nav-foot is that 42 turned into a real distance from the bottom of the
+     window: the letterbox under the frame, plus 42 scaled. It is written by
+     the fit script beside --s, and the figure here is the fallback for the one
+     window where the two agree anyway. */
+  bottom: max(var(--nav-foot, 42px), env(safe-area-inset-bottom, 0px));
+
+  /* And the bar is drawn at the frame's scale.
+
+     Every figure below -- the height, the padding, the cells, the type on them
+     -- is a design pixel off the same 1920 x 1080 sheet the cards are measured
+     on, and the bar is the one piece of that sheet standing outside the stage:
+     it has to be, because a transform makes a containing block and a bar fixed
+     inside one is fixed to the drawing rather than to the window. So it was
+     the only thing on the screen that did not shrink with the rest of it, and
+     on anything under a full 1920 it read half again too large -- 65 real
+     pixels of bar against cards drawn at two thirds.
+
+     The scale comes back on its own property rather than by reading --s, for
+     the reason --s does not inherit at all: written where everything can see
+     it, one number changing is the whole document's style invalidated on every
+     frame of a window drag. Here it reaches one box and three links.
+
+     Bottom centre, so the scale is taken out of the top of the bar and the
+     edge --nav-foot places stays exactly where it was put. */
+  transform-origin: 50% 100%;
+  transform: translateX(-50%) scale(var(--ns, 1));
   z-index: 60;
 
   /* A fifth larger, all through: the box, the padding round the cells, the
@@ -5937,6 +5997,12 @@ body {
 /* The stage's scale. Registered for a different reason than everything else
    here -- not so it can interpolate, but so it does not inherit. */
 @property --s { syntax: "<number>"; inherits: false; initial-value: 1; }
+/* And the bar's, which is the same figure arriving somewhere else: the bar
+   stands outside the stage and so cannot be scaled by it. Both registered as
+   not inheriting, so that a window drag invalidates the two boxes that read
+   them rather than everything under them. See .nav. */
+@property --ns { syntax: "<number>"; inherits: false; initial-value: 1; }
+@property --nav-foot { syntax: "<length>"; inherits: false; initial-value: 42px; }
 @property --hgap-x { syntax: "<length>"; inherits: true; initial-value: 4145px; }
 @property --hgap-w { syntax: "<length>"; inherits: true; initial-value: 0px; }
 @property --vgap-y { syntax: "<length>"; inherits: true; initial-value: 1200px; }
@@ -11267,10 +11333,17 @@ a.arrow { text-decoration: none; }
          line across an empty field on About; data-on names the screens a pair
          belongs to and the stylesheet takes it out of the others. That is what
          made the frame read as ruled all across rather than ruled to the
-         boxes: not one wrong line, but the right lines on the wrong screen. -->
+         boxes: not one wrong line, but the right lines on the wrong screen.
+
+         And a line stops where the lattice stops. Four of these carried a
+         height of 1010 so as to keep off the bar's base panel, which spanned
+         1010 down to the foot of the frame. The bar floats now and that panel
+         went with the change -- so those four were stopping seventy pixels
+         short of the other eight for a reason there was nothing left on the
+         screen to show. They run the full drop like the rest of them. -->
     <div class="rules rules-under" aria-hidden="true">
-      <i class="v" data-on="home about case" style="--lx:762px;height:1010px;--l-at:0.3969"></i>
-      <i class="v" data-on="home about case" style="--lx:785px;height:1010px;--l-at:0.4089"></i>
+      <i class="v" data-on="home about case" style="--lx:762px;--l-at:0.3969"></i>
+      <i class="v" data-on="home about case" style="--lx:785px;--l-at:0.4089"></i>
       <!-- The three gutters the row of four adds, under the cards: covered
            everywhere but between the boxes. See .w-one. -->
       <i class="v" data-on="work" style="--lx:663px;--l-at:0.3453"></i>
@@ -11293,8 +11366,8 @@ a.arrow { text-decoration: none; }
     <div class="rules rules-over" aria-hidden="true">
       <i class="v" data-on="home work about case article" style="--lx:377px;--l-at:0.1964"></i>
       <i class="v" data-on="home work about case article" style="--lx:398px;--l-at:0.2073"></i>
-      <i class="v v-mid" data-on="home work about case" style="--lx:1134px;height:1010px;--l-at:0.5906"></i>
-      <i class="v v-mid" data-on="home work about case" style="--lx:1155px;height:1010px;--l-at:0.6016"></i>
+      <i class="v v-mid" data-on="home work about case" style="--lx:1134px;--l-at:0.5906"></i>
+      <i class="v v-mid" data-on="home work about case" style="--lx:1155px;--l-at:0.6016"></i>
       <i class="v" data-on="home work about case article" style="--lx:1520px;--l-at:0.7917"></i>
       <i class="v" data-on="home work about case article" style="--lx:1541px;--l-at:0.8026"></i>
       <i class="h" data-on="home work about case article" style="--ly:70px;--l-at:0.0648"></i>
@@ -12465,15 +12538,45 @@ a.arrow { text-decoration: none; }
   (function () {
     var stage = document.querySelector('.stage');
     if (!stage) { return; }
+    /* The bar is fitted here too. It is the one piece of the drawing that
+       stands outside the stage -- it has to, because a transform makes a
+       containing block and a bar fixed inside one is fixed to the drawing --
+       so the scale the stage applies with a transform has to be handed to it
+       instead of inherited. See .nav. */
+    var nav = document.querySelector('.nav');
 
-    var frame = 0, last = -1;
+    var frame = 0, last = -1, lastFoot = -1;
 
     function paint() {
       frame = 0;
-      var s = matchMedia('(max-width: 900px)').matches
+      var small = matchMedia('(max-width: 900px)').matches;
+      var s = small
         ? 1
         : Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
       s = Math.round(s * 100000) / 100000;
+
+      /* The bar first, and outside the guard below, because it answers to the
+         window's height as well as to the scale: on a window whose scale is
+         set by its width, dragging the bottom edge moves the foot of the frame
+         without changing s at all.
+
+         The frame is centred, so what is under it is half of what the
+         letterbox leaves; 42 design pixels above that is where the bar's own
+         edge goes -- which puts it at the frame's y=1038 in every window,
+         where it was drawn. The phone has neither a scale nor a letterbox and
+         overrides both figures in the stylesheet, so it is handed the plain
+         ones rather than arithmetic that does not apply to it. */
+      if (nav) {
+        var foot = small
+          ? 42
+          : Math.round(((window.innerHeight - 1080 * s) / 2 + 42 * s) * 100) / 100;
+        if (foot !== lastFoot || s !== last) {
+          lastFoot = foot;
+          nav.style.setProperty('--ns', small ? 1 : s);
+          nav.style.setProperty('--nav-foot', foot + 'px');
+        }
+      }
+
       if (s === last) { return; }
       last = s;
       stage.style.setProperty('--s', s);
@@ -18378,7 +18481,15 @@ a.arrow { text-decoration: none; }
     var ac = null, out = null;
 
     /* Built on the first press, because a context made before one is a context
-       the browser starts suspended and never resumes. */
+       the browser starts suspended -- and everything scheduled into a suspended
+       context is scheduled against a clock that is not running, so it does not
+       play quietly, it queues. The tick under a cursor that has not pressed
+       anything yet used to build the context, find it asleep, and leave a note
+       on the doormat; the first press then resumed it and forty of those notes
+       arrived at once.
+
+       So this is called from a gesture and from nowhere else, and play() below
+       refuses to sound at all until it has been. */
     function wake() {
       if (ac) {
         if (ac.state === 'suspended') { ac.resume(); }
@@ -18442,8 +18553,24 @@ a.arrow { text-decoration: none; }
     }
 
     var VOICE = {
-      /* the cursor passing over something */
-      move: function () { note(2050, 1960, 0.032, 0.05, 'sine'); },
+      /* The cursor passing over something.
+
+         It is the one voice that has to be heard without being listened for,
+         and it was the one voice nobody could hear: a thirty-two millisecond
+         sine at a twentieth of full scale is thirteen decibels under the press
+         it precedes, which on a laptop speaker at a normal volume is a tick
+         you can measure and cannot hear.
+
+         Twice the gain, half as long again, and a fifth of the way down the
+         keyboard -- two kilohertz is where a small speaker starts giving up.
+         The partial above it is the same trick the press uses and does the
+         same job: it stops a short sine reading as a fault rather than as a
+         sound. Five decibels under the press, which is where it belongs --
+         subordinate to it, and above the floor. */
+      move: function () {
+        note(1760, 1670, 0.052, 0.10, 'sine');
+        note(2640, 2505, 0.036, 0.025, 'triangle', 0.002);
+      },
       /* taking it: two partials a fifth apart, the upper one quieter */
       select: function () {
         note(1046, 1120, 0.085, 0.15, 'sine');
@@ -18463,9 +18590,12 @@ a.arrow { text-decoration: none; }
       key: knock
     };
 
+    /* Nothing sounds until there is a running context to sound it, and only a
+       gesture makes one. A reader who has moved the cursor over the page and
+       pressed nothing hears nothing -- which is the browser's rule and not a
+       choice here, and the alternative is not sound but a queue. */
     function play(which) {
-      if (off) { return; }
-      if (!wake()) { return; }
+      if (off || !ac || ac.state !== 'running') { return; }
       var v = VOICE[which];
       if (v) { v(); }
     }
@@ -18494,8 +18624,16 @@ a.arrow { text-decoration: none; }
       when = now;
       play('move');
     }, true);
+    /* And leaving it has to forget it. This asked whether the thing being left
+       was a target, which it always is -- it is the thing that was ticked --
+       so nothing was ever forgotten: move off a card into the gutter, move
+       back onto the same card, and it was still what the cursor was last on
+       and the return was silent. What matters is where the cursor has gone: out
+       of the element, or only from one part of it to another. */
     document.addEventListener('pointerout', function (e) {
-      if (!e.relatedTarget || !hit(e)) { last = null; }
+      if (!last) { return; }
+      var to = e.relatedTarget;
+      if (!to || !last.contains(to)) { last = null; }
     }, true);
 
     /* The press. Capture, so it is heard whether or not something further in
@@ -19035,6 +19173,10 @@ a.arrow { text-decoration: none; }
       card.classList.add('is-mute');
       clearInterval(tick);
       clearTimeout(guard);
+      /* Nothing is waiting on a player that is not coming. */
+      building = false;
+      pend.length = 0;
+      want = false;
     }
 
     function stall() {
@@ -19075,8 +19217,34 @@ a.arrow { text-decoration: none; }
       document.head.appendChild(s);
     }
 
+    /* One player, however many things ask for one.
+
+       Three things want the machine built and all three want it early: the
+       screen opening, the cursor arriving on the card, and the press itself.
+       They used to get one player each. `yt` is not assigned until the API
+       script has arrived and the callback runs, so every ask before that
+       passed the `if (yt)` on its first line, and api() chains callers rather
+       than replacing them -- so when the script finally landed it built two
+       players, or three, one after another on the same host.
+
+       The first of them replaced the host with its iframe, which is the one
+       you could see and hear. The rest were constructed on an element no
+       longer in the document -- and `yt`, which every key on the transport
+       talks through, was the last of them. So the keys were wired to a player
+       that was not on the page: press play and the record you could see did
+       nothing. Pressing again sometimes found the other one, which is what
+       made it look like a card that needs two clicks.
+
+       So the flag is set before the wait rather than after it, and anything
+       that wanted to happen when the player was up waits in one queue. */
+    var building = false, pend = [];
+
     function build(then) {
-      if (yt) { return; }
+      /* Up already, in which case there is nothing to wait for. */
+      if (yt && ready) { if (then) { then(); } return; }
+      if (then) { pend.push(then); }
+      if (building) { return; }
+      building = true;
       api(function () {
         /* listType and list rather than videoId, when it is a list. The two
            are exclusive: given both, the API plays the list and ignores the
@@ -19097,7 +19265,7 @@ a.arrow { text-decoration: none; }
               settleList();
               draw();
               if (want) { want = false; yt.playVideo(); }
-              if (then) { then(); }
+              while (pend.length) { pend.shift()(); }
             },
             onError: off,
             onStateChange: function (e) {
@@ -19131,9 +19299,34 @@ a.arrow { text-decoration: none; }
        playVideo() is a direct answer to it. Touch has no hover, so pointerdown
        does the same job a moment earlier, and the want flag below catches the
        narrow case where the press really does arrive first. */
-    function warm() { if (!yt) { build(); } }
+    function warm() { build(); }
     card.addEventListener('pointerenter', warm);
     card.addEventListener('pointerdown', warm);
+
+    /* And earlier than either of those, when the screen the card is on opens.
+
+       Hovering the card is a good moment and not an early enough one. The
+       embed takes a second or two to come up and somebody who crosses the card
+       on the way to the play key spends a fifth of that; the press then landed
+       before the player existed, which is the case the want flag catches, and
+       what want does is call playVideo() from the API's own callback rather
+       than from the press -- outside the gesture, where a browser will not
+       start unmuted sound. That is the first click doing nothing.
+
+       So the machine is built when About is put on screen, which is seconds
+       rather than a fifth of one, and by the time any key is pressed there is a
+       player to press it against. It costs the embed to anybody who opens
+       About and nothing at all to anybody who does not, which is the trade the
+       hover was making anyway -- only in time to be of use. */
+    var abView = card.closest('.view');
+    if (abView) {
+      if (!abView.hidden) { warm(); }
+      if (window.MutationObserver) {
+        new MutationObserver(function () {
+          if (!abView.hidden) { warm(); }
+        }).observe(abView, { attributes: true, attributeFilter: ['hidden'] });
+      }
+    }
 
 
     /* Which keys are down.
