@@ -3789,7 +3789,22 @@ body {
    27 under another, and would have run a two-line headline straight through
    the line below it. One box, one margin, and the gap is the same on all four
    however many lines the headline takes. */
-.w-said { position: absolute; left: 24px; top: 176px; }
+.w-said { position: absolute; left: 24px; top: 260px; }
+
+/* One line each, and an ellipsis where the rest was.
+ *
+ * A square window leaves 56 pixels under it and a name and a line is exactly
+ * that: 23, 13 of margin, 20. Anything that wraps runs off the bottom of the
+ * card, so nothing is allowed to wrap -- which is a real cost and worth
+ * naming. "Family safety, without the surveillance" is cut on this screen.
+ * The whole of it is on the case study one press away, and on a phone, where
+ * the card is the only thing in view and has all the room it wants. */
+.w-said .headline,
+.w-said .sub {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 /* Both of these are written for the phone, where a project card is the only
    thing in view. On the frame the three cards sit in a row under a headline
    that has already said what they are, and the case is one press away. */
@@ -3841,10 +3856,20 @@ body {
    The crossed box is on the class and the photograph arrives as an inline
    background-image, so the picture covers the marks without either of them
    knowing about the other. Same arrangement as the prints on the table. */
+/* Square, and the width is what makes it one: the card is 264 and the margin
+   is 24 a side, so the window is 216 across and 216 is therefore its height.
+   No second figure to keep in step -- change the card's width or its margin
+   and the shot stays square by construction.
+
+   It cost the two lines under it their second line, and that was the trade
+   made knowingly. 24 above, 216 of picture, 20 of air, then a name and a line;
+   the card is 335 and that is 316 of it, which leaves 19 at the foot. There
+   is no arrangement of those five figures that fits a square and two lines of
+   copy, because the row sits on the frame's bottom rule and cannot grow. */
 .w-shot {
   position: absolute;
   left: 24px; right: 24px; top: 24px;
-  height: 128px;
+  height: 216px;
   background-color: var(--slot);
   background-image:
     linear-gradient(to bottom right, transparent calc(50% - 0.5px),
@@ -10575,6 +10600,14 @@ a.arrow { text-decoration: none; }
      selector at a time. This is the same fix for the L1 and for `.w-said`,
      which was on that list at (0,1,0) and losing to `.w-one .w-said`. */
   .card .headline, .card .sub, .card .w-said { width: auto; }
+  /* The clamp is the frame's, and the frame's reason for it -- a square window
+     in a 335-pixel card -- does not exist down here, where the card is as tall
+     as its contents. */
+  .w-said .headline, .w-said .sub {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+  }
 
   .card > .arrow { display: none; }
   .label { display: block; margin-bottom: 18px; }
