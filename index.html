@@ -2606,6 +2606,231 @@ body {
   transition: opacity 200ms ease;
 }
 .nav a:hover { opacity: 0.85; }
+
+/* ==========================================================================
+   The record in the bar
+
+   The machine is on About and the music is not: press play, walk to Work, and
+   the sound follows you while the thing making it is two screens away with no
+   way to stop it. That is the one state this site could get into where a
+   control was needed and there was none.
+
+   So the bar grows a record. It is not a fourth cell -- it is absolutely
+   positioned and therefore out of the flex flow entirely, which matters more
+   than it looks: the lozenge is drawn at (100% - 12px) / 3 and walks in thirds
+   (see .nav::before), so a fourth child in that row would have quietly put the
+   selection under the wrong word. Out of the flow, the bar still has three
+   cells and the arithmetic is untouched.
+
+   It is also not a second transport. Every press here clicks the real key on
+   the deck -- see the script -- so there is one player, one watchdog and one
+   place where play and pause latch against each other. This is a remote, and
+   a remote that held its own idea of the state would be the second machine
+   disagreeing with the first.
+
+   And it is only ever out here. On About the deck itself is on the screen, and
+   a remote for a machine you are looking at is clutter -- see the sibling rule
+   on #stage.x-about below, which is the router's own class doing the work.
+   ========================================================================== */
+
+.disc {
+  position: absolute;
+  left: 100%;                          /* just past the bar's own edge */
+  margin-left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  /* The bar's own height, and the bar's own shell. It was 42 against the
+     bar's 54 and it read as a smaller thing put next to a bigger one rather
+     than as the other end of the same object. */
+  height: 54px;
+  display: flex; align-items: center;
+  padding: 6px;
+  border: 1px solid rgba(var(--w), 0.14);
+  border-radius: 999px;
+  background-color: var(--bar-tint);
+  background-image: var(--ctl-ramp);
+  backdrop-filter: blur(30px) saturate(1.9) brightness(1.06);
+  -webkit-backdrop-filter: blur(30px) saturate(1.9) brightness(1.06);
+  box-shadow: var(--bar-cast);
+  /* Closed it is a circle. Opening is the circle growing to the right, which
+     is why the width is animated and not the contents: a capsule that grows
+     is one object doing something, where a panel appearing beside a button is
+     two. transition on width needs a figure at both ends, so both are set. */
+  /* 6 + 42 + 6 shut, and one key and its gap more open. Both figures are the
+     sum of what is inside and not a round number picked to look right: the
+     capsule was 138 with 120 of content in it, and the eighteen left over sat
+     at the closed end as a margin nobody had asked for. */
+  width: 54px;
+  overflow: hidden;
+  transition: width 260ms var(--x-ease);
+}
+.disc[hidden] { display: none; }
+
+@media (hover: hover) and (pointer: fine) {
+  .disc:hover { width: 94px; }
+}
+/* And open already where nothing can hover. The key cannot be reached by
+   hovering on a touch screen and the sleeve is a link now, so a capsule that
+   only opens on hover would hand a phone one control and hide the other. */
+@media (hover: none) {
+  .disc { width: 94px; }
+}
+.disc:focus-within, .disc.is-open { width: 94px; }
+@media (prefers-reduced-motion: reduce) { .disc { transition: none; } }
+
+/* The bar's glass, at the bar's radius, round instead of long. Same tint,
+   same ramp, same blur and the same cast, because this arrived beside the bar
+   and anything beside it that is nearly the same reads as a mistake. */
+/* The record sits in the capsule rather than being a button in front of one.
+   Nothing is pressed here: hovering opens it and the two keys inside do the
+   work, so a button wrapping the disc was a control that did nothing. */
+.disc-b {
+  flex: none;
+  display: grid; place-items: center;
+  width: 42px; height: 42px;
+}
+
+/* The record itself.
+
+   The grooves are a repeating radial and the label is a disc over them, which
+   is the whole drawing -- but a record made only of those is perfectly round
+   and perfectly symmetrical, and a perfectly symmetrical thing that spins does
+   not look like it is spinning. It looks like it is standing still. So there
+   is a sheen: one conic sweep, off-axis, and it is the only reason the
+   rotation reads at all. */
+/* No vinyl. The grooves and the label and the sheen were a drawing of a record
+   wrapped round a stamp-sized picture, and at 40 pixels the drawing won -- you
+   could see that it was a record and not what was on it. It is the sleeve, cut
+   round, turning. The picture is the object. */
+/* What is under the sleeve, for the moment before it loads and round its
+   edge after. It was a white at eight per cent with a white ring inside it,
+   which on dark glass is a grey disc -- a patch, and a patch is what you see
+   rather than the picture on it. It is a hole in the bar now: the shadow
+   side of the same ink the bar is made of, which is what a well in a piece
+   of glass looks like, with the light catching only the top of the rim. */
+.disc-rec {
+  position: relative;
+  width: 42px; height: 42px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: rgba(var(--shade), 0.42);
+  box-shadow:
+    inset 0 1px 0 rgba(var(--w), 0.10),
+    inset 0 -1px 0 rgba(var(--shade), 0.5);
+  animation: disc-spin 5.5s linear infinite;
+}
+.disc-art {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: center / cover no-repeat;
+}
+/* The spindle. One pixel of the ground showing through the middle. */
+.disc-rec::after {
+  content: "";
+  position: absolute;
+  left: 50%; top: 50%;
+  width: 3px; height: 3px;
+  margin: -1.5px 0 0 -1.5px;
+  border-radius: 50%;
+  background: rgba(var(--shade), 0.8);
+}
+@keyframes disc-spin { to { transform: rotate(360deg); } }
+
+/* Paused is the record standing still, which is what a paused record does.
+   Not slowed and not faded -- a turntable that has been stopped is legible
+   from across a room, and it is the same reading the deck's own keys give. */
+.disc.is-held .disc-rec { animation-play-state: paused; }
+@media (prefers-reduced-motion: reduce) {
+  .disc-rec { animation: none; }
+}
+
+/* --- what is playing, on hover ------------------------------------------ */
+
+/* Above the disc rather than beside it: the bar is centred in the window and
+   this hangs off its right end, so a caption running further right is a
+   caption running off the screen on a narrow window. Up has room on every
+   window this bar is drawn in. */
+.disc-say {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 8px);
+  margin: 0;
+  max-width: 260px;
+  padding: 7px 11px;
+  border: 1px solid rgba(var(--w), 0.14);
+  border-radius: 999px;
+  background-color: var(--bar-tint);
+  background-image: var(--ctl-ramp);
+  backdrop-filter: blur(30px) saturate(1.9);
+  -webkit-backdrop-filter: blur(30px) saturate(1.9);
+  box-shadow: var(--bar-cast);
+  font-family: var(--f-nav); letter-spacing: 0.06em;
+  font-size: var(--t-meta); line-height: var(--lh-meta);
+  text-transform: uppercase;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  color: rgba(var(--w), 0.86);
+  opacity: 0; pointer-events: none;
+  transform: translateY(4px);
+  transition: opacity 180ms var(--ease), transform 180ms var(--ease);
+}
+@media (hover: hover) and (pointer: fine) {
+  .disc:hover .disc-say { opacity: 1; transform: translateY(0); }
+}
+.disc-b:focus-visible ~ .disc-say,
+.disc.is-open .disc-say { opacity: 1; transform: translateY(0); }
+
+/* --- and the two keys, when it is pressed -------------------------------- */
+
+/* The deck's pair, at the deck's job and not at the deck's size: play and
+   pause latching against each other, which is the one thing on this site that
+   says what a transport is doing without a word on it. They are the real keys'
+   deputies -- every press down here is a click up there. */
+/* Inside the capsule, revealed by it rather than floating over it. They are
+   laid out at full width the whole time and simply clipped when it is closed,
+   so opening is one box growing and nothing inside it moving. */
+.disc-keys {
+  flex: none;
+  display: flex; gap: 4px;
+  margin-left: 4px;
+  opacity: 0;
+  transition: opacity 160ms var(--ease) 60ms;
+}
+.disc:hover .disc-keys,
+.disc:focus-within .disc-keys,
+.disc.is-open .disc-keys { opacity: 1; }
+
+.disc-k {
+  appearance: none; -webkit-appearance: none;
+  width: 34px; height: 34px;
+  display: grid; place-items: center;
+  margin: 0; padding: 0; border: 0;
+  border-radius: 999px;
+  background: rgba(var(--w), 0.07);
+  color: rgba(var(--w), 0.66);
+  cursor: pointer;
+  transition: background-color 140ms var(--ease), color 140ms var(--ease);
+}
+/* Sixteen and not eleven. One key on a control this size can afford the room,
+   and eleven pixels of triangle inside a thirty-four pixel target is a mark
+   rather than a button. */
+.disc-k .disc-i { display: none; width: 16px; height: 16px; fill: currentColor; }
+.disc-k:hover { color: rgb(var(--w)); background: rgba(var(--w), 0.12); }
+.disc-k:focus-visible { outline: 2px solid rgb(var(--w)); outline-offset: 2px; }
+
+/* One glyph at a time, and it is the thing the press will do -- not the thing
+   that is happening. The pair on the machine latch against each other and
+   between them say the state; out here there is one key, so it has to be the
+   verb. Playing shows a pause; paused shows a play. */
+.disc.is-going .disc-i-pause { display: block; }
+.disc.is-held  .disc-i-play  { display: block; }
+.disc:not(.is-going):not(.is-held) .disc-i-play { display: block; }
+
+/* Not on About. The machine is on the screen there, and the router already
+   says which screen you are on -- the bar is a sibling of the stage, so this
+   is the class it already sets doing one more job. */
+#stage.x-about ~ .nav .disc { display: none; }
 .nav a[aria-current="page"] { opacity: 1; }
 .nav a:focus-visible {
   outline: 2px solid rgb(var(--w));
@@ -2842,14 +3067,14 @@ body {
 
 .x-empty .view .card > *,
 .x-empty .bk-turn,
+/* The way back was in this list and is not any more. It has two lattice
+   rules hanging off it now, and those are struck and ruled across a crossing
+   like every other line on the frame -- so fading the box as well drew the
+   lines and faded them at the same time, which reads as neither. The switch
+   in the other margin has never moved through a crossing; this one matches
+   it. The control stands, and its rules are ruled. See .x-draw and .x-rule. */
 .x-empty .crumb,
-.x-empty .crumb-count,
-/* The way back is outside the views -- it stands over the frame, like the
-   switch and the bar -- so nothing above reaches it, and it would otherwise
-   appear and vanish on the single frame paint() swaps the views. It is the
-   crumb's companion and goes when the crumb goes. Its transition is declared
-   on itself; see .back. */
-.x-empty .back {
+.x-empty .crumb-count {
   opacity: 0;
   transform: translateY(var(--x-sink));
   filter: blur(var(--x-blur));
@@ -3553,7 +3778,12 @@ body {
 /* These two carried 17/23 and 14/20 by hand, which is exactly the heading and
    body steps -- the row of four had arrived at the scale on its own and was
    the only screen that had. Nothing but the box remains to be said here. */
-.w-said .headline { position: static; width: auto; margin: 0; }
+/* The second heading step, and only on these four. .w-said is the block the
+   row of four carries and nothing else uses it, so the lead card's headline
+   -- which is the display step, and the only wide box on the screen -- is not
+   reached by this and does not want to be. */
+.w-said .headline { position: static; width: auto; margin: 0;
+                    font-size: var(--t-heading-2); }
 .w-said .sub      { position: static; width: auto; margin: 13px 0 0; }
 
 /* No widows.
@@ -3844,8 +4074,12 @@ body {
    line and four clear underneath. */
 .idx-t {
   font-family: var(--f-body);
-  font-size: var(--t-heading);
-  line-height: 22px;
+  /* The same step as the four project names beside it, which is the whole
+     argument for setting them alike -- see .idx-t's note below. The leading
+     comes down with the size: 22 on a 17 was already open, and on a 15 it
+     reads as two lines that have drifted apart. */
+  font-size: var(--t-heading-2);
+  line-height: 20px;
   font-weight: 600;
   text-wrap: pretty;
   letter-spacing: -0.005em;
@@ -6048,27 +6282,127 @@ body {
    is the one that holds. */
 .room-one { width: 44px; grid-template-columns: 1fr; }
 
-.room::before,
-.back::before {
+/* Two rules apiece: the foot, and the outer side.
+
+   The frame already rules the other two. The 70/91 pair runs the whole width
+   and lands on the top of both cells, and the vertical that brackets the
+   gutter beside each one -- 1541 on the right, 377 on the left -- lands on the
+   inner edge. These are the two that were missing, and without them the
+   controls read as boxes set down on the lattice rather than cells cut into
+   it.
+
+   Both are placed at 100% of the side they belong to, which puts each of them
+   exactly where that control's own outline is drawn -- an outline is painted
+   outside the box, so the foot at top:100% and the outline's bottom edge are
+   the same pixel row, and the outer rule and the outline's outer edge are the
+   same pixel column. The line is the edge, continued.
+
+   And both run off the frame rather than stopping at it, which is the whole of
+   what --bleed is for. The stage is 1920 x 1080 and almost no window is 16:9,
+   so the frame is letterboxed on one axis and there is live screen outside the
+   drawing on the other. The lattice has always known this -- its horizontals
+   run 3000 either side and its verticals carry --vb -- and these did not: they
+   stopped dead on 0 and 1920, which on any window wider than the frame is a
+   rule that gives up a hundred pixels short of the glass.
+
+   The vertical's figures are the control's own top and the frame's drop, both
+   read from where the control stands: -91 puts the line on the frame's top
+   edge, less the bleed again to clear it, and the height is the frame plus a
+   bleed at each end. */
+.room::before, .back::before,
+.room::after,  .back::after {
   content: "";
   position: absolute;
-  top: 100%;                                /* the foot of the box, at 135 */
-  height: 1px;
   background: var(--rule);
   pointer-events: none;
+  --bleed: 330px;
 }
-/* Out to the frame's own edge on the side the control's margin runs to: 1585
-   to 1920 on the right, 333 to 0 on the left. Both figures are the frame's
-   width less the control's outer edge, which is the only place either of them
-   could stop. */
-.room::before { left: 0; right: -335px; }
-.back::before { right: 0; left: -333px; }
+
+/* The foot. */
+.room::before, .back::before { top: 100%; height: 1px; }
+.room::before { left: 0;  right: calc(-1 * var(--frame-out)); }
+.back::before { right: 0; left:  calc(-1 * var(--frame-out)); }
+
+/* And the outer side, the full drop of the frame. */
+.room::after, .back::after {
+  width: 1px;
+  top: calc(-91px - var(--bleed));
+  height: calc(1080px + 2 * var(--bleed));
+}
+.room::after { left: 100%; }                /* 1585, the right of the switch */
+.back::after { right: 100%; }               /* 333, the left of the way back */
+
+/* How far past the frame a horizontal has to reach. 3000 is the lattice's own
+   figure and it is arrived at the same way: more than any window can show
+   past the frame's margins once the stage has been scaled to fit it. */
+:root { --frame-out: 3000px; }
+
+/* Ruled, not lit.
+ *
+ * These four are lattice, and the lattice is not switched on and off across a
+ * crossing: it is rubbed out along its length and ruled back along it, which
+ * is the whole reason the frame reads as drawn rather than as loaded. They
+ * were the only rules on the screen that appeared -- the way back fades with
+ * the contents and took its two lines with it, and the switch's two simply
+ * stood there through a crossing that redrew everything around them.
+ *
+ * So they are scaled from nothing along their own length, from the control
+ * outward, on the lattice's own curve and over the same span the lattice
+ * takes. The origins are the control's own edge: 100%/0 on the two feet, and
+ * 421 down the verticals, which is where the control's top sits in a line
+ * that starts a bleed above the frame. See --bleed.
+ */
+.room::before, .back::before { transform-origin: 0 50%; }
+.back::before { transform-origin: 100% 50%; }
+.room::after, .back::after   { transform-origin: 50% calc(var(--bleed) + 91px); }
+
+.x-draw .room::before, .x-draw .back::before,
+.x-draw .room::after,  .x-draw .back::after {
+  transform: scale(0);
+}
+.x-rule .room::before, .x-rule .back::before { transform: scaleX(1); }
+.x-rule .room::after,  .x-rule .back::after  { transform: scaleY(1); }
+.x-rule .room::before, .x-rule .back::before,
+.x-rule .room::after,  .x-rule .back::after {
+  transition: transform var(--x-lattice) var(--l-ease);
+}
+@media (prefers-reduced-motion: reduce) {
+  .x-draw .room::before, .x-draw .back::before,
+  .x-draw .room::after,  .x-draw .back::after { transform: none; }
+}
+
+/* And on the mat they are cut from the mat.
+ *
+ * Everything else on the Playground is green rubber and the two things a
+ * reader can press were the dark room's grey, which is the room the mat is
+ * not in. They took --card-fill and --card-line-lit because those are the
+ * frame's, and on every other screen the frame is what they stand on -- here
+ * the frame is gone. So they take the mat's own: a plate cut out of it, the
+ * mat's edge round it, and the mat's ink in it.
+ *
+ * The same figures the prints use, which is the point -- a control lying on
+ * this surface should be the same object as a photograph lying on it. See
+ * --lab-plate and --mat-edge. */
+.x-lab .room,  .x-piece .room,
+.x-lab .back,  .x-piece .back {
+  background: var(--lab-plate);
+  outline-color: var(--mat-edge);
+}
+.x-lab .back,  .x-piece .back,
+.x-lab .room-c[data-hush], .x-piece .room-c[data-hush] { color: var(--mat-type); }
+@media (hover: hover) and (pointer: fine) {
+  .x-lab .back:hover,  .x-piece .back:hover,
+  .x-lab .room-c:hover, .x-piece .room-c:hover { color: var(--mat-label); }
+}
+.x-lab .room-c.is-hushed, .x-piece .room-c.is-hushed { color: var(--mat-label); }
 
 /* The playground and a piece take the lattice off the frame entirely -- see
-   .x-lab .rules -- so a rule belonging to it goes with it. The controls stay;
-   it is the ruling that is not drawn on a cutting mat. */
+   .x-lab .rules -- so rules belonging to it go with it. The controls stay; it
+   is the ruling that is not drawn on a cutting mat. */
 .x-lab .room::before,  .x-piece .room::before,
-.x-lab .back::before,  .x-piece .back::before { display: none; }
+.x-lab .back::before,  .x-piece .back::before,
+.x-lab .room::after,   .x-piece .room::after,
+.x-lab .back::after,   .x-piece .back::after { display: none; }
 
 /* Two drawings rather than two words.
 
@@ -6748,13 +7082,24 @@ a.arrow { text-decoration: none; }
 /* Sixteen, sixteen, fourteen and thirteen were four sizes inside one card,
    and three of them were doing one job. They are the heading, the body and
    the meta step, which is what the card had all along -- a name, a sentence
-   and a note under it. */
+   and a note under it.
+
+   Two under the step, on the screens made of small boxes. A heading is cut for
+   the box it stands in, and 17 was cut for a 735-pixel tile: inside About's
+   316-pixel portrait, or a 264-pixel project card, the same figure is loud.
+   Those are the two screens with no wide box on them at all -- every other one
+   leads with one -- so they take the step below.
+
+   It is a calc against the first and not a figure of its own, which is what
+   keeps this a scale with two heading steps rather than a scale with an
+   exception: change --t-heading and this follows. */
+:root { --t-heading-2: calc(var(--t-heading) - 2px); }
 .ab-head {
   margin: 0;
-  font-size: var(--t-heading); line-height: var(--lh-heading); font-weight: 600;
+  font-size: var(--t-heading-2); line-height: var(--lh-heading); font-weight: 600;
   color: var(--heading);
 }
-.ab-work { margin: 0; font-size: var(--t-heading); line-height: var(--lh-heading);
+.ab-work { margin: 0; font-size: var(--t-heading-2); line-height: var(--lh-heading);
            font-weight: 600; color: var(--heading); }
 .ab-body {
   margin: 0;
@@ -6773,7 +7118,7 @@ a.arrow { text-decoration: none; }
   font-family: var(--f-sans);
   letter-spacing: normal;
   text-transform: none;
-  font-size: var(--t-heading); line-height: var(--lh-heading); font-weight: 600;
+  font-size: var(--t-heading-2); line-height: var(--lh-heading); font-weight: 600;
   color: var(--heading);
 }
 
@@ -6897,6 +7242,42 @@ a.arrow { text-decoration: none; }
 /* No hover play here. Dimming two of the three and lifting the third is a
    lot of movement to answer a question nobody asked -- each cover already
    has its own words beside it, so there is nothing left to point out. */
+/* The machine that stands on the About card is a package now, and this is
+   where its stylesheet lands. One source, two consumers: this site, and
+   anybody who runs npm i @vaibhavvishal/walkman. See packages/walkman. */
+/* ==========================================================================
+   The Walkman
+
+   A tape deck for one YouTube video or one playlist: the object, its
+   transport, its readout and its queue. Everything here is drawn -- there
+   is no image in this file and no image beside it.
+
+   Two things a consumer should know.
+
+   Every selector is under .walkman, and every custom property this file
+   sets is named --wk-*. Nothing leaks and nothing collides.
+
+   Nine properties are read rather than set, because the machine was drawn
+   inside a page that already had them and it should still take them from a
+   page that does. They are declared on :where(.walkman) below, which has
+   zero specificity: set them anywhere on the host or above it and yours
+   win, define nothing and these do.
+   ========================================================================== */
+
+:where(.walkman) {
+  /* The ink, as an RGB triplet so the file can set its own alphas. White on
+     a dark page, near-black on a light one. */
+  --w: 255, 255, 255;
+  /* And the shadow side of the same, for the casts underneath. */
+  --o: 0, 0, 0;
+  --d: 0, 0, 0;
+  --y: 0.7;
+  --slot: rgba(var(--w), 0.04);      /* an empty picture box            */
+  --dur: 300ms;                      /* a whole object moving           */
+  --ease: cubic-bezier(0.25, 0.7, 0.3, 1);
+  --f-label: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --t-meta: 12px;                    /* the small print                 */
+}
 /* --- music ---------------------------------------------------------------
 
    The one thing on this screen that is not on the shelf. A book gets finished
@@ -7302,11 +7683,23 @@ a.arrow { text-decoration: none; }
    fills the well now, eight clear of the top and eight clear of the counter
    that crosses the foot -- which is also twenty-six more pixels for the wave
    to happen in, and the wave is the thing on this screen worth looking at. */
+/* 118 and not 148 -- a fifth off.
+
+   At 148 the sleeve was very nearly the whole screen, and a picture that
+   reaches the edges of the glass is a picture with a machine drawn round it
+   rather than a machine with a picture in it. Smaller, it sits in the well
+   with the visualiser running behind it on all four sides, which is what the
+   dither moved off the artwork to do.
+
+   The slack it leaves is seated the way the old slack was: twenty above and
+   thirty below, which is the same two-fifths bias the 8 and 12 had. Centred
+   exactly, the screen reads as lower than it is, because the readout under
+   the well is already pulling the eye down. */
 .ms-well .ms-stage {
   position: absolute;
-  left: 50%; top: 8px;
-  width: 148px; height: 148px;
-  margin-left: -74px;
+  left: 50%; top: 20px;
+  width: 118px; height: 118px;
+  margin-left: -59px;
   flex: none;
   z-index: 2;
   box-shadow: none;
@@ -7332,7 +7725,34 @@ a.arrow { text-decoration: none; }
  * bright, and what is left between them is the screen -- which is the way
  * round a lit display has always been. Nothing about the dither changes; it is
  * handed a darker picture. */
-.ms-well .ms-art { filter: brightness(0.7) url(#ms-dither); }
+/* The picture is black and white, and that is all that is done to it.
+ *
+ * It used to carry the dither as well, and a photograph under a threshold
+ * mask at this size is not a photograph -- it is a texture where a sleeve
+ * should be. The dither was doing two jobs at once: making the well read as a
+ * screen, and eating the artwork. It keeps the first and gives up the second.
+ *
+ * Grey rather than colour because a screen in a machine of this age is one
+ * phosphor, and because a colour sleeve behind a green readout is two
+ * displays arguing. The contrast is lifted a little to get some of the bite
+ * back that the dither used to supply. */
+.ms-well .ms-art {
+  filter: grayscale(1) contrast(1.12) brightness(0.78);
+}
+
+/* And the dither, now that it is not on the picture, is what the well does
+   behind it: the visualiser rendered through the same threshold mask, filling
+   the screen around the sleeve. Same texture, same argument for it -- this is
+   a display and displays have a grid -- but it is moving now, and it is the
+   thing the music is doing rather than a filter over the thing it is about. */
+.ms-well .ms-viz {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  filter: url(#ms-dither);
+  opacity: 0.5;
+}
+.ms-well.is-lit .ms-viz { opacity: 0.72; }
 
 /* The veil darkened the foot of the picture so type could sit on it. There is
    no type on the picture any more -- see the note in build.js -- so there is
@@ -7795,7 +8215,7 @@ a.arrow { text-decoration: none; }
 /* A machine at rest holds the name where it stands rather than stopping
    mid-word and jumping back, which is what pausing an animation does and what
    a deck does. */
-.ab-music:not(.is-going) .ms-run { animation-play-state: paused; }
+.walkman:not(.is-going) .ms-run { animation-play-state: paused; }
 
 @media (prefers-reduced-motion: reduce) {
   .ms-run { animation: none; }
@@ -7809,17 +8229,17 @@ a.arrow { text-decoration: none; }
   position: absolute; left: 16px; right: 16px; bottom: 20px;
   /* Unchanged: the machine grew upward from the keys, not downward onto
      them -- see .ms-wk and .ms-str, which took the band between the counter
-     and this one.
-     The padding came in from 12 to 8 when the seventh key arrived: seven of
-     them and six gaps want 246 of the 252 that leaves, where six wanted 232
-     of 244 and had room to spare. */
+     and this one. */
   z-index: 2;
   height: 38px;
-  padding: 0 8px;
-  /* No strip. It was a second recess under the first one, and seven keys in a
-     row are already a row without a trough drawn round them. */
+  padding: 0 6px;
+  /* No strip. It was a second recess under the first one, and two banks of
+     keys are already a row without a trough drawn round them. */
   border-radius: 0;
-  display: flex; align-items: center; justify-content: center; gap: 6px;
+  /* Apart rather than together. The two banks are two jobs -- the transport,
+     and the two keys that do not touch the tape -- and space between them is
+     what says so without a rule drawn down the middle. */
+  display: flex; align-items: center; justify-content: space-between;
   background: none;
   box-shadow: none;
 }
@@ -7830,12 +8250,38 @@ a.arrow { text-decoration: none; }
    something, and it is the one place where looking pressable is not styling,
    it is the control telling you what it is. The travel below is also the only
    way the latch reads. */
+/* Four keys and two keys, each set tight so the set reads as one object. */
+.ms-set { display: flex; align-items: center; gap: 6px; position: relative; }
+
+/* And a seam between them, pressed into the face.
+
+   Space alone was doing the work and it was not enough: two banks with air
+   between them still read as one row that had been spaced oddly. This is the
+   join every moulded object has where two parts meet -- a groove, one pixel
+   of shadow and one of highlight, lit from the same side as everything else
+   on this machine.
+
+   It hangs off the second bank rather than sitting between the two as a third
+   element, because the row is justified apart and a third item in it would be
+   given a share of the space and stop being a line. Half the gap to its left
+   puts it in the middle of it; the four either side of the keys make it a
+   groove in the face rather than a rule between two buttons. */
+.ms-set + .ms-set::before {
+  content: "";
+  position: absolute;
+  left: -25px;
+  top: -4px; bottom: -4px;
+  width: 2px;
+  border-radius: 1px;
+  background: linear-gradient(90deg, var(--wk-edge-lo) 0 1px, var(--wk-edge-hi) 1px 2px);
+  pointer-events: none;
+}
+
 .ms-key {
   flex: none;
-  /* 30 and not 32. A seventh key had to come from somewhere and two pixels a
-     key is the cheapest place to take it from: the target is still 30 by 24,
-     which is a key, and nothing about the row's rhythm changes. */
-  width: 30px; height: 24px;
+  /* 32 again. The seventh key took two pixels off every one of them to fit,
+     and the seventh key has gone. */
+  width: 32px; height: 24px;
   display: grid; place-items: center;
   appearance: none; -webkit-appearance: none;
   margin: 0; padding: 0; border: 0;
@@ -7908,6 +8354,51 @@ a.arrow { text-decoration: none; }
    stays too: it is a way to the other four records, and that is still true of
    a machine that has stopped making a noise. */
 .is-mute .ms-deck, .is-mute .ms-bar { display: none; }
+
+/* --- a phone -------------------------------------------------------------
+   The machine is drawn at one size and steps down once. */
+@media (max-width: 900px) {
+  .ms-wk {
+    position: relative;
+    /* 336: the same 272 with the queue key and its air under it, at the size a
+       thumb asks for rather than the 26 the frame gives it. */
+    height: 336px;
+    margin: 20px 0 0;
+  }
+
+  .ms-wk .cue {
+    top: 270px; bottom: auto;
+    height: 44px;
+    font-size: 11px;
+  }
+
+  .ms-wk .cue svg { width: 15px; height: 15px; }
+
+  .ms-bar {
+    top: 178px;
+    height: 12px;                    /* scrubbing with a thumb, not a cursor */
+    left: 16px; right: 16px;
+  }
+
+  .ms-deck {
+    top: 202px; bottom: auto;
+    height: 56px;
+    padding: 0 8px;
+    gap: 4px;
+  }
+
+  .ms-key {
+    flex: 1 1 0;
+    min-width: 0;
+    max-width: 52px;
+    height: 44px;
+  }
+
+  .ms-key svg { width: 15px; height: 15px; }
+
+  .ms-lcd-a { font-size: 13px; }
+}
+
 .nw-cover {
   flex: none;
   width: 56px; height: 84px;
@@ -8069,7 +8560,7 @@ a.arrow { text-decoration: none; }
 .ab-lede {
   position: absolute; margin: 0;
   left: 24px; top: 277px; width: 316px;
-  font-size: var(--t-heading); line-height: var(--lh-heading); font-weight: 600;
+  font-size: var(--t-heading-2); line-height: var(--lh-heading); font-weight: 600;
   color: var(--heading);
 }
 
@@ -9411,26 +9902,17 @@ a.arrow { text-decoration: none; }
    exactly the 1820 there is to put them in; the tops and the angles are not
    on anything. The angles are not on anything. */
 /* Written by build.js from content/playground.json -- see SPOTS there. */
-.lab-pin-1 { left: 421px; top: 184px; rotate: -3.4deg; }
-.lab-pin-2 { left: 792px; top: 200px; rotate: 2.6deg; }
-.lab-pin-3 { left: 1163px; top: 195px; rotate: 1.6deg; }
-.lab-pin-4 { left: 421px; top: 604px; rotate: 0.6deg; }
-.lab-pin-5 { left: 792px; top: 599px; rotate: -0.4deg; }
-.lab-pin-6 { left: 1163px; top: 615px; rotate: -1.4deg; }
+.lab-pin-1 { left: 607px; top: 184px; rotate: -3.4deg; }
+.lab-pin-2 { left: 978px; top: 200px; rotate: 2.6deg; }
+.lab-pin-3 { left: 792px; top: 609px; rotate: 1.6deg; }
 
 .lab-pin-1 > .lab-tape { rotate: -3.8deg; }
 .lab-pin-2 > .lab-tape { rotate: -2.8deg; }
 .lab-pin-3 > .lab-tape { rotate: -1.8deg; }
-.lab-pin-4 > .lab-tape { rotate: -0.8deg; }
-.lab-pin-5 > .lab-tape { rotate: 0.2deg; }
-.lab-pin-6 > .lab-tape { rotate: 1.2deg; }
 
 .view-lab > .lab-pin-1 { --x-delay: calc(var(--x-step) + var(--pin-deal) * 0); }
 .view-lab > .lab-pin-2 { --x-delay: calc(var(--x-step) + var(--pin-deal) * 1); }
 .view-lab > .lab-pin-3 { --x-delay: calc(var(--x-step) + var(--pin-deal) * 2); }
-.view-lab > .lab-pin-4 { --x-delay: calc(var(--x-step) + var(--pin-deal) * 3); }
-.view-lab > .lab-pin-5 { --x-delay: calc(var(--x-step) + var(--pin-deal) * 4); }
-.view-lab > .lab-pin-6 { --x-delay: calc(var(--x-step) + var(--pin-deal) * 5); }
 
 /* ==========================================================================
    L4 -- one experiment, on the same table
@@ -9854,6 +10336,13 @@ a.arrow { text-decoration: none; }
     --t-heading: 16px; --lh-heading: 22px;
     --t-body:    14px; --lh-body:    21px;
     --t-meta:    12px; --lh-meta:    17px;
+    /* And one heading step down here rather than two. The second one exists
+       because a heading cut for a 735-pixel tile is loud inside a 264-pixel
+       card -- and there are no narrow cards on a phone. Everything is one
+       column at the full width of the screen, so the reason is gone; and
+       carried down anyway it would have landed on 14, which is the body step,
+       leaving a project name and the sentence under it the same size. */
+    --t-heading-2: var(--t-heading);
   }
 
   /* A ground for the glass to stand on. Fixed and behind everything, on its
@@ -10218,7 +10707,8 @@ a.arrow { text-decoration: none; }
   /* The pill takes the glass border from the .nav, .back rule above, so the
      frame's hairline has to come off or it draws a square around a capsule. */
   .back { width: auto; outline: 0; }
-  .room::before, .back::before { display: none; }
+  .room::before, .back::before,
+  .room::after,  .back::after { display: none; }
   .back-t { display: inline; }
   .back svg { width: 17px; height: 17px; flex: none; stroke-width: 1.9; }
   .back:active { transform: scale(0.96); }
@@ -10363,44 +10853,12 @@ a.arrow { text-decoration: none; }
      sized for a finger. 32 x 24 is a mouse target: it was six of them in a
      row on an object people are meant to press, at half the size a phone
      asks for. They flex to the width now, 44 tall, which is the floor. */
-  .ms-wk {
-    position: relative;
-    /* 336: the same 272 with the queue key and its air under it, at the size a
-       thumb asks for rather than the 26 the frame gives it. */
-    height: 336px;
-    margin: 20px 0 0;
-  }
-  .ms-wk .cue {
-    top: 270px; bottom: auto;
-    height: 44px;
-    font-size: 11px;
-  }
-  .ms-wk .cue svg { width: 15px; height: 15px; }
-  .ms-bar {
-    top: 178px;
-    height: 12px;                    /* scrubbing with a thumb, not a cursor */
-    left: 16px; right: 16px;
-  }
-  .ms-deck {
-    top: 202px; bottom: auto;
-    height: 56px;
-    padding: 0 8px;
-    gap: 4px;
-  }
   /* Six keys sharing one row: an equal share each, capped so they stay keys
      rather than becoming panels, and never under 44 tall. */
-  .ms-key {
-    flex: 1 1 0;
-    min-width: 0;
-    max-width: 52px;
-    height: 44px;
-  }
-  .ms-key svg { width: 15px; height: 15px; }
 
   /* The display is read at arm's length on the frame and at a third of that
      here, but it is also the only words on the object -- 11px of them behind
      glass, at the size the rest of this screen calls a caption. */
-  .ms-lcd-a { font-size: 13px; }
 
   /* Both rows keep running here, and go full bleed out of the card's own
      padding to do it -- no inside padding, because a strip that is moving
@@ -12365,17 +12823,20 @@ a.arrow { text-decoration: none; }
       </section>
 
       <!-- ---------------------------- music --------------------------- -->
-      <section class="card ab-music" data-tile="f">
+      <!-- Two classes and two jobs. .ab-music is this site's: where the card
+           stands on the About grid and what its glare does. .walkman is the
+           package's, and is the whole of the machine inside it. -->
+      <section class="card ab-music walkman" data-tile="f">
         <div class="ms-wk">
           <div class="ms-wk-face">
             <div class="ms-well">
               <canvas class="ms-viz" aria-hidden="true"></canvas>
               <span class="ms-haze" aria-hidden="true"
-                    style="background-image:url('assets/covers/music-kid-a.jpg')"></span>
+                    style="background-image:url('https://i.ytimg.com/vi/McwKd0KlBxg/mqdefault.jpg')"></span>
               <span class="ms-stage">
-                <span class="ms-tube"><span data-ms-tube data-video="onRk0sjSgFU"></span></span>
-                <span class="ms-art" role="img" aria-label="Everything In Its Right Place"
-                      style="background-image:url('assets/covers/music-kid-a.jpg')"></span>
+                <span class="ms-tube"><span data-ms-tube data-video="McwKd0KlBxg"></span></span>
+                <span class="ms-art" role="img" aria-label="Corridors of Time"
+                      style="background-image:url('https://i.ytimg.com/vi/McwKd0KlBxg/mqdefault.jpg')"></span>
               </span>
               <span class="ms-veil" aria-hidden="true"></span>
               <span class="ms-pix"></span>
@@ -12387,19 +12848,22 @@ a.arrow { text-decoration: none; }
             </div>
             <div class="ms-str" aria-hidden="true">
               <span class="ms-run" data-ms-run>
-                <i>Everything In Its Right Place  ·  Radiohead</i>
-                <i>Everything In Its Right Place  ·  Radiohead</i>
+                <i>Corridors of Time  ·  Luke Pickman</i>
+                <i>Corridors of Time  ·  Luke Pickman</i>
               </span>
             </div>
-            <p class="ms-said">Everything In Its Right Place by Radiohead</p>
+            <p class="ms-said">Corridors of Time by Luke Pickman</p>
             <div class="ms-deck">
+              <span class="ms-set">
               <button type="button" class="ms-key ms-key-prev" data-ms-prev aria-label="Previous track"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h3v14H6zm13 0v14l-9-7z"/></svg></button>
               <button type="button" class="ms-key ms-key-play" data-ms-play aria-label="Play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></button>
               <button type="button" class="ms-key ms-key-pause" data-ms-pause aria-label="Pause"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/></svg></button>
-              <button type="button" class="ms-key ms-key-stop" data-ms-stop aria-label="Stop"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5h11v11h-11z"/></svg></button>
               <button type="button" class="ms-key ms-key-next" data-ms-next aria-label="Next track"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5v14l9-7zm10 0h3v14h-3z"/></svg></button>
+              </span>
+              <span class="ms-set">
               <button type="button" class="ms-key ms-key-viz" data-ms-viz aria-label="Change the visualiser"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="6" cy="12" r="1.6" fill="currentColor" stroke="none"/><path d="M10 8.4a5.5 5.5 0 0 1 0 7.2M14 5.6a9.5 9.5 0 0 1 0 12.8M18 3.2a13.2 13.2 0 0 1 0 17.6"/></svg></button>
               <button type="button" class="ms-key ms-key-list" data-cue="music" aria-label="The playlist, 5 tracks"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h11M4 12h11M4 17h7"/><path d="M18 10v8"/><circle cx="19.6" cy="17.6" r="1.9" fill="currentColor" stroke="none"/></svg></button>
+              </span>
             </div>
           </div>
         </div>
@@ -12460,42 +12924,6 @@ a.arrow { text-decoration: none; }
 
       <figure class="lab-pin lab-pin-1">
         <span class="lab-tape" aria-hidden="true"></span>
-        <span class="lab-pshot" role="img" aria-label="Photograph placeholder"></span>
-        <figcaption><b>Understudy</b>
-          <span>Reads a design file and writes the front‑end for it.</span></figcaption>
-        <a class="lab-hit" href="#lab/understudy" data-route="piece" data-slug="understudy"
-           aria-label="Open Understudy"></a>
-      </figure>
-
-      <figure class="lab-pin lab-pin-2">
-        <span class="lab-tape" aria-hidden="true"></span>
-        <span class="lab-pshot" role="img" aria-label="Photograph placeholder"></span>
-        <figcaption><b>Cutting Room</b>
-          <span>Forty minutes of screen recording, cut to thirty seconds.</span></figcaption>
-        <a class="lab-hit" href="#lab/cutting-room" data-route="piece" data-slug="cutting-room"
-           aria-label="Open Cutting Room"></a>
-      </figure>
-
-      <figure class="lab-pin lab-pin-3">
-        <span class="lab-tape" aria-hidden="true"></span>
-        <span class="lab-pshot" role="img" aria-label="Photograph placeholder"></span>
-        <figcaption><b>Second Opinion</b>
-          <span>A critique bot trained on four years of my own reviews.</span></figcaption>
-        <a class="lab-hit" href="#lab/second-opinion" data-route="piece" data-slug="second-opinion"
-           aria-label="Open Second Opinion"></a>
-      </figure>
-
-      <figure class="lab-pin lab-pin-4">
-        <span class="lab-tape" aria-hidden="true"></span>
-        <span class="lab-pshot" role="img" aria-label="Photograph placeholder"></span>
-        <figcaption><b>Holo</b>
-          <span>Any graphic, turned into a holographic sticker.</span></figcaption>
-        <a class="lab-hit" href="#lab/holo" data-route="piece" data-slug="holo" data-repo="VaibhavVishal07/holo"
-           aria-label="Open Holo"></a>
-      </figure>
-
-      <figure class="lab-pin lab-pin-5">
-        <span class="lab-tape" aria-hidden="true"></span>
         <span class="lab-pshot lab-pshot-lens" aria-hidden="true">
           <div class="play-case lab-lens">
             <lenticular-card class="play-lens"
@@ -12513,13 +12941,22 @@ a.arrow { text-decoration: none; }
            aria-label="Open Lenticard"></a>
       </figure>
 
-      <figure class="lab-pin lab-pin-6">
+      <figure class="lab-pin lab-pin-2">
         <span class="lab-tape" aria-hidden="true"></span>
         <span class="lab-pshot" role="img" aria-label="Ocarina" style="background-image:url('assets/lab-ocarina.jpg');background-size:cover;background-position:center;background-repeat:no-repeat"></span>
         <figcaption><b>Ocarina</b>
           <span>A playable ocarina, and a synth built for one cavity.</span></figcaption>
         <a class="lab-hit" href="#lab/ocarina" data-route="piece" data-slug="ocarina" data-repo="VaibhavVishal07/ocarina"
            aria-label="Open Ocarina"></a>
+      </figure>
+
+      <figure class="lab-pin lab-pin-3">
+        <span class="lab-tape" aria-hidden="true"></span>
+        <span class="lab-pshot" role="img" aria-label="Walkman" style="background-image:url('assets/lab-walkman.jpg');background-size:cover;background-position:center;background-repeat:no-repeat"></span>
+        <figcaption><b>Walkman</b>
+          <span>A tape deck for a YouTube link, on npm.</span></figcaption>
+        <a class="lab-hit" href="#lab/walkman" data-route="piece" data-slug="walkman" data-repo="VaibhavVishal07/bento-portfolio"
+           aria-label="Open Walkman"></a>
       </figure>
     </div>
 
@@ -12679,6 +13116,32 @@ a.arrow { text-decoration: none; }
     <a class="nav-home"  href="#" data-cell="399 364" data-route="home" aria-current="page">Home</a>
     <a class="nav-work"  href="#work" data-cell="785 350" data-route="work">Work</a>
     <a class="nav-about" href="#about" data-cell="1155 366" data-route="about">About</a>
+
+    <!-- The record. Hidden until there is something to say, which is the
+         script's business; see .disc for why it is absolutely positioned and
+         why it is a remote rather than a second transport. -->
+    <div class="disc" data-disc hidden>
+      <!-- A link, and it goes where the machine is. Pressing the sleeve of a
+           record that is playing somewhere else should take you to the thing
+           playing it; there is nothing else it could sensibly do, and it was
+           opening the capsule that hovering already opens. It is an ordinary
+           a[data-route] so the router carries it like every other link. -->
+      <a class="disc-b" data-disc-b href="#about" data-route="about"
+         aria-label="Open About, where this is playing">
+        <span class="disc-rec" aria-hidden="true"><span class="disc-art" data-disc-art></span></span>
+      </a>
+      <!-- One transport key, not two. Play and pause latch against each other
+           on the machine itself, where there is room for a pair and where the
+           pair is half the object; out here there is one thing you want and
+           it is always the opposite of what is happening. -->
+      <div class="disc-keys">
+        <button type="button" class="disc-k" data-disc-toggle aria-label="Pause">
+          <svg class="disc-i disc-i-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg>
+          <svg class="disc-i disc-i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+      </div>
+      <p class="disc-say" data-disc-say aria-hidden="true"></p>
+    </div>
   </nav>
 
   <!-- ============================= the drawers ========================
@@ -13234,7 +13697,7 @@ a.arrow { text-decoration: none; }
 
   (function () {
     /* Written by build.js from content/about.json. */
-    window.CUES = {"music":[{"id":"onRk0sjSgFU","a":"Everything In Its Right Place","b":"Radiohead","art":"assets/covers/music-kid-a.jpg","bpm":101},{"id":"onRk0sjSgFU","a":"Second pinned track","b":"Replace the id in about.json","art":"","bpm":100},{"id":"onRk0sjSgFU","a":"Third pinned track","b":"Replace the id in about.json","art":"","bpm":100},{"id":"onRk0sjSgFU","a":"Fourth pinned track","b":"Replace the id in about.json","art":"","bpm":100},{"id":"onRk0sjSgFU","a":"Fifth pinned track","b":"Replace the id in about.json","art":"","bpm":100}]};
+    window.CUES = {"music":[{"id":"McwKd0KlBxg","a":"Corridors of Time","b":"Luke Pickman","art":"","bpm":0},{"id":"o7fgFaXKVa0","a":"Duvet","b":"bôa","art":"","bpm":0},{"id":"irl89Gmcv8c","a":"Vienna","b":"Billy Joel","art":"","bpm":0},{"id":"jmdiKePVUy8","a":"Do It Again","b":"Steely Dan","art":"","bpm":0},{"id":"vryvdoMmzIs","a":"Get Down On It","b":"Kool & The Gang","art":"","bpm":0}]};
     var CUES = window.CUES;
 
     var sheet = document.querySelector(".cue-sheet");
@@ -15159,78 +15622,6 @@ a.arrow { text-decoration: none; }
      --------------------------------------------------------------------- */
   /* Written by build.js from content/playground.json. */
   var PIECES = {
-    'understudy': {
-      name: 'Understudy',
-      kit: 'Claude · Figma API',
-      state: 'live', label: 'Running',
-      shot: '',
-      lede: 'It reads a design file and writes the front-end for it.',
-      beats: [
-        ['What I wanted', 'I wanted the boring half of front-end work to happen while I was still reading the design.',
-         'the frame it reads', ''],
-        ['What it does', 'It walks one Figma frame, reads the layer names and the auto-layout, and writes a component. I point it at a frame at a time and keep what comes back on a scratch branch until I have read it.',
-         'the component it wrote', ''],
-        ['What happened', 'It gets the structure right and the spacing wrong, in the same places I get the spacing wrong. That is the part I did not expect: it learned my mistakes off my own files.',
-         'the spacing I fixed after', '']
-      ],
-      verdict: 'I use it for first passes and edit every one of them. Nothing it wrote has shipped untouched.',
-      facts: ['Four evenings', 'About 200 lines a frame', 'Runs on my laptop']
-    },
-
-    'cutting-room': {
-      name: 'Cutting Room',
-      kit: 'Vision model · ffmpeg',
-      state: 'used', label: 'In use',
-      shot: '',
-      lede: 'Forty minutes of screen recording, cut down to thirty seconds.',
-      beats: [
-        ['What I wanted', 'Every demo I cut by hand reached the good bit too late.',
-         'the forty minutes it started with', ''],
-        ['What it does', 'It samples a frame a second, asks a vision model which of them show the product doing the thing, and hands ffmpeg a cut list.',
-         'the frames it kept', ''],
-        ['What happened', 'It finds that moment before I do. On the first recording I tested it against, it was forty seconds earlier than my own cut.',
-         'the thirty seconds it returned', '']
-      ],
-      verdict: 'It runs on every recording I make now.',
-      facts: ['One weekend', 'Takes an mp4', 'Returns a cut list']
-    },
-
-    'second-opinion': {
-      name: 'Second Opinion',
-      kit: 'Fine-tune · 1,400 notes',
-      state: 'dead', label: 'Shelved',
-      shot: '',
-      lede: 'A critique bot trained on four years of my own design reviews.',
-      beats: [
-        ['What I wanted', 'I wanted a reviewer who had read everything I had ever said about design.',
-         'the comments it learned from', ''],
-        ['What it does', 'I fed it 1,400 review comments I had written and asked it to read new work in the same voice.',
-         'a review it wrote', ''],
-        ['What happened', 'It agreed with me on all eleven pieces I gave it. I had trained a machine to tell me I was right, and the training set was the thing I should have looked at first.',
-         'the week I stopped opening it', '']
-      ],
-      verdict: 'Shelved the week I worked that out. The idea needs somebody else’s notes, not mine.',
-      facts: ['Two weekends', '1,400 comments in', 'Eleven reviews out']
-    },
-
-    'holo': {
-      name: 'Holo',
-      kit: 'WebGL · shader by model',
-      state: 'used', label: 'In use',
-      shot: '',
-      lede: 'Any graphic, turned into a holographic sticker.',
-      beats: [
-        ['What I wanted', 'I wanted foil, and I did not want to learn shader maths to get it.',
-         'the sticker at rest', ''],
-        ['What it does', 'A model wrote it. The shader reads the cursor position and the device tilt, then rakes a rainbow across whatever texture it is handed.',
-         'the same sticker under a cursor', ''],
-        ['What happened', 'It came back working, from a description in plain words. I have edited two constants since and I cannot explain the rest of the file.',
-         'the six lines I understand', '']
-      ],
-      verdict: 'It ships on this site, and it is the one thing here I could not rebuild by hand.',
-      facts: ['One evening', '190 lines, 6 of them mine', 'Runs in the browser']
-    },
-
     'lenticard': {
       name: 'Lenticard',
       kit: 'Canvas · Web Components',
@@ -15265,6 +15656,24 @@ a.arrow { text-decoration: none; }
       ],
       verdict: 'Four pitch classes is a chord, not a scale. Most of the series cannot go on it, and forcing one teaches the wrong tune.',
       facts: ['Eighteen songs, six of them warps', 'No audio files', 'Three evenings']
+    },
+
+    'walkman': {
+      name: 'Walkman',
+      kit: 'npm · Vanilla JS · CSS',
+      state: 'live', label: 'On npm',
+      shot: 'assets/lab-walkman.jpg',
+      lede: 'A cassette deck that plays a YouTube video or a playlist, drawn entirely in CSS, and installable in one line.',
+      beats: [
+        ['What I wanted', 'The deck on my About page was a thousand lines of stylesheet and eight hundred of script welded into one site. It was the best thing on the page and nobody else could have it.',
+         'the machine, on its own page', ''],
+        ['What it does', 'npm i, one call on a div, and you get the case, the screen, the counter, the strip, six keys and the queue. No dependencies, no build step, and no image in the package: every part of the object is drawn.',
+         'one div, one call', ''],
+        ['What happened', 'Pulling it out found two faults the site had lived with for months: a duplicated declaration, and an error handler where one un-embeddable track removed the transport from the whole machine.',
+         'the seams, listed', '']
+      ],
+      verdict: 'The shell and the wiring are exported separately, so a static site can render it and hydrate it. I would keep that.',
+      facts: ['npm i @vaibhavvishal/walkman', 'No dependencies, nothing to build', 'Drawn in CSS, no images']
     }
   };
 
@@ -18891,9 +19300,386 @@ a.arrow { text-decoration: none; }
      taken down -- the deck goes and the art and the name stay. A dead
      transport is worse than no transport.
      ---------------------------------------------------------------------- */
-  (function () {
-    var card = document.querySelector('.ab-music');
-    if (!card) { return; }
+  /* The package, inlined. One file on disk, read by build.js and put here --
+     the same file anybody gets from npm i @vaibhavvishal/walkman. */
+/* ==========================================================================
+   The Walkman
+
+   A tape deck for one YouTube video, or for a playlist. It draws itself, it
+   asks YouTube for the audio, and it is one call:
+
+       import { Walkman } from '@vaibhavvishal/walkman';
+       import '@vaibhavvishal/walkman/walkman.css';
+
+       Walkman(document.querySelector('#deck'), {
+         video: 'McwKd0KlBxg',
+         track: 'Corridors of Time',
+         by:    'Luke Pickman',
+         more:  [ { video, track, by, art }, ... ],   // the queue, optional
+       });
+
+   video takes an eleven-character id, a playlist id, or the address of
+   either -- whatever is in your hand when you copy it out of the browser.
+
+   What comes back is the machine: .play(id, track, by, art) puts a record on,
+   .queue() says what is loaded and where it is, .at(i) moves to one. It also
+   raises an ms-state event on the document whenever the transport changes, so
+   a page can put a control somewhere else and keep it honest.
+
+   Two notes on how it is built.
+
+   The shell is separate from the wiring, and exported, because a static site
+   should be able to render the machine at build time and hydrate it here --
+   which is exactly what the site this came out of does. Mount it on an empty
+   element and it builds its own DOM instead; either way the wiring finds the
+   same markup.
+
+   Nothing is loaded until it is wanted. The YouTube API script is fetched on
+   the first press or the first time the machine comes into view, so a page
+   that carries a deck nobody touches pays for one thumbnail.
+
+   MIT. See LICENSE.
+   ========================================================================== */
+
+(function (root, factory) {
+  if (typeof module === 'object' && module.exports) { module.exports = factory(); }
+  else { root.Walkman = factory().Walkman; root.walkmanShell = factory().shell; }
+}(typeof self !== 'undefined' ? self : this, function () {
+  'use strict';
+
+  /* ---- writing the shell ------------------------------------------------- */
+
+  function esc(t) {
+    return String(t == null ? '' : t)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+  var lines = function (a) {
+    return a.filter(function (l) { return l !== null && l !== undefined; }).join('\n');
+  };
+
+  function tube(raw) {
+    const s = String(raw == null ? '' : raw).trim();
+    if (!s) { return null; }
+
+    /* Pull the id out first and judge it afterwards. It was the other way round
+       for one revision and the bug is obvious in hindsight: an id pasted bare
+       was checked against the three private lists, and the same id inside an
+       address was returned before the check ever ran -- so LM was refused and
+       music.youtube.com/playlist?list=LM sailed through and shipped a card that
+       died in the browser. One extraction, one judgement. */
+    let id = s, kind = null;
+    const list = /[?&]list=([A-Za-z0-9_-]+)/.exec(s);
+    const watch = /[?&]v=([A-Za-z0-9_-]{11})/.exec(s) ||
+                  /youtu\.be\/([A-Za-z0-9_-]{11})/.exec(s);
+    if (list) { id = list[1]; kind = 'list'; }
+    else if (watch) { id = watch[1]; kind = 'video'; }
+
+    /* LM, WL and LL are Liked Music, Watch Later and Liked Videos. They are real
+       ids and they are not playlists in the sense this card needs: each one is a
+       private view of one signed-in account, so an embed on another origin
+       resolves it for nobody -- not even for the person whose account it is.
+       Named rather than left to fall through, because "not a playlist id" is the
+       wrong thing to tell somebody who has just pasted one. */
+    if (/^(LM|WL|LL)$/.test(id)) {
+      throw new Error('music.video is "' + s + '", which is ' +
+        (id === 'LM' ? 'your Liked Music' : id === 'WL' ? 'your Watch Later'
+          : 'your Liked Videos') +
+        ' -- a private list belonging to one signed-in account. An embed cannot ' +
+        'open it for anybody, including you, so the card would build and then ' +
+        'fail in the browser. Make an ordinary playlist (its id starts with PL), ' +
+        'set it to Public or Unlisted, and use that.');
+    }
+
+    if (kind === 'list') { return { kind: 'list', id: id }; }
+    if (kind === 'video') { return { kind: 'video', id: id }; }
+    if (/^[A-Za-z0-9_-]{11}$/.test(id)) { return { kind: 'video', id: id }; }
+    if (/^(PL|OL|UU|FL|RD)[A-Za-z0-9_-]{8,}$/.test(id)) { return { kind: 'list', id: id }; }
+    return null;
+  }
+
+  function shell(m) {
+    const src = tube(m.video);
+    if (!src) {
+      throw new Error('music.video is "' + m.video + '", which is neither an ' +
+        'eleven-character video id, nor a playlist id, nor the address of either');
+    }
+    const id = src.id;
+
+    /* The label is square and the screen it sits on is square, so nothing is
+       cropped. A video thumbnail is not square -- it is sixteen by nine with
+       the artwork letterboxed inside it -- so the card takes a real cover when
+       one is given and falls back to the thumbnail when it is not.
+
+       A playlist has no thumbnail of its own and no first track anybody knows
+       the id of until the player has one, so unless a cover is given the sleeve
+       starts empty and the script fills it the moment the deck reports what it
+       is playing. Which is the honest order: a playlist is a promise about what
+       will play, and the picture belongs to what did. */
+    const art = m.art ? "'" + esc(m.art) + "'"
+      /* mqdefault and not hqdefault.
+     *
+     * The black and grey bands down the sides of the sleeve were not the
+     * card's doing and no amount of cropping was going to lose them: they are
+     * in the file. hqdefault.jpg is a 480 x 360 frame with a 16:9 picture
+     * letterboxed inside it, so the bars are pixels, and cover on a square
+     * well crops the sides and keeps them. mqdefault is 320 x 180 and is the
+     * picture with nothing round it -- cropped square it is all picture,
+     * which is what a sleeve is. */
+    : src.kind === 'video' ? "'https://i.ytimg.com/vi/" + esc(id) + "/mqdefault.jpg'"
+      : null;
+
+    const svg = (d) =>
+      '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="' + d + '"/></svg>';
+
+    const key = (name, label, inner) =>
+      '              <button type="button" class="ms-key ms-key-' + name + '"' +
+      ' data-ms-' + name + ' aria-label="' + esc(label) + '">' + inner + '</button>';
+
+    /* The analysers, one a side.
+     *
+     * Nine bars each, every one with its own height, period and phase written
+     * on the element, so the stylesheet needs one rule rather than eighteen.
+     * The numbers come off a fixed seed: a rebuild must not reshuffle the
+     * skyline, or every deploy is a visual diff.
+     *
+     * They are not reading the audio and cannot: the player is a cross-origin
+     * iframe and nothing on this page is permitted to listen to it. These are
+     * animations that run while the track runs and stop dead when it stops.
+     * It is the only ornamental thing on the machine.
+     */
+    let seed = 20260828;
+    const rnd = () => {
+      seed = (seed * 1103515245 + 12345) & 0x7fffffff;
+      return seed / 0x7fffffff;
+    };
+    const side = () => {
+      const out = [];
+      for (let i = 0; i < 9; i++) {
+        const y = (0.26 + rnd() * 0.72).toFixed(2);
+        const d = 340 + Math.floor(rnd() * 660);
+        const o = -Math.floor(rnd() * 1000);
+        out.push('                    <i style="--y:' + y + ';--d:' + d + 'ms;--o:' + o + 'ms"></i>');
+      }
+      return out.join(String.fromCharCode(10));
+    };
+    const left = side();
+    const right = side();
+
+    /* No heading, and the queue is on the machine.
+     *
+     * "Pinned music" was a label on an object that is unmistakably a music
+     * player, printed above it in the page's voice; and the queue was a pill in
+     * the corner of the card, over the machine's shoulder, which made the one
+     * control not on the machine the only one belonging to the page. Both are
+     * the same mistake -- the card explaining a thing that explains itself.
+     *
+     * So the card is the machine and nothing else, and the queue is a seventh
+     * key across its foot. m.label is left in the file: it is what the drawer
+     * behind the key is titled. */
+    return lines([
+      '        <div class="ms-wk">',
+      '          <div class="ms-wk-face">',
+
+      /* One screen: two analysers, the sleeve between them, the name across
+         the bottom, all behind one piece of glass and one pixel grid. The
+         sleeve is in the middle because it is the subject -- it was off to one
+         side with the meters beside it, which made it a thumbnail. */
+      /* One picture, lit from behind.
+       *
+       * The screen was a thumbnail with a meter either side of it and a two-line
+       * readout underneath -- four things competing inside a hundred and fifty
+       * pixels, none of them big enough to look at. It is one thing now: the
+       * sleeve, filling the glass, with a blurred copy of itself thrown behind
+       * it so the light in the well comes off the record rather than off a lamp.
+       * The name sits over the foot of it, the way it does on any player worth
+       * looking at, and the meters are the spill along the bottom edge instead of
+       * two rows of green blocks.
+       */
+      '            <div class="ms-well">',
+      /* The visualiser, behind everything in the well and under the record.
+       * It is the room the sleeve is standing in rather than a layer over it --
+       * see .ms-viz, and the note there about why nothing is drawn on the
+       * picture. */
+      '              <canvas class="ms-viz" aria-hidden="true"></canvas>',
+      '              <span class="ms-haze" aria-hidden="true"' +
+        (art ? '\n                    style="background-image:url(' + art + ')"' : '') + '></span>',
+      '              <span class="ms-stage">',
+      '                <span class="ms-tube"><span data-ms-tube' +
+        (src.kind === 'list' ? ' data-list="' + esc(id) + '"' : ' data-video="' + esc(id) + '"') +
+        '></span></span>',
+      '                <span class="ms-art" role="img" aria-label="' + esc(m.track) + '"' +
+        (art ? '\n                      style="background-image:url(' + art + ')"' : '') + '></span>',
+      '              </span>',
+      /* No name and no artist.
+       *
+       * They were the last thing on the glass that was type rather than picture,
+       * and a sleeve with its own title printed over it twice is a sleeve with a
+       * caption. What is playing is in the queue behind the cue button, where you
+       * go when you want to know. */
+      '              <span class="ms-veil" aria-hidden="true"></span>',
+      '              <span class="ms-pix"></span>',
+      '            </div>',
+
+      '            <div class="ms-bar" data-ms-bar role="slider" tabindex="0"',
+      '                 aria-label="Seek" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">',
+      '              <span class="ms-fill" data-ms-fill></span>',
+      '              <span class="ms-knob" data-ms-knob></span>',
+      '            </div>',
+
+      /* Six keys. Play and pause interlock the way a tape deck does, stop lets
+         both up and winds back, and the sixth changes what the meters do --
+         which is a control that needs a readout, so the display carries the
+         mode where the clock used to be. */
+      /* The readout, and it is the one place on this machine with words on it.
+       *
+       * A deck of this kind had a strip of orange dots across the front that ran
+       * the name past you because the strip was narrower than the name, and that
+       * is exactly the case here: a hundred and twenty pixels of glass and a
+       * title that is frequently longer. The text is written twice inside it and
+       * the pair is slid one width to the left on a loop, so the second copy is
+       * arriving as the first leaves and there is no moment where the strip is
+       * empty. See .ms-str.
+       *
+       * What it says is what is on the deck: the pinned record out of
+       * about.json, and whatever the player reports when a playlist is running.
+       * Nothing else is ever put in it. */
+      '            <div class="ms-str" aria-hidden="true">',
+      '              <span class="ms-run" data-ms-run>',
+      '                <i>' + esc(m.track + '  \u00b7  ' + m.by) + '</i>',
+      '                <i>' + esc(m.track + '  \u00b7  ' + m.by) + '</i>',
+      '              </span>',
+      '            </div>',
+      /* And the same words where a screen reader can have them, which the strip
+       * itself cannot give: it is two copies of one string running past. */
+      '            <p class="ms-said">' + esc(m.track + ' by ' + m.by) + '</p>',
+
+      '            <div class="ms-deck">',
+      /* Tracks, not seconds.
+       *
+       * The two outer keys used to nudge the position ten seconds either way,
+       * which is a control for a lecture and not for a record: nobody listening
+       * to music wants to be eight seconds further into it, they want the next
+       * one. The bar under the glass is still there and still drags, so seeking
+       * has not gone anywhere -- it has gone back to being the thing you seek
+       * with, and the keys are what a deck's outer keys have always been.
+       *
+       * The glyphs are the standard pair and they are drawn as such: a bar and
+       * a triangle, pointing the way they go. */
+      /* Two banks, because there are two jobs.
+       *
+       * Four keys work the tape -- back, play, pause, on -- and they are the
+       * transport, which is one thing and reads as one thing. The other two do
+       * not touch the tape at all: one changes what the screen draws and one
+       * opens the list. Standing all of them in a single row of six made the
+       * seventh key you press to change the picture look like part of the
+       * sequence you press to move through the music.
+       *
+       * And stop has gone. It let both keys up and wound back to the start,
+       * which is two things pause and the bar already do between them -- and it
+       * was the key in the middle of the transport that stopped the transport,
+       * which is the one place a reader does not want a surprise. Four keys in
+       * the bank is also why they are 32 wide again: the seventh took two
+       * pixels off each of them, and it is not there to pay for now.
+       */
+      '              <span class="ms-set">',
+      key('prev', 'Previous track', svg('M6 5h3v14H6zm13 0v14l-9-7z')),
+      key('play', 'Play', svg('M8 5v14l11-7z')),
+      key('pause', 'Pause', svg('M7 5h3.5v14H7zM13.5 5H17v14h-3.5z')),
+      key('next', 'Next track', svg('M6 5v14l9-7zm10 0h3v14h-3z')),
+      '              </span>',
+      '              <span class="ms-set">',
+      /* And the sixth is the list.
+       *
+       * It has to be a key. The line under the machine says how many there are,
+       * which is worth knowing at a glance and is not a control -- and with the
+       * outer two keys now moving between tracks, a machine that can go to the
+       * next one and cannot show you what the next one is has a hole in it. So
+       * the way in stands with the transport, at the transport's size, and the
+       * count stays a caption. data-cue is what opens the drawer; the same
+       * attribute the line used to carry, and the same one sheet behind it. */
+      /* And the seventh, which is the wave.
+       *
+       * Four ways for the screen to move and a key to walk through them. It is a
+       * control that needs a readout or it is a button you press twice to find
+       * out what it did -- and the machine has one now, so the strip says the
+       * name of the mode for a moment and then goes back to saying the record.
+       * The glyph is the wave itself: three arcs coming off a point, which is
+       * what the screen actually draws. */
+      '              <button type="button" class="ms-key ms-key-viz" data-ms-viz' +
+        ' aria-label="Change the visualiser">' +
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"' +
+        ' stroke-linecap="round" aria-hidden="true">' +
+        '<circle cx="6" cy="12" r="1.6" fill="currentColor" stroke="none"/>' +
+        '<path d="M10 8.4a5.5 5.5 0 0 1 0 7.2M14 5.6a9.5 9.5 0 0 1 0 12.8M18 3.2a13.2 13.2 0 0 1 0 17.6"/>' +
+        '</svg></button>',
+      '              <button type="button" class="ms-key ms-key-list" data-cue="music"' +
+        ' aria-label="' + esc('The playlist, ' + ((m.more || []).length) + ' tracks') + '">' +
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"' +
+        ' stroke-linecap="round" aria-hidden="true">' +
+        '<path d="M4 7h11M4 12h11M4 17h7"/><path d="M18 10v8"/><circle cx="19.6" cy="17.6" r="1.9" fill="currentColor" stroke="none"/>' +
+        '</svg></button>',
+      '              </span>',
+      '            </div>',
+      '          </div>',
+      '        </div>',
+
+      /* And nothing under the machine.
+       *
+       * A count stood there for a revision -- how many records were behind the
+       * sixth key -- and it was the last thing on this card that was the page
+       * talking about the object rather than the object itself. The machine has
+       * a readout of its own now and the sheet behind the key says how many when
+       * you open it, which are both better places for it than a caption. The
+       * card is the machine, and that is the whole of the card. */
+    ]);
+  }
+
+  /* ---- and driving it ---------------------------------------------------- */
+
+  function Walkman(host, opts) {
+    /* Everything the machine knows about itself. It is handed back at the end,
+       and the three methods on it are assigned as the wiring reaches them. */
+    var inst = {};
+
+    /* Silence, as a state rather than a command. The player owns it; this
+       reads it back so a control drawn somewhere else shows what is true and
+       not what it last asked for. */
+    inst.muted = function () {
+      try { return !!(ready && yt.isMuted && yt.isMuted()); } catch (e) { return false; }
+    };
+    inst.mute = function (on) {
+      if (!ready) { return false; }
+      try {
+        if (on === undefined) { on = !inst.muted(); }
+        if (on) { yt.mute(); } else { yt.unMute(); }
+      } catch (e) { return false; }
+      tell();
+      return true;
+    };
+
+    /* Where in the queue the machine is standing. It was a global on the page
+       this came out of, because a drawer somewhere else needed to agree with
+       the transport about it; it is the machine's own now, and the drawer asks
+       the machine. */
+    var cursor = 0;
+    /* The queue: what was passed in, or -- for the site this came from, whose
+       drawer is built at the same time as the page -- what the page put on
+       window.CUES. Neither is required; without one the outer keys walk the
+       playlist the player is holding, and without that they do nothing. */
+    function queue() {
+      if (opts && opts.more && opts.more.length) { return opts.more; }
+      if (opts && opts.queue && opts.queue.length) { return opts.queue; }
+      return (typeof window !== 'undefined' && window.CUES && window.CUES.music) || [];
+    }
+    var card = host;
+    if (!card) { return null; }
+    opts = opts || {};
+    /* The shell, unless the page already has one. A static site renders it at
+       build time -- see shell(), which build.js also calls -- and everybody
+       else gets it built here on the first mount. Either way the wiring below
+       finds the same DOM. */
+    if (!card.querySelector('.ms-wk')) { card.innerHTML = shell(opts); }
 
     /* Found from the card rather than from the keys: the keys are on the
        body of the Walkman and the counter is under it, which are two places
@@ -18968,9 +19754,26 @@ a.arrow { text-decoration: none; }
       saying = line;
       if (saidEl) { saidEl.textContent = track + (by ? ' by ' + by : ''); }
       write(line);
+      tell();
     }
 
-    var artEl = card.querySelector('.ms-art');    var artEl = card.querySelector('.ms-art');
+    /* What the deck is doing, said out loud once, for anything that is not the
+       deck. There is one listener today -- the record in the bar -- and the
+       reason this is an event rather than a function call is that the deck
+       should not have to know about it: a card that reaches into the nav is a
+       card that breaks when the nav moves. It already talks this way to the
+       book. See bk-shown. */
+    function tell() {
+      document.dispatchEvent(new CustomEvent('ms-state', { detail: {
+        state: card.classList.contains('is-going') ? 'going'
+             : card.classList.contains('is-held') ? 'held' : 'idle',
+        line: saying,
+        art: artEl ? (artEl.style.backgroundImage || '') : '',
+        muted: inst.muted(),
+      } }));
+    }
+
+    var artEl = card.querySelector('.ms-art');
     var lineA = card.querySelector('.ms-lcd-a');
     var lineB = card.querySelector('.ms-lcd-by');
 
@@ -19214,7 +20017,7 @@ a.arrow { text-decoration: none; }
      * Ids and an index and nothing else. Titles are not the machine's to give
      * -- the IFrame API knows the name of the record that is playing and of no
      * other -- and where the drawer gets them from is the drawer's business. */
-    window.__msQueue = function () {
+    inst.queue = function () {
       if (!list || !ready) { return null; }
       var ids = [], at = -1;
       try {
@@ -19226,21 +20029,21 @@ a.arrow { text-decoration: none; }
     };
 
     /* And a way to put the needle on one of them. */
-    window.__msAt = function (i) {
+    inst.at = function (i) {
       if (!list || !ready || !yt.playVideoAt) { return false; }
       watch();
       yt.playVideoAt(i);
       return true;
     };
 
-    window.__msPlay = function (id, track, by, art) {
+    inst.play = function (id, track, by, art) {
       if (!/^[A-Za-z0-9_-]{11}$/.test(String(id || ''))) { return false; }
       host.setAttribute('data-video', id);
       if (lineA) { lineA.textContent = track || ''; }
       if (lineB) { lineB.textContent = by || ''; }
       say(track, by);
       if (artEl) {
-        var src = art || ('https://i.ytimg.com/vi/' + id + '/hqdefault.jpg');
+        var src = art || ('https://i.ytimg.com/vi/' + id + '/mqdefault.jpg');
         artEl.style.backgroundImage = 'url("' + src + '")';
         artEl.setAttribute('aria-label', track || '');
       }
@@ -19374,6 +20177,55 @@ a.arrow { text-decoration: none; }
       follow(false);
     }
 
+    /* And the third failure, which had been wearing the first one's coat.
+     *
+     * onError was wired straight to off(). off() sets is-mute, and is-mute
+     * takes the transport off the machine -- so one record in the queue that
+     * YouTube declines to embed did not fail on its own: the whole deck did,
+     * every key on it went, and the only way back was a reload. Stepping to
+     * the next track was the commonest way to find it.
+     *
+     * Every code this thing can raise is about the record and not about the
+     * machine. 2 is an id it cannot read, 5 is the player refusing it, 100 is
+     * gone, and 101 and 150 are the two ways of saying it may not be played
+     * off YouTube -- which most commercial music says, and says particularly
+     * from a development server.
+     *
+     * So the machine names it and moves on, and the keys stay where they are.
+     * One step and only one: a queue where every record is blocked would
+     * otherwise walk itself round the ring for ever. off() keeps the one case
+     * it was written for -- the API script never arriving. See api().
+     */
+    var skipping = false;
+    function fault(code) {
+      clearTimeout(guard);
+      /* 150 on a development server is almost never the record's fault.
+       *
+       * YouTube refuses licensed music to embeds it does not recognise, and it
+       * does not recognise localhost -- Rick Astley and Gangnam Style are
+       * refused there too, and they are on half the web. Telling a developer
+       * "not playable outside YouTube" while they are on 127.0.0.1 sends them
+       * to find another upload of a record that was never broken. So the
+       * machine says which of the two it is. */
+      var local = false;
+      try {
+        local = /^(localhost|127\.|\[::1\]|0\.0\.0\.0)/.test(window.location.hostname) ||
+                window.location.protocol === 'file:';
+      } catch (e) {}
+      say(code === 100 ? 'THAT ONE IS GONE'
+        : (code === 101 || code === 150)
+          ? (local ? 'BLOCKED ON LOCALHOST \u00b7 PLAYS ON THE SITE'
+                   : 'NOT PLAYABLE OUTSIDE YOUTUBE')
+        : code === 2 ? 'THAT IS NOT A RECORD'
+        : 'THAT ONE WOULD NOT PLAY', '');
+      latch('idle');
+      follow(false);
+      var rows = queue();
+      if (skipping || rows.length < 2) { return; }
+      skipping = true;
+      setTimeout(function () { skipping = false; step(1); }, 1500);
+    }
+
     /* Asked to play, and nothing ever started.
 
        A player that cannot get its audio does not report an error -- it goes to
@@ -19440,7 +20292,13 @@ a.arrow { text-decoration: none; }
            id, so writing only the one that applies is the difference between
            a player that is doing what it was asked and one that happens to be
            doing the right thing. */
+        /* origin is not decoration. YouTube checks it, and an embed that does
+           not name the page it is on is treated as less trusted than one that
+           does -- which for licensed music is the difference between playing
+           and error 150. It does not rescue localhost, where that music is
+           refused whatever you send, but it is the right thing to send. */
         var vars = { playsinline: 1, rel: 0, controls: 0 };
+        try { vars.origin = window.location.origin; } catch (e) {}
         var opts = { playerVars: vars, events: {} };
         /* One or the other, and the key is absent rather than undefined when
            it does not apply: the API reads the option object by presence, and
@@ -19456,7 +20314,7 @@ a.arrow { text-decoration: none; }
               if (want) { want = false; yt.playVideo(); }
               while (pend.length) { pend.shift()(); }
             },
-            onError: off,
+            onError: function (e) { fault(e && e.data); },
             onStateChange: function (e) {
               var playing = e.data === YT.PlayerState.PLAYING;
               var held = e.data === YT.PlayerState.PAUSED;
@@ -19507,6 +20365,8 @@ a.arrow { text-decoration: none; }
        player to press it against. It costs the embed to anybody who opens
        About and nothing at all to anybody who does not, which is the trade the
        hover was making anyway -- only in time to be of use. */
+    /* Only if the host is inside something that hides itself. On a page that
+       is one screen this is null and every use of it is guarded. */
     var abView = card.closest('.view');
     if (abView) {
       if (!abView.hidden) { warm(); }
@@ -19538,6 +20398,7 @@ a.arrow { text-decoration: none; }
          over half and the loop stops, which is a paused machine rather than a
          stopped one. */
       viz(going);
+      tell();
     }
     latch('idle');
 
@@ -19554,8 +20415,10 @@ a.arrow { text-decoration: none; }
       yt.pauseVideo();
     });
 
-    /* Stop is not pause. It lets both keys up and winds back to the start,
-       which is the whole of the difference and the reason the key exists. */
+    /* Stop has gone off the machine. Pause already leaves both keys where a
+       reader can see the state, and the bar winds back by being dragged --
+       which is the thing you actually reach for. The handler is kept behind
+       its guard for a deck built from an older shell. */
     if (stop) {
       stop.addEventListener('click', function () {
         if (!ready) { return; }
@@ -19599,12 +20462,12 @@ a.arrow { text-decoration: none; }
         else if (yt.previousVideo) { yt.previousVideo(); }
         return;
       }
-      var rows = (window.CUES && window.CUES.music) || [];
+      var rows = queue();
       if (!rows.length) { return; }
-      var to = ((window.__msIndex || 0) + by + rows.length) % rows.length;
+      var to = ((cursor || 0) + by + rows.length) % rows.length;
       var it = rows[to];
-      if (window.__msPlay && window.__msPlay(it.id, it.a, it.b, it.art)) {
-        window.__msIndex = to;
+      if (inst.play(it.id, it.a, it.b, it.art)) {
+        cursor = to;
       }
     }
 
@@ -19654,27 +20517,156 @@ a.arrow { text-decoration: none; }
       nudge(by);
     });
 
-    /* Music from a screen you have left is the rudest thing a site does.
+    /* This used to stop the record at the door.
      *
-     * This listened for hashchange, which is a event the router does not
-     * cause: crossing from About to Work is a pushState, and pushState fires
-     * nothing. So the deck kept playing on every screen on the site, and the
-     * only way to stop it was to press stop -- on a card you had left.
+     * The argument was good and is worth keeping written down: music from a
+     * screen you have left is the rudest thing a site does, and it was rude
+     * here in the particular way that matters -- the only control that could
+     * stop it was on the card you had just walked away from. So the card
+     * watched its own view and paused itself the moment the router hid it.
      *
-     * The card watches its own screen instead. Whatever route the reader took
-     * -- the bar, a link, the back button, a deep link -- the router ends by
-     * hiding the view this card is on, so that is the one signal that cannot
-     * be missed. Pause rather than stop: coming back to the screen should
-     * find the record where it was left.
+     * What has changed is not the argument, it is the second half of it.
+     * There is a control now that does not live on About: the record in the
+     * bar comes up the moment you leave with something playing, says what it
+     * is, and stops it from wherever you are standing. The rudeness was never
+     * the sound continuing; it was the sound continuing with nothing to press.
+     *
+     * So the view is still watched, because the record still needs to know
+     * when it is the only thing on screen that can speak for the deck -- but
+     * what it does now is announce rather than pause. See tell(), and .disc.
      */
-    var mine = card.closest('.view');
-    if (mine) {
-      new MutationObserver(function () {
-        if (mine.hidden && ready && yt.pauseVideo) { yt.pauseVideo(); }
-      }).observe(mine, { attributes: true, attributeFilter: ['hidden'] });
+    var mine = abView;
+    if (mine && window.MutationObserver) {
+      new MutationObserver(tell).observe(mine, {
+        attributes: true, attributeFilter: ['hidden'],
+      });
     }
-    window.addEventListener('hashchange', function () {
-      if (mine && mine.hidden && ready && yt.pauseVideo) { yt.pauseVideo(); }
+    /* Where the machine is standing in its queue, readable and settable.
+       It is a property and not a number because a drawer built elsewhere on
+       the page has to agree with the transport about it, and two copies of a
+       number is how they stop agreeing. */
+    Object.defineProperty(inst, 'index', {
+      get: function () { return cursor; },
+      set: function (v) { cursor = v | 0; },
+    });
+
+    return inst;
+  }
+
+  return { Walkman: Walkman, shell: shell };
+}));
+
+
+  /* ------------------------------------------------------------- walkman --
+
+     The deck is packages/walkman now. Its stylesheet and its script are
+     inlined by build.js, and its shell() wrote the markup into the card when
+     the page was built -- so all that is left here is the introduction.
+
+     Two things are handed over. The queue, which is also on window.CUES
+     because the drawer behind the sixth key is built with the page and reads
+     it from there; both have to be the same list or the drawer and the
+     transport disagree about what is on the deck. And the three methods, put
+     back on window under the names the drawer already calls -- that glue is
+     this site's, not the package's, which is why it is here and not in it.
+     ---------------------------------------------------------------------- */
+  (function () {
+    var card = document.querySelector('.ab-music');
+    if (!card || typeof Walkman !== 'function') { return; }
+
+    var wk = Walkman(card, { more: (window.CUES && window.CUES.music) || [] });
+    if (!wk) { return; }
+    window.__walkman = wk;
+
+    window.__msQueue = wk.queue;
+    window.__msAt = wk.at;
+    window.__msPlay = wk.play;
+    /* Forwarded rather than copied, for the reason api.index is a property. */
+    try {
+      Object.defineProperty(window, '__msIndex', {
+        get: function () { return wk.index; },
+        set: function (v) { wk.index = v; },
+      });
+    } catch (e) { window.__msIndex = 0; }
+  })();
+
+  /* ------------------------------------------------ the record in the bar --
+
+     A remote for the deck on About, and only ever a remote: every press here
+     clicks the real key over there, so there is one player, one watchdog, and
+     one place where play and pause latch against each other. Two transports
+     that each held their own idea of the state would be two machines
+     disagreeing in front of the reader -- which is the same argument the
+     queue and the keys settled by sharing one list. See CUES.
+
+     It knows nothing about YouTube, and it asks the deck nothing. The deck
+     says what it is doing and this listens, which is why the deck can be
+     rebuilt without touching a line of it.
+     ---------------------------------------------------------------------- */
+  (function () {
+    var disc = document.querySelector('[data-disc]');
+    var card = document.querySelector('.ab-music');
+    if (!disc || !card) { return; }
+
+    var btn = disc.querySelector('[data-disc-b]');
+    var say = disc.querySelector('[data-disc-say]');
+    var art = disc.querySelector('[data-disc-art]');
+    var keyGo = disc.querySelector('[data-disc-toggle]');
+    /* The deck's own keys. Not the player -- the keys, so that everything the
+       press goes through on About it also goes through from here: the lazy
+       build, the watchdog, the latch. */
+    var realPlay = card.querySelector('[data-ms-play]');
+    var realPause = card.querySelector('[data-ms-pause]');
+    if (!btn || !keyGo || !realPlay || !realPause) { return; }
+
+    var line = '';
+
+    function open(on) {
+      disc.classList.toggle('is-open', !!on);
+      btn.setAttribute('aria-expanded', on ? 'true' : 'false');
+    }
+
+    /* The name survives a pause. The deck stops saying anything when it is
+       idle, and a record that is paused is still a record you want named. */
+    document.addEventListener('ms-state', function (e) {
+      var d = (e && e.detail) || {};
+      if (d.line) { line = d.line; }
+      var live = d.state === 'going' || d.state === 'held';
+      disc.classList.toggle('is-going', d.state === 'going');
+      disc.classList.toggle('is-held', d.state === 'held');
+      disc.hidden = !live;
+      if (!live) { open(false); }
+      if (say) { say.textContent = line; }
+      /* The label on the record is the sleeve of whatever is on. It arrives
+         with the state because the machine sends it there; the disc never
+         asks the deck for anything. */
+      if (art && d.art) { art.style.backgroundImage = d.art; }
+      /* One key, so its name is the verb it will perform. */
+      keyGo.setAttribute('aria-label', d.state === 'going' ? 'Pause' : 'Play');
+      /* A spinning disc is not a thing a screen reader can see. */
+      disc.setAttribute('aria-label',
+        (d.state === 'held' ? 'Paused: ' : 'Playing: ') + (line || 'music'));
+    });
+
+    /* The key does whatever is not happening. Read off the class the state
+       event set, so it cannot disagree with the glyph beside it. */
+    keyGo.addEventListener('click', function () {
+      if (disc.classList.contains('is-going')) { realPause.click(); }
+      else { realPlay.click(); }
+    });
+
+
+    /* Anywhere else shuts it, and so does Escape -- which puts the focus back
+       on the thing that opened it, because a panel that closes and leaves the
+       focus where the panel was is a keyboard dead end. */
+    document.addEventListener('pointerdown', function (e) {
+      if (!disc.contains(e.target)) { open(false); }
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && disc.classList.contains('is-open')) {
+        open(false);
+        btn.focus();
+      }
     });
   })();
 
