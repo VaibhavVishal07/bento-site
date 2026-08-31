@@ -2027,18 +2027,7 @@ body {
      Five hundred is seventy, and seventy is the figure every manual gives. */
   width: 500px;
   font-family: var(--f-body);
-  /* Three over the body size, and the only place on the site set off it.
-
-     This is the subheading of the whole page -- the one paragraph that says
-     what the person does, sitting directly under a 36 pixel wordmark with
-     nothing between them. At the body size it was the same type as the note
-     under it and the same type as the cards two hundred pixels below, which
-     made the top of the screen a name and then a wall. Seventeen is a step
-     the reader can see and still well short of a lede.
-
-     The measure holds: 500 pixels of 17 is about sixty characters, which is
-     inside the range that 500 of 14 was chosen to keep. */
-  font-size: 17px;
+  font-size: var(--t-body);
   line-height: 24px;
   color: var(--body);
 }
@@ -2046,14 +2035,7 @@ body {
 .now {
   position: absolute;
   left: 60px;
-  /* Twenty-four lower than it was, which is one line.
-
-     The blurb above sets to four lines at 17 where it set to three at 14, and
-     the paragraph break between them is the whole of what makes them two
-     paragraphs: at the old figure the gap closed from 34 pixels to 10 and the
-     two ran together as one block. The type moved, so the thing under it
-     moves by exactly what the type took. */
-  top: 336px;
+  top: 312px;
   margin: 0;
   width: 500px;
   font-family: var(--f-body);
@@ -2068,11 +2050,7 @@ body {
 
 .btn {
   position: absolute;
-  /* And the same line again, for the same reason: the blurb grew by one and
-     everything standing under it in this card is 24 further down. There is
-     room -- the card is 484 tall and the buttons are 46, so they land 37
-     short of its foot rather than 61. */
-  top: 401px;
+  top: 377px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
