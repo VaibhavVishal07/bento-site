@@ -3034,8 +3034,15 @@ body {
 
      --x-shut is the shut and --x-become is the becoming; the script reads
      both off the root and adds them to know when move 1 may start. */
-  --x-shut:   520ms;
+  --x-shut:   680ms;
   --x-become: 200ms;
+  /* The fold inside the shut: it starts a beat after the object begins to
+     rise, because a cover comes up off a book that is already in the hand,
+     and it lands before the object does so the settle is the book taking the
+     weight of it. */
+  --x-fold:      560ms;
+  --x-fold-at:    60ms;
+  --x-fold-ease: cubic-bezier(0.34, 0.02, 0.24, 1);
   --x-sink:   7px;    /* how far contents drop as they leave    */
   --x-blur:   2px;
 
@@ -4532,19 +4539,37 @@ body {
   --blk-v: 4px;
   --blk-r: 20px;
 
-  /* And what an object of that thickness does to the surface under it. The
-     only card on the site that casts one, because it is the only one that is
-     a thing rather than a panel. Clipping is on children; a card's own shadow
-     falls outside its box and survives overflow: hidden. */
-  box-shadow: 0 34px 74px -30px rgba(0, 0, 0, 0.92),
-              0 3px 12px -4px rgba(0, 0, 0, 0.55);
+  /* The cast is on the boards rather than here -- see .bk-board. It is a
+     contact shadow, so it belongs to the things actually lying on the desk,
+     and when one of those is picked up and turned over its shadow has to go
+     with it. On the card it was one shadow the shape of the spread, still
+     lying there under a book half that width. */
 
-  /* The board itself. A diagonal of light across it the way a hide takes a
-     raking light, then the grain -- fractal noise at three per cent, which is
-     what stops a large dark rectangle reading as a large dark rectangle. The
-     glare the rest of the site paints over its cards is turned off here: it is
-     a gloss, and this is not a gloss. */
+  /* The board is not painted here any more -- see .bk-board, which is two of
+     them. What the card keeps is the glare being off (it is a gloss, and this
+     is not a gloss) and the edge, which is binding and not a grey hairline.
+     Its own fill shows nowhere: the two halves cover it exactly. */
   --gs: 0;
+  background-color: transparent;
+  background-image: none;
+  outline-color: var(--lea-edge);
+}
+
+/* --- the board, in two halves --------------------------------------------
+
+   Hinged at the fold, which is the only place a book is hinged. The right half
+   is the back cover and never moves; the left half is the front cover and is
+   the whole of what shutting the book is.
+
+   Both carry the same leather, sized to the whole card and offset by where
+   they stand, so the diagonal of light and the dark band down the fold run
+   across the pair without a seam at the join -- a gradient restarted per half
+   is two boards that do not match, which is a worse fault than the one this
+   is fixing. */
+.bk-board {
+  position: absolute;
+  top: 0;
+  width: 561px; height: 840px;
   background-color: var(--lea);
   background-image:
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.62' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23g)' opacity='0.055'/%3E%3C/svg%3E"),
@@ -4557,10 +4582,63 @@ body {
       var(--lea) 46%,
       var(--lea-deep) 78%,
       var(--lea) 100%);
-  background-size: 220px 220px, 100% 100%, 100% 100%;
+  background-size: 220px 220px, 1122px 840px, 1122px 840px;
+  background-repeat: repeat, no-repeat, no-repeat;
+  pointer-events: none;
+  /* What an object of this thickness does to the surface under it. One per
+     half, so the pair casts what the whole card used to and the front half
+     takes its own away with it when it goes. */
+  box-shadow: 0 34px 74px -30px rgba(0, 0, 0, 0.92),
+              0 3px 12px -4px rgba(0, 0, 0, 0.55);
+}
+.bk-board-back  { left: 561px; background-position: -561px 0, -561px 0, -561px 0; }
+.bk-board-front { left: 0;     transform-origin: right center; transform-style: preserve-3d; }
+.bk-board-front { background: none; }
 
-  /* And the board's own edge, which is binding and not a grey hairline. */
-  outline-color: var(--lea-edge);
+/* Its two faces. Inside is the board the leaves lie on; outside is the board
+   the world sees when the thing is shut, with the blind stamp in it -- and
+   nothing on this object has ever had an outside, because its boards have
+   never passed ninety. */
+.bk-board-face {
+  position: absolute; inset: 0;
+  backface-visibility: hidden;
+  background-color: var(--lea);
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.62' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23g)' opacity='0.055'/%3E%3C/svg%3E"),
+    linear-gradient(90deg,
+      rgba(0, 0, 0, 0) 44%,
+      rgba(0, 0, 0, 0.55) 50%,
+      rgba(0, 0, 0, 0) 56%),
+    linear-gradient(148deg,
+      var(--lea-2) 0%,
+      var(--lea) 46%,
+      var(--lea-deep) 78%,
+      var(--lea) 100%);
+  background-size: 220px 220px, 1122px 840px, 1122px 840px;
+  background-repeat: repeat, no-repeat, no-repeat;
+  background-position: 0 0, 0 0, 0 0;
+}
+/* Turned right over, the half is mirrored: the edge the fold is on ends at the
+   shut book's left. So the spine is drawn from that end, and a gradient
+   written from this element's right reads down the left of the book you are
+   left looking at. */
+.bk-board-out {
+  transform: rotateY(180deg);
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.62' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23g)' opacity='0.055'/%3E%3C/svg%3E"),
+    linear-gradient(270deg,
+      rgba(0, 0, 0, 0.55) 0%,
+      rgba(0, 0, 0, 0.22) 3%,
+      rgba(0, 0, 0, 0) 8%),
+    linear-gradient(148deg,
+      var(--lea-2) 0%, var(--lea) 46%, var(--lea-deep) 78%, var(--lea) 100%);
+  background-size: 220px 220px, 100% 100%, 100% 100%;
+}
+.bk-stamp-out {
+  position: absolute;
+  left: 12px; top: 12px; right: 12px; bottom: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.55);
+  box-shadow: 0 0 0 1px var(--lea-line);
 }
 
 /* The book is a book. You take hold of a page rather than select it. */
@@ -5189,12 +5267,44 @@ body {
    The drop is in the lift and not in the rotation. Two boards that overshot
    ninety would pass through each other, and a book whose covers cross is a
    worse thing to look at than a book that lands flat. */
+/* A cover is not on a perfect hinge: the spine gives, so the whole object
+   rises a little as the cover swings and comes back down as it lands. It ends
+   where it started, because a book that has been shut is a book lying on the
+   desk and not one held up at an angle -- which is what the old figures did,
+   and what left the thing turned fifteen degrees away for the beat that came
+   after it to make a flat tile out of. */
 @keyframes bk-shut-pose {
-  0%   { transform: translateY(0px) translateZ(0px) rotateX(0deg) rotateY(0deg); }
-  32%  { transform: translateY(-12px) translateZ(-54px) rotateX(2.8deg) rotateY(-6deg); }
-  68%  { transform: translateY(-15px) translateZ(-112px) rotateX(6.2deg) rotateY(-13deg); }
-  90%  { transform: translateY(-3px) translateZ(-142px) rotateX(7.7deg) rotateY(-16.2deg); }
-  100% { transform: translateY(-10px) translateZ(-130px) rotateX(7deg) rotateY(-15deg); }
+  0%   { transform: translateY(0px) translateZ(0px) rotateX(0deg); }
+  34%  { transform: translateY(-16px) translateZ(38px) rotateX(5deg); }
+  66%  { transform: translateY(-18px) translateZ(44px) rotateX(5.6deg); }
+  88%  { transform: translateY(2px) translateZ(4px) rotateX(-0.6deg); }
+  100% { transform: translateY(0px) translateZ(0px) rotateX(0deg); }
+}
+
+/* And the fold. One cover, turned about the spine.
+
+   Everything on the front half turns with it and on the same figures: the
+   board, the leaves you have read, the block they make and its fore-edge.
+   Four elements rather than one because they live in three different parents
+   -- the leaf holds the page, the pose holds the rest -- and four elements on
+   one animation are one movement. Each is turned about the fold: for the page
+   and the block that is their own right edge; for the fore-edge, which is a
+   few pixels wide out at the margin, it is 539 further along than that.
+
+   Past ninety they are all gone, backface by backface, and what the turn has
+   brought round instead is the one face on this object that has never been
+   seen -- the outside of the front cover. */
+@keyframes bk-fold { to { transform: rotateY(180deg); } }
+
+/* The board carries the same turn and one thing more. At rest it lies under
+   the leaves that are on it; landed, it has to lie over the ones it has come
+   down on. So it changes places at the halfway mark, which is the frame its
+   own face goes over and nothing can be seen to move. */
+@keyframes bk-fold-board {
+  0%   { transform: rotateY(0deg); z-index: 0; }
+  49%  { z-index: 0; }
+  50%  { z-index: 3; }
+  100% { transform: rotateY(180deg); z-index: 3; }
 }
 
 /* From the click, not from the morph. The tile that is on its way to being a
@@ -5205,8 +5315,64 @@ body {
   animation: bk-pose 1340ms cubic-bezier(0.26, 0.03, 0.14, 1) backwards;
 }
 .x-shutting .view-article .bk-pose {
-  animation: bk-shut-pose var(--x-shut) cubic-bezier(0.4, 0, 0.6, 1) forwards;
+  animation: bk-shut-pose var(--x-shut) cubic-bezier(0.32, 0, 0.22, 1) forwards;
 }
+
+/* The one cover, and everything lying on it.
+
+   Reached with .bk in front of it, which is not decoration. The opening's
+   rules name the page as `.view-article:not([hidden]) .bk-page-v` and weigh
+   three, and they are written below these; a rule of the same weight written
+   above loses the tie and the page keeps the animation that opens it. The card
+   makes four, and four beats the tie wherever either is written. */
+.x-shutting .view-article .bk .bk-page-v,
+.x-shutting .view-article .bk .bk-blk-v,
+.x-shutting .view-article .bk .bk-fore-v {
+  animation: bk-fold var(--x-fold) var(--x-fold-ease) var(--x-fold-at) forwards;
+  backface-visibility: hidden;
+}
+.x-shutting .view-article .bk .bk-board-front {
+  animation: bk-fold-board var(--x-fold) var(--x-fold-ease) var(--x-fold-at) forwards;
+}
+/* The block turns about the fold like everything else on that half, and the
+   fore-edge is out at the margin rather than against it -- 22 from the board's
+   own edge, so the hinge is 539 along from its left. */
+.x-shutting .view-article .bk .bk-blk-v  { transform-origin: right center; }
+.x-shutting .view-article .bk .bk-fore-v { transform-origin: 539px center; }
+
+/* And the open book's furniture goes with the cover that is leaving.
+
+   The blind stamp runs round the whole card, which is right for a book lying
+   open -- a stamp on both boards, going round the outside of the pair -- and
+   is a rectangle drawn round nothing the moment one of those boards is in the
+   air. The crease is the gutter, and there is no gutter once the fold has
+   opened. The card's own outline is the binding edge of a 1122-wide object,
+   and by the end of this beat the object is 561 wide.
+
+   All three go early and quickly, inside the first fifth of the fold, while
+   the cover is still low enough to be what you are watching. What carries the
+   edge from here is the cover's own, on the face that has just come round. */
+.x-shutting .view-article .bk .bk-stamp,
+.x-shutting .view-article .bk .bk-crease {
+  opacity: 0;
+  transition: opacity 140ms linear;
+}
+.x-shutting .view-article .bk { outline-color: transparent; }
+
+/* And the card comes in behind it.
+
+   A shut book is 561 wide and the card it was drawn on is 1122, so without
+   this the beat that follows brings a tile face up over the width of the
+   spread -- a blank rectangle twice the size of the thing that has just been
+   put down. The card takes the right half, where the book now is.
+
+   Its contents are pushed back by exactly what its own edge moved, so nothing
+   inside appears to shift: this lands on one frame with no transition on
+   either figure, and the two cancel. What falls off the left is the half the
+   front cover vacated, which has nothing in it. */
+.bk.bk-shrunk { left: 960px; width: 561px; }
+.bk.bk-shrunk .bk-pose { left: -561px; right: auto; width: 1122px; }
+.bk-board-out { box-shadow: inset 0 0 0 2px var(--lea-edge); }
 
 /* Begun at seven tenths of the travel rather than after it. The tile is 93 per
    cent of its width by then, so both boards have room to swing into, and the
@@ -5235,8 +5401,13 @@ body {
    there: the cut edges of a book are a thing you see when it is shut, and
    fading them up over a spread that is still open is a stripe down the middle
    of an open book. */
-.x-shutting .view-article .bk-shut,
-.x-empty .view-article .bk-shut { opacity: 1; transition-delay: 310ms; }
+/* And the cut edges no longer come up on the way out. They exist because the
+   old shut left both leaves standing on end at the fold with nine pixels of
+   black where a book should be, and they drew the block into that gap. There
+   is no gap now: the board is twenty-two bigger than the block on every side
+   that has an edge, so a shut book seen from straight above is its cover and
+   nothing else. They still rise on the way in, where the book genuinely is
+   shut and edge-on before it opens -- see bk-shut-lift. */
 
 /* And the type goes out with the light as the covers come over.
   
@@ -5271,13 +5442,11 @@ body {
    and the recto eighty behind it, which is the same eighty the opening uses
    with the order reversed. 400 apiece, the second landing at 470, and the
    object settling on top of that at 520. */
+/* The recto does not move at all now. It is the back cover's leaf and the
+   back cover stays on the desk; what comes over it is the other half. The
+   transition stays for the leaf's own resting state and nothing else. */
 .bk-page { transition: transform 400ms cubic-bezier(0.55, 0.02, 0.36, 1); }
-.x-shutting .view-article .bk-page-r,
-.x-empty .view-article .bk-page-r { transition-delay: 70ms; }
-.x-shutting .view-article .bk-page-v,
-.x-empty .view-article .bk-page-v { transform: rotateY(89deg); }
-.x-shutting .view-article .bk-page-r,
-.x-empty .view-article .bk-page-r { transform: rotateY(-89deg); }
+.x-empty .view-article .bk-page-v { transform: rotateY(180deg); }
 
 /* The flow is two pages wide wherever it is put, so every copy paginates
    identically and a column has the same contents in all four of them. The
@@ -12926,6 +13095,28 @@ a.arrow { text-decoration: none; }
              See bk-pose. -->
         <div class="bk-pose">
 
+        <!-- The board, halved at the fold.
+
+             An open book is two boards hinged at the spine, not one board with
+             two pages drawn on it, and until now this was the second thing:
+             the leather was painted on the card and the boards were only ever
+             the two pages standing up off it. That model can open a book and
+             it cannot shut one -- the best it could do was meet both pages in
+             the middle, which is nobody's hand.
+
+             So the leather comes off the card and onto two halves of it. The
+             right half is the back cover, with the block lying on it, and it
+             never moves. The left half is the front cover, with the leaves you
+             have read lying on it, and shutting the book is that half turning
+             over onto the other. It has a back, which nothing here has ever
+             needed before: its boards stopped at eighty-nine and never showed
+             one. See .bk-board. -->
+        <div class="bk-board bk-board-back" aria-hidden="true"></div>
+        <div class="bk-board bk-board-front" aria-hidden="true">
+          <div class="bk-board-face bk-board-in"></div>
+          <div class="bk-board-face bk-board-out"><i class="bk-stamp-out"></i></div>
+        </div>
+
         <!-- Pressed into the board, not printed on it. -->
         <div class="bk-stamp" aria-hidden="true"></div>
 
@@ -15309,7 +15500,7 @@ a.arrow { text-decoration: none; }
     card.addEventListener('bk-shown', function (e) {
       at = 0; roll = 0; grip = null;
       card.classList.add('bk-arriving');
-      card.classList.remove('bk-going', 'bk-seated');
+      card.classList.remove('bk-going', 'bk-seated', 'bk-shrunk');
       // Whatever box the last exit shrank it into is not this one's business;
       // the crossing pins and unpins from here.
       card.style.left = card.style.top = card.style.width = card.style.height = '';
@@ -18841,7 +19032,7 @@ a.arrow { text-decoration: none; }
             // a card with four copies of an essay inside it, and the browser
             // has to lay all four out before it can answer. The beat is timed
             // off the face's own transition now, which needs no such favour.
-            book.classList.add('bk-seated');
+            book.classList.add('bk-seated', 'bk-shrunk');
 
             // Beat 2. Now it travels -- and now the rest of the screen may
             // leave around it.
@@ -18943,7 +19134,7 @@ a.arrow { text-decoration: none; }
             // 3. the shapes have settled -- every tile is standing on its own
             //    ground again -- so let the new contents in.
             stage.classList.remove('x-empty', 'x-shutting');
-            if (book) { book.classList.remove('bk-seated'); }
+            if (book) { book.classList.remove('bk-seated', 'bk-shrunk'); }
             Array.prototype.forEach.call(document.querySelectorAll('.x-solo'),
               function (e) { e.classList.remove('x-solo'); });
             busy = false;
