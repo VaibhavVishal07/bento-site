@@ -7,6 +7,8 @@
 <meta name="description" content="Product designer/engineer. Bento-grid portfolio home screen.">
 <meta name="theme-color" content="#000000">
 <script>
+
+
   /* Read before a single rule runs. Everything about the room is a token on
      the root, so the one thing that cannot wait for the rest of the page is
      which set of them applies -- put it on late and the dark room is drawn
@@ -80,6 +82,13 @@
    ========================================================================== */
 
 :root {
+  /* Back to black under the cards, and the cards back to #0d0d0d.
+     marijanapav's #121212 on #080808 is right on that site because its cards
+     are big flat panels with a lot of air in them; here a card is one of six
+     on a lattice with hairlines ruled between them, and at #121212 the fill
+     came up close enough to the rules that the edges stopped being edges --
+     which is what reads as a card that has been bent. The darker fill puts
+     the step back between the card and the line drawn round it. */
   --bg: #000000;
 
   /* every card: fill #0D0D0D, 2px outside stroke #1A1A1A, radius 0 */
@@ -283,6 +292,12 @@
 :root {
   color-scheme: dark;
 
+  /* Back to white. The warm off-white was taken off marijanapav and it is
+     right on that site, where the ground is a flat #080808 and nothing else
+     is competing; here it read as dull, because this room is darker still and
+     every word on it is already set at an alpha rather than at full strength
+     -- so a warm base and an alpha on top is two subtractions from the same
+     figure. One token, and it reaches every word on the site. */
   --w:     255, 255, 255;
 
   /* Not white, and not black.
@@ -343,7 +358,6 @@
      the same --bg as the body underneath, so there is nothing to see through
      it, and with it transparent the ground is one continuous surface with no
      seam where the frame's letterbox ends. */
-  --tooth: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'180'%20height%3D'180'%3E%3Cfilter%20id%3D'p'%3E%3CfeTurbulence%20type%3D'fractalNoise'%20baseFrequency%3D'.85'%20numOctaves%3D'4'%20stitchTiles%3D'stitch'%2F%3E%3CfeColorMatrix%20type%3D'saturate'%20values%3D'0'%2F%3E%3C%2Ffilter%3E%3Crect%20width%3D'180'%20height%3D'180'%20filter%3D'url(%23p)'%20opacity%3D'.042'%2F%3E%3C%2Fsvg%3E");
   --k-lift:  1;
   --k-shade: 1;
 
@@ -373,19 +387,11 @@
      come back into phase every 28px -- far enough apart that the eye stops
      finding the repeat and reads variation in the grain instead, which is
      what a real brushed finish has. */
-  --grain:
-    repeating-linear-gradient(180deg,
-      rgba(var(--shade), 0.052) 0px,
-      rgba(var(--shade), 0.052) 1px,
-      rgba(var(--lift),  0.015) 2px,
-      rgba(var(--lift),  0.015) 3px,
-      rgba(var(--shade), 0) 3px,
-      rgba(var(--shade), 0) 4px),
-    repeating-linear-gradient(180deg,
-      rgba(var(--shade), 0.030) 0px,
-      rgba(var(--shade), 0.030) 1px,
-      rgba(var(--shade), 0) 1px,
-      rgba(var(--shade), 0) 7px);
+  /* The brushed finish is off. It was two combs at four and seven pixels
+     that never came back into phase, and it was good -- but the room it is
+     now is a flat one, and a texture on a flat ground is the one thing that
+     says a surface is pretending. */
+  --grain: none;
 
   /* The two chrome colours that are not a distance from the ground: a pill
      that is filled with ink and prints in the page's own colour. They swap
@@ -676,7 +682,6 @@
      a page this bright. */
   /* The tooth carries further on a near-white ground than it does on
      black, so the lit room takes nearly twice as much of it. */
-  --tooth: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'180'%20height%3D'180'%3E%3Cfilter%20id%3D'p'%3E%3CfeTurbulence%20type%3D'fractalNoise'%20baseFrequency%3D'.85'%20numOctaves%3D'4'%20stitchTiles%3D'stitch'%2F%3E%3CfeColorMatrix%20type%3D'saturate'%20values%3D'0'%2F%3E%3C%2Ffilter%3E%3Crect%20width%3D'180'%20height%3D'180'%20filter%3D'url(%23p)'%20opacity%3D'.075'%2F%3E%3C%2Fsvg%3E");
 
   --cast-y: 10px;
   --cast-b: 26px;
@@ -905,7 +910,6 @@
        a page this bright. */
     /* The tooth carries further on a near-white ground than it does on
        black, so the lit room takes nearly twice as much of it. */
-    --tooth: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'180'%20height%3D'180'%3E%3Cfilter%20id%3D'p'%3E%3CfeTurbulence%20type%3D'fractalNoise'%20baseFrequency%3D'.85'%20numOctaves%3D'4'%20stitchTiles%3D'stitch'%2F%3E%3CfeColorMatrix%20type%3D'saturate'%20values%3D'0'%2F%3E%3C%2Ffilter%3E%3Crect%20width%3D'180'%20height%3D'180'%20filter%3D'url(%23p)'%20opacity%3D'.075'%2F%3E%3C%2Fsvg%3E");
 
     --cast-y: 10px;
     --cast-b: 26px;
@@ -1113,7 +1117,11 @@ html, body { height: 100%; }
 body {
   margin: 0;
   background-color: var(--bg);
-  background-image: var(--tooth);
+  /* No tooth on the ground. --bg has been #000 all along, but the body was
+     printing four per cent of fractal noise over it -- a floor that is nearly
+     black and never quite, which next to cards at #0d0d0d with a hairline
+     round them is a difference you can see. The texture came off the cards
+     two rounds ago and this was the last of it still standing. */
   color: rgb(var(--w));
   font-family: var(--f-sans);
   -webkit-font-smoothing: antialiased;
@@ -1888,6 +1896,15 @@ body {
 }
 }
 
+/* The column inside this one is centred on the card and was not: it ran from
+   62 to 450 in a box of 484, which is 62 of air above it and 34 below, and a
+   block sitting 28 low in the largest card on the site is the sort of thing
+   the eye reads as wrong without being able to say why. Every one of the five
+   figures that place it -- the avatar, the wordmark, the blurb, the line and
+   the two buttons -- is 14 less than it was, which puts 48 either side.
+   Written into the figures rather than solved with a flex column, because
+   every box on this frame is placed by hand against the same 1920 grid and
+   one card centring itself a different way is a second system. */
 .intro       { left: 399px;  top: 91px;  width: 735px; height: 484px;
                --gx: 46%; --gy: -8%; --gw: 95%; --gh: 125%; --gs: 0.055; }
 .repo        { left: 1155px; top: 91px;  width: 366px; height: 484px;
@@ -1981,7 +1998,7 @@ body {
    Intro card — offsets relative to 400, 91
    ========================================================================== */
 
-.avatar     { left: 60px;  top: 62px;  width: 72px; height: 72px; border-radius: 10.59px; }
+.avatar     { left: 60px;  top: 48px;  width: 72px; height: 72px; border-radius: 10.59px; }
 
 /* The wordmark ends in a terminal caret, so blink it like one: a hard on/off
    at 530ms a side, the way a tty cursor runs, never a soft fade. */
@@ -1995,7 +2012,7 @@ body {
 .wordmark {
   position: absolute;
   left: 60px;
-  top: 158px;
+  top: 144px;
   margin: 0;
   font-family: var(--f-word);
   font-weight: 400;
@@ -2019,7 +2036,7 @@ body {
 .blurb {
   position: absolute;
   left: 60px;
-  top: 206px;
+  top: 192px;
   margin: 0;
   /* 500 and not 637. The step down to the body size is the whole of this
      change and it takes the measure with it: 637 pixels of 14-point runs to
@@ -2060,7 +2077,7 @@ body {
 
      Sixteen here, thirty-two above the buttons, thirty-four under them. The
      card is 484 tall and cannot grow: the row below starts 21 under it. */
-  top: 342px;
+  top: 328px;
   margin: 0;
   width: 500px;
   font-family: var(--f-body);
@@ -2080,7 +2097,7 @@ body {
      break between them closed they land 34 short of the card's foot rather
      than 18 -- which is about the gap above them, and reads as a foot rather
      than as an edge they are being pushed over. */
-  top: 404px;
+  top: 390px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -2465,6 +2482,46 @@ body {
 .thoughts .label    { left: 25px; top: 20px; }
 .thoughts .arrow    { left: 302px; top: 18px; }
 .thoughts .headline { left: 25px; top: 60px; width: 297px; }
+
+/* The picture on it, and the four figures that place it.
+ *
+ * All four are written on the element by build.js out of content/home.json --
+ * see homeArt() -- and every one has a fallback here, so a card with no
+ * figures still draws something sane and a card with no picture at all draws
+ * nothing. Nothing about where it goes is in this rule; this rule is only
+ * what those figures mean.
+ *
+ * To move it: inspect the img, change --art-x, --art-y, --art-w, --art-r on
+ * the element, and it moves live. When it is where it should be, put the same
+ * numbers on thoughts.art in content/home.json and rebuild. They are also the
+ * five fields on the Writing card in the CMS.
+ *
+ * Height is not one of the figures. width alone with height auto lets the
+ * picture keep its own proportions, so the only way to get the aspect wrong
+ * is to not try.
+ *
+ * The card is overflow: hidden, which is what makes bleeding off an edge a
+ * legitimate way to place this rather than a mess: the controller is meant to
+ * run off the right and the foot, and the card cuts it there.
+ *
+ * rotate and not transform, because transform on a card's child is the
+ * crossing's -- see the rule that fades, sinks and blurs the contents. They
+ * are separate properties in CSS now and do not overwrite one another, which
+ * is the same reason the tape on the shelf uses rotate. */
+.th-art {
+  position: absolute;
+  left: var(--art-x, 0px);
+  top: var(--art-y, 0px);
+  width: var(--art-w, 160px);
+  height: auto;
+  rotate: var(--art-r, 0deg);
+  opacity: var(--art-o, 1);
+  /* The card is one link end to end and the picture is not a second thing to
+     press: the hit area is a sibling above it, and this must not take a
+     pointer out of it or interrupt a drag across the card. */
+  pointer-events: none;
+  user-select: none;
+}
 
 /* ==========================================================================
    About // Connect — relative to 785, 757
@@ -3124,15 +3181,13 @@ body {
      both off the root and adds them to know when move 1 may start. */
   --x-shut:   680ms;
   --x-become: 200ms;
-  /* And the beat the folder gets on Work, which is the shut's opposite number
-     on the way down: a sheet coming out of a folder rather than a cover going
-     over a book. One beat and not three -- there is nothing to put away, only
-     something to pick up -- and shorter than the shut, because taking a page
-     out of a folder is a quicker thing than closing a book and is meant to
-     feel like it. The becoming is the same 200 either way: it is the same
-     move, a thing turning into a tile. */
-  --x-lift:      520ms;
-  --x-lift-ease: cubic-bezier(0.4, 0, 0.2, 1);
+  /* The folder on Work had a beat of its own here, --x-lift, in which the
+     picture came out of its window and opened to the size of the card. It is
+     gone -- see .w-seat for why a landscape picture cannot open into a
+     portrait card without being magnified, which is the one thing the beat
+     was there to prevent. What is left on the way down is the becoming, and
+     the becoming is the same 200 in both directions: it is the same move,
+     a thing turning into a tile. */
   /* The fold inside the shut: it starts a beat after the object begins to
      rise, because a cover comes up off a book that is already in the hand,
      and it lands before the object does so the settle is the book taking the
@@ -3271,7 +3326,7 @@ body {
    The claim here is the work removed and not a number of milliseconds: a
    four-pixel blur over two pages of justified type, thirty-three times, for
    nobody. */
-.view .card > *:not(.bk-seat):not(.w-seat):not(.w-lift):not(.bk-body),
+.view .card > *:not(.bk-seat):not(.w-seat):not(.bk-body),
 .crumb,
 .crumb-count {
   transition: opacity var(--x-fade) var(--x-ease),
@@ -3280,7 +3335,7 @@ body {
   transition-delay: var(--x-delay, 0ms);
 }
 
-.x-empty .view .card > *:not(.bk-seat):not(.w-seat):not(.w-lift):not(.bk-body),
+.x-empty .view .card > *:not(.bk-seat):not(.w-seat):not(.bk-body),
 /* The way back was in this list and is not any more. It has two lattice
    rules hanging off it now, and those are struck and ruled across a crossing
    like every other line on the frame -- so fading the box as well drew the
@@ -3294,12 +3349,30 @@ body {
   filter: blur(var(--x-blur));
 }
 
-/* The picture keeps the fade and the sink and loses the blur, for the smaller
+/* The pictures keep the fade and the sink and lose the blur, for the smaller
    half of the same argument. Blurring a photograph that is already fading to
    nothing buys a look nobody can tell from the fade on its own, and it costs
    a 240 by 202 layer re-rastered on every frame of it, four times over, on
-   the move the case study grows out of. */
-.x-empty .view .card > .w-shot { filter: none; }
+   the move the case study grows out of.
+
+   .th-art is here for the same reason and it is the worse offender of the
+   two. It is a 420 square with an alpha channel, it is rotated, and it sits
+   in a card that clips it -- so every frame of every crossing was compositing
+   a rotated bitmap, blurring it, and re-clipping it against a box that is
+   itself still moving. The photograph above at least sits square. This one
+   was doing the expensive version of the thing that rule already forbids, on
+   Home, which is one end of four of the six crossings. */
+/* The :not()s are not decoration and they are not a copy-paste. The rule
+   this overrules reaches its subject as
+   `.card > *:not(.bk-seat):not(.w-seat):not(.bk-body)`, and a :not() carries
+   the weight of what is inside it -- so that selector is six classes and a
+   plain `.card > .th-art` is four, and four does not overrule six however
+   far down the file it is written. Matched here so both sides weigh the
+   same and this one wins on order, which is the trap the note two rules
+   above describes: the book's own exemption was written without them and
+   never held for a single frame. */
+.x-empty .view .card > .w-shot:not(.bk-seat):not(.w-seat):not(.bk-body),
+.x-empty .view .card > .th-art:not(.bk-seat):not(.w-seat):not(.bk-body) { filter: none; }
 
 /* And the wall behind the grid.
 
@@ -4070,7 +4143,7 @@ body {
    about two thirds of the measure while the one-line title above it runs the
    full width, and what the column reads as is eight different widths rather
    than one list. They fill the measure and break where it runs out. */
-.headline, .sub, .ab-lede, .pc-title, .pc-lede,
+.headline, .sub, .ab-says p, .pc-title, .pc-lede,
 .c-cap, .c-note, .bk-title h2, .w-cta, .zoom-title {
   text-wrap: balance;
 }
@@ -4138,49 +4211,32 @@ body {
       rgba(var(--w), 0.06) 50%, transparent calc(50% + 0.5px));
 }
 
-/* The picture once it is out of its frame, and the tile it turns into.
+/* The tile the card turns into.
 
-   .w-lift is the same picture again at the size the whole card is, sitting
-   exactly over the window until it is asked to move. What moves is its box
-   and not a transform on it, which is the difference between the crop opening
-   and the image stretching: a window 240 by 202 and a card 264 by 335 are not
-   the same shape, so a scale from one to the other is a photograph being
-   pulled. Four properties on one element, which is what .bk-going already
-   animates to put the book in its seat -- see there for why that is worth a
-   layout on this frame and nowhere else.
+   There were two boxes here. .w-lift was the same picture again, and the
+   press grew its box from the window to the card -- four properties on one
+   element -- on the argument that moving the box rather than transforming it
+   is the difference between the crop opening and the image stretching.
 
-   .w-seat is the same box again as an empty tile: card fill, grain and the
-   hairline, which is what every box on this frame is when there is nothing in
-   it yet. The picture becomes it, and it is the tile that travels. See
-   .bk-seat, which is this pair run the other way round. */
-.w-lift, .w-seat {
+   It is, and the box was not the only thing deciding the picture's size.
+   `background-size: cover` refits the image to whatever box it is given, so
+   every intermediate box refit it again: the 632 by 498 screenshot standing
+   in the 240 by 202 window was magnified 1.66 times and cropped of a third of
+   its width by the time the box reached 264 by 335. Which is the stretch the
+   note was written to rule out, arrived at the other way round.
+
+   The window is landscape and the card is portrait, so there is no size the
+   picture can be that fills the card without being blown up; the beat was
+   asking for something the shapes do not allow. It is gone, and .w-seat is
+   now the whole of the press: the card becomes an empty tile -- card fill,
+   grain and the hairline, which is what every box on this frame is when there
+   is nothing in it yet -- and the tile travels to the case study. The picture
+   stays in its frame at the one size it was drawn for. See .bk-seat, which is
+   the same move on a book. */
+.w-seat {
   position: absolute;
   opacity: 0;
   pointer-events: none;
-}
-.w-lift {
-  left: 12px; right: 12px; top: 12px; bottom: 121px;
-  z-index: 4;
-  background-color: var(--slot);
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  box-shadow: 0 30px 56px -26px rgba(0, 0, 0, 0.92),
-              0 4px 12px -5px rgba(0, 0, 0, 0.5);
-  transition: left   var(--x-lift) var(--x-lift-ease),
-              right  var(--x-lift) var(--x-lift-ease),
-              top    var(--x-lift) var(--x-lift-ease),
-              bottom var(--x-lift) var(--x-lift-ease),
-              opacity 90ms linear;
-}
-.w-lift.is-blank {
-  background-image:
-    linear-gradient(to bottom right, transparent calc(50% - 0.5px),
-      rgba(var(--w), 0.06) 50%, transparent calc(50% + 0.5px)),
-    linear-gradient(to bottom left, transparent calc(50% - 0.5px),
-      rgba(var(--w), 0.06) 50%, transparent calc(50% + 0.5px));
-}
-.w-seat {
   inset: 0;
   z-index: 5;
   background-color: var(--card-fill);
@@ -4189,41 +4245,25 @@ body {
   transition: opacity var(--x-become) linear;
 }
 .card.w-seated .w-seat { opacity: 1; }
-.x-lifting .view-work .w-lifting .w-seat { will-change: opacity; }
+.view-work .card.w-lifting .w-seat { will-change: opacity; }
 
-/* --- taking it out --------------------------------------------------------
+/* --- becoming the tile ----------------------------------------------------
 
-   The picture comes forward out of its frame and opens to the size of the
-   card it is standing on. One element and four edges: it starts at the
-   window's own figures, which are written on it above, and every one of them
-   goes to zero.
+   The pressed card puts on its own face and stops being a card. .w-lifting
+   says which of the four was pressed -- the other three are not in this
+   gesture and must not move -- and .w-seated starts the face.
 
-   Reached through .x-lifting and .w-lifting together. .w-lifting says which
-   of the four was pressed -- the other three are not in this gesture and must
-   not move -- and .x-lifting says the crossing is in its first beat, so the
-   rules come off on their own when it ends rather than being unpicked one at
-   a time. The same pair the book's shut uses, named for the other direction. */
-.x-lifting .view-work .card.w-lifting { z-index: 6; }
-.x-lifting .view-work .card.w-lifting .w-lift {
-  left: 0; right: 0; top: 0; bottom: 0;
-  opacity: 1;
-}
-/* The one in the frame goes as the one out of it arrives, and the two cross
-   inside the first fifth of the beat. Any longer and there are two pictures;
-   any shorter and the window blinks empty before its replacement is opaque. */
-.x-lifting .view-work .card.w-lifting .w-shot {
-  opacity: 0;
-  transition: opacity 90ms linear;
-}
-/* And the card stops saying what it is, because in a moment it is not going
-   to be a card saying that. Quicker than the lift, so the picture comes up
-   over type that is already going rather than over type it has to hide. */
-.x-lifting .view-work .card.w-lifting .w-said,
-.x-lifting .view-work .card.w-lifting .w-cta {
-  opacity: 0;
-  transition: opacity 170ms linear;
-}
+   There used to be a beat before this one, and a second class, .x-lifting,
+   saying the crossing was in it. Both are gone with the picture's lift: see
+   .w-seat above for why that beat could not do the thing it was written to
+   do. What is left is the becoming and the travel, which is the shut read
+   backwards with the fold taken out of it.
 
+   Nothing is faded out from under the face. .w-seat is inset 0 on the card
+   at z-index 5 and opaque once it has arrived, so it covers the window, the
+   name and the line without any of them being told to leave -- and a card
+   that dims its own contents behind a face that is already covering them is
+   two moves paying for one. */
 .w-tags {
   position: absolute;
   left: 24px;
@@ -6526,13 +6566,25 @@ body {
    The cue itself is a key on the machine now -- see .ms-key-list -- and what
    is left here is what is behind it: a list of records, on the shared sheet.
 
-   Cards rather than rows, and that is the sheet being end to end catching up
-   with its contents. A full-width panel with a list of full-width rows in it
-   is a column of thumbnails with two feet of nothing either side of every one;
-   the width has to be spent or it should not have been taken. So the entries
-   are laid on a grid that fits as many as the measure holds and no fewer than
-   one, and a row that was a line becomes a card with its cover, its title and
-   who it is by.
+   Sleeves, and that is the second arrangement. The first was a row: a
+   landscape thumbnail with the title and the name beside it, laid on a grid
+   of 260-wide cards. It read as a list of links to videos, which is what the
+   data is and not what the thing is. A record is a square you recognise
+   before you have read anything, and the site already knows that -- the ten
+   prints on the table and the shelf on About are both grids of covers with
+   their names underneath.
+
+   So: the sleeve on top at 1:1, the title and who it is by underneath, and no
+   box drawn round any of it. The cover is the card. A border round a picture
+   that already has a hairline of its own is the frame asking to be looked at,
+   which is the same argument the project cards settled -- see .w-shot.
+
+   Square out of sixteen by nine, and the crop is the point. YouTube serves
+   thumbnails at 320 by 180; a music upload's thumbnail is almost always the
+   album cover with the sides padded out to fill that shape, so taking the
+   middle square back is not cropping the picture, it is undoing what YouTube
+   did to it. For an ordinary video it is a centre crop, which is what every
+   music app does with one.
    ------------------------------------------------------------------------ */
 .cue-title {
   margin: 0 0 22px;
@@ -6540,49 +6592,67 @@ body {
   font-size: var(--t-meta); letter-spacing: 0.16em; text-transform: uppercase;
   color: rgba(var(--w), 0.42);
 }
+/* 132 and not 260, because the card is a square now and a square that wide is
+   a poster. At this measure a wide window holds eight or nine across and a
+   narrow one still holds two, which is the least a grid of covers can be and
+   still read as a grid. */
 .cue-list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 14px;
+  grid-template-columns: repeat(auto-fill, minmax(132px, 1fr));
+  gap: 22px 16px;
   list-style: none;
   margin: 0; padding: 0;
 }
 .cue-list li { margin: 0; min-width: 0; }
 .cue-list button {
   display: flex;
-  align-items: center;
-  gap: 14px;
+  flex-direction: column;
+  gap: 10px;
   width: 100%;
-  height: 100%;
-  padding: 12px;
-  border: 1px solid rgba(var(--w), 0.12);
-  border-radius: 10px;
-  background: rgba(var(--w), 0.03);
+  padding: 0;
+  border: 0;
+  background: none;
   text-align: left;
   cursor: pointer;
   color: inherit;
-  transition: border-color var(--dur) var(--ease),
-              background-color var(--dur) var(--ease);
 }
-.cue-list button:hover {
-  border-color: rgba(var(--w), 0.30);
-  background: rgba(var(--w), 0.07);
-}
-.cue-list button:focus-visible { outline: 2px solid rgb(var(--w)); outline-offset: 2px; }
+.cue-list button:focus-visible { outline: 2px solid rgb(var(--w)); outline-offset: 4px; }
+
+/* The sleeve. The hairline is inset so it sits on the picture rather than
+   round it -- a rule outside the box would need a pixel of its own and the
+   grid is measured without one. */
 .cue-thumb {
-  flex: 0 0 auto;
-  width: 76px; height: 50px;
-  border-radius: 4px;
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 6px;
   background: var(--slot) center / cover no-repeat;
   box-shadow: inset 0 0 0 1px rgba(var(--w), 0.12);
+  transition: box-shadow var(--dur) var(--ease);
 }
-.cue-text { flex: 1 1 auto; min-width: 0; }
+/* Picked up rather than lit up. A cover under the hand casts, which is the
+   same thing the prints on the table do and the same thing a record does when
+   you pull it half out of the rack -- and it is a shadow rather than a lift
+   because the sheet is a flat surface and these are lying on it. */
+.cue-list button:hover .cue-thumb,
+.cue-list button:focus-visible .cue-thumb {
+  box-shadow: inset 0 0 0 1px rgba(var(--w), 0.34),
+              0 10px 22px -12px rgba(0, 0, 0, 0.8);
+}
+
+.cue-text { min-width: 0; }
+/* Two lines and then it stops. A row had one line and an ellipsis because a
+   row is as wide as the sheet; a card is 132 across and a great many records
+   are called more than five words, so the second line is the difference
+   between a name and the start of one. */
 .cue-text b {
-  display: block;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
   font-family: var(--f-body);
   font-size: var(--t-body); line-height: var(--lh-body); font-weight: 500;
   color: rgba(var(--w), 0.90);
-  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
 .cue-text span {
   display: block;
@@ -6592,18 +6662,27 @@ body {
   color: rgba(var(--w), 0.42);
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
-/* Which one the needle is on. Set on the card rather than beside the title,
-   because on a grid there is no column for it to be beside. */
-.cue-list button:has(.cue-on) {
-  border-color: rgba(var(--w), 0.34);
-  background: rgba(var(--w), 0.09);
+
+/* Which one the needle is on.
+ *
+ * On the sleeve and not beside the title, for the reason the row put it in
+ * the corner: there is no column for it to be beside, and the one card in the
+ * grid that is playing should be findable without reading a word. The sleeve
+ * keeps its own ring lit as well, so the mark survives being scrolled past at
+ * the edge of the eye. */
+.cue-list button:has(.cue-on) .cue-thumb {
+  box-shadow: inset 0 0 0 1px rgba(var(--w), 0.44);
 }
+.cue-list button:has(.cue-on) .cue-text b { color: rgb(var(--w)); }
 .cue-on {
-  flex: none;
-  align-self: flex-start;
+  position: absolute;
+  left: 8px; top: 8px;
+  padding: 4px 7px;
+  border-radius: 4px;
+  background: rgba(var(--shade), 0.72);
   font-family: var(--f-label);
-  font-size: var(--t-meta); letter-spacing: 0.14em;
-  color: rgba(var(--w), 0.42);
+  font-size: var(--t-meta); line-height: 1; letter-spacing: 0.14em;
+  color: rgb(var(--w));
 }
 
 @keyframes cue-in { from { opacity: 0; } to { opacity: 1; } }
@@ -8425,6 +8504,7 @@ a.arrow { text-decoration: none; }
   background: linear-gradient(180deg,
     var(--wk-top) 0%, var(--wk-face) 38%,
     var(--wk-face) 68%, var(--wk-foot) 100%);
+
   box-shadow:
     inset 0 1px 0 var(--wk-edge-hi),
     inset 0 -2px 0 var(--wk-edge-lo),
@@ -9094,8 +9174,14 @@ a.arrow { text-decoration: none; }
   overflow: hidden;
   display: flex;
   align-items: center;
-  /* Cut into the panel, like the glass above it and by the same two figures. */
-  background: #0a0b0e;
+  /* Cut into the panel, like the glass above it and by the same two figures.
+     The dots on it are the lamps that are NOT lit -- a matrix display you can
+     see the unlit half of, which is the thing that makes one readable. They
+     sit on the same 3px pitch as the mask over them, so a lamp and its hole
+     are the same lamp. */
+  background-color: #0a0b0e;
+  background-image: radial-gradient(circle, rgba(180, 200, 220, 0.14) 0 0.72px, transparent 0.86px);
+  background-size: 2px 2px;
   box-shadow:
     inset 0 0 0 1px rgba(0, 0, 0, 0.9),
     inset 0 2px 5px rgba(0, 0, 0, 0.8),
@@ -9115,7 +9201,19 @@ a.arrow { text-decoration: none; }
  * and at 11px a monospace stem is about one. Whole letters were going missing
  * and what was left had to be guessed at.
  *
- * So the type is set to the grid rather than in spite of it: 13px and bold,
+ * So the type is set to the grid rather than in spite of it. The figure that
+ * matters is lamps per letter, and it is arithmetic rather than taste: a
+ * character in a matrix display is five lamps across and seven down, and
+ * anything less than that cannot spell -- there is nowhere for the crossbar
+ * of an E to go. At 14px on a 3px pitch this strip had 2.8 across and 3.4
+ * down, which is why no amount of adjusting how hard the mask pressed ever
+ * made it readable: the letters were not being dimmed, they were being
+ * printed on a grid too coarse to hold them.
+ *
+ * 16px on a 2px pitch is 4.8 across and 5.8 down, which is enough -- and it
+ * fits the 26px strip, which 20 on a 2.5 pitch did not: the letters were the
+ * right shape and their tops were being cut off by the well they sit in. The old
+ * note, kept below, was 13px and bold,
  * which puts a stem at two pixels and guarantees a lit column inside every one
  * of them, and the letterspacing comes in because the dots do the separating
  * now and the tracking was only pushing characters further apart than the
@@ -9127,8 +9225,9 @@ a.arrow { text-decoration: none; }
   font-family: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas,
     "Liberation Mono", monospace;
   font-style: normal;
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 700;
+  line-height: 1;
   line-height: 26px;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -9143,7 +9242,15 @@ a.arrow { text-decoration: none; }
   color: #f2f2f2;
   text-shadow: 0 0 6px rgba(255, 255, 255, 0.32);
 }
-@keyframes ms-run { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+/* One copy, as a share of the track. It was a flat -50%, which is one copy
+   only while there are exactly two of them -- and there are now as many as it
+   takes to cover the strip. --ms-n is that count, written by write(); 100/n
+   per cent is one copy exactly, whatever the title measures and whenever the
+   font finishes loading. See write() in walkman.js. */
+@keyframes ms-run {
+  from { transform: translateX(0); }
+  to   { transform: translateX(calc(-100% / var(--ms-n, 2))); }
+}
 
 /* The grid that makes them dots. Over the letters, not under them, and it is
    the strip's own so it can be finer than the screen's. */
@@ -9153,15 +9260,29 @@ a.arrow { text-decoration: none; }
   inset: 0;
   z-index: 1;
   pointer-events: none;
-  /* 0.55 and not 0.88. The mask is what makes the letters dots, and at nearly
-     opaque it was making them absences: three quarters of every character was
-     being taken out at full strength, so what survived was thinner than the
-     gaps between it. Just over half leaves the dots joined enough to read as
-     letters and separate enough to read as dots, which is the whole balance a
-     matrix display is. */
-  background:
-    repeating-linear-gradient(0deg, rgba(0,0,0,0.55) 0 1px, rgba(0,0,0,0) 1px 2px),
-    repeating-linear-gradient(90deg, rgba(0,0,0,0.55) 0 1px, rgba(0,0,0,0) 1px 2px);
+  /* This was two line grids at just over half strength laid over the words,
+     which is a subtractive mask: it takes a pixel out of every two in both
+     directions and hopes what is left still spells something. The note it
+     replaced argued about how hard to press -- 0.55 rather than 0.88 -- and
+     both figures are answers to the wrong question, because taking ink away
+     from type never makes a matrix display, it makes damaged type.
+
+     A real one is the other way round. The panel is a field of lamps and a
+     character is the handful of them that are lit, so what belongs over the
+     words is not a grid of lines but a sheet of the panel's own colour with a
+     hole punched at every lamp. The letters are then only ever seen through
+     the holes -- which is what a dot matrix is -- and every dot that does
+     show is at full strength instead of a little over half.
+
+     The sheet is on the strip and not on the text, and that is the whole
+     trick: .ms-run slides and this does not, so the lamps stay still while
+     the name travels through them. Masked onto the text it would have been
+     three hundred dots crawling sideways. */
+  background: #0a0b0e;
+  -webkit-mask-image: radial-gradient(circle, transparent 0 0.72px, #000 0.86px);
+  -webkit-mask-size: 2px 2px;
+  mask-image: radial-gradient(circle, transparent 0 0.72px, #000 0.86px);
+  mask-size: 2px 2px;
 }
 
 /* A strip of dots is unreadable to a screen reader and the string is written
@@ -9503,34 +9624,61 @@ a.arrow { text-decoration: none; }
    three facts off the foot. 316 rather than 318 because the box is 364 wide
    and lands on the frame's left column -- 399 to 763, with the 762/785 pair
    in the gutter beside it. */
+/* --- the picture, what is said under it, and the stamps ------------------
+
+   The column is 364 wide with 24 either side, so the picture is 316 across
+   and 474 down, which is 2:3 -- the shape a portrait is actually taken in.
+   The window it replaces was 316 by 219, a landscape hole waiting for a
+   photograph nobody frames that way.
+
+   Under it: two lines in the first person, then three stamps, then the three
+   facts the card has always ended on. Four things down a column with the
+   picture taking the top half, which is the arrangement a passport page has
+   and the reason the stamps read as stamps rather than as badges.
+   ------------------------------------------------------------------------ */
 .ab-por {
-  /* one of the four, like everything else here */
   position: absolute;
-  left: 24px; top: 24px; width: 316px; height: 219px;
+  left: 24px; top: 24px;
+  width: 316px; height: 474px;          /* 2:3 */
+  border-radius: 3px;
   background-color: var(--slot);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  box-shadow: inset 0 0 0 1px rgba(var(--w), 0.07);
+}
+/* The empty state is the crossed box the rest of the site uses, with the
+   caption sitting on the floor of it rather than centred -- a frame waiting
+   for a picture, not a frame apologising for not having one. */
+.ab-por.is-blank {
+  display: flex;
+  align-items: flex-end;
+  padding: 12px 14px;
   background-image:
     linear-gradient(to bottom right, transparent calc(50% - 0.5px),
-      rgba(var(--w), 0.06) 50%, transparent calc(50% + 0.5px)),
+      rgba(var(--w), 0.055) 50%, transparent calc(50% + 0.5px)),
     linear-gradient(to bottom left, transparent calc(50% - 0.5px),
-      rgba(var(--w), 0.06) 50%, transparent calc(50% + 0.5px));
-  display: flex; align-items: flex-end;
-  padding: 10px 12px;
-  font-size: var(--t-meta); line-height: var(--lh-meta); color: var(--quieter);
+      rgba(var(--w), 0.055) 50%, transparent calc(50% + 0.5px));
+}
+.ab-por em {
+  font-style: normal;
+  font-size: var(--t-meta); line-height: var(--lh-meta);
+  color: var(--quieter);
 }
 
-/* Under the frame. It leads the screen but it does not get a display size to
-   say so: this is a 316px column, and 26px in a 316px column is four words to
-   a line. Rank here is position, which it already has. */
-/* The same treatment the names on Lately carry, and for the same reason: it
-   is a sentence about a person, not a headline over a section. At 19 it was
-   the loudest thing on the screen and the screen has four other cards on it.
-   16 over 24, which is the size the rest of this card reads at. */
-.ab-lede {
-  position: absolute; margin: 0;
-  left: 24px; top: 277px; width: 316px;
+/* Two lines, set at the size the card's own voice has always used. They are
+   separate paragraphs and not one wrapped sentence, because they are two
+   admissions and the pause between them is the joke. */
+.ab-says {
+  position: absolute;
+  left: 24px; top: 522px; width: 316px;
+}
+.ab-says p {
+  margin: 0 0 9px;
   font-size: var(--t-heading-2); line-height: var(--lh-heading); font-weight: 600;
   color: var(--heading);
 }
+.ab-says p:last-child { margin-bottom: 0; }
 
 /* The three facts: the name is a label and the value is a sentence, which is
    the same pair the record on a piece page uses. They were 10px letterspaced
@@ -11572,6 +11720,24 @@ a.arrow { text-decoration: none; }
     width: auto;
   }
 
+  /* And the picture on the Thoughts card is not on a phone at all.
+   *
+   * Its figures are measured against a card 350 wide and 139 tall on the
+   * frame -- see .th-art -- and the column down here is about 293 on a 390
+   * phone and shorter still, so there is no reading of those four numbers
+   * that means the same thing in both places. It could be given a second set
+   * of them, and it was: hung off the right edge by a fraction of its own
+   * width so that it peeked in whatever the column was. That is a second
+   * design to keep, and on a screen where the card is one of six stacked in a
+   * scroller the picture is decoration on a page that is already only its
+   * contents.
+   *
+   * So: not drawn. Its src is still on the element, which is why it also
+   * carries loading="lazy" -- a lazily loaded image that is display: none is
+   * never in the viewport, so the browser never fetches it and a phone does
+   * not pay 225KB for a picture it is not going to see. */
+  .th-art { display: none; }
+
   /* And the same figures again at the weight the frame wrote them, because
      the reset above cannot reach them.
 
@@ -11867,7 +12033,12 @@ a.arrow { text-decoration: none; }
   /* Everything About places by hand rejoins the flow, for the reason the
      L1 and L2 children do: a card is only relative here, so anything still
      absolute sizes itself against the card rather than sitting in it. */
-  .ab-por, .ab-lede, .ab-facts, .ab-shelf,
+  /* The drawer rejoins the flow like the rest of this card, and unlike the
+     other absolute things on it needs nothing else: it is a grid of auto
+     rows, so a box that has gone auto is a box that measures itself. The
+     four columns hold at 293 as well as at 316 -- 1fr four times is four
+     times whatever there is -- and the cells stay square by aspect-ratio. */
+  .ab-por, .ab-says, .ab-facts, .ab-shelf,
   .nw-row, .ab-late-h, .ab-late, .ms-wk {
     position: static; left: auto; top: auto;
     right: auto; bottom: auto; width: auto; height: auto;
@@ -11944,8 +12115,8 @@ a.arrow { text-decoration: none; }
      should be cut by the edge of the screen rather than stopped short of it.
      --pad rather than 24, so the margin and the card cannot drift apart. */
 
-  .ab-por  { height: 190px; margin-bottom: 20px; }
-  .ab-lede { margin-bottom: 20px; }
+  .ab-por  { height: auto; aspect-ratio: 2 / 3; margin-bottom: 20px; }
+  .ab-says { margin-bottom: 18px; }
   .ab-facts { grid-template-columns: 110px 1fr; gap: 10px 14px; }
   .ab-por { font-size: var(--t-meta); line-height: var(--lh-meta); }
 
@@ -12385,7 +12556,7 @@ a.arrow { text-decoration: none; }
     margin: 0 0 16px;
   }
   .w-shot.is-blank { height: 128px; }
-  .w-lift, .w-seat { display: none; }
+  .w-seat { display: none; }
   /* And the type goes back to the left. Centring is the frame's answer to a
      centred object in a 264-wide box; down here the card is a column of
      paragraphs with a picture at the top of it, and a centred paragraph is a
@@ -13047,6 +13218,9 @@ a.arrow { text-decoration: none; }
 
 
 
+
+
+
 </style>
 </head>
 <body>
@@ -13243,6 +13417,7 @@ a.arrow { text-decoration: none; }
 
     <!-- ======================= work // thoughts ====================== -->
     <section class="card thoughts" data-tile="d">
+      <img class="th-art" src="assets/thoughts-art.png" alt="" aria-hidden="true" loading="lazy" decoding="async" style="--art-x:278px;--art-y:47px;--art-w:127px;--art-r:-2deg;--art-o:1">
       <p class="label">Thoughts</p>
       <span class="arrow" aria-hidden="true">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
@@ -13411,7 +13586,6 @@ a.arrow { text-decoration: none; }
           <div class="w-fig"><dt>+12%</dt><dd>median session length</dd></div>
         </dl>
         <a class="card-hit" href="#case/linear-player" data-route="case" data-slug="linear-player" aria-label="Open Reimagining linear player"></a>
-        <span class="w-lift" aria-hidden="true" style="background-image:url('assets/work-linear-player.png');background-size:cover;background-position:center;background-repeat:no-repeat"></span>
         <span class="w-seat" aria-hidden="true"></span>
       </section>
 
@@ -13429,7 +13603,6 @@ a.arrow { text-decoration: none; }
           <div class="w-fig"><dt>4x</dt><dd>faster from brief to artwork</dd></div>
         </dl>
         <a class="card-hit" href="#case/xstream-toolkit" data-route="case" data-slug="xstream-toolkit" aria-label="Open Xstream creative toolkit"></a>
-        <span class="w-lift is-blank" aria-hidden="true"></span>
         <span class="w-seat" aria-hidden="true"></span>
       </section>
 
@@ -13448,7 +13621,6 @@ a.arrow { text-decoration: none; }
           <div class="w-fig"><dt>60fps</dt><dd>on a four-year-old phone</dd></div>
         </dl>
         <a class="card-hit" href="#case/bubbles" data-route="case" data-slug="bubbles" aria-label="Open Bubbles // a studio site"></a>
-        <span class="w-lift is-blank" aria-hidden="true"></span>
         <span class="w-seat" aria-hidden="true"></span>
       </section>
 
@@ -13467,7 +13639,6 @@ a.arrow { text-decoration: none; }
           <div class="w-fig"><dt>94%</dt><dd>still installed after a month</dd></div>
         </dl>
         <a class="card-hit" href="#case/family-safety" data-route="case" data-slug="family-safety" aria-label="Open Family safety, without the surveillance"></a>
-        <span class="w-lift is-blank" aria-hidden="true"></span>
         <span class="w-seat" aria-hidden="true"></span>
       </section>
 
@@ -13726,12 +13897,15 @@ a.arrow { text-decoration: none; }
            box now is. A tile crossing the frame by not moving is an apparatus
            with nothing to do. -->
       <section class="card ab-who" data-tile="c">
-        <span class="ab-por" role="img" aria-label="Frame waiting for a portrait">a portrait, one day</span>
+        <span class="ab-por is-blank" aria-hidden="true"><em>a portrait, 2:3</em></span>
 
-        <h2 class="ab-lede">I reorganise the bookshelf instead of reading it, and I start five games for every one I finish.</h2>
+        <div class="ab-says">
+          <p>I reorganise the bookshelf instead of reading it.</p>
+          <p>I start five games for every one I finish.</p>
+        </div>
 
         <dl class="ab-facts">
-          <dt>Based in</dt><dd>Bengaluru</dd>
+          <dt>Based in</dt><dd>India</dd>
           <dt>Days</dt><dd>Airtel Entertainment</dd>
           <dt>Underfoot</dt><dd>A black labrador, unimpressed</dd>
         </dl>
@@ -15025,11 +15199,16 @@ a.arrow { text-decoration: none; }
         var ss = document.createElement("span"); ss.textContent = it.b;
         tx.appendChild(bb); tx.appendChild(ss);
         b.appendChild(th); b.appendChild(tx);
+        /* The mark goes on the sleeve rather than after the text, because the
+           card is a column now and anything appended to it lands under the
+           name. Inside .cue-thumb, which is the positioned box it is placed
+           against -- and still a descendant of the button, so the :has() that
+           lights the whole card up is unaffected. */
         if (found.live ? i === 0 : i === (kind === "music" ? (window.__msIndex || 0) : on[kind])) {
           var now = document.createElement("span");
           now.className = "cue-on";
           now.textContent = "ON DECK";
-          b.appendChild(now);
+          th.appendChild(now);
         }
         b.addEventListener("click", function () {
           if (found.live) {
@@ -19491,11 +19670,11 @@ a.arrow { text-decoration: none; }
       /* And the other way down: a folder on Work, pressed, going to the case
        * study its paper is. Only from Work and only to a case -- the writing
        * index is on the same screen and its rows are not folders -- and only
-       * when the press was on one of the four, which is what the .w-lift asks.
+       * when the press was on one of the four, which is what the .w-seat asks.
        * A keyboard press through the same link is one of these too: the card
        * has focus, the anchor is inside it, and closest() finds it. */
       var lift = (here === 'work' && name === 'case' && pressed &&
-                  pressed.querySelector && pressed.querySelector('.w-lift') &&
+                  pressed.querySelector && pressed.querySelector('.w-seat') &&
                   !small()) ? pressed : null;
       var liftFrom = null;
       if (shutting) {
@@ -19633,22 +19812,21 @@ a.arrow { text-decoration: none; }
       } else if (lift) {
         /* Move 0 on the way down, and the shut's opposite number.
          *
-         * The sheet comes up out of the folder and squares up to the card it
-         * is standing on; the tile face comes up over it; and only then does
-         * the screen begin to leave. Three beats end to end, which is the
-         * shut read backwards -- and it has to be end to end for the reason
-         * the opening learned the hard way: a fold drawn on top of a whole
-         * screen morphing gets a third of the frames it asked for.
+         * The tile face comes up over the folder that was pressed, and only
+         * then does the screen begin to leave. Two beats and not three: the
+         * first used to be the picture coming up out of its window and
+         * opening to the size of the card, and it is gone -- see .w-seat,
+         * where the shapes are set out. It has to be end to end for the
+         * reason the opening learned the hard way: a face drawn on top of a
+         * whole screen morphing gets a third of the frames it asked for.
          *
-         * A frame before the class goes on, for the reason the shut takes
-         * one: the lift's first frame is a new layer being rasterised, and
-         * doing that on the frame the movement starts means the movement
-         * starts with a stall. */
+         * A frame between the two classes, for the reason the shut takes one:
+         * .w-lifting's first act is to promise a layer, and a transition
+         * started on the frame that promise is made starts with a stall. */
         requestAnimationFrame(function () {
-          stage.classList.add('x-lifting');
           lift.classList.add('w-lifting');
 
-          setTimeout(function () {
+          requestAnimationFrame(function () {
             /* Beat 1. Where the paper is standing, measured now -- it is the
              * card's own box, and it is read here rather than in open()
              * because open() runs a frame later and by then the class that
@@ -19672,7 +19850,7 @@ a.arrow { text-decoration: none; }
               }, { once: true });
             }
             setTimeout(fit, ms('--x-become') + 400);
-          }, ms('--x-lift'));
+          });
         });
       } else {
         setTimeout(open, 0);
@@ -19720,6 +19898,24 @@ a.arrow { text-decoration: none; }
         void stage.offsetWidth;
         stage.classList.add('x-empty', 'x-draw');
 
+        /* And the tiles are heard landing -- asked for here, a whole move
+           before they do.
+         *
+         * It was called on the frame move 2 begins, which is the one frame in
+         * the crossing that must not be given anything: it swaps the views,
+         * pins six boxes, forces a reflow and starts every tile moving. A
+         * getComputedStyle for the tempo and an audio buffer being filled on
+         * top of that is the stall this file spends three other notes
+         * avoiding -- see the book's shut, and the lift's first frame.
+         *
+         * It costs nothing to ask early. Web Audio runs on its own clock, so
+         * a sound wanted at t is booked at t and arrives there whatever the
+         * main thread is doing in between; the offset is simply a move
+         * longer. This frame is already reading the tempo and already
+         * forcing a reflow one line above, so the work lands where it is
+         * paid for. */
+        if (window.__sfx) { window.__sfx('grid'); }
+
         setTimeout(function () {
           // 2. swap under cover of an empty grid, then pin the incoming column
           //    to the height the outgoing one had. Reading offsetWidth commits
@@ -19755,7 +19951,7 @@ a.arrow { text-decoration: none; }
           setTimeout(function () {
             // 3. the shapes have settled -- every tile is standing on its own
             //    ground again -- so let the new contents in.
-            stage.classList.remove('x-empty', 'x-shutting', 'x-lifting');
+            stage.classList.remove('x-empty', 'x-shutting');
             if (book) { book.classList.remove('bk-seated', 'bk-shrunk'); }
             if (lift) { lift.classList.remove('w-lifting', 'w-seated'); }
             Array.prototype.forEach.call(document.querySelectorAll('.x-solo'),
@@ -20714,6 +20910,67 @@ a.arrow { text-decoration: none; }
       note(190, 120, 0.05, 0.09, 'sine');
     }
 
+    /* One tile landing.
+     *
+     * A knock with the plastic taken out of it. The transport's keys are
+     * moulded and sound it -- a band of noise at 1900, which is a fingernail
+     * on a case; a tile is a card of board coming down on a flat surface, so
+     * the band goes to 620 where there is more wood than click in it, the Q
+     * goes up so it is a pitch and not a clatter, and the whole thing is
+     * thirty milliseconds instead of forty-five. The noise is shaped down
+     * across its own length as well, which is the difference between a tap
+     * and a short burst of static.
+     *
+     * Half the gain of a key. Six of these run inside a fifth of a second on
+     * every crossing and a key sounds once when you press it: the same level
+     * would make the quietest thing on the page the most frequent.
+     *
+     * The step raises it. Each landing is a ninth above the last -- four
+     * landings, a little under a fourth end to end -- so the run reads as a
+     * run and not as one sound played four times. Upward, because the grid is
+     * assembling; the ear takes a rising figure as something being built and
+     * a falling one as something coming apart. */
+    /* Filled once and kept. The noise in a knock is the same noise every time
+       -- nobody has ever told two of these apart -- and building it per press
+       meant thirteen hundred calls to Math.random on whatever frame the sound
+       was asked for. An AudioBuffer cannot be played twice but it can be
+       pointed at twice, so the buffer is the thing that is cached and the
+       source node is the cheap part that is rebuilt. */
+    var tockBuf = null;
+    function tock(at, step) {
+      if (!ac) { return; }
+      var up = Math.pow(1.09, step || 0);
+      var t = ac.currentTime + (at || 0);
+      var n = 0.030;
+      if (!tockBuf) {
+        tockBuf = ac.createBuffer(1, Math.ceil(ac.sampleRate * n), ac.sampleRate);
+        var d = tockBuf.getChannelData(0), i;
+        for (i = 0; i < d.length; i++) {
+          d[i] = (Math.random() * 2 - 1) * (1 - i / d.length);
+        }
+      }
+      var src = ac.createBufferSource(); src.buffer = tockBuf;
+      var bp = ac.createBiquadFilter();
+      bp.type = 'bandpass';
+      bp.frequency.value = 620 * up;
+      bp.Q.value = 2.2;
+      var g = ac.createGain();
+      g.gain.setValueAtTime(0.07, t);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + n);
+      src.connect(bp); bp.connect(g); g.connect(out);
+      src.start(t); src.stop(t + n);
+      /* and the body under it, which is what makes it a board and not a tick */
+      note(300 * up, 208 * up, 0.055, 0.045, 'sine', at);
+    }
+
+    /* One figure off the root, in milliseconds. The crossing's tempo is
+       written in CSS and read here rather than repeated, so the sound cannot
+       drift from the movement it is the sound of. */
+    function num(prop) {
+      return parseFloat(getComputedStyle(document.documentElement)
+        .getPropertyValue(prop)) || 0;
+    }
+
     var VOICE = {
       /* taking it: two partials a fifth apart, the upper one quieter */
       select: function () {
@@ -20731,7 +20988,24 @@ a.arrow { text-decoration: none; }
         note(1174, 1200, 0.105, 0.11, 'sine', 0.055);
         note(1568, 1600, 0.090, 0.035, 'triangle', 0.055);
       },
-      key: knock
+      key: knock,
+      /* And the grid re-forming, heard once as it lands.
+       *
+       * There were four of these, a ninth apart, one per tile: the boxes used
+       * to leave in a staggered run and the run had a sound to match. The
+       * stagger is gone -- see the crossing, where the tiles travel on one
+       * clock again -- so four sounds would be four knocks for one landing,
+       * which is not a cascade, it is a stutter.
+       *
+       * One, scheduled a whole move ahead. Web Audio has its own clock and it
+       * is the accurate one: a note asked for at t plays at t, where a
+       * callback on the main thread arrives when the main thread is free,
+       * which during a crossing is exactly when it is not.
+       *
+       * The figure comes off the root because that is where the movement's
+       * figure already is. Change --x-morph in the stylesheet and this
+       * follows it; there is no second copy to keep in step. */
+      grid: function () { tock((num('--x-out') + num('--x-morph')) / 1000, 0); }
     };
 
     /* Nothing sounds until there is a running context to sound it, and only a
@@ -20743,6 +21017,22 @@ a.arrow { text-decoration: none; }
       var v = VOICE[which];
       if (v) { v(); }
     }
+
+    /* The one sound the page makes at itself, and the exception is argued
+       rather than assumed.
+     *
+     * The rule above is that nothing sounds for a click nobody made, because
+     * a page that blips at its own dispatched clicks sounds possessed. This
+     * does not break it. The crossing is not an event the page invented: it
+     * is the consequence of a press the reader made a quarter of a second
+     * earlier, and the sound is of the tiles moving, which is a thing that is
+     * visibly happening on the screen at the moment it is heard.
+     *
+     * It also cannot sound on its own. play() refuses until a gesture has
+     * built the context, so a crossing that nobody pressed for -- a back
+     * button on a fresh tab, a hash typed into the bar -- is silent, and the
+     * hush switch takes it with everything else. */
+    window.__sfx = play;
 
     /* What counts as something you can press. Deliberately a list rather than
        "anything with a click handler": the page has delegated handlers on the
@@ -21265,18 +21555,78 @@ a.arrow { text-decoration: none; }
        The width is measured after the text is in and guarded, because a card
        that is not on screen measures zero and a duration of zero is a strip
        that stands still. */
+    /* Two copies is not a marquee. It was written as a pair on the argument
+       that the second arrives as the first leaves, and that is only true when
+       one copy is at least as wide as the strip it runs in. This one is not:
+       the title measures 180 and the window is 306, so at the moment the loop
+       had slid a whole copy the track covered 180 of a 306 window and the
+       last 126 were empty -- the strip cleared, the animation snapped back to
+       zero, and the words appeared out of nothing. That is what was being
+       seen. It is the same fault the shelf had and answered the same way,
+       which is why the note there talks about repeating the set until one run
+       outruns the card.
+
+       So the copies are counted rather than assumed. Enough of them are made
+       that after sliding one copy's width there is still a full window of
+       text to the right of the join, and the slide is that copy's width in
+       pixels rather than a percentage of a track whose length now varies.
+       --ms-shift carries it; see the keyframe, which reads it.
+
+       Measured every time the line changes, because the line changes length
+       and a shift written for the old one puts the join in the middle of the
+       new one. */
     function write(line) {
       if (!runEl || !line) { return; }
-      var pair = runEl.children;
-      if (pair[0]) { pair[0].textContent = line; }
-      if (pair[1]) { pair[1].textContent = line; }
-      var w = pair[0] ? pair[0].getBoundingClientRect().width : 0;
-      if (w > 4) { runEl.style.animationDuration = Math.max(8, w / 40).toFixed(1) + 's'; }
+      var one = runEl.children[0];
+      if (!one) { return; }
+      one.textContent = line;
+      var w = one.getBoundingClientRect().width;
+      /* Not on screen: a card that measures zero would be told to repeat its
+         title for ever, so it keeps the pair it was built with and is
+         measured again when it is next asked to say something. */
+      if (w <= 4) {
+        var q = runEl.children;
+        for (var k = 1; k < q.length; k++) { q[k].textContent = line; }
+        return;
+      }
+      var strip = runEl.parentNode.getBoundingClientRect().width;
+      /* One to slide, and enough behind it to cover the window. */
+      var need = Math.max(2, Math.ceil(strip / w) + 1);
+      while (runEl.children.length > need) { runEl.removeChild(runEl.lastChild); }
+      while (runEl.children.length < need) { runEl.appendChild(one.cloneNode(false)); }
+      var all = runEl.children;
+      for (var i = 0; i < all.length; i++) { all[i].textContent = line; }
+      /* The count, not the width. A pixel figure has to be measured, and a
+         measurement taken a frame before a webfont settles is a few pixels
+         out -- which is a few pixels of jump on every lap, for ever. The
+         copies are identical, so one of them is exactly 100/n per cent of the
+         track whatever any of them turn out to measure. Exact by construction
+         and immune to when it is read. */
+      runEl.style.setProperty('--ms-n', String(need));
+      /* Forty pixels a second, on the distance actually travelled -- which is
+         one copy and not the whole track, or a longer title would crawl. */
+      runEl.style.animationDuration = Math.max(4, w / 40).toFixed(1) + 's';
     }
 
     /* Nothing interrupts it. There was a flash() here that put a word on the
        strip for a moment and then gave it back; the strip belongs to the
        record, so there is nothing left to give it back from. */
+    /* And the strip is counted once on arrival, not only when the record
+       changes. write() is what decides how many copies the marquee needs and
+       how far one slide is, and until this it ran only from say() -- so a deck
+       that nobody had touched kept the pair it was built with and the fixed
+       -50% behind them. That is seamless for a long title by luck and empties
+       the strip for a short one, which is the fault it was written to fix.
+
+       Deferred a frame, because a card measured before layout measures zero
+       and write() correctly refuses to count copies against a strip of no
+       width. */
+    if (typeof requestAnimationFrame === 'function') {
+      requestAnimationFrame(function () {
+        if (runEl && runEl.children[0]) { write(runEl.children[0].textContent); }
+      });
+    }
+
     function say(track, by) {
       if (!runEl) { return; }
       var line = String(track || '').trim();
@@ -22371,6 +22721,48 @@ a.arrow { text-decoration: none; }
     window.__msQueue = wk.queue;
     window.__msAt = wk.at;
     window.__msPlay = wk.play;
+
+    /* And the list, from the playlist, if the job has been round.
+     *
+     * assets/music.json is written hourly by .github/workflows/music.yml from
+     * a YouTube playlist -- see tools/music.js, where the reason a scheduled
+     * job does this instead of the browser is set out. It is fetched from
+     * this site's own origin and it is allowed to be missing: the list baked
+     * into the page by build.js is the fallback, and a reader offline, or on
+     * a checkout that has never run the job, gets that one and never knows.
+     *
+     * Spliced into CUES.music rather than handed to a new machine. Both the
+     * deck and the drawer read that one array -- the deck through the "more"
+     * it was constructed with, which is the same object, and the drawer
+     * straight off window -- so replacing its contents in place is the only
+     * way to move both at once. Building a second Walkman would leave the
+     * first one holding the audio.
+     *
+     * Not while it is playing. wk.queue() answers null until the player is up
+     * and a list is loaded, so a non-null answer means somebody has pressed
+     * something -- and swapping the queue out from under a record that is
+     * halfway through is the machine changing its mind in front of them. It
+     * will be the new list on the next visit, which is soon enough for a
+     * playlist that is polled by the hour anyway. */
+    fetch('assets/music.json', { cache: 'no-cache' }).then(function (r) {
+      if (!r.ok) { throw new Error(r.status); }
+      return r.json();
+    }).then(function (j) {
+      var rows = (j && j.tracks) || [];
+      if (!rows.length) { return; }
+      if (wk.queue && wk.queue()) { return; }
+      var live = rows.filter(function (t) {
+        return t && /^[A-Za-z0-9_-]{11}$/.test(t.id);
+      }).map(function (t) {
+        return { id: t.id, a: t.a || '', b: t.b || '', art: t.art || '', bpm: 0 };
+      });
+      if (!live.length) { return; }
+      var q = window.CUES.music;
+      q.splice.apply(q, [0, q.length].concat(live));
+      /* The needle goes back to the top, because the record it was standing
+         on may not be in the list any more. */
+      wk.index = 0;
+    }).catch(function () { /* the baked list stands */ });
     /* Forwarded rather than copied, for the reason api.index is a property. */
     try {
       Object.defineProperty(window, '__msIndex', {
@@ -22459,6 +22851,8 @@ a.arrow { text-decoration: none; }
       }
     });
   })();
+
+
 
 </script>
 
