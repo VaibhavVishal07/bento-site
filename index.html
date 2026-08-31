@@ -587,6 +587,12 @@
   --lea-deep: #050403;                   /* and where it turns away          */
   --lea-edge: #2b231b;                   /* the board's own cut edge         */
   --lea-line: rgba(104, 84, 62, 0.34);   /* what is stamped into it          */
+  /* How much polish is on it. The dark room is bound in leather, and leather
+     that has been handled is glossy: the highlight is most of what says the
+     board is a hard object with a skin over it rather than a dark rectangle.
+     The lit room is bound in cloth, and cloth takes a sheen and not a gloss --
+     see the binding block below, where this is turned most of the way down. */
+  --lea-gloss: 1;
   --leaf-edge: 234, 222, 200;            /* the cut edge of the block, ivory */
   --paper:      #171412;                 /* the page                         */
   --paper-lift: #1c1917;                 /* and a shade up, held in the air  */
@@ -812,6 +818,7 @@
   --lea-deep: #cec7b9;
   --lea-edge: #c3bcac;
   --lea-line: rgba(120, 96, 62, 0.30);
+  --lea-gloss: 0.34;
   --leaf-edge: 124, 110, 88;
   --paper:      #fbf9f4;
   --paper-lift: #ffffff;
@@ -992,6 +999,7 @@
     --lea-deep: #cec7b9;
     --lea-edge: #c3bcac;
     --lea-line: rgba(120, 96, 62, 0.30);
+  --lea-gloss: 0.34;
     --leaf-edge: 124, 110, 88;
     --paper:      #fbf9f4;
     --paper-lift: #ffffff;
@@ -4577,7 +4585,60 @@ body {
   width: 561px; height: 840px;
   background-color: var(--lea);
   background-image:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.62' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23g)' opacity='0.055'/%3E%3C/svg%3E"),
+    /* 1. the board's own edges. A hard board is a board: the top catches the
+          room and the foot is in its own shadow, and the two outer sides are
+          the cut edge of something with thickness rather than the end of a
+          picture of one. */
+    linear-gradient(180deg,
+      rgba(var(--lift), calc(0.11 * var(--lea-gloss))) 0 1px,
+      rgba(0, 0, 0, 0) 1px calc(100% - 1px),
+      rgba(0, 0, 0, 0.55) calc(100% - 1px) 100%),
+    linear-gradient(90deg,
+      rgba(var(--lift), calc(0.075 * var(--lea-gloss))) 0 1px,
+      rgba(0, 0, 0, 0) 1px calc(100% - 1px),
+      rgba(var(--lift), calc(0.055 * var(--lea-gloss))) calc(100% - 1px) 100%),
+
+    /* 2. the highlight, where the light actually is. Over the left shoulder,
+          which is where this card has always said its lamp stands. A tight
+          core is the whole difference between glossy and matte: a broad wash
+          on its own is a surface with no polish on it. */
+    radial-gradient(ellipse 620px 380px at 24% 9%,
+      rgba(var(--lift), calc(0.090 * var(--lea-gloss))) 0%,
+      rgba(var(--lift), calc(0.048 * var(--lea-gloss))) 34%,
+      rgba(var(--lift), calc(0.016 * var(--lea-gloss))) 66%,
+      rgba(var(--lift), 0) 100%),
+
+    /* 3. the grain, over the sheen and not under it, because that is where a
+          hide puts it: the polish is on the leather and the leather is not
+          smooth, so the highlight is broken by the same tooth everywhere
+          else on the board. Lifted from five and a half per cent to seven
+          and a half now that there is something for it to break. */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.62' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23g)' opacity='0.075'/%3E%3C/svg%3E"),
+
+    /* 4. and the room, smeared. What a gloss reflects when there is nothing
+          in particular in front of it: one wide band raking across the pair
+          of boards, and a fainter answer near the fore-edge. */
+    linear-gradient(104deg,
+      rgba(var(--lift), 0) 0%,
+      rgba(var(--lift), calc(0.026 * var(--lea-gloss))) 15%,
+      rgba(var(--lift), calc(0.052 * var(--lea-gloss))) 27%,
+      rgba(var(--lift), calc(0.020 * var(--lea-gloss))) 39%,
+      rgba(var(--lift), 0) 52%,
+      rgba(var(--lift), 0) 79%,
+      rgba(var(--lift), calc(0.020 * var(--lea-gloss))) 91%,
+      rgba(var(--lift), 0) 100%),
+
+    /* 5. the fold, and 6. the hide itself.
+
+          The joints belong here and are not here. A hard board does not bend,
+          so it is hinged in a groove a few millimetres out from the spine and
+          swings from that -- which is the one thing that says hardbound rather
+          than a cover wrapped round a block. It was drawn, and it could not be
+          seen: a leaf on this object runs from the fold to the edge of the
+          board, so the gutter is paper the whole way across and the groove was
+          under it at every angle the cover passes through. It is on the shut
+          cover instead, where the spine is out in the open -- see
+          .bk-board-out. */
     linear-gradient(90deg,
       rgba(0, 0, 0, 0) 44%,
       rgba(0, 0, 0, 0.55) 50%,
@@ -4587,8 +4648,18 @@ body {
       var(--lea) 46%,
       var(--lea-deep) 78%,
       var(--lea) 100%);
-  background-size: 220px 220px, 1122px 840px, 1122px 840px;
-  background-repeat: repeat, no-repeat, no-repeat;
+  background-size:
+    1122px 840px, 1122px 840px, 1122px 840px, 220px 220px,
+    1122px 840px, 1122px 840px, 1122px 840px;
+  background-repeat:
+    no-repeat, no-repeat, no-repeat, repeat,
+    no-repeat, no-repeat, no-repeat;
+  /* One offset for the lot: a shorter list than the images is repeated over
+     them, so a layer added above needs nothing said about it here. Both
+     halves carry the whole card's worth of every figure and take the slice
+     they stand on, which is what keeps the light, the fold and the grain
+     running across the pair without a seam at the join. */
+  background-position: var(--bx, 0px) 0;
   pointer-events: none;
   /* What an object of this thickness does to the surface under it. One per
      half, so the pair casts what the whole card used to and the front half
@@ -4596,7 +4667,7 @@ body {
   box-shadow: 0 34px 74px -30px rgba(0, 0, 0, 0.92),
               0 3px 12px -4px rgba(0, 0, 0, 0.55);
 }
-.bk-board-back  { left: 561px; background-position: -561px 0, -561px 0, -561px 0; }
+.bk-board-back  { left: 561px; --bx: -561px; }
 .bk-board-front { left: 0;     transform-origin: right center; transform-style: preserve-3d; }
 .bk-board-front { background: none; }
 
@@ -4609,7 +4680,60 @@ body {
   backface-visibility: hidden;
   background-color: var(--lea);
   background-image:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.62' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23g)' opacity='0.055'/%3E%3C/svg%3E"),
+    /* 1. the board's own edges. A hard board is a board: the top catches the
+          room and the foot is in its own shadow, and the two outer sides are
+          the cut edge of something with thickness rather than the end of a
+          picture of one. */
+    linear-gradient(180deg,
+      rgba(var(--lift), calc(0.11 * var(--lea-gloss))) 0 1px,
+      rgba(0, 0, 0, 0) 1px calc(100% - 1px),
+      rgba(0, 0, 0, 0.55) calc(100% - 1px) 100%),
+    linear-gradient(90deg,
+      rgba(var(--lift), calc(0.075 * var(--lea-gloss))) 0 1px,
+      rgba(0, 0, 0, 0) 1px calc(100% - 1px),
+      rgba(var(--lift), calc(0.055 * var(--lea-gloss))) calc(100% - 1px) 100%),
+
+    /* 2. the highlight, where the light actually is. Over the left shoulder,
+          which is where this card has always said its lamp stands. A tight
+          core is the whole difference between glossy and matte: a broad wash
+          on its own is a surface with no polish on it. */
+    radial-gradient(ellipse 620px 380px at 24% 9%,
+      rgba(var(--lift), calc(0.090 * var(--lea-gloss))) 0%,
+      rgba(var(--lift), calc(0.048 * var(--lea-gloss))) 34%,
+      rgba(var(--lift), calc(0.016 * var(--lea-gloss))) 66%,
+      rgba(var(--lift), 0) 100%),
+
+    /* 3. the grain, over the sheen and not under it, because that is where a
+          hide puts it: the polish is on the leather and the leather is not
+          smooth, so the highlight is broken by the same tooth everywhere
+          else on the board. Lifted from five and a half per cent to seven
+          and a half now that there is something for it to break. */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.62' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23g)' opacity='0.075'/%3E%3C/svg%3E"),
+
+    /* 4. and the room, smeared. What a gloss reflects when there is nothing
+          in particular in front of it: one wide band raking across the pair
+          of boards, and a fainter answer near the fore-edge. */
+    linear-gradient(104deg,
+      rgba(var(--lift), 0) 0%,
+      rgba(var(--lift), calc(0.026 * var(--lea-gloss))) 15%,
+      rgba(var(--lift), calc(0.052 * var(--lea-gloss))) 27%,
+      rgba(var(--lift), calc(0.020 * var(--lea-gloss))) 39%,
+      rgba(var(--lift), 0) 52%,
+      rgba(var(--lift), 0) 79%,
+      rgba(var(--lift), calc(0.020 * var(--lea-gloss))) 91%,
+      rgba(var(--lift), 0) 100%),
+
+    /* 5. the fold, and 6. the hide itself.
+
+          The joints belong here and are not here. A hard board does not bend,
+          so it is hinged in a groove a few millimetres out from the spine and
+          swings from that -- which is the one thing that says hardbound rather
+          than a cover wrapped round a block. It was drawn, and it could not be
+          seen: a leaf on this object runs from the fold to the edge of the
+          board, so the gutter is paper the whole way across and the groove was
+          under it at every angle the cover passes through. It is on the shut
+          cover instead, where the spine is out in the open -- see
+          .bk-board-out. */
     linear-gradient(90deg,
       rgba(0, 0, 0, 0) 44%,
       rgba(0, 0, 0, 0.55) 50%,
@@ -4619,9 +4743,18 @@ body {
       var(--lea) 46%,
       var(--lea-deep) 78%,
       var(--lea) 100%);
-  background-size: 220px 220px, 1122px 840px, 1122px 840px;
-  background-repeat: repeat, no-repeat, no-repeat;
-  background-position: 0 0, 0 0, 0 0;
+  background-size:
+    1122px 840px, 1122px 840px, 1122px 840px, 220px 220px,
+    1122px 840px, 1122px 840px, 1122px 840px;
+  background-repeat:
+    no-repeat, no-repeat, no-repeat, repeat,
+    no-repeat, no-repeat, no-repeat;
+  /* One offset for the lot: a shorter list than the images is repeated over
+     them, so a layer added above needs nothing said about it here. Both
+     halves carry the whole card's worth of every figure and take the slice
+     they stand on, which is what keeps the light, the fold and the grain
+     running across the pair without a seam at the join. */
+  background-position: var(--bx, 0px) 0;
 }
 /* Turned right over, the half is mirrored: the edge the fold is on ends at the
    shut book's left. So the spine is drawn from that end, and a gradient
@@ -4630,14 +4763,49 @@ body {
 .bk-board-out {
   transform: rotateY(180deg);
   background-image:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.62' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23g)' opacity='0.055'/%3E%3C/svg%3E"),
+    /* The bands. Five ridges across the spine where the cords the sections are
+       sewn onto stand up under the leather, which is the oldest tell there is
+       that a book has boards on it rather than a wrapper round it. Painted on
+       the spine's own width and nowhere else on the cover. */
+    repeating-linear-gradient(180deg,
+      rgba(0, 0, 0, 0) 0 108px,
+      rgba(0, 0, 0, 0.42) 108px 116px,
+      rgba(var(--lift), calc(0.055 * var(--lea-gloss))) 116px 121px,
+      rgba(0, 0, 0, 0) 121px 148px),
+    /* the board's edges, as on the inside */
+    linear-gradient(180deg,
+      rgba(var(--lift), calc(0.11 * var(--lea-gloss))) 0 1px,
+      rgba(0, 0, 0, 0) 1px calc(100% - 1px),
+      rgba(0, 0, 0, 0.55) calc(100% - 1px) 100%),
+    /* the highlight */
+    radial-gradient(ellipse 420px 340px at 34% 12%,
+      rgba(var(--lift), calc(0.085 * var(--lea-gloss))) 0%,
+      rgba(var(--lift), calc(0.040 * var(--lea-gloss))) 38%,
+      rgba(var(--lift), 0) 100%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.62' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23g)' opacity='0.075'/%3E%3C/svg%3E"),
+    /* the room, smeared */
+    linear-gradient(118deg,
+      rgba(var(--lift), 0) 0%,
+      rgba(var(--lift), calc(0.038 * var(--lea-gloss))) 26%,
+      rgba(var(--lift), 0) 48%),
+    /* and the joint, with the spine falling away behind it */
     linear-gradient(270deg,
-      rgba(0, 0, 0, 0.55) 0%,
-      rgba(0, 0, 0, 0.22) 3%,
-      rgba(0, 0, 0, 0) 8%),
+      rgba(0, 0, 0, 0.58) 0%,
+      rgba(0, 0, 0, 0.30) 2.2%,
+      rgba(var(--lift), calc(0.045 * var(--lea-gloss))) 4.4%,
+      rgba(0, 0, 0, 0.44) 5.6%,
+      rgba(0, 0, 0, 0) 10%),
     linear-gradient(148deg,
       var(--lea-2) 0%, var(--lea) 46%, var(--lea-deep) 78%, var(--lea) 100%);
-  background-size: 220px 220px, 100% 100%, 100% 100%;
+  background-size:
+    44px 100%, 100% 100%, 100% 100%, 220px 220px, 100% 100%, 100% 100%, 100% 100%;
+  background-repeat:
+    no-repeat, no-repeat, no-repeat, repeat, no-repeat, no-repeat, no-repeat;
+  /* The bands sit on the spine. Which edge of this element that is, is not
+     worth reasoning about from the transforms -- the face is turned inside a
+     half that is itself turning, and the two compose to something the eye
+     settles faster than the algebra does. It is this one. */
+  background-position: 0 34px, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0;
 }
 .bk-stamp-out {
   position: absolute;
