@@ -3003,6 +3003,10 @@ body {
      alone: it re-times it, and the thing you are watching jumps forward by the
      difference. Both did. */
   --x-deep-morph: 560ms;
+  /* And its third move, held in the same place and for the same reason: the
+     opening waits out the whole arrival, contents included, so it needs the
+     figure while .x-deep is on and after it has come off. */
+  --x-deep-in: 330ms;
   /* The three beats the book gets to itself on the way out.
 
      Leaving L3 is the one crossing where a tile is not a panel of contents
@@ -3050,12 +3054,30 @@ body {
      weight of it. */
   --x-fold:      560ms;
   --x-fold-at:    60ms;
-  --x-fold-ease: cubic-bezier(0.34, 0.02, 0.24, 1);
-  --x-shut-ease: cubic-bezier(0.32, 0, 0.22, 1);
-  /* And where the same gesture starts when it is run the other way. Seven
-     tenths of the way through the tile widening, so the cover comes up off a
-     box that is already nearly a book rather than off one still growing. */
-  --x-open-at: calc(var(--x-deep-morph) * 0.7);
+  --x-fold-ease: cubic-bezier(0.65, 0, 0.35, 1);
+  --x-shut-ease: cubic-bezier(0.45, 0, 0.55, 1);
+  --x-veil-ease: cubic-bezier(0.4, 0, 0.2, 1);
+  /* And where the same gesture starts when it is run the other way: after the
+     arrival has landed, all of it.
+
+     It used to start seven tenths of the way through the tile widening, which
+     read as one continuous move and measured as a wreck. The fold was landing
+     on top of the tail of move 2 and the whole of move 3 -- every tile on the
+     screen fading its contents up out of a four pixel blur while two 561 by
+     840 boards of grained leather turned in three dimensions over them. The
+     fold got ten frames of the twenty three it had asked for, and the ones it
+     got were spaced 39 milliseconds apart with a 101 in the middle. That is
+     the jerk, and it is not a curve problem: there was nothing wrong with the
+     turn except that the browser could not draw it.
+
+     Cleared of the crossing it gets twenty three frames at 22 milliseconds
+     with a worst of 28. Same figures, same keyframes, twice the frames.
+
+     It is also, finally, the shut backwards. The shut is fold, then become,
+     then travel -- three beats end to end with nothing overlapping. Run the
+     other way that is travel, then become, then fold, and the fold cannot
+     start until the travel it is the reverse of has finished. */
+  --x-open-at: calc(var(--x-deep-morph) + var(--x-deep-in));
   --x-sink:   7px;    /* how far contents drop as they leave    */
   --x-blur:   2px;
 
@@ -3094,7 +3116,7 @@ body {
   --x-step:   42ms;
   --x-out:   330ms;   /* still the fade plus three steps */
   --x-morph: var(--x-deep-morph);
-  --x-in:    330ms;
+  --x-in:    var(--x-deep-in);
   --x-sink:  14px;
   --x-blur:   4px;
 }
@@ -5484,9 +5506,20 @@ body {
    two descriptions of one movement.
 
    Reversed rather than mirrored by hand: a reversed animation plays its
-   timing function backwards too, so the cover that fell quickly once it was
-   over centre rises slowly through the same place, which is the same weight
-   read the other way.
+   timing function backwards too. That used to be the whole argument for the
+   curve -- the cover fell quickly once it was over centre and rose slowly
+   through the same place. The curve is symmetric now, so reversing it gives
+   back the same shape, and the argument is simply that there is one set of
+   figures and no way for the two halves to drift.
+
+   Symmetric because the old one was not, and being told the motion looked
+   linear is what showed it. cubic-bezier(0.34, 0.02, 0.24, 1) is three
+   quarters of the turn done in the first half of the time and the last
+   quarter spread over the rest: a lurch and then a crawl, which is what a
+   reader calls linear when it is anything but. cubic-bezier(0.65, 0, 0.35, 1)
+   is half the turn at half the time, slow off the rest and slow into it,
+   fastest through the middle -- a cover that has weight and a hand on it,
+   both ways.
 
    The delays hold without arithmetic. Inside the shut the fold sits sixty in
    and sixty short of the end, so reversing the pair leaves it exactly where it
@@ -5567,7 +5600,7 @@ body {
 .x-shutting .view-article .bk .bk-stamp,
 .x-shutting .view-article .bk .bk-crease {
   opacity: 0;
-  transition: opacity 140ms linear;
+  transition: opacity 140ms var(--x-veil-ease);
 }
 .x-shutting .view-article .bk { outline-color: transparent; }
 
@@ -5591,7 +5624,7 @@ body {
    half that turns: the recto is the back cover's leaf and nothing has been
    lying on it. */
 .stage:not(.x-shutting) .view-article:not([hidden]) .bk .bk-page-v::after {
-  animation: bk-lit 260ms linear
+  animation: bk-lit 260ms var(--x-veil-ease)
              calc(var(--x-open-at) + var(--x-fold-at) + var(--x-fold) - 260ms)
              reverse backwards;
 }
@@ -5602,12 +5635,12 @@ body {
    arrive in the last fifth of the opening. */
 .stage:not(.x-shutting) .view-article:not([hidden]) .bk .bk-stamp,
 .stage:not(.x-shutting) .view-article:not([hidden]) .bk .bk-crease {
-  animation: bk-furn 140ms linear
+  animation: bk-furn 140ms var(--x-veil-ease)
              calc(var(--x-open-at) + var(--x-fold-at) + var(--x-fold) - 140ms)
              reverse backwards;
 }
 .stage:not(.x-shutting) .view-article:not([hidden]) .bk {
-  animation: bk-edge 140ms linear
+  animation: bk-edge 140ms var(--x-veil-ease)
              calc(var(--x-open-at) + var(--x-fold-at) + var(--x-fold) - 140ms)
              reverse backwards;
 }
