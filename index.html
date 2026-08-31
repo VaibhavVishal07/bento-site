@@ -570,14 +570,26 @@
      room. On a near-black card that is grey, and grey on black is not paper,
      it is a highlight -- and highlights are what a cheap render is made of.
      Paper is warm and it is not lit, it is coloured. */
-  --lea:      #0c0a09;                   /* the board                        */
-  --lea-2:    #14110e;                   /* where the board catches the light*/
-  --lea-deep: #0b0a09;                   /* and where it turns away          */
-  --lea-edge: #241d17;                   /* the board's own cut edge         */
+  /* The board and the paper were eleven levels apart -- #0c0a09 against
+     #171412, which is a contrast ratio of 1.08 and is nothing. The intent
+     under .bk-page was right and the figures never carried it: what you saw
+     was one dark rectangle with type on it and a hairline of stamp somewhere
+     near the edge, rather than a block of paper bound in boards.
+
+     So the two are pulled apart from both ends: the board goes down to seven
+     and the page comes up to thirty-two, which is a step of twenty-five and
+     reads as two materials. Neither leaves the room -- the page is still a
+     page you read light type off, and the board is still darker than the
+     cards the frame is made of. What changed is that there is now a distance
+     between them. */
+  --lea:      #070605;                   /* the board                        */
+  --lea-2:    #100d0a;                   /* where the board catches the light*/
+  --lea-deep: #050403;                   /* and where it turns away          */
+  --lea-edge: #2b231b;                   /* the board's own cut edge         */
   --lea-line: rgba(104, 84, 62, 0.34);   /* what is stamped into it          */
   --leaf-edge: 234, 222, 200;            /* the cut edge of the block, ivory */
-  --paper:      #171412;                 /* the page                         */
-  --paper-lift: #1c1917;                 /* and a shade up, held in the air  */
+  --paper:      #201b18;                 /* the page                         */
+  --paper-lift: #262019;                 /* and a shade up, held in the air  */
 }
 
 :root[data-theme="light"] {
@@ -5032,6 +5044,22 @@ body {
   width: 539px;
   height: 796px;
   background: var(--paper);
+  /* And the leaf lies in the boards rather than flush with them.
+   *
+   * Tone alone was not enough. Twenty-five levels tells you the two are
+   * different colours; what tells you one is lying inside the other is the
+   * dark the board goes right where the paper meets it, and the line the cut
+   * edge of the block draws against the binding. Twenty-two pixels of margin
+   * is a narrow thing to carry a whole cover on, and this is what makes those
+   * twenty-two read as a board with something sitting on it.
+   *
+   * On the page and not on the leaf that holds both, which costs nothing and
+   * saves a class: a board at eighty-nine degrees is nine pixels wide, so the
+   * shadow shuts with the book and opens with it, on the boards' own clock,
+   * instead of standing on a closed cover waiting for a rule to take it off.
+   * The two overlap down the fold, which is where a gutter is darkest. */
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.45),
+              0 5px 18px 2px rgba(0, 0, 0, 0.55);
 }
 /* Each board is hinged on the fold, which is its own inner edge. */
 .bk-page-v { left: 0;     transform-origin: right center; }
@@ -19162,6 +19190,49 @@ a.arrow { text-decoration: none; }
             history.pushState({ view: to }, '', hashOf(to) || location.pathname);
       if (here === 'piece' && to === 'lab') { table('lab'); return; }
       go(to);
+    });
+
+    /* And putting the book down.
+     *
+     * A book on a desk is shut by pushing it away, not by finding the word
+     * that means shut. The essay is the one screen on the site that is an
+     * object with a margin of empty desk round it, so the desk is a control:
+     * press it and the book closes and goes back to the shelf it came off.
+     *
+     * Four things it must not answer.
+     *
+     * A press that began on the book. The pages are dragged to turn them and a
+     * drag that starts on a leaf and finishes past the board's edge is a page
+     * being turned, not the desk being tapped -- so where the press landed is
+     * remembered on the way down and the click is refused if it started
+     * inside. Capture, because a leaf stops the event on its way back up.
+     *
+     * Anything that is already a control: the crumb, the bar, the switch in
+     * the margin, the way back, and whatever is inside an open drawer. A link
+     * that goes somewhere is answered by the handler above and not twice.
+     *
+     * A press the page made rather than a person. isTrusted, for the reason
+     * the sounds ask for it.
+     *
+     * And a phone, where there is no desk. Down there the essay is unbound
+     * into the column and the margin either side of it is the page itself, so
+     * a tap anywhere off the type would shut a book somebody is reading. */
+    var pressedOn = null;
+    document.addEventListener('pointerdown', function (e) {
+      pressedOn = e.target && e.target.closest ? e.target.closest('.bk') : null;
+    }, true);
+
+    document.addEventListener('click', function (e) {
+      if (here !== 'article' || busy || small() || !e.isTrusted) { return; }
+      if (pressedOn) { return; }
+      var t = e.target;
+      if (!t || !t.closest) { return; }
+      if (t.closest('.bk, .nav, .crumb, .crumb-count, .room, .back,' +
+                     ' .sheet, .zoom, a, button, [role="button"]')) { return; }
+      var up = PARENT.article;
+      if (!up) { return; }
+      history.pushState({ view: up }, '', hashOf(up) || location.pathname);
+      go(up);
     });
 
     window.addEventListener('popstate', function () { go(routeFromUrl()); });
