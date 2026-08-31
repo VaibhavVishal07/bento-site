@@ -609,13 +609,26 @@
      The paper is not white for the same reason the book's page is not. White
      is a light source; paper in a room this dark is the room's light landing
      on something pale. */
-  --fold:       #87692a;                 /* the front board, where it catches */
-  --fold-2:     #6d5420;                 /* down its face                     */
-  --fold-deep:  #4b3a15;                 /* the back board and the tab        */
-  --fold-lip:   rgba(255, 226, 160, 0.13);  /* the top edge of the front      */
+  /* Dark, and an object. Three steps over the card fill it replaces rather
+     than one: a card is read against its own outline and its glare, and a
+     folder has neither -- what tells you where it is, is its silhouette, and
+     a silhouette needs a value between the thing and the page. */
+  --fold:       #37322b;                 /* the front board, where it catches */
+  --fold-2:     #292520;                 /* down its face                     */
+  --fold-deep:  #1f1c18;                 /* the back board and the tab        */
+  --fold-lip:   rgba(255, 240, 214, 0.13);  /* the top edge of the front      */
+  --fold-line:  rgba(255, 240, 214, 0.085); /* and the edge round a board     */
   --paper-s:    #d6d0c2;                 /* a sheet in it                     */
-  --paper-s-2:  #c4bdac;                 /* and the two behind that one       */
+  --paper-s-2:  #b8b2a4;                 /* and the two behind that one       */
   --paper-rule: rgba(24, 19, 8, 0.16);   /* what is written on it             */
+  /* And what is cut into the board. Three parts, because that is what an
+     engraving is: the letter, the wall of the cut above it in shadow, and the
+     shoulder below it catching the room. Take away either shadow and it is
+     type printed on a folder. */
+  --engrave:     rgba(238, 232, 220, 0.68);
+  --engrave-cut: rgba(0, 0, 0, 0.62);
+  --engrave-lip: rgba(255, 246, 230, 0.07);
+  --engrave-2:   rgba(238, 232, 220, 0.34);
 }
 
 :root[data-theme="light"] {
@@ -846,13 +859,23 @@
      and a manila board on paper is what a desk looks like. The sheets go the
      other way: white on a white card needs the hairline and the shadow to
      exist at all, so they are a shade under the card rather than over it. */
-  --fold:       #e3bc55;
-  --fold-2:     #d0a63e;
-  --fold-deep:  #b78f2d;
-  --fold-lip:   rgba(255, 246, 214, 0.55);
+  /* Still a dark folder in the lit room, and more of an object for it: what
+     changes is the ground under it, not the thing. Two steps up from the dark
+     room's so it reads as a board and not as a hole cut in the page, and the
+     cut keeps its light letter, because the letter is lit by the same room
+     whichever way round the page is. */
+  --fold:       #4b4640;
+  --fold-2:     #3c3833;
+  --fold-deep:  #2f2c28;
+  --fold-lip:   rgba(255, 248, 232, 0.13);
+  --fold-line:  rgba(255, 248, 232, 0.09);
   --paper-s:    #ffffff;
-  --paper-s-2:  #f0ece2;
+  --paper-s-2:  #ded9cd;
   --paper-rule: rgba(24, 19, 8, 0.13);
+  --engrave:     rgba(248, 245, 238, 0.80);
+  --engrave-cut: rgba(0, 0, 0, 0.50);
+  --engrave-lip: rgba(255, 252, 244, 0.13);
+  --engrave-2:   rgba(248, 245, 238, 0.46);
 }
 
 /* A visitor who has asked their system for a light desktop and has never
@@ -1034,13 +1057,18 @@
     --leaf-edge: 124, 110, 88;
     --paper:      #fbf9f4;
     --paper-lift: #ffffff;
-    --fold:       #e3bc55;
-    --fold-2:     #d0a63e;
-    --fold-deep:  #b78f2d;
-    --fold-lip:   rgba(255, 246, 214, 0.55);
+    --fold:       #4b4640;
+    --fold-2:     #3c3833;
+    --fold-deep:  #2f2c28;
+    --fold-lip:   rgba(255, 248, 232, 0.13);
+    --fold-line:  rgba(255, 248, 232, 0.09);
     --paper-s:    #ffffff;
-    --paper-s-2:  #f0ece2;
+    --paper-s-2:  #ded9cd;
     --paper-rule: rgba(24, 19, 8, 0.13);
+    --engrave:     rgba(248, 245, 238, 0.80);
+    --engrave-cut: rgba(0, 0, 0, 0.50);
+    --engrave-lip: rgba(255, 252, 244, 0.13);
+    --engrave-2:   rgba(248, 245, 238, 0.46);
   }
 }
 
@@ -4081,57 +4109,84 @@ body {
    copy, because the row sits on the frame's bottom rule and cannot grow. */
 /* --- four folders --------------------------------------------------------
 
-   The window used to be a square with a cross through it: a picture goes
-   here, and no picture yet. Four of them in a row, which is four promises and
-   nothing kept.
+   The tile is the folder. Not a folder drawn inside a tile -- the box the
+   frame gives this project on the Work grid is cut to the shape of a folder,
+   its name is cut into the front board, and the case study is the paper in
+   it. Press it and the paper comes out and turns into the screen you land on.
 
-   It is a folder now, with paper in it, and the paper is the case study. That
-   is a real claim about the object rather than a picture of one: press it and
-   the top sheet comes out and turns into the screen you land on, so the thing
-   you take out of the folder is the thing you read. What a reader can see of
-   it before pressing is exactly what it is -- three sheet edges above the
-   front board, and more of them when the pointer is on the card.
+   What was here first was a square with a cross through it: a picture goes
+   here, and no picture yet, four times in a row. Then a folder standing
+   inside that square, which was better and was still a picture of a folder
+   sitting on a card. A card with a folder on it is two objects and one of
+   them is doing nothing. This is one.
 
-   Drawn rather than drawn on. Five boxes -- a back board with a tab, three
-   sheets, a front board -- and every figure below is a percentage of the
-   folder's own box, because the frame gives it 216 square and a phone gives
-   it the width of the column. Percentages keep one description of the object
-   for both, and a folder that is wider than it is tall is a folder still.
+   So the card's own material comes off these four -- fill, grain, hairline
+   and both glare layers -- and the boards carry it instead. The silhouette is
+   the point: the top-right of the box is empty because a folder's back board
+   stops below its tab, and that notch is the whole of what makes this the
+   thing everybody has a thousand of. A rectangle with paper behind it is an
+   envelope.
 
-   The tell is the tab. A rectangle with paper behind it is a wallet or an
-   envelope or a box; the notched corner at the top left is what makes it the
-   thing everybody has a thousand of. */
+   Every figure below is written as two edges rather than as an offset and a
+   size -- top and bottom, left and right -- so the same description holds for
+   a 264 by 335 box on the frame and a column-wide box of whatever height a
+   phone gives it. Nothing here is a percentage: the tab is 22 pixels deep on
+   both, because a tab is a tab. */
 .w-folder {
   position: absolute;
-  left: 24px; top: 24px;
-  width: 216px; height: 216px;
-  /* The boards turn away from the reader when the folder opens, and a turn
-     with no depth behind it is a box getting shorter. Held here rather than
-     on the board, so the vanishing point is the folder's centre and not each
-     board's own -- one object, one eye. */
-  perspective: 900px;
-  perspective-origin: 50% 78%;
+  inset: 0;
+  /* Under everything the card says, and that is what -1 is for.
+     
+     The type is cut into the front board, so it has to paint over it, and on
+     the frame it does for free: it is absolutely positioned and written after
+     the folder, so it wins on tree order. On a phone it is not -- the cards
+     are as tall as their contents down there and everything in them is back
+     in the flow -- and in-flow content paints under every positioned box in
+     the same stacking context whatever the order. Four folders with nothing
+     written on them. One level down puts the skin where a skin goes and the
+     rule reads the same on both layouts. */
+  z-index: -1;
+  /* The front board turns away from the reader when the folder opens, and a
+     turn with no depth behind it is a board getting shorter. */
+  perspective: 1400px;
+  perspective-origin: 50% 84%;
 }
+
+/* The card is not a card any more. */
+.w-one, .w-two, .w-three, .w-four {
+  background: none;
+  outline: none;
+  box-shadow: none;
+  /* And the negative above stays inside it. A card leans on hover and a
+     transform makes a stacking context, so this is only load-bearing for the
+     frames where it is not leaning -- which is most of them. */
+  isolation: isolate;
+}
+.w-one::before,  .w-one::after,
+.w-two::before,  .w-two::after,
+.w-three::before, .w-three::after,
+.w-four::before, .w-four::after { content: none; }
 
 /* The back board, and the tab that makes it a folder.
 
    The tab's right edge is cut rather than square, which is the whole of the
    silhouette: a rectangle sitting on a rectangle is a step, and a rectangle
-   whose corner is taken off at an angle is a tab. 74% and not 100% because
-   the cut wants to read at 96 pixels wide and at 130. */
+   whose corner is taken off at an angle is a tab. */
 .w-fold-back {
   position: absolute;
-  left: 0; top: 20.4%; width: 100%; height: 73.2%;
+  left: 0; right: 0; top: 22px; bottom: 0;
   background: var(--fold-deep);
-  border-radius: 3px 5px 5px 5px;
+  border-radius: 0 3px 2px 2px;
+  box-shadow: inset 0 0 0 1px var(--fold-line);
 }
 .w-fold-back::before {
   content: '';
   position: absolute;
-  left: 0; top: -11.5%; width: 44.4%; height: 12%;
+  left: 0; top: -22px; width: 118px; height: 23px;
   background: var(--fold-deep);
-  border-radius: 4px 4px 0 0;
-  clip-path: polygon(0 0, 74% 0, 100% 100%, 0 100%);
+  border-radius: 2px 2px 0 0;
+  box-shadow: inset 0 1px 0 var(--fold-line);
+  clip-path: polygon(0 0, 76% 0, 100% 100%, 0 100%);
 }
 
 /* Three sheets, and only the top one is ever a page.
@@ -4146,43 +4201,46 @@ body {
   background-size: cover;
   background-position: 50% 0;
   border-radius: 2px 2px 0 0;
-  box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.42);
+  box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.5);
   transition: transform var(--dur) var(--ease);
 }
-.w-sheet-a { left: 9.3%;  top: 23.1%; width: 81.5%; height: 67.6%; z-index: 2; }
-.w-sheet-b { left: 5.6%;  top: 26.4%; width: 88.9%; height: 64.4%; z-index: 1;
+.w-sheet-a { left: 26px; right: 26px; top: 40px; bottom: 15px; z-index: 2; }
+.w-sheet-b { left: 17px; right: 17px; top: 46px; bottom: 22px; z-index: 1;
              background-color: var(--paper-s-2); }
-.w-sheet-c { left: 13.9%; top: 28.7%; width: 73.1%; height: 62%;   z-index: 0;
+.w-sheet-c { left: 35px; right: 35px; top: 51px; bottom: 28px; z-index: 0;
              background-color: var(--paper-s-2); }
 
 /* Ruled, in the strip of it that shows.
 
-   Six lines in the top sixty pixels of the sheet, of which one is visible at
-   rest and three when the pointer is on the card. That is the whole reason
-   they are there: a plain white edge above a board is a highlight, and a
-   white edge with a line on it is a page. Off the sheet that carries a
-   photograph, where the photograph is the page. */
+   Lines in the top of the sheet, of which one is visible at rest and three
+   when the pointer is on the card. That is the whole reason they are there: a
+   plain white edge above a board is a highlight, and a white edge with a line
+   on it is a page. Off the sheet that carries a photograph, where the
+   photograph is the page. */
 .w-sheet-a::after {
   content: '';
   position: absolute;
-  left: 8%; right: 8%; top: 7%; height: 42%;
+  left: 16px; right: 16px; top: 8px; height: 76px;
   background: repeating-linear-gradient(to bottom,
     var(--paper-rule) 0 1px, transparent 1px 9px);
 }
 .w-folder[role="img"] .w-sheet-a::after { display: none; }
 
-/* The front board. Lit down its face, because a board that has been bent
-   round a spine catches the room unevenly and a flat fill is a swatch. */
+/* The front board, and it is the face of the tile. Lit down its length,
+   because a board that has been bent round a fold catches the room unevenly
+   and a flat fill is a swatch; and it throws, because it stands a little off
+   the back one and the whole object stands off the page. */
 .w-fold-front {
   position: absolute;
-  left: 0; top: 31.5%; width: 100%; height: 62%;
+  left: 0; right: 0; top: 57px; bottom: 0;
   z-index: 3;
   transform-origin: 50% 100%;
   background:
-    linear-gradient(163deg, var(--fold) 0%, var(--fold-2) 46%, var(--fold-deep) 100%);
-  border-radius: 4px 4px 5px 5px;
+    linear-gradient(168deg, var(--fold) 0%, var(--fold-2) 58%, var(--fold-deep) 100%);
+  border-radius: 3px 3px 2px 2px;
   box-shadow: inset 0 1px 0 var(--fold-lip),
-              0 12px 24px -14px rgba(0, 0, 0, 0.85);
+              inset 0 0 0 1px var(--fold-line),
+              0 14px 26px -16px rgba(0, 0, 0, 0.85);
   transition: transform var(--dur) var(--ease);
 }
 
@@ -4190,15 +4248,46 @@ body {
 
    The sheets come up out of the folder and the front board tips a degree or
    two away, which is the same gesture at a tenth of the size as the one a
-   press runs: hover is the promise and the press is the thing. Staggered
-   from the top of the stack down, because a stack lifted from the top of it
-   fans and a stack lifted at once is a block. */
-.card:hover .w-sheet-a { transform: translateY(-17px) rotate(-0.5deg); }
-.card:hover .w-sheet-b { transform: translateY(-10px) rotate(0.4deg);
+   press runs: hover is the promise and the press is the thing. Staggered from
+   the top of the stack down, because a stack lifted from the top fans and a
+   stack lifted at once is a block. */
+.card:hover .w-sheet-a { transform: translateY(-15px) rotate(-0.4deg); }
+.card:hover .w-sheet-b { transform: translateY(-9px) rotate(0.3deg);
                          transition-delay: 30ms; }
-.card:hover .w-sheet-c { transform: translateY(-5px);
+.card:hover .w-sheet-c { transform: translateY(-4px);
                          transition-delay: 60ms; }
-.card:hover .w-fold-front { transform: rotateX(7deg); }
+.card:hover .w-fold-front { transform: rotateX(5deg); }
+
+/* --- and what is cut into the board ---------------------------------------
+
+   The name of the project, and under it who it was for and when. Not printed
+   on the folder: cut into it. Three parts, which is what an engraving is --
+   the letter, the wall of the cut above it holding shadow, and the shoulder
+   below it catching the room. Take away either shadow and it is type on a
+   folder; take away the letter's own value and it is a stencil.
+
+   Legible first. A blind stamp with no ink in it is the correct thing on a
+   book's cover, where the title is on the spine and the page and the crumb as
+   well; here this is the only place the project is named, so the letter keeps
+   most of the value a heading has and the cut does the rest. */
+.w-one .w-said .headline, .w-two .w-said .headline,
+.w-three .w-said .headline, .w-four .w-said .headline {
+  color: var(--engrave);
+  text-shadow: 0 -1px 0 var(--engrave-cut), 0 1px 0 var(--engrave-lip);
+}
+.w-one .w-said .w-by, .w-two .w-said .w-by,
+.w-three .w-said .w-by, .w-four .w-said .w-by,
+.w-one .w-kind, .w-two .w-kind, .w-three .w-kind, .w-four .w-kind,
+.w-one .w-said .sub, .w-two .w-said .sub,
+.w-three .w-said .sub, .w-four .w-said .sub {
+  color: var(--engrave-2);
+  text-shadow: 0 -1px 0 var(--engrave-cut), 0 1px 0 var(--engrave-lip);
+}
+.w-one .w-cta {
+  color: var(--engrave-2);
+  text-shadow: 0 -1px 0 var(--engrave-cut), 0 1px 0 var(--engrave-lip);
+}
+.w-one:hover .w-cta { color: var(--engrave); }
 
 /* The sheet once it is out, at the size it is going to be.
 
@@ -4206,13 +4295,14 @@ body {
    stands: the lift is then a single transform from the folder to the card and
    there is no second element to keep in step with the first. It is blank
    paper on purpose -- the ruling is on the sheet in the folder, and a rule
-   drawn at 176 wide and stretched to 264 is a rule that has been stretched.
+   drawn at 212 wide and stretched to 264 is a rule that has been stretched.
    The two cross over inside the first tenth of the beat, so what the reader
    sees is one sheet the whole way.
 
    .w-seat is the same box again as an empty tile: card fill, grain and the
    hairline, which is what every box on this frame is when there is nothing in
-   it yet. The paper becomes it, and it is the tile that travels. See
+   it yet. The paper becomes it, and it is the tile that travels -- which is
+   also where these four get the card back that the folder took off them. See
    .bk-seat, which is this pair run the other way round. */
 .w-lift, .w-seat {
   position: absolute;
@@ -4245,22 +4335,24 @@ body {
    figures on one box because it is one gesture -- a hand does not lift a page
    and then separately unfold it.
 
-   The figures at 0% are where the top sheet stands, measured off the folder
-   and written out: the folder is at 24,24 in the card and its top sheet is at
-   9.3% by 23.1% of 216 square, which is 44 by 74; it is 176 by 146 in a card
-   that is 264 by 335, which is 0.6667 by 0.4358. Two numbers to keep in step
-   with the sheet's own rule, and the alternative -- measuring it in script on
-   the frame the press lands -- is a layout read at the worst moment there is.
+   The figures at 0% are where the top sheet stands, resolved: the sheet is
+   inset 26 either side and runs from 40 to 15 off the foot, so in a card 264
+   by 335 it is 212 by 280 at 26,40 -- 0.803 by 0.836. Four numbers to keep in
+   step with the sheet's own rule, and the alternative -- measuring it in
+   script on the frame the press lands -- is a layout read at the worst
+   moment there is.
 
-   Up first and out second. At 45% it is clear of the folder's top edge and
-   still nearly sheet-sized, which is the frame where it is plainly a piece of
-   paper being held; from there the scale does the rest and it stops being a
-   sheet and starts being a card. */
+   Up first and out second. At 48% it has cleared the front board and is
+   still sheet-sized, which is the frame where it is plainly a page being
+   held; from there the scale does the rest and it stops being a sheet and
+   starts being a tile. It cannot rise past the card's own top edge, because
+   a card clips -- so the clearance is bought by the board tipping away
+   underneath it rather than by the paper going higher. */
 @keyframes w-lift {
-  0%   { transform: translate(44px, 74px) scale(0.6667, 0.4358); opacity: 0; }
+  0%   { transform: translate(26px, 40px) scale(0.803, 0.836); opacity: 0; }
   8%   { opacity: 1; }
-  50%  { transform: translate(30px, 6px)  scale(0.76, 0.56);     opacity: 1; }
-  100% { transform: translate(0px, 0px)   scale(1, 1);           opacity: 1; }
+  48%  { transform: translate(21px, 4px)  scale(0.84, 0.87);   opacity: 1; }
+  100% { transform: translate(0px, 0px)   scale(1, 1);         opacity: 1; }
 }
 
 /* And the board it came off, tipping away as it goes. Away and not open: a
@@ -4268,7 +4360,7 @@ body {
    other hand takes the page out. */
 @keyframes w-fold-open {
   from { transform: rotateX(0deg); }
-  to   { transform: rotateX(30deg); }
+  to   { transform: rotateX(24deg); }
 }
 
 /* Everything below is reached through .x-lifting and .w-lifting together.
@@ -4309,6 +4401,11 @@ body {
   opacity: 0;
   transition: opacity 170ms linear;
 }
+/* And the board it is cut into goes with it -- it has to, because the type is
+   on the front board and the front board is turning. Held to the same clock
+   as the type above so the two leave as one surface. */
+.x-lifting .view-work .card.w-lifting .w-fold-back { opacity: 0.6;
+  transition: opacity 260ms linear; }
 
 .w-tags {
   position: absolute;
@@ -12454,28 +12551,20 @@ a.arrow { text-decoration: none; }
      number, a title and one line of type each, in the room a picture was
      supposed to be standing in. That is the whole of why this screen looked
      empty. */
-  /* The folder, in a column rather than in a square.
+  /* The folder is the card down here too, and it needs nothing said about it.
 
-     Every figure inside it is a percentage of its own box, so it takes the
-     column's width and this height and stays a folder -- a wider, shallower
-     one, which is what a folder on a desk actually looks like. 150 rather
-     than the frame's 216: down here it is one of six cards in a scroller and
-     the object is the card's picture, not the card.
+     Its figures are two edges rather than an offset and a size, so it takes
+     whatever box the column gives it and the tab stays 22 deep and the sheets
+     stay 26 in from the sides. What does change is the card, which is as tall
+     as its contents here: the type has to start below the front board's top
+     edge rather than 256 down a fixed box. See the padding below.
 
      The lift is not here. A phone crossing is the column fading out and back
      in -- see column() -- and there is no grid for a sheet to travel across;
-     go() checks small() before any of it. */
-  .w-folder {
-    position: static;
-    display: block;
-    order: -1;
-    width: auto;
-    height: 150px;
-    margin: 0 0 16px;
-  }
-  /* And neither of the two boxes the crossing moves, which have nothing to do
-     down here and would otherwise be two empty blocks in the flow. */
+     go() checks small() before any of it. So the two boxes it moves are taken
+     out of the flow rather than left in it as two empty blocks. */
   .w-lift, .w-seat { display: none; }
+  .w-one, .w-two, .w-three, .w-four { padding-top: 76px; }
   /* What it is, over the name of it: the smallest line on the card and the
      first one read, which is the job an eyebrow does. */
   .w-kind {
