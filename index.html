@@ -5324,7 +5324,18 @@ body {
    was -- and the fill is backwards rather than both, so the book is closed
    through the wait and goes back to its own resting figures when the animation
    is done rather than being pinned at the last frame of it. */
-.view-article:not([hidden]) .bk-pose {
+/* Every rule below is reached through .stage:not(.x-shutting), and that is
+   load-bearing rather than tidy.
+
+   The opening and the shutting are the same keyframes on the same elements,
+   so the only thing telling them apart is which rule the cascade picks -- and
+   written as `.view-article:not([hidden]) .bk .bk-page-v` the opening weighs
+   exactly what `.x-shutting .view-article .bk .bk-page-v` weighs. A tie is
+   settled by source order, the opening is written second, and the book
+   answered a press to leave by opening a little further. Naming the state the
+   opening is not for takes the question away from the cascade: while the
+   screen is being left, none of this matches at all. */
+.stage:not(.x-shutting) .view-article:not([hidden]) .bk-pose {
   animation: bk-shut-pose var(--x-shut) var(--x-shut-ease) var(--x-open-at)
              reverse backwards;
 }
@@ -5350,13 +5361,13 @@ body {
 }
 
 /* And the same four, opening. */
-.view-article:not([hidden]) .bk .bk-page-v,
-.view-article:not([hidden]) .bk .bk-blk-v,
-.view-article:not([hidden]) .bk .bk-fore-v {
+.stage:not(.x-shutting) .view-article:not([hidden]) .bk .bk-page-v,
+.stage:not(.x-shutting) .view-article:not([hidden]) .bk .bk-blk-v,
+.stage:not(.x-shutting) .view-article:not([hidden]) .bk .bk-fore-v {
   animation: bk-fold var(--x-fold) var(--x-fold-ease)
              calc(var(--x-open-at) + var(--x-fold-at)) reverse backwards;
 }
-.view-article:not([hidden]) .bk .bk-board-front {
+.stage:not(.x-shutting) .view-article:not([hidden]) .bk .bk-board-front {
   animation: bk-fold-board var(--x-fold) var(--x-fold-ease)
              calc(var(--x-open-at) + var(--x-fold-at)) reverse backwards;
 }
@@ -5410,7 +5421,7 @@ body {
    shut brings down the other way -- the same figures, reversed. Only on the
    half that turns: the recto is the back cover's leaf and nothing has been
    lying on it. */
-.view-article:not([hidden]) .bk .bk-page-v::after {
+.stage:not(.x-shutting) .view-article:not([hidden]) .bk .bk-page-v::after {
   animation: bk-lit 260ms linear
              calc(var(--x-open-at) + var(--x-fold-at) + var(--x-fold) - 260ms)
              reverse backwards;
@@ -5420,13 +5431,13 @@ body {
    stamp that runs round both boards, the crease in the gutter, and the board's
    own binding edge. All three go in the first fifth of the shut, so all three
    arrive in the last fifth of the opening. */
-.view-article:not([hidden]) .bk .bk-stamp,
-.view-article:not([hidden]) .bk .bk-crease {
+.stage:not(.x-shutting) .view-article:not([hidden]) .bk .bk-stamp,
+.stage:not(.x-shutting) .view-article:not([hidden]) .bk .bk-crease {
   animation: bk-furn 140ms linear
              calc(var(--x-open-at) + var(--x-fold-at) + var(--x-fold) - 140ms)
              reverse backwards;
 }
-.view-article:not([hidden]) .bk {
+.stage:not(.x-shutting) .view-article:not([hidden]) .bk {
   animation: bk-edge 140ms linear
              calc(var(--x-open-at) + var(--x-fold-at) + var(--x-fold) - 140ms)
              reverse backwards;
@@ -19058,7 +19069,31 @@ a.arrow { text-decoration: none; }
       // enough: the movement starts on a compositor with nothing left to do.
       if (shutting) {
         requestAnimationFrame(function () {
-          // Beat 0. The boards fall, and the screen holds still around them.
+          // Beat 0. The cover goes over, and the screen holds still around it.
+          //
+          // The opening's animations are cancelled first, and that is the
+          // whole of what makes the shut run at all. Opening and shutting are
+          // one set of keyframes played in two directions, so both rules name
+          // bk-fold -- and an animation whose name does not change is not
+          // restarted when the rule under it does. It keeps the clock it had.
+          // The opening's had finished, so the shut inherited a finished
+          // animation, took its new direction, and put the book on its last
+          // frame: shut, instantly, with nothing to watch. The lattice learned
+          // the same lesson and answered it with four names; here there are
+          // two directions of one gesture and renaming them would be two
+          // descriptions of it again. So the name is taken away and given
+          // back inside one frame: resolved once with none, the opening's
+          // animations no longer exist, and what the shut's rule names a
+          // moment later is a new one starting at nought. Cancelling them
+          // through the animation API does not do it -- the style still says
+          // bk-fold, so the engine hands the same clock straight back.
+          if (book) {
+            var parts = book.querySelectorAll(
+              '.bk-pose, .bk-page-v, .bk-blk-v, .bk-fore-v, .bk-board-front');
+            Array.prototype.forEach.call(parts, function (el) { el.style.animation = 'none'; });
+            void book.offsetWidth;      /* resolved with none: the old ones are gone */
+            Array.prototype.forEach.call(parts, function (el) { el.style.animation = ''; });
+          }
           stage.classList.add('x-shutting');
           setTimeout(function () {
             // Beat 1. The covers have met; the object stops being a book and
