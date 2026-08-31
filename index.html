@@ -2046,17 +2046,20 @@ body {
 .now {
   position: absolute;
   left: 60px;
-  /* Forty-four lower than it was.
+  /* Thirty lower than it was, which is a sixteen pixel break rather than the
+     34 this card was drawn with.
 
      The blurb sets to four lines at 18 where it set to three at 14, so it
-     ends 48 further down, and at the old figure its last line landed on top
-     of this one. Thirty of that is the type; the rest is the paragraph break
-     coming back, at one line of the new leading rather than the 34 it was.
+     ends 48 further down and the room under it has to come from somewhere.
+     It comes from here. A paragraph break of sixteen against thirty of
+     leading is still plainly a break -- half a line of white, which is what
+     a break in a two-paragraph block wants -- and taking it out of the gap
+     above the buttons instead left them 18 short of the card's foot, which
+     read as two controls sliding off the bottom of it.
 
-     Everything in this card tightens by a few pixels from here, because the
-     card is 484 tall and cannot grow -- the row below it starts 21 pixels
-     under its foot. The type asked for 54 of the 61 that were spare. */
-  top: 356px;
+     Sixteen here, thirty-two above the buttons, thirty-four under them. The
+     card is 484 tall and cannot grow: the row below starts 21 under it. */
+  top: 342px;
   margin: 0;
   width: 500px;
   font-family: var(--f-body);
@@ -2072,10 +2075,11 @@ body {
 
 .btn {
   position: absolute;
-  /* Forty-three lower, following the two paragraphs above it. They land 18
-     short of the card's foot rather than 61, which is the same clearance the
-     chip has in the card beside this one. */
-  top: 420px;
+  /* Twenty-seven lower, following the two paragraphs above it, and with the
+     break between them closed they land 34 short of the card's foot rather
+     than 18 -- which is about the gap above them, and reads as a foot rather
+     than as an edge they are being pushed over. */
+  top: 404px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -2310,23 +2314,25 @@ body {
    ========================================================================== */
 
 .slot-player      { left: 24px; top: 25px;  width: 316px; height: 249px; }
-/* The block under the still, lifted twelve.
+/* Four things under the still and not five.
 
-   Its own sentence is set at the blurb's figures now -- same voice, same
-   size, and the two are read one after the other across the top of the
-   screen -- which is 20 pixels more of it on two lines. The chip below is
-   where it was, so the twelve comes off the gap under the still and the rest
-   off the gap above the chip: 14 and 17 where they were 26 and 25. */
-.repo .label      { left: 24px; top: 288px; }
-.repo .arrow      { left: 316px; top: 286px; }
-.repo .headline   { left: 24px; top: 320px; width: 296px; }
-.repo .sub        { left: 24px; top: 351px; width: 294px;
-                    font-size: 18px; line-height: 30px; }
+   A sentence stood here -- what the lead project is, in a line -- and it was
+   the fifth thing on a card that is one card wide and one glance long. The
+   still already shows the work; the name says what it is called; the count
+   says there is more. The sentence was the card explaining its own picture.
+
+   So the name takes the room the sentence had. It wraps to two lines at this
+   width and is given both, 32 under the still and 32 above the chip, and the
+   chip comes up to 416 so the card has 33 at its foot rather than 21. There
+   is no `.repo .sub` any more, because there is no sentence for it to set. */
+.repo .label      { left: 24px; top: 306px; }
+.repo .arrow      { left: 316px; top: 304px; }
+.repo .headline   { left: 24px; top: 338px; width: 296px; }
 
 .chip {
   position: absolute;
   left: 24px;
-  top: 428px;
+  top: 416px;
   width: 84px;
   height: 35px;
   padding: 6px 0 0 14px;
@@ -12959,8 +12965,7 @@ a.arrow { text-decoration: none; }
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
              stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h17M14 6l6 6-6 6"/></svg>
       </span>
-      <h2 class="headline">Reimagining linear player</h2>
-      <p class="sub">Live TV, rebuilt around what is on now and what is next.</p>
+      <h2 class="headline">Reimagining Large Screen Experience</h2>
       <a class="chip" href="#work" data-route="work">+ 3 more</a>
 
       <a class="card-hit" href="#work" data-route="work" aria-label="Open Work"></a>
