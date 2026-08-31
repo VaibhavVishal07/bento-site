@@ -3043,6 +3043,11 @@ body {
   --x-fold:      560ms;
   --x-fold-at:    60ms;
   --x-fold-ease: cubic-bezier(0.34, 0.02, 0.24, 1);
+  --x-shut-ease: cubic-bezier(0.32, 0, 0.22, 1);
+  /* And where the same gesture starts when it is run the other way. Seven
+     tenths of the way through the tile widening, so the cover comes up off a
+     box that is already nearly a book rather than off one still growing. */
+  --x-open-at: calc(var(--x-deep-morph) * 0.7);
   --x-sink:   7px;    /* how far contents drop as they leave    */
   --x-blur:   2px;
 
@@ -4914,197 +4919,6 @@ body {
 .x-shutting .view-article .bk-seat { will-change: opacity; }
 .bk.bk-seated .bk-seat { opacity: 1; }
 
-/* ==========================================================================
-   The bento -- the same piece, read the other way
-
-   Every other kind of thing on this site is boxes on a grid, each holding one
-   thing, and the writing was the one screen that had never been asked to make
-   that argument. It is a book, and a book is the right object for an essay --
-   but it is not the only reading of one, and the frame already knows how to
-   show a piece as its parts.
-
-   So the piece gets both, and the reader picks. Nothing is summarised: every
-   word of the book is here and in the same order, and what changes is the
-   vessel. A heading opens a card, a pull quote is its own card because it is
-   its own sentence, and what comes before the first heading goes in with the
-   title, which is where the standfirst of a piece belongs. Written by
-   build.js -- see essayBento there.
-
-   It stands exactly where the book stands, on the same 1122 by 840, so the
-   swap is one object leaving a box and another arriving in it.
-   ========================================================================== */
-.bento {
-  position: absolute;
-  left: 399px; top: 91px;
-  width: 1122px; height: 840px;
-  overflow-y: auto;
-  overflow-x: hidden;
-  /* Scrolls, which nothing else on this frame does. An essay is as long as it
-     is: the book answers that by paging and this has to answer it somehow, and
-     a grid that pages would be a grid pretending to be a book. The frame holds
-     still around it -- what moves is the contents of one box. */
-  overscroll-behavior: contain;
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(var(--w), 0.14) transparent;
-}
-.bento::-webkit-scrollbar { width: 8px; }
-.bento::-webkit-scrollbar-thumb {
-  background: rgba(var(--w), 0.14);
-  border-radius: 4px;
-}
-.bento::-webkit-scrollbar-track { background: transparent; }
-
-/* Three columns on the frame's own gutter. 1122 less two 21s over three is
-   360, which is within a pixel of the three columns the lattice already rules
-   at 399/762, 785/1134 and 1155/1521 -- so the cards land on the verticals
-   that are drawn behind them rather than near them. */
-.bn-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 21px;
-  align-content: start;
-  /* Each card is as tall as what is in it. Stretched to the row -- which is
-     what a grid does if you let it -- the opening stands in a box half of
-     which is empty, because the section beside it happens to be longer. */
-  align-items: start;
-  padding-bottom: 21px;
-}
-
-.bn-card {
-  background-color: var(--card-fill);
-  background-image: var(--grain);
-  outline: var(--card-edge) solid var(--card-line);
-  padding: 26px 28px 28px;
-  min-width: 0;
-}
-/* The opening takes the whole first row and the quotes take two columns.
-   A standfirst set in one column is a column of standfirst, and a pull quote
-   is pulled because it is meant to stop you -- neither is a box the size of a
-   section. The opening had two of the three and left the third to whichever
-   section came first, which put a hole under it the height of that section:
-   the cards are as tall as their contents, and nothing fills a gap in a grid
-   that reads in rows. Given the row, there is no gap to fill.
-
-   Its measure is held even so. A paragraph set across 1122 is eleven inches
-   of line and nobody's eye goes back to the right place at the end of one. */
-.bn-lead { grid-column: span 3; }
-.bn-quote { grid-column: span 2; }
-.bn-lead p { max-width: 62ch; }
-
-.bn-kick {
-  margin: 0 0 10px;
-  font-family: var(--f-mono);
-  font-size: 11px;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: rgba(var(--w), 0.42);
-}
-.bn-title {
-  margin: 0 0 16px;
-  font-family: var(--f-book);
-  font-size: 34px;
-  line-height: 1.14;
-  font-weight: 400;
-  letter-spacing: -0.008em;
-  text-wrap: balance;
-  color: rgb(var(--w));
-}
-.bn-head {
-  margin: 0 0 12px;
-  font-family: var(--f-book);
-  font-size: 19px;
-  line-height: 1.22;
-  font-weight: 400;
-  font-variant-caps: small-caps;
-  letter-spacing: 0.04em;
-  color: rgb(var(--w));
-}
-.bn-card p {
-  margin: 0 0 12px;
-  font-family: var(--f-book);
-  font-size: 15px;
-  line-height: 1.62;
-  color: rgba(var(--w), 0.72);
-  hyphens: auto;
-}
-.bn-card p:last-child { margin-bottom: 0; }
-
-.bn-quote blockquote {
-  margin: 0;
-  font-family: var(--f-book);
-  font-style: italic;
-  font-size: 23px;
-  line-height: 1.34;
-  text-wrap: balance;
-  color: rgb(var(--w));
-}
-.bn-plate-well {
-  display: block;
-  height: 168px;
-  margin-bottom: 14px;
-  background:
-    linear-gradient(135deg, rgba(var(--w), 0.05) 0%, rgba(var(--w), 0) 60%),
-    rgba(var(--w), 0.03);
-  outline: 1px solid rgba(var(--w), 0.07);
-}
-.bn-cap, .bn-end p {
-  font-size: 13px;
-  line-height: 1.55;
-  color: rgba(var(--w), 0.46);
-}
-.bn-end { grid-column: span 3; }
-
-/* --- the swap -------------------------------------------------------------
-
-   The book goes to the side and the bento opens where it was. Sideways
-   because that is the one direction that reads as putting a thing down out of
-   the way rather than throwing it away: it leaves by the edge it is nearest,
-   which on this frame is the right, and it is still going when the first
-   cards are already arriving.
-
-   The cards come in on the frame's own stagger, in reading order, so the grid
-   fills the way the grid on every other screen fills. Five steps and then it
-   stops counting: past the fifth the delay is long enough to read as a wait
-   rather than as a sweep, and an essay can have twenty cards in it. */
-.view-article .bk {
-  transition: transform var(--x-morph) var(--x-ease),
-              opacity var(--x-fade) var(--x-ease);
-}
-.x-bento .view-article .bk {
-  transform: translateX(680px) scale(0.94);
-  opacity: 0;
-  pointer-events: none;
-}
-.x-bento .bento { opacity: 1; visibility: visible; pointer-events: auto; }
-.bento { transition: opacity var(--x-fade) linear, visibility 0s linear var(--x-fade); }
-.x-bento .bento { transition: opacity var(--x-fade) linear, visibility 0s; }
-
-.bn-card {
-  opacity: 0;
-  transform: translateY(12px);
-  transition: opacity 320ms var(--x-ease), transform 320ms var(--x-ease);
-}
-.x-bento .bn-card { opacity: 1; transform: none; }
-.x-bento .bn-card:nth-child(1) { transition-delay: 190ms; }
-.x-bento .bn-card:nth-child(2) { transition-delay: 232ms; }
-.x-bento .bn-card:nth-child(3) { transition-delay: 274ms; }
-.x-bento .bn-card:nth-child(4) { transition-delay: 316ms; }
-.x-bento .bn-card:nth-child(n+5) { transition-delay: 358ms; }
-
-/* The crumb says which of the two you are in, because the address does not. */
-.x-bento .view-article .crumb-count::after {
-  content: " // bento";
-  color: rgba(var(--w), 0.34);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .view-article .bk, .bento, .bn-card { transition-duration: 1ms !important; }
-  .x-bento .bn-card { transition-delay: 0ms !important; }
-}
-
 /* The book while it is shut.
 
    Edge-on at 89 degrees the two boards are nine pixels of black on a card that
@@ -5131,7 +4945,6 @@ body {
     rgba(var(--leaf-edge), 0.07) 84%,
     rgba(var(--leaf-edge), 0.00) 100%);
 }
-@keyframes bk-shut-lift { 0%, 16% { opacity: 1; } 58%, 100% { opacity: 0; } }
 
 /* The blind stamp.
 
@@ -5399,8 +5212,6 @@ body {
    The turning sheet is given the same figure, interpolated across its travel,
    so it lifts off one board's plane and lands in the other's rather than
    arriving flat between two that are not -- see LAY in the script. */
-@keyframes bk-open-v { from { transform: rotateY(89deg); } to { transform: rotateY(-2deg); } }
-@keyframes bk-open-r { from { transform: rotateY(-89deg); } to { transform: rotateY(2deg); } }
 .bk-page-v { transform: rotateY(-2deg); }
 .bk-page-r { transform: rotateY(2deg); }
 
@@ -5428,36 +5239,27 @@ body {
    until the boards begin to move, and then it lifts with them. And they stand
    at 89 rather than 84, so a shut book is eight pixels of edge either side of
    the fold rather than a hundred of black board. */
-@keyframes bk-open-lit { 0% { opacity: 1; } 22% { opacity: 0.68; } 100% { opacity: 0; } }
+/* The three the shut takes away, as keyframes rather than as declarations, so
+   the opening has something to run backwards. The shut used transitions for
+   these and a transition cannot be reversed by asking -- only a second set of
+   figures can do that, and a second set of figures is how the two halves of
+   one gesture drift apart. */
+@keyframes bk-lit  { from { opacity: 0; } to { opacity: 1; } }
+@keyframes bk-furn { from { opacity: 1; } to { opacity: 0; } }
+@keyframes bk-edge { from { outline-color: var(--lea-edge); }
+                     to   { outline-color: transparent; } }
 
-/* Coming round to face you. Started a beat before the covers and running a
-   beat longer than them: the object turns first and opens second, which is the
-   order a book is actually opened in, and it is still settling the last degree
-   or two after the boards have met the table. */
-@keyframes bk-pose {
-  0%   { transform: translateY(-18px) translateZ(-240px) rotateX(10deg) rotateY(-24deg); }
-  30%  { transform: translateY(-16px) translateZ(-168px) rotateX(8deg) rotateY(-18deg); }
-  70%  { transform: translateY(-4px) translateZ(-44px) rotateX(2deg) rotateY(-5deg); }
-  /* A degree and a half past square and back. Nothing heavy is ever set down
-     exactly on the mark, and the overshoot is kept behind the plane -- minus
-     22 of Z against 17 of near edge -- so it cannot project wider than the
-     board and be clipped by it. */
-  88%  { transform: translateY(2px) translateZ(-22px) rotateX(-0.9deg) rotateY(1.8deg); }
-  100% { transform: translateY(0px) translateZ(0px) rotateX(0deg) rotateY(0deg); }
-}
+/* Shutting -- and, run the other way, opening.
 
-/* And shutting, which is not the opening run backwards.
-  
-   You take hold of it and it comes up off the table; the covers go over while
-   it is still in the air; they meet, and the whole thing goes down -- past
-   where it will end up, because a closing book has a block of paper in it and
-   the block arrives before the covers have finished arriving. Then it settles.
-   Four beats and a rebound, and the rebound is the one that makes it a book
-   rather than a pair of doors.
-  
-   The drop is in the lift and not in the rotation. Two boards that overshot
-   ninety would pass through each other, and a book whose covers cross is a
-   worse thing to look at than a book that lands flat. */
+   You take hold of it and it comes up off the table, the cover goes over while
+   it is still in the air, it lands, and the book takes the weight of it. This
+   was written when the object had two boards meeting in the middle and the
+   note above it said, correctly, that shutting was not the opening backwards:
+   two boards pulled apart at once is not how anybody opens a book either, so
+   the two gestures had to be drawn separately.
+
+   One cover on a hinge has one gesture. These figures are now both of them --
+   see the pose rules below, where the opening is this same set reversed. */
 /* A cover is not on a perfect hinge: the spine gives, so the whole object
    rises a little as the cover swings and comes back down as it lands. It ends
    where it started, because a book that has been shut is a book lying on the
@@ -5498,15 +5300,36 @@ body {
   100% { transform: rotateY(180deg); z-index: 3; }
 }
 
-/* From the click, not from the morph. The tile that is on its way to being a
-   book is already the book, turned away and a long way back, and it comes
-   round and forward the whole time the tile is widening -- so what the click
-   starts is one movement and not a resize followed by an opening. */
+/* --- one gesture, played both ways ---------------------------------------
+
+   The note that used to stand here said that shutting is not the opening run
+   backwards, and it was right about the object it was written for: two boards
+   that met in the middle are not a hand, and a hand does not open a book by
+   pulling both covers apart at once either, so the two gestures had to be
+   drawn separately.
+
+   The object is one cover on a hinge now, and one cover on a hinge has one
+   gesture. Opening it is shutting it backwards -- that is not a shortcut, it
+   is what the thing does -- so the opening is the same keyframes at the same
+   figures with the direction reversed, and the file cannot drift into having
+   two descriptions of one movement.
+
+   Reversed rather than mirrored by hand: a reversed animation plays its
+   timing function backwards too, so the cover that fell quickly once it was
+   over centre rises slowly through the same place, which is the same weight
+   read the other way.
+
+   The delays hold without arithmetic. Inside the shut the fold sits sixty in
+   and sixty short of the end, so reversing the pair leaves it exactly where it
+   was -- and the fill is backwards rather than both, so the book is closed
+   through the wait and goes back to its own resting figures when the animation
+   is done rather than being pinned at the last frame of it. */
 .view-article:not([hidden]) .bk-pose {
-  animation: bk-pose 1340ms cubic-bezier(0.26, 0.03, 0.14, 1) backwards;
+  animation: bk-shut-pose var(--x-shut) var(--x-shut-ease) var(--x-open-at)
+             reverse backwards;
 }
 .x-shutting .view-article .bk-pose {
-  animation: bk-shut-pose var(--x-shut) cubic-bezier(0.32, 0, 0.22, 1) forwards;
+  animation: bk-shut-pose var(--x-shut) var(--x-shut-ease) forwards;
 }
 
 /* The one cover, and everything lying on it.
@@ -5525,11 +5348,29 @@ body {
 .x-shutting .view-article .bk .bk-board-front {
   animation: bk-fold-board var(--x-fold) var(--x-fold-ease) var(--x-fold-at) forwards;
 }
+
+/* And the same four, opening. */
+.view-article:not([hidden]) .bk .bk-page-v,
+.view-article:not([hidden]) .bk .bk-blk-v,
+.view-article:not([hidden]) .bk .bk-fore-v {
+  animation: bk-fold var(--x-fold) var(--x-fold-ease)
+             calc(var(--x-open-at) + var(--x-fold-at)) reverse backwards;
+}
+.view-article:not([hidden]) .bk .bk-board-front {
+  animation: bk-fold-board var(--x-fold) var(--x-fold-ease)
+             calc(var(--x-open-at) + var(--x-fold-at)) reverse backwards;
+}
 /* The block turns about the fold like everything else on that half, and the
    fore-edge is out at the margin rather than against it -- 22 from the board's
-   own edge, so the hinge is 539 along from its left. */
-.x-shutting .view-article .bk .bk-blk-v  { transform-origin: right center; }
-.x-shutting .view-article .bk .bk-fore-v { transform-origin: 539px center; }
+   own edge, so the hinge is 539 along from its left.
+   
+   On the elements rather than on one direction of travel, because a hinge is
+   where a thing is hinged and not something that happens to it while it is
+   being shut. The backface likewise: what is on the far side of a leaf is the
+   board it is lying on, in either direction. */
+.bk-blk-v  { transform-origin: right center; }
+.bk-fore-v { transform-origin: 539px center; }
+.bk-page-v, .bk-blk-v, .bk-fore-v { backface-visibility: hidden; }
 
 /* And the open book's furniture goes with the cover that is leaving.
 
@@ -5565,26 +5406,30 @@ body {
 .bk.bk-shrunk .bk-pose { left: -561px; right: auto; width: 1122px; }
 .bk-board-out { box-shadow: inset 0 0 0 2px var(--lea-edge); }
 
-/* Begun at seven tenths of the travel rather than after it. The tile is 93 per
-   cent of its width by then, so both boards have room to swing into, and the
-   widening runs on into the opening instead of stopping to wait for it. */
-.view-article:not([hidden]) .bk-page {
-  animation-duration: 900ms;
-  animation-timing-function: cubic-bezier(0.32, 0.02, 0.14, 1);
-  animation-fill-mode: backwards;
-  animation-delay: calc(var(--x-deep-morph) * 0.7);
+/* The type comes back up as the cover lifts off it, which is the overlay the
+   shut brings down the other way -- the same figures, reversed. Only on the
+   half that turns: the recto is the back cover's leaf and nothing has been
+   lying on it. */
+.view-article:not([hidden]) .bk .bk-page-v::after {
+  animation: bk-lit 260ms linear
+             calc(var(--x-open-at) + var(--x-fold-at) + var(--x-fold) - 260ms)
+             reverse backwards;
 }
-.view-article:not([hidden]) .bk-page-v { animation-name: bk-open-v; }
-.view-article:not([hidden]) .bk-page-r { animation-name: bk-open-r; animation-delay: calc(var(--x-deep-morph) * 0.7 + 100ms); }
-.view-article:not([hidden]) .bk-page::after {
-  animation: bk-open-lit 900ms cubic-bezier(0.32, 0.02, 0.14, 1) backwards;
-  animation-delay: calc(var(--x-deep-morph) * 0.7);
-}
-.view-article:not([hidden]) .bk-page-r::after { animation-delay: calc(var(--x-deep-morph) * 0.7 + 100ms); }
 
-.view-article:not([hidden]) .bk-shut {
-  animation: bk-shut-lift 900ms cubic-bezier(0.32, 0.02, 0.14, 1) backwards;
-  animation-delay: calc(var(--x-deep-morph) * 0.7);
+/* And the furniture of an open book arrives as the cover clears it: the blind
+   stamp that runs round both boards, the crease in the gutter, and the board's
+   own binding edge. All three go in the first fifth of the shut, so all three
+   arrive in the last fifth of the opening. */
+.view-article:not([hidden]) .bk .bk-stamp,
+.view-article:not([hidden]) .bk .bk-crease {
+  animation: bk-furn 140ms linear
+             calc(var(--x-open-at) + var(--x-fold-at) + var(--x-fold) - 140ms)
+             reverse backwards;
+}
+.view-article:not([hidden]) .bk {
+  animation: bk-edge 140ms linear
+             calc(var(--x-open-at) + var(--x-fold-at) + var(--x-fold) - 140ms)
+             reverse backwards;
 }
 /* And back up as the boards fold, on the way out -- which now happens a move
    before the screen empties, so the shut has a class of its own and .x-empty
@@ -5597,8 +5442,10 @@ body {
    black where a book should be, and they drew the block into that gap. There
    is no gap now: the board is twenty-two bigger than the block on every side
    that has an edge, so a shut book seen from straight above is its cover and
-   nothing else. They still rise on the way in, where the book genuinely is
-   shut and edge-on before it opens -- see bk-shut-lift. */
+   nothing else. And they no longer rise on the way in either: the opening is
+   the shut reversed, so a thing the shut does not draw is a thing the opening
+   cannot undraw. .bk-shut is left in the markup, drawn by nothing -- the block
+   still wants its cut edges the day somebody stands this thing on a shelf. */
 
 /* And the type goes out with the light as the covers come over.
   
@@ -6766,15 +6613,6 @@ body {
    .room and not before it: both are one class deep, so the one written second
    is the one that holds. */
 .room-one { width: 44px; grid-template-columns: 1fr; }
-
-/* And two cells again on the one screen that has a second thing to offer,
-   stacked rather than side by side: the switch keeps the corner it has had
-   all along and the new cell is cut in under it. Everywhere else the second
-   cell is not there and the box is the height of one. */
-.room-c-bento { display: none; }
-.x-article .room-one { height: 88px; grid-template-rows: 1fr 1fr; }
-.x-article .room-c-bento { display: grid; }
-.room-c[data-bento][aria-pressed="true"] { color: rgb(var(--w)); }
 
 /* Two rules apiece: the foot, and the outer side.
 
@@ -11166,14 +11004,6 @@ a.arrow { text-decoration: none; }
   /* The lattice is the frame, and there is no frame here. */
   .rules { display: none; }
 
-  /* And neither is the bento. Down here the essay is already unbound into the
-     column -- the book is not a book on a phone, so there is no second reading
-     to offer -- and the box itself is placed on the frame's own coordinates,
-     which do not exist in a scroller. Both go. */
-  .bento { display: none; }
-  .x-article .room-c-bento { display: none; }
-  .x-article .room-one { height: 44px; grid-template-rows: 1fr; }
-
   /* The lamp is the one thing left drawn at frame scale: 1500px of it hung
      off the middle of a column 390 wide, so 800 lies off the left of the
      screen and 700 off the right -- and the sweep it is on carries that
@@ -13383,13 +13213,6 @@ a.arrow { text-decoration: none; }
 
       </section>
 
-      <!-- The same piece, in the frame's own idiom.
-           Filled by the script from the same table the book is set from --
-           one set of words, two vessels. See .bento. -->
-      <div class="bento" data-bento-box>
-        <div class="bn-grid" data-bento-grid></div>
-      </div>
-
     </div>
 
     <!-- ============================= L2 about ======================== -->
@@ -13904,12 +13727,6 @@ a.arrow { text-decoration: none; }
          gets the corner, at the size the room switch had, drawn by the same
          hand as every other icon here. -->
     <div class="room room-one">
-      <!-- The second cell, and it only exists where there is something to
-           open. Stacked under the switch rather than beside it, because the
-           pair the room used to be sat side by side in one 88-wide box and
-           this one is a control that comes and goes: a box that grows
-           sideways moves the switch, and a box that grows downwards leaves it
-           where the reader last found it. See .room-stack. -->
       <button class="room-c" type="button" data-hush aria-pressed="false"
               aria-label="Turn interface sounds off">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
@@ -13917,19 +13734,6 @@ a.arrow { text-decoration: none; }
           <path d="M4 9.5h3.2L12 5.4v13.2L7.2 14.5H4z"/>
           <path class="hush-on" d="M15.8 9.4a3.7 3.7 0 0 1 0 5.2M18.4 6.8a7.4 7.4 0 0 1 0 10.4"/>
           <path class="hush-off" d="M16.2 10.2l4.4 3.6M20.6 10.2l-4.4 3.6"/>
-        </svg>
-      </button>
-
-      <!-- And the other way of reading the piece. One tall box and two short
-           ones, which is a bento and is also, near enough, the arrangement the
-           thing it opens is laid out on. -->
-      <button class="room-c room-c-bento" type="button" data-bento aria-pressed="false"
-              aria-label="Read this as a bento instead of a book">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
-             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <rect x="3.6" y="4.6" width="7.4" height="14.8" rx="1.1"/>
-          <rect x="13.4" y="4.6" width="7" height="6.3" rx="1.1"/>
-          <rect x="13.4" y="13.1" width="7" height="6.3" rx="1.1"/>
         </svg>
       </button>
     </div>
@@ -18741,64 +18545,56 @@ a.arrow { text-decoration: none; }
         title: 'Why video games are the ultimate form of art', short: 'Ultimate art form',
         kind: 'Essay', year: '2025',
         headV: 'Writing // 01', headR: 'Why video games are the ultimate form of art',
-        html: '<header class="bk-title"><p class="bk-kicker">Writing // One</p><h2>Why video games are the ultimate form of art</h2><p class="bk-orn" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"><path d="M12 3.5v17M3.5 12h17M6 6l12 12M18 6L6 18"/><circle cx="12" cy="12" r="2.4" fill="currentColor" stroke="none"/></svg></p></header><p>The forms that came before this one ask you to sit still. A painting hangs and waits. A novel lets you put it down without noticing. The work hap­pens on one side of the glass and you stand on the other, and the whole tra­di­tion of cri­ti­cism we in­her­ited is a tra­di­tion of de­scrib­ing what goes on over there.</p><p>Games moved the glass by making the thing you do the thing the work is about. Interactivity on its own does not manage it: a museum kiosk is interactive and it stays a kiosk. The rules are the medium. A game speaks through what it lets you try and what it charges you to keep going.</p><p>That is easy to nod at and hard to hold, because holding it means giving up the habit of looking for the art in whichever parts resemble the older forms. The art is in the rules. The score and the cutscene are the parts that survive being described, which is most of why they get described.</p><h3>The rules are the sentence</h3><p>Consider a jump. In one game it is generous: the ledge grabs you and the timing forgives. In an­other it is ex­act, and a frame early is a frame wasted. Neither is the bet­ter jump. They are two dif­fer­ent claims about what ef­fort is worth, and you take the claim in through your hands in­side ninety seconds, long be­fore any­one in the game has said a word.</p><p>Change the number of frames a player gets to correct that jump and you have changed the argument the game is making, which is a different edit from changing how hard it is. One version says the world will meet you halfway; the other says it will not, and that any meeting is yours to arrange. There is no equi­val­ent edit any­where else. You can­not make a film eight per cent more for­giv­ing.</p><p>That is au­thor­ship at a level the other forms can­not reach. A film can show you a man who is tired. A game can make you tired, and then ask you to do the thing any­way, and the gap between watch­ing resig­na­tion and feel­ing it is the whole dis­tance between sym­pathy and know­ledge.</p><blockquote>A film can show you a man who is tired. A game can make you tired, and then ask you to do the thing any­way.</blockquote><h3>The other forms, contained</h3><p>It is also the form that holds the others without shrinking them. A game has architecture in it, and performance, and writing that would survive on the page. Cinema ab­sorbed pho­to­graphy and theatre the same way, and we spent a cen­tury call­ing that the great syn­thesis. Games absorbed cinema. They did it while the culture pages were looking somewhere else, because the early ones were ugly and the marketing pointed at children.</p><p>Architecture is the one worth staying on, because games did more than borrow it. A level is a building you come to understand by moving through it, which is how you understand a building. Photographs of architecture are useless and plans are worse. A well-made level teaches you its shape the way a house teaches you its shape: by mak­ing you walk it twice.</p><figure><div class="slot bk-plate" role="img" aria-label="Figure placeholder"></div><figcaption>The same verb, two ar­gu­ments: a for­giv­ing jump and an ex­act one, traced frame by frame against the ledge each is aim­ing at.</figcaption></figure><p>The dismissals were about legitimacy rather than quality: who gets to say a thing is serious. That question settles itself by attrition, because the people who grew up inside a form become the people who decide. It happened to the novel, which was trash for a century. It happened to television twice.</p><h3>What it costs</h3><p>None of this is free. The form\'s great strength, that you are the one act­ing, is also what makes it the hard­est thing to au­thor. Give a reader a sen­tence and they read the sen­tence. Give a player a room and they will stand in the corner for four minutes look­ing at a bucket. A choice you hand over is a choice you no longer con­trol, and most games an­swer that by hand­ing over al­most noth­ing that mat­ters.</p><p>The good ones design for it. They accept that somebody they will not meet finishes the work, in a session they will not see, and they build something sturdy enough to survive that and specific enough to still mean something afterwards. It is a harder brief than a film, and when it lands there is noth­ing else like it.</p><p>There is a second cost, and it is the one the form has been slow­est to face. A game has to be played to be met, and play­ing takes hours, some­times tens of them. That is a real bar­rier and it is not snob­bery to say so. A novel asks the same and gets away with it be­cause the cul­ture settled long ago that the ask­ing was worth it. Games are still mak­ing that case, one piece at a time, and they will be mak­ing it for a while yet.</p><h3>The ceiling</h3><p>That is the argument. At their ceiling, games do something the older forms cannot do at all. Plenty of games fall short of the older forms, and the ceiling is what we measure an art form by. You do not judge the novel by the airport paperback.</p><p>And the ceil­ing keeps mov­ing, which is the part that ought to in­terest any­one who makes things. The medium is fifty years old. People are still inventing its grammar, most of them people who would not describe themselves as inventing a grammar. We are some­where around the 1910s of this thing. We have already had a few films.</p><div class="bk-fin" aria-hidden="true"></div><footer class="bk-colophon"><div class="bk-rule" aria-hidden="true"></div><p>I wrote this in March 2025 and filed it under essays and craft. Nine minutes at a reading pace.</p><p class="bk-shelf-t">Also on the shelf</p><ul class="bk-shelf"><li>Taste is the last moat <span>6 min</span></li><li>What a linear player taught me about time <span>11 min</span></li><li>The interface is not the product <span>7 min</span></li></ul><p class="bk-out">All ten are on the Work screen. The crumb above this page goes there.</p></footer><span class="bk-end" aria-hidden="true"></span>',
-        bento: '<article class="bn-card bn-lead"><p class="bn-kick">Essay&#160;&#183;&#160;2025&#160;&#183;&#160;9 min</p><h2 class="bn-title">Why video games are the ultimate form of art</h2><p>The forms that came before this one ask you to sit still. A painting hangs and waits. A novel lets you put it down without noticing. The work hap­pens on one side of the glass and you stand on the other, and the whole tra­di­tion of cri­ti­cism we in­her­ited is a tra­di­tion of de­scrib­ing what goes on over there.</p><p>Games moved the glass by making the thing you do the thing the work is about. Interactivity on its own does not manage it: a museum kiosk is interactive and it stays a kiosk. The rules are the medium. A game speaks through what it lets you try and what it charges you to keep going.</p><p>That is easy to nod at and hard to hold, because holding it means giving up the habit of looking for the art in whichever parts resemble the older forms. The art is in the rules. The score and the cutscene are the parts that survive being described, which is most of why they get described.</p></article><article class="bn-card bn-sec"><h3 class="bn-head">The rules are the sentence</h3><p>Consider a jump. In one game it is generous: the ledge grabs you and the timing forgives. In an­other it is ex­act, and a frame early is a frame wasted. Neither is the bet­ter jump. They are two dif­fer­ent claims about what ef­fort is worth, and you take the claim in through your hands in­side ninety seconds, long be­fore any­one in the game has said a word.</p><p>Change the number of frames a player gets to correct that jump and you have changed the argument the game is making, which is a different edit from changing how hard it is. One version says the world will meet you halfway; the other says it will not, and that any meeting is yours to arrange. There is no equi­val­ent edit any­where else. You can­not make a film eight per cent more for­giv­ing.</p><p>That is au­thor­ship at a level the other forms can­not reach. A film can show you a man who is tired. A game can make you tired, and then ask you to do the thing any­way, and the gap between watch­ing resig­na­tion and feel­ing it is the whole dis­tance between sym­pathy and know­ledge.</p></article><article class="bn-card bn-quote"><blockquote>A film can show you a man who is tired. A game can make you tired, and then ask you to do the thing any­way.</blockquote></article><article class="bn-card bn-sec"><h3 class="bn-head">The other forms, contained</h3><p>It is also the form that holds the others without shrinking them. A game has architecture in it, and performance, and writing that would survive on the page. Cinema ab­sorbed pho­to­graphy and theatre the same way, and we spent a cen­tury call­ing that the great syn­thesis. Games absorbed cinema. They did it while the culture pages were looking somewhere else, because the early ones were ugly and the marketing pointed at children.</p><p>Architecture is the one worth staying on, because games did more than borrow it. A level is a building you come to understand by moving through it, which is how you understand a building. Photographs of architecture are useless and plans are worse. A well-made level teaches you its shape the way a house teaches you its shape: by mak­ing you walk it twice.</p></article><article class="bn-card bn-plate"><span class="bn-plate-well" aria-hidden="true"></span><p class="bn-cap">The same verb, two ar­gu­ments: a for­giv­ing jump and an ex­act one, traced frame by frame against the ledge each is aim­ing at.</p></article><article class="bn-card bn-sec"><p>The dismissals were about legitimacy rather than quality: who gets to say a thing is serious. That question settles itself by attrition, because the people who grew up inside a form become the people who decide. It happened to the novel, which was trash for a century. It happened to television twice.</p></article><article class="bn-card bn-sec"><h3 class="bn-head">What it costs</h3><p>None of this is free. The form\'s great strength, that you are the one act­ing, is also what makes it the hard­est thing to au­thor. Give a reader a sen­tence and they read the sen­tence. Give a player a room and they will stand in the corner for four minutes look­ing at a bucket. A choice you hand over is a choice you no longer con­trol, and most games an­swer that by hand­ing over al­most noth­ing that mat­ters.</p><p>The good ones design for it. They accept that somebody they will not meet finishes the work, in a session they will not see, and they build something sturdy enough to survive that and specific enough to still mean something afterwards. It is a harder brief than a film, and when it lands there is noth­ing else like it.</p><p>There is a second cost, and it is the one the form has been slow­est to face. A game has to be played to be met, and play­ing takes hours, some­times tens of them. That is a real bar­rier and it is not snob­bery to say so. A novel asks the same and gets away with it be­cause the cul­ture settled long ago that the ask­ing was worth it. Games are still mak­ing that case, one piece at a time, and they will be mak­ing it for a while yet.</p></article><article class="bn-card bn-sec"><h3 class="bn-head">The ceiling</h3><p>That is the argument. At their ceiling, games do something the older forms cannot do at all. Plenty of games fall short of the older forms, and the ceiling is what we measure an art form by. You do not judge the novel by the airport paperback.</p><p>And the ceil­ing keeps mov­ing, which is the part that ought to in­terest any­one who makes things. The medium is fifty years old. People are still inventing its grammar, most of them people who would not describe themselves as inventing a grammar. We are some­where around the 1910s of this thing. We have already had a few films.</p></article><article class="bn-card bn-end"><p>I wrote this in March 2025 and filed it under essays and craft. Nine minutes at a reading pace.</p></article>'
+        html: '<header class="bk-title"><p class="bk-kicker">Writing // One</p><h2>Why video games are the ultimate form of art</h2><p class="bk-orn" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"><path d="M12 3.5v17M3.5 12h17M6 6l12 12M18 6L6 18"/><circle cx="12" cy="12" r="2.4" fill="currentColor" stroke="none"/></svg></p></header><p>The forms that came before this one ask you to sit still. A painting hangs and waits. A novel lets you put it down without noticing. The work hap­pens on one side of the glass and you stand on the other, and the whole tra­di­tion of cri­ti­cism we in­her­ited is a tra­di­tion of de­scrib­ing what goes on over there.</p><p>Games moved the glass by making the thing you do the thing the work is about. Interactivity on its own does not manage it: a museum kiosk is interactive and it stays a kiosk. The rules are the medium. A game speaks through what it lets you try and what it charges you to keep going.</p><p>That is easy to nod at and hard to hold, because holding it means giving up the habit of looking for the art in whichever parts resemble the older forms. The art is in the rules. The score and the cutscene are the parts that survive being described, which is most of why they get described.</p><h3>The rules are the sentence</h3><p>Consider a jump. In one game it is generous: the ledge grabs you and the timing forgives. In an­other it is ex­act, and a frame early is a frame wasted. Neither is the bet­ter jump. They are two dif­fer­ent claims about what ef­fort is worth, and you take the claim in through your hands in­side ninety seconds, long be­fore any­one in the game has said a word.</p><p>Change the number of frames a player gets to correct that jump and you have changed the argument the game is making, which is a different edit from changing how hard it is. One version says the world will meet you halfway; the other says it will not, and that any meeting is yours to arrange. There is no equi­val­ent edit any­where else. You can­not make a film eight per cent more for­giv­ing.</p><p>That is au­thor­ship at a level the other forms can­not reach. A film can show you a man who is tired. A game can make you tired, and then ask you to do the thing any­way, and the gap between watch­ing resig­na­tion and feel­ing it is the whole dis­tance between sym­pathy and know­ledge.</p><blockquote>A film can show you a man who is tired. A game can make you tired, and then ask you to do the thing any­way.</blockquote><h3>The other forms, contained</h3><p>It is also the form that holds the others without shrinking them. A game has architecture in it, and performance, and writing that would survive on the page. Cinema ab­sorbed pho­to­graphy and theatre the same way, and we spent a cen­tury call­ing that the great syn­thesis. Games absorbed cinema. They did it while the culture pages were looking somewhere else, because the early ones were ugly and the marketing pointed at children.</p><p>Architecture is the one worth staying on, because games did more than borrow it. A level is a building you come to understand by moving through it, which is how you understand a building. Photographs of architecture are useless and plans are worse. A well-made level teaches you its shape the way a house teaches you its shape: by mak­ing you walk it twice.</p><figure><div class="slot bk-plate" role="img" aria-label="Figure placeholder"></div><figcaption>The same verb, two ar­gu­ments: a for­giv­ing jump and an ex­act one, traced frame by frame against the ledge each is aim­ing at.</figcaption></figure><p>The dismissals were about legitimacy rather than quality: who gets to say a thing is serious. That question settles itself by attrition, because the people who grew up inside a form become the people who decide. It happened to the novel, which was trash for a century. It happened to television twice.</p><h3>What it costs</h3><p>None of this is free. The form\'s great strength, that you are the one act­ing, is also what makes it the hard­est thing to au­thor. Give a reader a sen­tence and they read the sen­tence. Give a player a room and they will stand in the corner for four minutes look­ing at a bucket. A choice you hand over is a choice you no longer con­trol, and most games an­swer that by hand­ing over al­most noth­ing that mat­ters.</p><p>The good ones design for it. They accept that somebody they will not meet finishes the work, in a session they will not see, and they build something sturdy enough to survive that and specific enough to still mean something afterwards. It is a harder brief than a film, and when it lands there is noth­ing else like it.</p><p>There is a second cost, and it is the one the form has been slow­est to face. A game has to be played to be met, and play­ing takes hours, some­times tens of them. That is a real bar­rier and it is not snob­bery to say so. A novel asks the same and gets away with it be­cause the cul­ture settled long ago that the ask­ing was worth it. Games are still mak­ing that case, one piece at a time, and they will be mak­ing it for a while yet.</p><h3>The ceiling</h3><p>That is the argument. At their ceiling, games do something the older forms cannot do at all. Plenty of games fall short of the older forms, and the ceiling is what we measure an art form by. You do not judge the novel by the airport paperback.</p><p>And the ceil­ing keeps mov­ing, which is the part that ought to in­terest any­one who makes things. The medium is fifty years old. People are still inventing its grammar, most of them people who would not describe themselves as inventing a grammar. We are some­where around the 1910s of this thing. We have already had a few films.</p><div class="bk-fin" aria-hidden="true"></div><footer class="bk-colophon"><div class="bk-rule" aria-hidden="true"></div><p>I wrote this in March 2025 and filed it under essays and craft. Nine minutes at a reading pace.</p><p class="bk-shelf-t">Also on the shelf</p><ul class="bk-shelf"><li>Taste is the last moat <span>6 min</span></li><li>What a linear player taught me about time <span>11 min</span></li><li>The interface is not the product <span>7 min</span></li></ul><p class="bk-out">All ten are on the Work screen. The crumb above this page goes there.</p></footer><span class="bk-end" aria-hidden="true"></span>'
       },
 
       'taste-is-the-last-moat': {
         title: 'Taste is the last moat', short: 'Taste',
         kind: 'Essay', year: '2025',
         headV: 'Writing // 02', headR: 'Taste is the last moat',
-        html: '<header class="bk-title"><p class="bk-kicker">Writing // Two</p><h2>Taste is the last moat</h2><p class="bk-orn" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"><path d="M12 3.5v17M3.5 12h17M6 6l12 12M18 6L6 18"/><circle cx="12" cy="12" r="2.4" fill="currentColor" stroke="none"/></svg></p></header><p>Everything that used to be hard is getting cheap. Writing the code, drawing the screen, shipping it to a million phones by Friday: all of it has come down in price, and it will come down further.</p><p>What has not come down is knowing which of the forty versions is the right one. That judgement is slow to acquire, it does not transfer between people, and no amount of throughput substitutes for it.</p><figure><div class="slot bk-plate" role="img" aria-label="Figure placeholder"></div><figcaption>Forty versions of one screen, and the one that shipped, marked.</figcaption></figure><h3>Cheap makes taste expensive</h3><p>When one version costs a week you argue about which to build. When forty cost an afternoon you have to look at forty and say why. The bottleneck moved from making to choosing, and choosing is the part that was never automated.</p><blockquote>The bottleneck moved from making to choosing, and choosing is the part that was never automated.</blockquote><p>That is the whole argument, and it is not a comfortable one. It means the work is now mostly the part nobody can see you doing.</p><div class="bk-fin" aria-hidden="true"></div><footer class="bk-colophon"><div class="bk-rule" aria-hidden="true"></div><p>A draft, filed under essays. 6 minutes at a reading pace.</p><p class="bk-shelf-t">Also on the shelf</p><ul class="bk-shelf"><li>Why video games are the ultimate form of art <span>9 min</span></li><li>What a linear player taught me about time <span>11 min</span></li><li>The interface is not the product <span>7 min</span></li></ul><p class="bk-out">All ten are on the Work screen. The crumb above this page goes there.</p></footer><span class="bk-end" aria-hidden="true"></span>',
-        bento: '<article class="bn-card bn-lead"><p class="bn-kick">Essay&#160;&#183;&#160;2025&#160;&#183;&#160;6 min</p><h2 class="bn-title">Taste is the last moat</h2><p>Everything that used to be hard is getting cheap. Writing the code, drawing the screen, shipping it to a million phones by Friday: all of it has come down in price, and it will come down further.</p><p>What has not come down is knowing which of the forty versions is the right one. That judgement is slow to acquire, it does not transfer between people, and no amount of throughput substitutes for it.</p></article><article class="bn-card bn-plate"><span class="bn-plate-well" aria-hidden="true"></span><p class="bn-cap">Forty versions of one screen, and the one that shipped, marked.</p></article><article class="bn-card bn-sec"><h3 class="bn-head">Cheap makes taste expensive</h3><p>When one version costs a week you argue about which to build. When forty cost an afternoon you have to look at forty and say why. The bottleneck moved from making to choosing, and choosing is the part that was never automated.</p></article><article class="bn-card bn-quote"><blockquote>The bottleneck moved from making to choosing, and choosing is the part that was never automated.</blockquote></article><article class="bn-card bn-sec"><p>That is the whole argument, and it is not a comfortable one. It means the work is now mostly the part nobody can see you doing.</p></article><article class="bn-card bn-end"><p>A draft, filed under essays. 6 minutes at a reading pace.</p></article>'
+        html: '<header class="bk-title"><p class="bk-kicker">Writing // Two</p><h2>Taste is the last moat</h2><p class="bk-orn" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"><path d="M12 3.5v17M3.5 12h17M6 6l12 12M18 6L6 18"/><circle cx="12" cy="12" r="2.4" fill="currentColor" stroke="none"/></svg></p></header><p>Everything that used to be hard is getting cheap. Writing the code, drawing the screen, shipping it to a million phones by Friday: all of it has come down in price, and it will come down further.</p><p>What has not come down is knowing which of the forty versions is the right one. That judgement is slow to acquire, it does not transfer between people, and no amount of throughput substitutes for it.</p><figure><div class="slot bk-plate" role="img" aria-label="Figure placeholder"></div><figcaption>Forty versions of one screen, and the one that shipped, marked.</figcaption></figure><h3>Cheap makes taste expensive</h3><p>When one version costs a week you argue about which to build. When forty cost an afternoon you have to look at forty and say why. The bottleneck moved from making to choosing, and choosing is the part that was never automated.</p><blockquote>The bottleneck moved from making to choosing, and choosing is the part that was never automated.</blockquote><p>That is the whole argument, and it is not a comfortable one. It means the work is now mostly the part nobody can see you doing.</p><div class="bk-fin" aria-hidden="true"></div><footer class="bk-colophon"><div class="bk-rule" aria-hidden="true"></div><p>A draft, filed under essays. 6 minutes at a reading pace.</p><p class="bk-shelf-t">Also on the shelf</p><ul class="bk-shelf"><li>Why video games are the ultimate form of art <span>9 min</span></li><li>What a linear player taught me about time <span>11 min</span></li><li>The interface is not the product <span>7 min</span></li></ul><p class="bk-out">All ten are on the Work screen. The crumb above this page goes there.</p></footer><span class="bk-end" aria-hidden="true"></span>'
       },
 
       'what-a-linear-player-taught-me-about-time': {
         title: 'What a linear player taught me about time', short: 'Linear player, time',
         kind: 'Essay', year: '2025',
         headV: 'Writing // 03', headR: 'What a linear player taught me about time',
-        html: '<header class="bk-title"><p class="bk-kicker">Writing // Three</p><h2>What a linear player taught me about time</h2><p class="bk-orn" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"><path d="M12 3.5v17M3.5 12h17M6 6l12 12M18 6L6 18"/><circle cx="12" cy="12" r="2.4" fill="currentColor" stroke="none"/></svg></p></header><p>Live television is the only product I have worked on where the content changes while you are looking at it. Nothing else on a phone does that.</p><p>The guide we inherited was a grid: channels down, hours across, and a red line somewhere in it telling you where now was. It answered a question nobody arrives with.</p><figure><div class="slot bk-plate" role="img" aria-label="Figure placeholder"></div><figcaption>The grid we started with, and the two questions it does not answer.</figcaption></figure><h3>Now is a place, not a filter</h3><p>People do not open live TV to browse a schedule. They open it to find out what is on, and then what is on after that. Two questions, both about a position in time rather than a region of a table.</p><blockquote>People do not open live TV to browse a schedule. They open it to find out what is on.</blockquote><p>Rebuild around the position and the grid becomes an advanced view, which is exactly what it should have been all along.</p><div class="bk-fin" aria-hidden="true"></div><footer class="bk-colophon"><div class="bk-rule" aria-hidden="true"></div><p>A draft, filed under essays. 11 minutes at a reading pace.</p><p class="bk-shelf-t">Also on the shelf</p><ul class="bk-shelf"><li>Why video games are the ultimate form of art <span>9 min</span></li><li>Taste is the last moat <span>6 min</span></li><li>The interface is not the product <span>7 min</span></li></ul><p class="bk-out">All ten are on the Work screen. The crumb above this page goes there.</p></footer><span class="bk-end" aria-hidden="true"></span>',
-        bento: '<article class="bn-card bn-lead"><p class="bn-kick">Essay&#160;&#183;&#160;2025&#160;&#183;&#160;11 min</p><h2 class="bn-title">What a linear player taught me about time</h2><p>Live television is the only product I have worked on where the content changes while you are looking at it. Nothing else on a phone does that.</p><p>The guide we inherited was a grid: channels down, hours across, and a red line somewhere in it telling you where now was. It answered a question nobody arrives with.</p></article><article class="bn-card bn-plate"><span class="bn-plate-well" aria-hidden="true"></span><p class="bn-cap">The grid we started with, and the two questions it does not answer.</p></article><article class="bn-card bn-sec"><h3 class="bn-head">Now is a place, not a filter</h3><p>People do not open live TV to browse a schedule. They open it to find out what is on, and then what is on after that. Two questions, both about a position in time rather than a region of a table.</p></article><article class="bn-card bn-quote"><blockquote>People do not open live TV to browse a schedule. They open it to find out what is on.</blockquote></article><article class="bn-card bn-sec"><p>Rebuild around the position and the grid becomes an advanced view, which is exactly what it should have been all along.</p></article><article class="bn-card bn-end"><p>A draft, filed under essays. 11 minutes at a reading pace.</p></article>'
+        html: '<header class="bk-title"><p class="bk-kicker">Writing // Three</p><h2>What a linear player taught me about time</h2><p class="bk-orn" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"><path d="M12 3.5v17M3.5 12h17M6 6l12 12M18 6L6 18"/><circle cx="12" cy="12" r="2.4" fill="currentColor" stroke="none"/></svg></p></header><p>Live television is the only product I have worked on where the content changes while you are looking at it. Nothing else on a phone does that.</p><p>The guide we inherited was a grid: channels down, hours across, and a red line somewhere in it telling you where now was. It answered a question nobody arrives with.</p><figure><div class="slot bk-plate" role="img" aria-label="Figure placeholder"></div><figcaption>The grid we started with, and the two questions it does not answer.</figcaption></figure><h3>Now is a place, not a filter</h3><p>People do not open live TV to browse a schedule. They open it to find out what is on, and then what is on after that. Two questions, both about a position in time rather than a region of a table.</p><blockquote>People do not open live TV to browse a schedule. They open it to find out what is on.</blockquote><p>Rebuild around the position and the grid becomes an advanced view, which is exactly what it should have been all along.</p><div class="bk-fin" aria-hidden="true"></div><footer class="bk-colophon"><div class="bk-rule" aria-hidden="true"></div><p>A draft, filed under essays. 11 minutes at a reading pace.</p><p class="bk-shelf-t">Also on the shelf</p><ul class="bk-shelf"><li>Why video games are the ultimate form of art <span>9 min</span></li><li>Taste is the last moat <span>6 min</span></li><li>The interface is not the product <span>7 min</span></li></ul><p class="bk-out">All ten are on the Work screen. The crumb above this page goes there.</p></footer><span class="bk-end" aria-hidden="true"></span>'
       },
 
       'the-interface-is-not-the-product': {
         title: 'The interface is not the product', short: 'Interface, product',
         kind: 'Essay', year: '2025',
         headV: 'Writing // 04', headR: 'The interface is not the product',
-        html: '<header class="bk-title"><p class="bk-kicker">Writing // Four</p><h2>The interface is not the product</h2><p class="bk-orn" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"><path d="M12 3.5v17M3.5 12h17M6 6l12 12M18 6L6 18"/><circle cx="12" cy="12" r="2.4" fill="currentColor" stroke="none"/></svg></p></header><p>The interface is the part you can screenshot, which is why it gets the credit and most of the blame. Both are usually misplaced.</p><p>What people actually keep is the thing the product does for them, and the interface is the narrowest part of that: the door, not the house.</p><figure><div class="slot bk-plate" role="img" aria-label="Figure placeholder"></div><figcaption>The same feature, three interfaces, one unchanged model underneath.</figcaption></figure><h3>Where the work actually is</h3><p>A redesign that moves the buttons and leaves the model alone is a new door on the same house. It photographs well. It changes nothing anybody came for.</p><blockquote>A redesign that moves the buttons and leaves the model alone is a new door on the same house.</blockquote><p>The good work is usually in the model, and the model is the part that does not screenshot.</p><div class="bk-fin" aria-hidden="true"></div><footer class="bk-colophon"><div class="bk-rule" aria-hidden="true"></div><p>A draft, filed under essays. 7 minutes at a reading pace.</p><p class="bk-shelf-t">Also on the shelf</p><ul class="bk-shelf"><li>Why video games are the ultimate form of art <span>9 min</span></li><li>Taste is the last moat <span>6 min</span></li><li>What a linear player taught me about time <span>11 min</span></li></ul><p class="bk-out">All ten are on the Work screen. The crumb above this page goes there.</p></footer><span class="bk-end" aria-hidden="true"></span>',
-        bento: '<article class="bn-card bn-lead"><p class="bn-kick">Essay&#160;&#183;&#160;2025&#160;&#183;&#160;7 min</p><h2 class="bn-title">The interface is not the product</h2><p>The interface is the part you can screenshot, which is why it gets the credit and most of the blame. Both are usually misplaced.</p><p>What people actually keep is the thing the product does for them, and the interface is the narrowest part of that: the door, not the house.</p></article><article class="bn-card bn-plate"><span class="bn-plate-well" aria-hidden="true"></span><p class="bn-cap">The same feature, three interfaces, one unchanged model underneath.</p></article><article class="bn-card bn-sec"><h3 class="bn-head">Where the work actually is</h3><p>A redesign that moves the buttons and leaves the model alone is a new door on the same house. It photographs well. It changes nothing anybody came for.</p></article><article class="bn-card bn-quote"><blockquote>A redesign that moves the buttons and leaves the model alone is a new door on the same house.</blockquote></article><article class="bn-card bn-sec"><p>The good work is usually in the model, and the model is the part that does not screenshot.</p></article><article class="bn-card bn-end"><p>A draft, filed under essays. 7 minutes at a reading pace.</p></article>'
+        html: '<header class="bk-title"><p class="bk-kicker">Writing // Four</p><h2>The interface is not the product</h2><p class="bk-orn" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"><path d="M12 3.5v17M3.5 12h17M6 6l12 12M18 6L6 18"/><circle cx="12" cy="12" r="2.4" fill="currentColor" stroke="none"/></svg></p></header><p>The interface is the part you can screenshot, which is why it gets the credit and most of the blame. Both are usually misplaced.</p><p>What people actually keep is the thing the product does for them, and the interface is the narrowest part of that: the door, not the house.</p><figure><div class="slot bk-plate" role="img" aria-label="Figure placeholder"></div><figcaption>The same feature, three interfaces, one unchanged model underneath.</figcaption></figure><h3>Where the work actually is</h3><p>A redesign that moves the buttons and leaves the model alone is a new door on the same house. It photographs well. It changes nothing anybody came for.</p><blockquote>A redesign that moves the buttons and leaves the model alone is a new door on the same house.</blockquote><p>The good work is usually in the model, and the model is the part that does not screenshot.</p><div class="bk-fin" aria-hidden="true"></div><footer class="bk-colophon"><div class="bk-rule" aria-hidden="true"></div><p>A draft, filed under essays. 7 minutes at a reading pace.</p><p class="bk-shelf-t">Also on the shelf</p><ul class="bk-shelf"><li>Why video games are the ultimate form of art <span>9 min</span></li><li>Taste is the last moat <span>6 min</span></li><li>What a linear player taught me about time <span>11 min</span></li></ul><p class="bk-out">All ten are on the Work screen. The crumb above this page goes there.</p></footer><span class="bk-end" aria-hidden="true"></span>'
       },
 
       'designing-for-the-ten-foot-experience': {
         title: 'Designing for the ten-foot experience', short: 'Ten feet',
         kind: 'Essay', year: '2024',
         headV: 'Writing // 05', headR: 'Designing for the ten-foot experience',
-        html: '<header class="bk-title"><p class="bk-kicker">Writing // Five</p><h2>Designing for the ten-foot experience</h2><p class="bk-orn" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"><path d="M12 3.5v17M3.5 12h17M6 6l12 12M18 6L6 18"/><circle cx="12" cy="12" r="2.4" fill="currentColor" stroke="none"/></svg></p></header><p>A television is three metres away and driven by five buttons. Almost everything you know about designing for a phone is wrong here, and the wrongness is not obvious until you sit down.</p><p>Text has to be twice the size and half the amount. Every target is reached by walking to it, one press at a time, so the distance between two things is measured in presses rather than pixels.</p><figure><div class="slot bk-plate" role="img" aria-label="Figure placeholder"></div><figcaption>One screen, drawn as the graph the remote actually walks.</figcaption></figure><h3>Focus is the only cursor</h3><p>There is no pointer, so there is no hovering and no aiming. What there is instead is a single lit thing and four directions out of it, and the whole layout has to make sense as a graph.</p><blockquote>There is no pointer. There is a single lit thing and four directions out of it.</blockquote><p>Draw that graph first and the layout follows. Draw the layout first and you spend the rest of the project apologising to the remote.</p><div class="bk-fin" aria-hidden="true"></div><footer class="bk-colophon"><div class="bk-rule" aria-hidden="true"></div><p>A draft, filed under notes. 12 minutes at a reading pace.</p><p class="bk-shelf-t">Also on the shelf</p><ul class="bk-shelf"><li>Why video games are the ultimate form of art <span>9 min</span></li><li>Taste is the last moat <span>6 min</span></li><li>What a linear player taught me about time <span>11 min</span></li></ul><p class="bk-out">All ten are on the Work screen. The crumb above this page goes there.</p></footer><span class="bk-end" aria-hidden="true"></span>',
-        bento: '<article class="bn-card bn-lead"><p class="bn-kick">Essay&#160;&#183;&#160;2024&#160;&#183;&#160;12 min</p><h2 class="bn-title">Designing for the ten-foot experience</h2><p>A television is three metres away and driven by five buttons. Almost everything you know about designing for a phone is wrong here, and the wrongness is not obvious until you sit down.</p><p>Text has to be twice the size and half the amount. Every target is reached by walking to it, one press at a time, so the distance between two things is measured in presses rather than pixels.</p></article><article class="bn-card bn-plate"><span class="bn-plate-well" aria-hidden="true"></span><p class="bn-cap">One screen, drawn as the graph the remote actually walks.</p></article><article class="bn-card bn-sec"><h3 class="bn-head">Focus is the only cursor</h3><p>There is no pointer, so there is no hovering and no aiming. What there is instead is a single lit thing and four directions out of it, and the whole layout has to make sense as a graph.</p></article><article class="bn-card bn-quote"><blockquote>There is no pointer. There is a single lit thing and four directions out of it.</blockquote></article><article class="bn-card bn-sec"><p>Draw that graph first and the layout follows. Draw the layout first and you spend the rest of the project apologising to the remote.</p></article><article class="bn-card bn-end"><p>A draft, filed under notes. 12 minutes at a reading pace.</p></article>'
+        html: '<header class="bk-title"><p class="bk-kicker">Writing // Five</p><h2>Designing for the ten-foot experience</h2><p class="bk-orn" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"><path d="M12 3.5v17M3.5 12h17M6 6l12 12M18 6L6 18"/><circle cx="12" cy="12" r="2.4" fill="currentColor" stroke="none"/></svg></p></header><p>A television is three metres away and driven by five buttons. Almost everything you know about designing for a phone is wrong here, and the wrongness is not obvious until you sit down.</p><p>Text has to be twice the size and half the amount. Every target is reached by walking to it, one press at a time, so the distance between two things is measured in presses rather than pixels.</p><figure><div class="slot bk-plate" role="img" aria-label="Figure placeholder"></div><figcaption>One screen, drawn as the graph the remote actually walks.</figcaption></figure><h3>Focus is the only cursor</h3><p>There is no pointer, so there is no hovering and no aiming. What there is instead is a single lit thing and four directions out of it, and the whole layout has to make sense as a graph.</p><blockquote>There is no pointer. There is a single lit thing and four directions out of it.</blockquote><p>Draw that graph first and the layout follows. Draw the layout first and you spend the rest of the project apologising to the remote.</p><div class="bk-fin" aria-hidden="true"></div><footer class="bk-colophon"><div class="bk-rule" aria-hidden="true"></div><p>A draft, filed under notes. 12 minutes at a reading pace.</p><p class="bk-shelf-t">Also on the shelf</p><ul class="bk-shelf"><li>Why video games are the ultimate form of art <span>9 min</span></li><li>Taste is the last moat <span>6 min</span></li><li>What a linear player taught me about time <span>11 min</span></li></ul><p class="bk-out">All ten are on the Work screen. The crumb above this page goes there.</p></footer><span class="bk-end" aria-hidden="true"></span>'
       },
 
       'systems-thinking-is-noticing-twice': {
         title: 'Systems thinking is noticing twice', short: 'Noticing twice',
         kind: 'Essay', year: '2024',
         headV: 'Writing // 06', headR: 'Systems thinking is noticing twice',
-        html: '<header class="bk-title"><p class="bk-kicker">Writing // Six</p><h2>Systems thinking is noticing twice</h2><p class="bk-orn" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"><path d="M12 3.5v17M3.5 12h17M6 6l12 12M18 6L6 18"/><circle cx="12" cy="12" r="2.4" fill="currentColor" stroke="none"/></svg></p></header><p>Systems thinking has acquired a lot of vocabulary it does not need. Underneath it is a small habit: when you notice something, notice it again somewhere else.</p><p>One odd support ticket is a ticket. The same odd ticket in three unrelated places is a shape, and the shape is usually further upstream than any of the three.</p><figure><div class="slot bk-plate" role="img" aria-label="Figure placeholder"></div><figcaption>Three tickets from three teams, and the one cause behind them.</figcaption></figure><h3>The second time is the signal</h3><p>Most of what looks like insight is somebody who kept a list. They saw the same thing twice, believed the second one, and went looking for what both had in common.</p><blockquote>Most of what looks like insight is somebody who kept a list.</blockquote><p>That is it. Keep the list, trust the repeat, and go upstream until the repeats stop.</p><div class="bk-fin" aria-hidden="true"></div><footer class="bk-colophon"><div class="bk-rule" aria-hidden="true"></div><p>A draft, filed under notes. 5 minutes at a reading pace.</p><p class="bk-shelf-t">Also on the shelf</p><ul class="bk-shelf"><li>Why video games are the ultimate form of art <span>9 min</span></li><li>Taste is the last moat <span>6 min</span></li><li>What a linear player taught me about time <span>11 min</span></li></ul><p class="bk-out">All ten are on the Work screen. The crumb above this page goes there.</p></footer><span class="bk-end" aria-hidden="true"></span>',
-        bento: '<article class="bn-card bn-lead"><p class="bn-kick">Essay&#160;&#183;&#160;2024&#160;&#183;&#160;5 min</p><h2 class="bn-title">Systems thinking is noticing twice</h2><p>Systems thinking has acquired a lot of vocabulary it does not need. Underneath it is a small habit: when you notice something, notice it again somewhere else.</p><p>One odd support ticket is a ticket. The same odd ticket in three unrelated places is a shape, and the shape is usually further upstream than any of the three.</p></article><article class="bn-card bn-plate"><span class="bn-plate-well" aria-hidden="true"></span><p class="bn-cap">Three tickets from three teams, and the one cause behind them.</p></article><article class="bn-card bn-sec"><h3 class="bn-head">The second time is the signal</h3><p>Most of what looks like insight is somebody who kept a list. They saw the same thing twice, believed the second one, and went looking for what both had in common.</p></article><article class="bn-card bn-quote"><blockquote>Most of what looks like insight is somebody who kept a list.</blockquote></article><article class="bn-card bn-sec"><p>That is it. Keep the list, trust the repeat, and go upstream until the repeats stop.</p></article><article class="bn-card bn-end"><p>A draft, filed under notes. 5 minutes at a reading pace.</p></article>'
+        html: '<header class="bk-title"><p class="bk-kicker">Writing // Six</p><h2>Systems thinking is noticing twice</h2><p class="bk-orn" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"><path d="M12 3.5v17M3.5 12h17M6 6l12 12M18 6L6 18"/><circle cx="12" cy="12" r="2.4" fill="currentColor" stroke="none"/></svg></p></header><p>Systems thinking has acquired a lot of vocabulary it does not need. Underneath it is a small habit: when you notice something, notice it again somewhere else.</p><p>One odd support ticket is a ticket. The same odd ticket in three unrelated places is a shape, and the shape is usually further upstream than any of the three.</p><figure><div class="slot bk-plate" role="img" aria-label="Figure placeholder"></div><figcaption>Three tickets from three teams, and the one cause behind them.</figcaption></figure><h3>The second time is the signal</h3><p>Most of what looks like insight is somebody who kept a list. They saw the same thing twice, believed the second one, and went looking for what both had in common.</p><blockquote>Most of what looks like insight is somebody who kept a list.</blockquote><p>That is it. Keep the list, trust the repeat, and go upstream until the repeats stop.</p><div class="bk-fin" aria-hidden="true"></div><footer class="bk-colophon"><div class="bk-rule" aria-hidden="true"></div><p>A draft, filed under notes. 5 minutes at a reading pace.</p><p class="bk-shelf-t">Also on the shelf</p><ul class="bk-shelf"><li>Why video games are the ultimate form of art <span>9 min</span></li><li>Taste is the last moat <span>6 min</span></li><li>What a linear player taught me about time <span>11 min</span></li></ul><p class="bk-out">All ten are on the Work screen. The crumb above this page goes there.</p></footer><span class="bk-end" aria-hidden="true"></span>'
       },
 
       'against-the-infinite-canvas': {
         title: 'Against the infinite canvas', short: 'Infinite canvas',
         kind: 'Essay', year: '2024',
         headV: 'Writing // 07', headR: 'Against the infinite canvas',
-        html: '<header class="bk-title"><p class="bk-kicker">Writing // Seven</p><h2>Against the infinite canvas</h2><p class="bk-orn" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"><path d="M12 3.5v17M3.5 12h17M6 6l12 12M18 6L6 18"/><circle cx="12" cy="12" r="2.4" fill="currentColor" stroke="none"/></svg></p></header><p>Every few years a tool arrives with no edges, and every few years the same thing happens to the work made in it.</p><p>A canvas with no edges has no composition, because composition is a relationship between a thing and its frame. Remove the frame and you have a pile that can be zoomed.</p><figure><div class="slot bk-plate" role="img" aria-label="Figure placeholder"></div><figcaption>The same eight elements, on a page and on a plane.</figcaption></figure><h3>A frame is an argument</h3><p>Choosing where the page ends is choosing what matters. It is the first decision and the one everything after it leans on, and an infinite canvas lets you postpone it forever.</p><blockquote>Composition is a relationship between a thing and its frame. Remove the frame and you have a pile.</blockquote><p>Infinite canvases are excellent for thinking and poor for deciding. Most work I have seen in one never left the thinking.</p><div class="bk-fin" aria-hidden="true"></div><footer class="bk-colophon"><div class="bk-rule" aria-hidden="true"></div><p>A draft, filed under notes. 8 minutes at a reading pace.</p><p class="bk-shelf-t">Also on the shelf</p><ul class="bk-shelf"><li>Why video games are the ultimate form of art <span>9 min</span></li><li>Taste is the last moat <span>6 min</span></li><li>What a linear player taught me about time <span>11 min</span></li></ul><p class="bk-out">All ten are on the Work screen. The crumb above this page goes there.</p></footer><span class="bk-end" aria-hidden="true"></span>',
-        bento: '<article class="bn-card bn-lead"><p class="bn-kick">Essay&#160;&#183;&#160;2024&#160;&#183;&#160;8 min</p><h2 class="bn-title">Against the infinite canvas</h2><p>Every few years a tool arrives with no edges, and every few years the same thing happens to the work made in it.</p><p>A canvas with no edges has no composition, because composition is a relationship between a thing and its frame. Remove the frame and you have a pile that can be zoomed.</p></article><article class="bn-card bn-plate"><span class="bn-plate-well" aria-hidden="true"></span><p class="bn-cap">The same eight elements, on a page and on a plane.</p></article><article class="bn-card bn-sec"><h3 class="bn-head">A frame is an argument</h3><p>Choosing where the page ends is choosing what matters. It is the first decision and the one everything after it leans on, and an infinite canvas lets you postpone it forever.</p></article><article class="bn-card bn-quote"><blockquote>Composition is a relationship between a thing and its frame. Remove the frame and you have a pile.</blockquote></article><article class="bn-card bn-sec"><p>Infinite canvases are excellent for thinking and poor for deciding. Most work I have seen in one never left the thinking.</p></article><article class="bn-card bn-end"><p>A draft, filed under notes. 8 minutes at a reading pace.</p></article>'
+        html: '<header class="bk-title"><p class="bk-kicker">Writing // Seven</p><h2>Against the infinite canvas</h2><p class="bk-orn" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"><path d="M12 3.5v17M3.5 12h17M6 6l12 12M18 6L6 18"/><circle cx="12" cy="12" r="2.4" fill="currentColor" stroke="none"/></svg></p></header><p>Every few years a tool arrives with no edges, and every few years the same thing happens to the work made in it.</p><p>A canvas with no edges has no composition, because composition is a relationship between a thing and its frame. Remove the frame and you have a pile that can be zoomed.</p><figure><div class="slot bk-plate" role="img" aria-label="Figure placeholder"></div><figcaption>The same eight elements, on a page and on a plane.</figcaption></figure><h3>A frame is an argument</h3><p>Choosing where the page ends is choosing what matters. It is the first decision and the one everything after it leans on, and an infinite canvas lets you postpone it forever.</p><blockquote>Composition is a relationship between a thing and its frame. Remove the frame and you have a pile.</blockquote><p>Infinite canvases are excellent for thinking and poor for deciding. Most work I have seen in one never left the thinking.</p><div class="bk-fin" aria-hidden="true"></div><footer class="bk-colophon"><div class="bk-rule" aria-hidden="true"></div><p>A draft, filed under notes. 8 minutes at a reading pace.</p><p class="bk-shelf-t">Also on the shelf</p><ul class="bk-shelf"><li>Why video games are the ultimate form of art <span>9 min</span></li><li>Taste is the last moat <span>6 min</span></li><li>What a linear player taught me about time <span>11 min</span></li></ul><p class="bk-out">All ten are on the Work screen. The crumb above this page goes there.</p></footer><span class="bk-end" aria-hidden="true"></span>'
       },
 
       'ship-the-boring-version-first': {
         title: 'Ship the boring version first', short: 'Boring first',
         kind: 'Essay', year: '2024',
         headV: 'Writing // 08', headR: 'Ship the boring version first',
-        html: '<header class="bk-title"><p class="bk-kicker">Writing // Eight</p><h2>Ship the boring version first</h2><p class="bk-orn" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"><path d="M12 3.5v17M3.5 12h17M6 6l12 12M18 6L6 18"/><circle cx="12" cy="12" r="2.4" fill="currentColor" stroke="none"/></svg></p></header><p>The interesting version of a feature is the one you want to build. The boring one is the one that tells you whether anybody wants the feature at all.</p><p>Boring means: no new concepts, no new surfaces, nothing anybody has to learn. It usually looks like a list. It usually ships in a fortnight.</p><figure><div class="slot bk-plate" role="img" aria-label="Figure placeholder"></div><figcaption>The list we shipped, and the thing we did not build after reading it.</figcaption></figure><h3>What boring buys you</h3><p>Two weeks of real use answers a question no amount of arguing does, and it answers it before the interesting version has cost anybody a quarter.</p><blockquote>Two weeks of real use answers a question no amount of arguing does.</blockquote><p>Half the time the boring version is enough and the interesting one quietly stops being interesting.</p><div class="bk-fin" aria-hidden="true"></div><footer class="bk-colophon"><div class="bk-rule" aria-hidden="true"></div><p>A draft, filed under notes. 4 minutes at a reading pace.</p><p class="bk-shelf-t">Also on the shelf</p><ul class="bk-shelf"><li>Why video games are the ultimate form of art <span>9 min</span></li><li>Taste is the last moat <span>6 min</span></li><li>What a linear player taught me about time <span>11 min</span></li></ul><p class="bk-out">All ten are on the Work screen. The crumb above this page goes there.</p></footer><span class="bk-end" aria-hidden="true"></span>',
-        bento: '<article class="bn-card bn-lead"><p class="bn-kick">Essay&#160;&#183;&#160;2024&#160;&#183;&#160;4 min</p><h2 class="bn-title">Ship the boring version first</h2><p>The interesting version of a feature is the one you want to build. The boring one is the one that tells you whether anybody wants the feature at all.</p><p>Boring means: no new concepts, no new surfaces, nothing anybody has to learn. It usually looks like a list. It usually ships in a fortnight.</p></article><article class="bn-card bn-plate"><span class="bn-plate-well" aria-hidden="true"></span><p class="bn-cap">The list we shipped, and the thing we did not build after reading it.</p></article><article class="bn-card bn-sec"><h3 class="bn-head">What boring buys you</h3><p>Two weeks of real use answers a question no amount of arguing does, and it answers it before the interesting version has cost anybody a quarter.</p></article><article class="bn-card bn-quote"><blockquote>Two weeks of real use answers a question no amount of arguing does.</blockquote></article><article class="bn-card bn-sec"><p>Half the time the boring version is enough and the interesting one quietly stops being interesting.</p></article><article class="bn-card bn-end"><p>A draft, filed under notes. 4 minutes at a reading pace.</p></article>'
+        html: '<header class="bk-title"><p class="bk-kicker">Writing // Eight</p><h2>Ship the boring version first</h2><p class="bk-orn" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"><path d="M12 3.5v17M3.5 12h17M6 6l12 12M18 6L6 18"/><circle cx="12" cy="12" r="2.4" fill="currentColor" stroke="none"/></svg></p></header><p>The interesting version of a feature is the one you want to build. The boring one is the one that tells you whether anybody wants the feature at all.</p><p>Boring means: no new concepts, no new surfaces, nothing anybody has to learn. It usually looks like a list. It usually ships in a fortnight.</p><figure><div class="slot bk-plate" role="img" aria-label="Figure placeholder"></div><figcaption>The list we shipped, and the thing we did not build after reading it.</figcaption></figure><h3>What boring buys you</h3><p>Two weeks of real use answers a question no amount of arguing does, and it answers it before the interesting version has cost anybody a quarter.</p><blockquote>Two weeks of real use answers a question no amount of arguing does.</blockquote><p>Half the time the boring version is enough and the interesting one quietly stops being interesting.</p><div class="bk-fin" aria-hidden="true"></div><footer class="bk-colophon"><div class="bk-rule" aria-hidden="true"></div><p>A draft, filed under notes. 4 minutes at a reading pace.</p><p class="bk-shelf-t">Also on the shelf</p><ul class="bk-shelf"><li>Why video games are the ultimate form of art <span>9 min</span></li><li>Taste is the last moat <span>6 min</span></li><li>What a linear player taught me about time <span>11 min</span></li></ul><p class="bk-out">All ten are on the Work screen. The crumb above this page goes there.</p></footer><span class="bk-end" aria-hidden="true"></span>'
       }
     };
 
@@ -18918,11 +18714,6 @@ a.arrow { text-decoration: none; }
       if (slug !== atEssaySlug) {
         atEssay = d; atEssaySlug = slug;
         if (window.__bookSet) { window.__bookSet(d.html, d.headV, d.headR); }
-        /* The other vessel, built on a clock of its own. Not here, where the
-           crossing into this screen is measured to the pixel, and not on the
-           press either -- see bnSet. A second after the piece is set, nothing
-           is being animated and the cards cost nobody anything. */
-        setTimeout(function () { if (typeof bnFill === 'function') { bnFill(); } }, 900);
       }
       return true;
     }
@@ -19200,7 +18991,6 @@ a.arrow { text-decoration: none; }
       // is going to is still hidden, and a hidden view's cards still report
       // the left, top, width and height the frame gave them -- which is the
       // whole box, and the only thing wanted here.
-      if (here === 'article' && bento) { bnSet(false); }
       var shutting = here === 'article' && !!book && !small(), dest = null;
       if (shutting) {
         var seat = views[name] && views[name].querySelector('.card[data-tile="b"]');
@@ -19631,79 +19421,6 @@ a.arrow { text-decoration: none; }
       go(to);
     });
 
-    /* --- the two vessels ---------------------------------------------------
-     *
-     * The book and the bento are the same words in two shapes, and the cell
-     * under the switch is how you get from one to the other. It is a state of
-     * the screen rather than a screen of its own: the address does not change,
-     * because what you are reading has not.
-     *
-     * Off again on the way out. A reader who left an essay in the bento and
-     * comes back to one should be handed a book -- the book is what this screen
-     * is, and the bento is a thing you ask it for.
-     */
-    var bnBox = views.article.querySelector('[data-bento-box]');
-    var bnGrid = views.article.querySelector('[data-bento-grid]');
-    var bnKey = document.querySelector('[data-bento]');
-    var bento = false;
-
-    function bnPaint() {
-      if (!bnKey) { return; }
-      bnKey.setAttribute('aria-pressed', bento ? 'true' : 'false');
-      bnKey.setAttribute('aria-label', bento ? 'Read this as a book instead of a bento'
-                                             : 'Read this as a bento instead of a book');
-    }
-
-    /* Filled when it is asked for and not before.
-     *
-     * It was being written from essayOf, which is where the book is set, and
-     * that runs once at startup before this line of the file has been read --
-     * so the grid the first essay wrote into was undefined and every essay
-     * after it was skipped for being the one already loaded. Asked for here,
-     * the question is the one that matters anyway: is what is in the box the
-     * piece the reader is on. */
-    function bnFill() {
-      if (!bnGrid || !atEssay) { return; }
-      if (bnGrid.getAttribute('data-at') === atEssaySlug) { return; }
-      bnGrid.innerHTML = atEssay.bento || '';
-      bnGrid.setAttribute('data-at', atEssaySlug);
-      bnBox.scrollTop = 0;
-    }
-
-    /* And the swap is a class and nothing else.
-     *
-     * It was building the cards and un-hiding the box on the frame the
-     * transition was meant to start on: nine cards of hyphenated prose laid
-     * out in a grid, and a display:none box asked for its first layout, all
-     * inside the one press. That is eight hundred milliseconds of blocked main
-     * thread -- so the class landed, nothing moved for most of a second, and
-     * then the book was simply somewhere else. A transition cannot run in a
-     * frame the browser never gets to.
-     *
-     * So the cards are built ahead of the press (see the timer in essayOf) and
-     * the box is never taken out of the tree -- hidden by visibility, which
-     * costs a paint and not a layout. What is left for the press to do is add
-     * one class. */
-    function bnSet(on) {
-      on = !!on;
-      if (on === bento) { return; }
-      bento = on;
-      if (on) { bnFill(); }
-      stage.classList.toggle('x-bento', on);
-      bnPaint();
-    }
-
-    if (bnKey) {
-      bnKey.addEventListener('click', function () { bnSet(!bento); });
-      bnPaint();
-    }
-    /* Escape backs out one step: out of the bento first, and only out of the
-       essay once the book is the thing in front of you again. */
-    document.addEventListener('keydown', function (e) {
-      if (e.key !== 'Escape' || here !== 'article' || !bento) { return; }
-      bnSet(false);
-    });
-
     /* And putting the book down.
      *
      * A book on a desk is shut by pushing it away, not by finding the word
@@ -19741,10 +19458,6 @@ a.arrow { text-decoration: none; }
       if (!t || !t.closest) { return; }
       if (t.closest('.bk, .nav, .crumb, .crumb-count, .room, .back,' +
                      ' .sheet, .zoom, a, button, [role="button"]')) { return; }
-      if (t.closest('.bento')) { return; }
-      /* One step at a time. In the bento, the desk puts the bento away and
-         gives the book back; from the book it puts the book away. */
-      if (bento) { bnSet(false); return; }
       var up = PARENT.article;
       if (!up) { return; }
       history.pushState({ view: up }, '', hashOf(up) || location.pathname);
