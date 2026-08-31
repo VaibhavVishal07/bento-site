@@ -4608,14 +4608,7 @@ body {
       rgba(var(--lift), calc(0.016 * var(--lea-gloss))) 66%,
       rgba(var(--lift), 0) 100%),
 
-    /* 3. the grain, over the sheen and not under it, because that is where a
-          hide puts it: the polish is on the leather and the leather is not
-          smooth, so the highlight is broken by the same tooth everywhere
-          else on the board. Lifted from five and a half per cent to seven
-          and a half now that there is something for it to break. */
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.62' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23g)' opacity='0.075'/%3E%3C/svg%3E"),
-
-    /* 4. and the room, smeared. What a gloss reflects when there is nothing
+    /* 3. and the room, smeared. What a gloss reflects when there is nothing
           in particular in front of it: one wide band raking across the pair
           of boards, and a fainter answer near the fore-edge. */
     linear-gradient(104deg,
@@ -4627,6 +4620,17 @@ body {
       rgba(var(--lift), 0) 79%,
       rgba(var(--lift), calc(0.020 * var(--lea-gloss))) 91%,
       rgba(var(--lift), 0) 100%),
+
+    /* 4. the grain, back under the light and back at its own strength.
+
+          It was moved over the sheen and taken up to seven and a half per
+          cent, on the argument that the polish is on the leather and the
+          leather is not smooth. The argument is true about leather and it was
+          wrong about this: fractal noise laid over a highlight does not read
+          as tooth breaking a reflection, it reads as noise on a photograph.
+          Under the light and at five and a half, the hide is a surface again
+          and the sheen is clean. */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.62' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23g)' opacity='0.055'/%3E%3C/svg%3E"),
 
     /* 5. the fold, and 6. the hide itself.
 
@@ -4649,11 +4653,11 @@ body {
       var(--lea-deep) 78%,
       var(--lea) 100%);
   background-size:
-    1122px 840px, 1122px 840px, 1122px 840px, 220px 220px,
-    1122px 840px, 1122px 840px, 1122px 840px;
+    1122px 840px, 1122px 840px, 1122px 840px, 1122px 840px,
+    220px 220px, 1122px 840px, 1122px 840px;
   background-repeat:
-    no-repeat, no-repeat, no-repeat, repeat,
-    no-repeat, no-repeat, no-repeat;
+    no-repeat, no-repeat, no-repeat, no-repeat,
+    repeat, no-repeat, no-repeat;
   /* One offset for the lot: a shorter list than the images is repeated over
      them, so a layer added above needs nothing said about it here. Both
      halves carry the whole card's worth of every figure and take the slice
@@ -4703,14 +4707,7 @@ body {
       rgba(var(--lift), calc(0.016 * var(--lea-gloss))) 66%,
       rgba(var(--lift), 0) 100%),
 
-    /* 3. the grain, over the sheen and not under it, because that is where a
-          hide puts it: the polish is on the leather and the leather is not
-          smooth, so the highlight is broken by the same tooth everywhere
-          else on the board. Lifted from five and a half per cent to seven
-          and a half now that there is something for it to break. */
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.62' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23g)' opacity='0.075'/%3E%3C/svg%3E"),
-
-    /* 4. and the room, smeared. What a gloss reflects when there is nothing
+    /* 3. and the room, smeared. What a gloss reflects when there is nothing
           in particular in front of it: one wide band raking across the pair
           of boards, and a fainter answer near the fore-edge. */
     linear-gradient(104deg,
@@ -4722,6 +4719,17 @@ body {
       rgba(var(--lift), 0) 79%,
       rgba(var(--lift), calc(0.020 * var(--lea-gloss))) 91%,
       rgba(var(--lift), 0) 100%),
+
+    /* 4. the grain, back under the light and back at its own strength.
+
+          It was moved over the sheen and taken up to seven and a half per
+          cent, on the argument that the polish is on the leather and the
+          leather is not smooth. The argument is true about leather and it was
+          wrong about this: fractal noise laid over a highlight does not read
+          as tooth breaking a reflection, it reads as noise on a photograph.
+          Under the light and at five and a half, the hide is a surface again
+          and the sheen is clean. */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.62' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23g)' opacity='0.055'/%3E%3C/svg%3E"),
 
     /* 5. the fold, and 6. the hide itself.
 
@@ -4744,11 +4752,11 @@ body {
       var(--lea-deep) 78%,
       var(--lea) 100%);
   background-size:
-    1122px 840px, 1122px 840px, 1122px 840px, 220px 220px,
-    1122px 840px, 1122px 840px, 1122px 840px;
+    1122px 840px, 1122px 840px, 1122px 840px, 1122px 840px,
+    220px 220px, 1122px 840px, 1122px 840px;
   background-repeat:
-    no-repeat, no-repeat, no-repeat, repeat,
-    no-repeat, no-repeat, no-repeat;
+    no-repeat, no-repeat, no-repeat, no-repeat,
+    repeat, no-repeat, no-repeat;
   /* One offset for the lot: a shorter list than the images is repeated over
      them, so a layer added above needs nothing said about it here. Both
      halves carry the whole card's worth of every figure and take the slice
@@ -4763,16 +4771,14 @@ body {
 .bk-board-out {
   transform: rotateY(180deg);
   background-image:
-    /* The bands. Five ridges across the spine where the cords the sections are
-       sewn onto stand up under the leather, which is the oldest tell there is
-       that a book has boards on it rather than a wrapper round it. Painted on
-       the spine's own width and nowhere else on the cover. */
-    repeating-linear-gradient(180deg,
-      rgba(0, 0, 0, 0) 0 108px,
-      rgba(0, 0, 0, 0.42) 108px 116px,
-      rgba(var(--lift), calc(0.055 * var(--lea-gloss))) 116px 121px,
-      rgba(0, 0, 0, 0) 121px 148px),
-    /* the board's edges, as on the inside */
+    /* The raised bands went from here, and the reason is the reason the cut
+       edges went and the joints went: from straight above, a shut book is its
+       cover. The cords the sections are sewn onto stand up under the leather
+       of the SPINE, and the spine is the edge you cannot see from here --
+       drawn on the cover's face they are five dashes stuck to one side of it,
+       and what they read as is holes punched through the board. A tell drawn
+       where the thing it tells about is not is not a tell, it is a mark. */
+    /* the board's edges */
     linear-gradient(180deg,
       rgba(var(--lift), calc(0.11 * var(--lea-gloss))) 0 1px,
       rgba(0, 0, 0, 0) 1px calc(100% - 1px),
@@ -4782,12 +4788,12 @@ body {
       rgba(var(--lift), calc(0.085 * var(--lea-gloss))) 0%,
       rgba(var(--lift), calc(0.040 * var(--lea-gloss))) 38%,
       rgba(var(--lift), 0) 100%),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.62' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23g)' opacity='0.075'/%3E%3C/svg%3E"),
-    /* the room, smeared */
+    /* the room, smeared, and the grain under it */
     linear-gradient(118deg,
       rgba(var(--lift), 0) 0%,
       rgba(var(--lift), calc(0.038 * var(--lea-gloss))) 26%,
       rgba(var(--lift), 0) 48%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.62' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23g)' opacity='0.055'/%3E%3C/svg%3E"),
     /* and the joint, with the spine falling away behind it */
     linear-gradient(270deg,
       rgba(0, 0, 0, 0.58) 0%,
@@ -4798,14 +4804,9 @@ body {
     linear-gradient(148deg,
       var(--lea-2) 0%, var(--lea) 46%, var(--lea-deep) 78%, var(--lea) 100%);
   background-size:
-    44px 100%, 100% 100%, 100% 100%, 220px 220px, 100% 100%, 100% 100%, 100% 100%;
+    100% 100%, 100% 100%, 100% 100%, 220px 220px, 100% 100%, 100% 100%;
   background-repeat:
-    no-repeat, no-repeat, no-repeat, repeat, no-repeat, no-repeat, no-repeat;
-  /* The bands sit on the spine. Which edge of this element that is, is not
-     worth reasoning about from the transforms -- the face is turned inside a
-     half that is itself turning, and the two compose to something the eye
-     settles faster than the algebra does. It is this one. */
-  background-position: 0 34px, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0;
+    no-repeat, no-repeat, no-repeat, repeat, no-repeat, no-repeat;
 }
 .bk-stamp-out {
   position: absolute;
