@@ -596,6 +596,26 @@
   --leaf-edge: 234, 222, 200;            /* the cut edge of the block, ivory */
   --paper:      #171412;                 /* the page                         */
   --paper-lift: #1c1917;                 /* and a shade up, held in the air  */
+
+  /* And the four folders on Work.
+
+     A folder is the one yellow object anybody can name from its colour, so
+     taking the colour away would leave a grey wallet -- but a manila envelope
+     at full strength on a black card is a highlighter on a photograph. These
+     are the colour held at the distance from the ground that everything else
+     on this frame is held at: dark enough to be an object in an unlit room,
+     warm enough that nobody has to be told what it is.
+
+     The paper is not white for the same reason the book's page is not. White
+     is a light source; paper in a room this dark is the room's light landing
+     on something pale. */
+  --fold:       #87692a;                 /* the front board, where it catches */
+  --fold-2:     #6d5420;                 /* down its face                     */
+  --fold-deep:  #4b3a15;                 /* the back board and the tab        */
+  --fold-lip:   rgba(255, 226, 160, 0.13);  /* the top edge of the front      */
+  --paper-s:    #d6d0c2;                 /* a sheet in it                     */
+  --paper-s-2:  #c4bdac;                 /* and the two behind that one       */
+  --paper-rule: rgba(24, 19, 8, 0.16);   /* what is written on it             */
 }
 
 :root[data-theme="light"] {
@@ -822,6 +842,17 @@
   --leaf-edge: 124, 110, 88;
   --paper:      #fbf9f4;
   --paper-lift: #ffffff;
+  /* Lit, the folder is the colour it actually is -- the ground is paper here
+     and a manila board on paper is what a desk looks like. The sheets go the
+     other way: white on a white card needs the hairline and the shadow to
+     exist at all, so they are a shade under the card rather than over it. */
+  --fold:       #e3bc55;
+  --fold-2:     #d0a63e;
+  --fold-deep:  #b78f2d;
+  --fold-lip:   rgba(255, 246, 214, 0.55);
+  --paper-s:    #ffffff;
+  --paper-s-2:  #f0ece2;
+  --paper-rule: rgba(24, 19, 8, 0.13);
 }
 
 /* A visitor who has asked their system for a light desktop and has never
@@ -1003,6 +1034,13 @@
     --leaf-edge: 124, 110, 88;
     --paper:      #fbf9f4;
     --paper-lift: #ffffff;
+    --fold:       #e3bc55;
+    --fold-2:     #d0a63e;
+    --fold-deep:  #b78f2d;
+    --fold-lip:   rgba(255, 246, 214, 0.55);
+    --paper-s:    #ffffff;
+    --paper-s-2:  #f0ece2;
+    --paper-rule: rgba(24, 19, 8, 0.13);
   }
 }
 
@@ -2321,31 +2359,67 @@ body {
    still already shows the work; the name says what it is called; the count
    says there is more. The sentence was the card explaining its own picture.
 
-   So the name takes the room the sentence had. It wraps to two lines at this
-   width and is given both, 32 under the still and 32 above the chip, and the
-   chip comes up to 416 so the card has 33 at its foot rather than 21. There
-   is no `.repo .sub` any more, because there is no sentence for it to set. */
-.repo .label      { left: 24px; top: 306px; }
-.repo .arrow      { left: 316px; top: 304px; }
-.repo .headline   { left: 24px; top: 338px; width: 296px; }
+   So the name takes the room the sentence had -- three lines of it at this
+   width, which is the whole claim rather than the title of it. Under it the
+   strip, and the card is: a still, what the room is called, what the work
+   was, and what else there is. There is no `.repo .sub` any more, because
+   there is no sentence for it to set. */
+.repo .label      { left: 24px; top: 300px; }
+.repo .arrow      { left: 316px; top: 298px; }
+.repo .headline   { left: 24px; top: 332px; width: 296px; }
 
-.chip {
+/* What else there is, shown rather than counted.
+
+   "+ 3 more" was a figure in a box, and a figure in a box says how many
+   without saying what kind of thing. Three pictures and a sentence say both
+   in the room one line of small type takes, and the pictures are the other
+   projects' own -- crossed boxes while there are no photographs, which on
+   this site is how a picture is promised and not how one is denied.
+
+   A row and not a control: the whole card is already a link to Work, and a
+   second box round the same destination is a button drawn on a button. What
+   makes it pressable is that it is an anchor; what makes it read as pressable
+   is the line lighting with the rest of the card. */
+.repo-more {
   position: absolute;
   left: 24px;
-  top: 416px;
-  width: 84px;
-  height: 35px;
-  padding: 6px 0 0 14px;
-  background: rgba(217, 217, 217, 0.05);
-  font-size: var(--t-meta);
-  line-height: var(--lh-meta);
-  font-weight: 600;
-  color: rgb(var(--w));
+  top: 428px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
   text-decoration: none;
-  transition: background-color 160ms ease;
 }
 
-.chip:hover { background: rgba(217, 217, 217, 0.12); }
+.repo-thumbs { display: flex; gap: 6px; }
+
+/* 44 by 32, which is the still above them at a fourteenth of its width and
+   the same 4:3 it is cut to. Small enough to be a mark rather than a picture
+   and large enough that three of them are plainly three of something. */
+.repo-thumb {
+  width: 44px;
+  height: 32px;
+  background-color: var(--slot);
+  background-size: cover;
+  background-position: 50% 50%;
+}
+/* The same crossed box the frame draws wherever a picture is promised, at the
+   size this one is -- see .slot and the four folders on Work. */
+.repo-thumb.is-blank {
+  background-image:
+    linear-gradient(to bottom right, transparent calc(50% - 0.5px),
+      rgba(var(--w), 0.09) 50%, transparent calc(50% + 0.5px)),
+    linear-gradient(to bottom left, transparent calc(50% - 0.5px),
+      rgba(var(--w), 0.09) 50%, transparent calc(50% + 0.5px));
+}
+
+.repo-more-t {
+  font-family: var(--f-label);
+  font-size: var(--t-meta);
+  line-height: var(--lh-meta);
+  color: var(--sub);
+  transition: color var(--dur) var(--ease);
+}
+.repo:hover .repo-more-t { color: rgba(var(--w), 0.86); }
 
 /* ==========================================================================
    Experiments & side quests — relative to 399, 596
@@ -3087,6 +3161,15 @@ body {
      both off the root and adds them to know when move 1 may start. */
   --x-shut:   680ms;
   --x-become: 200ms;
+  /* And the beat the folder gets on Work, which is the shut's opposite number
+     on the way down: a sheet coming out of a folder rather than a cover going
+     over a book. One beat and not three -- there is nothing to put away, only
+     something to pick up -- and shorter than the shut, because taking a page
+     out of a folder is a quicker thing than closing a book and is meant to
+     feel like it. The becoming is the same 200 either way: it is the same
+     move, a thing turning into a tile. */
+  --x-lift:      520ms;
+  --x-lift-ease: cubic-bezier(0.4, 0, 0.2, 1);
   /* The fold inside the shut: it starts a beat after the object begins to
      rise, because a cover comes up off a book that is already in the hand,
      and it lands before the object does so the settle is the book taking the
@@ -3196,7 +3279,7 @@ body {
    place of the 200 the beat is timed on -- and then took the sink, the blur
    and the fade to nothing along with the contents it was there to replace.
    See .bk-seat. */
-.view .card > *:not(.bk-seat),
+.view .card > *:not(.bk-seat):not(.w-seat):not(.w-lift),
 .crumb,
 .crumb-count {
   transition: opacity var(--x-fade) var(--x-ease),
@@ -3205,7 +3288,7 @@ body {
   transition-delay: var(--x-delay, 0ms);
 }
 
-.x-empty .view .card > *:not(.bk-seat),
+.x-empty .view .card > *:not(.bk-seat):not(.w-seat):not(.w-lift),
 /* The way back was in this list and is not any more. It has two lattice
    rules hanging off it now, and those are struck and ruled across a crossing
    like every other line on the frame -- so fading the box as well drew the
@@ -3996,16 +4079,235 @@ body {
    the card is 335 and that is 316 of it, which leaves 19 at the foot. There
    is no arrangement of those five figures that fits a square and two lines of
    copy, because the row sits on the frame's bottom rule and cannot grow. */
-.w-shot {
+/* --- four folders --------------------------------------------------------
+
+   The window used to be a square with a cross through it: a picture goes
+   here, and no picture yet. Four of them in a row, which is four promises and
+   nothing kept.
+
+   It is a folder now, with paper in it, and the paper is the case study. That
+   is a real claim about the object rather than a picture of one: press it and
+   the top sheet comes out and turns into the screen you land on, so the thing
+   you take out of the folder is the thing you read. What a reader can see of
+   it before pressing is exactly what it is -- three sheet edges above the
+   front board, and more of them when the pointer is on the card.
+
+   Drawn rather than drawn on. Five boxes -- a back board with a tab, three
+   sheets, a front board -- and every figure below is a percentage of the
+   folder's own box, because the frame gives it 216 square and a phone gives
+   it the width of the column. Percentages keep one description of the object
+   for both, and a folder that is wider than it is tall is a folder still.
+
+   The tell is the tab. A rectangle with paper behind it is a wallet or an
+   envelope or a box; the notched corner at the top left is what makes it the
+   thing everybody has a thousand of. */
+.w-folder {
   position: absolute;
-  left: 24px; right: 24px; top: 24px;
-  height: 216px;
-  background-color: var(--slot);
-  background-image:
-    linear-gradient(to bottom right, transparent calc(50% - 0.5px),
-      rgba(var(--w), 0.06) 50%, transparent calc(50% + 0.5px)),
-    linear-gradient(to bottom left, transparent calc(50% - 0.5px),
-      rgba(var(--w), 0.06) 50%, transparent calc(50% + 0.5px));
+  left: 24px; top: 24px;
+  width: 216px; height: 216px;
+  /* The boards turn away from the reader when the folder opens, and a turn
+     with no depth behind it is a box getting shorter. Held here rather than
+     on the board, so the vanishing point is the folder's centre and not each
+     board's own -- one object, one eye. */
+  perspective: 900px;
+  perspective-origin: 50% 78%;
+}
+
+/* The back board, and the tab that makes it a folder.
+
+   The tab's right edge is cut rather than square, which is the whole of the
+   silhouette: a rectangle sitting on a rectangle is a step, and a rectangle
+   whose corner is taken off at an angle is a tab. 74% and not 100% because
+   the cut wants to read at 96 pixels wide and at 130. */
+.w-fold-back {
+  position: absolute;
+  left: 0; top: 20.4%; width: 100%; height: 73.2%;
+  background: var(--fold-deep);
+  border-radius: 3px 5px 5px 5px;
+}
+.w-fold-back::before {
+  content: '';
+  position: absolute;
+  left: 0; top: -11.5%; width: 44.4%; height: 12%;
+  background: var(--fold-deep);
+  border-radius: 4px 4px 0 0;
+  clip-path: polygon(0 0, 74% 0, 100% 100%, 0 100%);
+}
+
+/* Three sheets, and only the top one is ever a page.
+
+   The two behind it are an edge each -- six and eleven pixels of paper above
+   the front board -- and they exist so the stack is a stack. One sheet in a
+   folder is a folder with a sheet in it; three is a folder with work in it,
+   and the difference costs two boxes. */
+.w-sheet {
+  position: absolute;
+  background-color: var(--paper-s);
+  background-size: cover;
+  background-position: 50% 0;
+  border-radius: 2px 2px 0 0;
+  box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.42);
+  transition: transform var(--dur) var(--ease);
+}
+.w-sheet-a { left: 9.3%;  top: 23.1%; width: 81.5%; height: 67.6%; z-index: 2; }
+.w-sheet-b { left: 5.6%;  top: 26.4%; width: 88.9%; height: 64.4%; z-index: 1;
+             background-color: var(--paper-s-2); }
+.w-sheet-c { left: 13.9%; top: 28.7%; width: 73.1%; height: 62%;   z-index: 0;
+             background-color: var(--paper-s-2); }
+
+/* Ruled, in the strip of it that shows.
+
+   Six lines in the top sixty pixels of the sheet, of which one is visible at
+   rest and three when the pointer is on the card. That is the whole reason
+   they are there: a plain white edge above a board is a highlight, and a
+   white edge with a line on it is a page. Off the sheet that carries a
+   photograph, where the photograph is the page. */
+.w-sheet-a::after {
+  content: '';
+  position: absolute;
+  left: 8%; right: 8%; top: 7%; height: 42%;
+  background: repeating-linear-gradient(to bottom,
+    var(--paper-rule) 0 1px, transparent 1px 9px);
+}
+.w-folder[role="img"] .w-sheet-a::after { display: none; }
+
+/* The front board. Lit down its face, because a board that has been bent
+   round a spine catches the room unevenly and a flat fill is a swatch. */
+.w-fold-front {
+  position: absolute;
+  left: 0; top: 31.5%; width: 100%; height: 62%;
+  z-index: 3;
+  transform-origin: 50% 100%;
+  background:
+    linear-gradient(163deg, var(--fold) 0%, var(--fold-2) 46%, var(--fold-deep) 100%);
+  border-radius: 4px 4px 5px 5px;
+  box-shadow: inset 0 1px 0 var(--fold-lip),
+              0 12px 24px -14px rgba(0, 0, 0, 0.85);
+  transition: transform var(--dur) var(--ease);
+}
+
+/* And the hand on it.
+
+   The sheets come up out of the folder and the front board tips a degree or
+   two away, which is the same gesture at a tenth of the size as the one a
+   press runs: hover is the promise and the press is the thing. Staggered
+   from the top of the stack down, because a stack lifted from the top of it
+   fans and a stack lifted at once is a block. */
+.card:hover .w-sheet-a { transform: translateY(-17px) rotate(-0.5deg); }
+.card:hover .w-sheet-b { transform: translateY(-10px) rotate(0.4deg);
+                         transition-delay: 30ms; }
+.card:hover .w-sheet-c { transform: translateY(-5px);
+                         transition-delay: 60ms; }
+.card:hover .w-fold-front { transform: rotateX(7deg); }
+
+/* The sheet once it is out, at the size it is going to be.
+
+   One box, the card's own, transformed back down to where the top sheet
+   stands: the lift is then a single transform from the folder to the card and
+   there is no second element to keep in step with the first. It is blank
+   paper on purpose -- the ruling is on the sheet in the folder, and a rule
+   drawn at 176 wide and stretched to 264 is a rule that has been stretched.
+   The two cross over inside the first tenth of the beat, so what the reader
+   sees is one sheet the whole way.
+
+   .w-seat is the same box again as an empty tile: card fill, grain and the
+   hairline, which is what every box on this frame is when there is nothing in
+   it yet. The paper becomes it, and it is the tile that travels. See
+   .bk-seat, which is this pair run the other way round. */
+.w-lift, .w-seat {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+.w-lift {
+  z-index: 4;
+  transform-origin: 0 0;
+  background: var(--paper-s);
+  border-radius: 3px;
+  box-shadow: 0 30px 56px -26px rgba(0, 0, 0, 0.92),
+              0 4px 12px -5px rgba(0, 0, 0, 0.5);
+}
+.w-seat {
+  z-index: 5;
+  background-color: var(--card-fill);
+  background-image: var(--grain);
+  box-shadow: inset 0 0 0 var(--card-edge) var(--card-line);
+  transition: opacity var(--x-become) linear;
+}
+.card.w-seated .w-seat { opacity: 1; }
+.x-lifting .view-work .w-lifting .w-seat { will-change: opacity; }
+
+/* --- taking it out ---------------------------------------------------------
+
+   One movement in two halves, and they are the same half twice: the sheet
+   comes up out of the folder, and then it squares up. Written as one set of
+   figures on one box because it is one gesture -- a hand does not lift a page
+   and then separately unfold it.
+
+   The figures at 0% are where the top sheet stands, measured off the folder
+   and written out: the folder is at 24,24 in the card and its top sheet is at
+   9.3% by 23.1% of 216 square, which is 44 by 74; it is 176 by 146 in a card
+   that is 264 by 335, which is 0.6667 by 0.4358. Two numbers to keep in step
+   with the sheet's own rule, and the alternative -- measuring it in script on
+   the frame the press lands -- is a layout read at the worst moment there is.
+
+   Up first and out second. At 45% it is clear of the folder's top edge and
+   still nearly sheet-sized, which is the frame where it is plainly a piece of
+   paper being held; from there the scale does the rest and it stops being a
+   sheet and starts being a card. */
+@keyframes w-lift {
+  0%   { transform: translate(44px, 74px) scale(0.6667, 0.4358); opacity: 0; }
+  8%   { opacity: 1; }
+  50%  { transform: translate(30px, 6px)  scale(0.76, 0.56);     opacity: 1; }
+  100% { transform: translate(0px, 0px)   scale(1, 1);           opacity: 1; }
+}
+
+/* And the board it came off, tipping away as it goes. Away and not open: a
+   folder held in one hand does not lie flat, it gives at the fold while the
+   other hand takes the page out. */
+@keyframes w-fold-open {
+  from { transform: rotateX(0deg); }
+  to   { transform: rotateX(30deg); }
+}
+
+/* Everything below is reached through .x-lifting and .w-lifting together.
+
+   .w-lifting says which of the four was pressed -- the other three are not in
+   this gesture and must not move -- and .x-lifting says the crossing is in its
+   first beat, so the rules come off on their own when it ends rather than
+   being unpicked one at a time. The same pair the book's shut uses, named for
+   the other direction. */
+.x-lifting .view-work .card.w-lifting { z-index: 6; }
+.x-lifting .view-work .card.w-lifting .w-lift {
+  animation: w-lift var(--x-lift) var(--x-lift-ease) forwards;
+}
+.x-lifting .view-work .card.w-lifting .w-fold-front {
+  animation: w-fold-open var(--x-lift) var(--x-lift-ease) forwards;
+}
+/* The sheet in the folder goes the instant the one out of it arrives, and the
+   two cross inside the first tenth of the beat. Any longer and there are two
+   sheets; any shorter and the top of the stack blinks out before its
+   replacement is opaque. */
+.x-lifting .view-work .card.w-lifting .w-sheet-a {
+  opacity: 0;
+  transition: opacity 80ms linear;
+}
+/* And the two under it drop back where they were lying. The pointer is still
+   on the card, so without this they hold the hover's raised position while
+   the board in front of them tips away from it -- a stack standing up out of
+   a folder that is opening, which is a stack about to fall out of it. */
+.x-lifting .view-work .card.w-lifting .w-sheet-b,
+.x-lifting .view-work .card.w-lifting .w-sheet-c {
+  transform: none;
+}
+/* And the card stops saying what it is, because in a moment it is not going
+   to be a card saying that. Quicker than the lift, so the paper comes up over
+   type that is already going rather than over type it has to hide. */
+.x-lifting .view-work .card.w-lifting .w-said,
+.x-lifting .view-work .card.w-lifting .w-cta {
+  opacity: 0;
+  transition: opacity 170ms linear;
 }
 
 .w-tags {
@@ -11335,7 +11637,7 @@ a.arrow { text-decoration: none; }
      pixels of air either side does not read as floating. It reads as a shelf
      that has failed to reach the edges. */
   .card, .card::after, .slot, .cover, .avatar,
-  .btn, .chip, .c-stat b { border-radius: 0; }
+  .btn, .c-stat b { border-radius: 0; }
 
   /* The rim, on the ring the frame already built for the hover glint: the
      mask and the one-pixel padding are right and only the paint changes. */
@@ -11348,7 +11650,7 @@ a.arrow { text-decoration: none; }
   .connect { order: 5; }
   .media { order: 6; }
 
-  .label, .headline, .sub, .wordmark, .blurb, .now, .chip, .arrow,
+  .label, .headline, .sub, .wordmark, .blurb, .now, .repo-more, .arrow,
   .slot-player, .slot-side, .socials {
     position: static;
     left: auto;
@@ -11393,7 +11695,7 @@ a.arrow { text-decoration: none; }
   .headline { margin-bottom: 8px; }
   .media .headline { line-height: 28px; }
   .sub { margin-bottom: 16px; }
-  .chip { display: inline-block; padding: 6px 14px; }
+  .repo-more { display: flex; margin-top: 18px; }
 
   .avatar { position: static; }
   .wordmark { margin: 22px 0 12px; }
@@ -12152,20 +12454,28 @@ a.arrow { text-decoration: none; }
      number, a title and one line of type each, in the room a picture was
      supposed to be standing in. That is the whole of why this screen looked
      empty. */
-  .w-shot {
+  /* The folder, in a column rather than in a square.
+
+     Every figure inside it is a percentage of its own box, so it takes the
+     column's width and this height and stays a folder -- a wider, shallower
+     one, which is what a folder on a desk actually looks like. 150 rather
+     than the frame's 216: down here it is one of six cards in a scroller and
+     the object is the card's picture, not the card.
+
+     The lift is not here. A phone crossing is the column fading out and back
+     in -- see column() -- and there is no grid for a sheet to travel across;
+     go() checks small() before any of it. */
+  .w-folder {
     position: static;
     display: block;
     order: -1;
-    height: 190px;
+    width: auto;
+    height: 150px;
     margin: 0 0 16px;
   }
-  /* A frame with nothing in it yet is still drawn -- that is how this site
-     says "a picture goes here" -- but it does not need to be the largest
-     thing on the card while it waits. Three of them, one under another, at
-     the height a photograph would take, is a screen of held space. At 128 it
-     is plainly a slot and the card reads as a card. Put a shot in work.json
-     and it takes the full height back. */
-  .w-shot.is-blank { height: 128px; }
+  /* And neither of the two boxes the crossing moves, which have nothing to do
+     down here and would otherwise be two empty blocks in the flow. */
+  .w-lift, .w-seat { display: none; }
   /* What it is, over the name of it: the smallest line on the card and the
      first one read, which is the job an eyebrow does. */
   .w-kind {
@@ -12965,8 +13275,15 @@ a.arrow { text-decoration: none; }
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
              stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h17M14 6l6 6-6 6"/></svg>
       </span>
-      <h2 class="headline">Reimagining Large Screen Experience</h2>
-      <a class="chip" href="#work" data-route="work">+ 3 more</a>
+      <h2 class="headline">Reimagining Large Screen Experience for 10M+ Indian Users.</h2>
+      <a class="repo-more" href="#work" data-route="work">
+        <span class="repo-thumbs" aria-hidden="true">
+          <i class="repo-thumb is-blank"></i>
+          <i class="repo-thumb is-blank"></i>
+          <i class="repo-thumb is-blank"></i>
+        </span>
+        <span class="repo-more-t">and 3 more stories</span>
+      </a>
 
       <a class="card-hit" href="#work" data-route="work" aria-label="Open Work"></a>
     </section>
@@ -13166,7 +13483,13 @@ a.arrow { text-decoration: none; }
       <!-- ------------------------ w-one ------------------------ -->
       <!-- Tile a comes down out of Home's intro card. -->
       <section class="card w-one" data-tile="a">
-        <span class="w-shot is-blank" aria-hidden="true"></span>
+        <span class="w-folder" aria-hidden="true">
+          <i class="w-fold-back"></i>
+          <i class="w-sheet w-sheet-c"></i>
+          <i class="w-sheet w-sheet-b"></i>
+          <i class="w-sheet w-sheet-a"></i>
+          <i class="w-fold-front"></i>
+        </span>
         <div class="w-said">
           <p class="w-kind">Case study · 2025</p>
           <h2 class="headline">Reimagining linear player</h2>
@@ -13178,11 +13501,19 @@ a.arrow { text-decoration: none; }
           <div class="w-fig"><dt>+12%</dt><dd>median session length</dd></div>
         </dl>
         <a class="card-hit" href="#case/linear-player" data-route="case" data-slug="linear-player" aria-label="Open Reimagining linear player"></a>
+        <span class="w-lift" aria-hidden="true"></span>
+        <span class="w-seat" aria-hidden="true"></span>
       </section>
 
       <!-- ------------------------ w-two ------------------------ -->
       <section class="card w-two" data-tile="d">
-        <span class="w-shot is-blank" aria-hidden="true"></span>
+        <span class="w-folder" aria-hidden="true">
+          <i class="w-fold-back"></i>
+          <i class="w-sheet w-sheet-c"></i>
+          <i class="w-sheet w-sheet-b"></i>
+          <i class="w-sheet w-sheet-a"></i>
+          <i class="w-fold-front"></i>
+        </span>
         <div class="w-said">
           <p class="w-kind">Case study · 2024</p>
           <h2 class="headline">Xstream creative toolkit</h2>
@@ -13194,12 +13525,20 @@ a.arrow { text-decoration: none; }
           <div class="w-fig"><dt>4x</dt><dd>faster from brief to artwork</dd></div>
         </dl>
         <a class="card-hit" href="#case/xstream-toolkit" data-route="case" data-slug="xstream-toolkit" aria-label="Open Xstream creative toolkit"></a>
+        <span class="w-lift" aria-hidden="true"></span>
+        <span class="w-seat" aria-hidden="true"></span>
       </section>
 
       <!-- ------------------------ w-three ------------------------ -->
       <!-- Tile f crosses the whole frame from Home's media strip. -->
       <section class="card w-three" data-tile="f">
-        <span class="w-shot is-blank" aria-hidden="true"></span>
+        <span class="w-folder" aria-hidden="true">
+          <i class="w-fold-back"></i>
+          <i class="w-sheet w-sheet-c"></i>
+          <i class="w-sheet w-sheet-b"></i>
+          <i class="w-sheet w-sheet-a"></i>
+          <i class="w-fold-front"></i>
+        </span>
         <div class="w-said">
           <p class="w-kind">Case study · 2024</p>
           <h2 class="headline">Bubbles // a studio site</h2>
@@ -13211,12 +13550,20 @@ a.arrow { text-decoration: none; }
           <div class="w-fig"><dt>60fps</dt><dd>on a four-year-old phone</dd></div>
         </dl>
         <a class="card-hit" href="#case/bubbles" data-route="case" data-slug="bubbles" aria-label="Open Bubbles // a studio site"></a>
+        <span class="w-lift" aria-hidden="true"></span>
+        <span class="w-seat" aria-hidden="true"></span>
       </section>
 
       <!-- ------------------------ w-four ------------------------ -->
       <!-- Tile e is Home's Connect card, the last one left. -->
       <section class="card w-four" data-tile="e">
-        <span class="w-shot is-blank" aria-hidden="true"></span>
+        <span class="w-folder" aria-hidden="true">
+          <i class="w-fold-back"></i>
+          <i class="w-sheet w-sheet-c"></i>
+          <i class="w-sheet w-sheet-b"></i>
+          <i class="w-sheet w-sheet-a"></i>
+          <i class="w-fold-front"></i>
+        </span>
         <div class="w-said">
           <p class="w-kind">Case study · 2025</p>
           <h2 class="headline">Family safety</h2>
@@ -13228,6 +13575,8 @@ a.arrow { text-decoration: none; }
           <div class="w-fig"><dt>94%</dt><dd>still installed after a month</dd></div>
         </dl>
         <a class="card-hit" href="#case/family-safety" data-route="case" data-slug="family-safety" aria-label="Open Family safety, without the surveillance"></a>
+        <span class="w-lift" aria-hidden="true"></span>
+        <span class="w-seat" aria-hidden="true"></span>
       </section>
 
       <!-- -------------------------- the writing ---------------------- -->
@@ -19161,6 +19510,10 @@ a.arrow { text-decoration: none; }
 
     var busy = false;
 
+    /* The card a press landed on, for the one crossing that cares. See the
+       route handler above and the lift in go(). */
+    var pressed = null;
+
     // Which crossing is the current one. The deep tempo is handed back one
     // wait after the crossing finishes painting, by which time another
     // crossing may have started and claimed it; the counter is how that late
@@ -19243,6 +19596,16 @@ a.arrow { text-decoration: none; }
       // the left, top, width and height the frame gave them -- which is the
       // whole box, and the only thing wanted here.
       var shutting = here === 'article' && !!book && !small(), dest = null;
+      /* And the other way down: a folder on Work, pressed, going to the case
+       * study its paper is. Only from Work and only to a case -- the writing
+       * index is on the same screen and its rows are not folders -- and only
+       * when the press was on one of the four, which is what the .w-lift asks.
+       * A keyboard press through the same link is one of these too: the card
+       * has focus, the anchor is inside it, and closest() finds it. */
+      var lift = (here === 'work' && name === 'case' && pressed &&
+                  pressed.querySelector && pressed.querySelector('.w-lift') &&
+                  !small()) ? pressed : null;
+      var liftFrom = null;
       if (shutting) {
         var seat = views[name] && views[name].querySelector('.card[data-tile="b"]');
         if (seat) { dest = where(seat); }
@@ -19375,6 +19738,50 @@ a.arrow { text-decoration: none; }
             setTimeout(fit, ms('--x-become') + 400);
           }, ms('--x-shut'));
         });
+      } else if (lift) {
+        /* Move 0 on the way down, and the shut's opposite number.
+         *
+         * The sheet comes up out of the folder and squares up to the card it
+         * is standing on; the tile face comes up over it; and only then does
+         * the screen begin to leave. Three beats end to end, which is the
+         * shut read backwards -- and it has to be end to end for the reason
+         * the opening learned the hard way: a fold drawn on top of a whole
+         * screen morphing gets a third of the frames it asked for.
+         *
+         * A frame before the class goes on, for the reason the shut takes
+         * one: the lift's first frame is a new layer being rasterised, and
+         * doing that on the frame the movement starts means the movement
+         * starts with a stall. */
+        requestAnimationFrame(function () {
+          stage.classList.add('x-lifting');
+          lift.classList.add('w-lifting');
+
+          setTimeout(function () {
+            /* Beat 1. Where the paper is standing, measured now -- it is the
+             * card's own box, and it is read here rather than in open()
+             * because open() runs a frame later and by then the class that
+             * pins it is on its way off. */
+            liftFrom = where(lift);
+            lift.classList.add('w-seated');
+
+            /* Beat 2, started by the face itself and not by a second timer
+             * set to the same figure -- see the book, where two clocks for
+             * one beat drifted far enough to start the travel under a cover
+             * that was still transparent. */
+            var face = lift.querySelector('.w-seat'), went = false;
+            function fit() {
+              if (went || mine !== gen) { return; }
+              went = true;
+              open();
+            }
+            if (face) {
+              face.addEventListener('transitionend', function (e) {
+                if (e.propertyName === 'opacity') { fit(); }
+              }, { once: true });
+            }
+            setTimeout(fit, ms('--x-become') + 400);
+          }, ms('--x-lift'));
+        });
       } else {
         setTimeout(open, 0);
       }
@@ -19403,6 +19810,16 @@ a.arrow { text-decoration: none; }
         // is given the seat itself, so the pin and the unpin are the same box
         // and the tile arrives without a move of its own.
         if (dest && gFrom.b) { gFrom.b = dest; }
+        /* And the same trick the other way up. The case study's hero is tile
+         * a, whose partner on Work is the first of the four folders -- so
+         * without this the hero always grows out of the leftmost box however
+         * far along the row the reader pressed, and the sheet they just
+         * watched come out of the third folder is left behind.
+         *
+         * Pinned to the folder that was pressed instead. The tile it belongs
+         * to still fades where it stands like any other tile with no partner;
+         * what the reader follows is the paper, and the paper is here. */
+        if (liftFrom && gFrom.a) { gFrom.a = liftFrom; }
 
         // Taken off and put back rather than simply added: the ruling outlasts
         // the lock on the stage by one move, so a crossing begun in that window
@@ -19446,8 +19863,9 @@ a.arrow { text-decoration: none; }
           setTimeout(function () {
             // 3. the shapes have settled -- every tile is standing on its own
             //    ground again -- so let the new contents in.
-            stage.classList.remove('x-empty', 'x-shutting');
+            stage.classList.remove('x-empty', 'x-shutting', 'x-lifting');
             if (book) { book.classList.remove('bk-seated', 'bk-shrunk'); }
+            if (lift) { lift.classList.remove('w-lifting', 'w-seated'); }
             Array.prototype.forEach.call(document.querySelectorAll('.x-solo'),
               function (e) { e.classList.remove('x-solo'); });
             busy = false;
@@ -19662,8 +20080,20 @@ a.arrow { text-decoration: none; }
         var which = a.getAttribute('data-slug');
         if (!which) { return; }
         if (!(to === 'case' ? caseOf(which) : essayOf(which))) { return; }
+        /* And which folder it was, when it was one.
+         *
+         * The link that opens a case study is the whole face of a project
+         * card, and on Work that card is a folder with paper in it. The
+         * crossing has to know which of the four, because the sheet that
+         * comes out is that one's and the other three hold still -- and this
+         * is the only place that knows: by the time go() runs it has an
+         * address and nothing else. Read off the press and handed over; go()
+         * takes it and puts it down again, so a press somewhere else can
+         * never inherit it. */
+        pressed = a.closest ? a.closest('.card') : null;
         history.pushState({ view: to }, '', hashOf(to));
         if (to !== here) { go(to); }
+        pressed = null;
         return;
       }
 
