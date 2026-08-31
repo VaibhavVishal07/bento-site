@@ -2983,30 +2983,47 @@ body {
      alone: it re-times it, and the thing you are watching jumps forward by the
      difference. Both did. */
   --x-deep-morph: 560ms;
-  /* The beat the book gets to itself on the way out.
+  /* The three beats the book gets to itself on the way out.
 
      Leaving L3 is the one crossing where a tile is not a panel of contents
-     fading out: it is an object being shut and put down, and shutting is a
-     gesture with a beginning and an end. Move 1 alone was 330 and the boards
-     took 280 of it, so the fade of everything else, the last of the cover
-     falling, and the slide off the table all happened at once -- and then the
-     views swapped on top of all three. What you saw was a book being
-     interrupted.
+     fading out: it is an object being shut and put away, and that is three
+     movements rather than one. It was being run as two of them at once. The
+     boards began falling at nought and the card began shrinking at 140, so
+     the covers met at 465 with the box already down from 935 wide to 457 --
+     more than half the journey made by a book that had not finished closing.
+     Both things were legible on their own and neither was legible together:
+     what you watched was a book being closed and carried off in the same
+     gesture, which is not a gesture anybody makes.
 
-     So the exit gets a move ahead of move 1 -- but not the whole of one.
-     Waiting for the covers to meet before anything else was allowed to happen
-     put six hundred milliseconds of nothing between the click and the screen
-     changing, and a flourish you have to wait out is not a flourish, it is a
-     delay. The two run together instead: the book gets its whole shut, and
-     three hundred of the way into it the rest of the screen starts leaving
-     around it. The book is picked up and carried off while it is still
-     closing, which is how anybody closes a book they are done with.
+     So the three are separated, and each is given the whole of its own beat.
 
-     --x-shut is how long the book takes. --x-lead is how much of that the
-     crossing waits out before it begins. The script reads both off the root
-     the same way it reads the other three. */
-  --x-shut:  520ms;
-  --x-lead:  300ms;
+       0  the shut.     The boards fall and meet and the object settles. The
+                        card does not move a pixel, and neither does anything
+                        else on the screen.
+       1  the becoming. The board stops being a board. The leather, the blind
+                        stamp, the cut edges of the paper and the cast a thing
+                        sitting on a table has all go, and what is left
+                        standing there is a card face: the fill, the grain and
+                        the hairline every empty tile on this frame has. The
+                        object is now the shape of the hole it is going into.
+       2  the fitting.  Only now does it travel, and it travels as a tile --
+                        so what crosses the frame is the thing that belongs in
+                        the seat rather than a book being posted into one. The
+                        rest of the screen leaves around it, on this beat and
+                        not before, and the travel is exactly move 1 long so
+                        the tile lands on the frame the views swap.
+
+     The old note here argued that waiting for the covers put six hundred
+     milliseconds of nothing between the click and the screen changing. It is
+     the right objection and it is answered by beat 1 rather than by overlap:
+     there is no dead air, because the cover turning into a tile is itself the
+     thing being watched. It costs about a third of a second more to the swap
+     and spends all of it on something.
+
+     --x-shut is the shut and --x-become is the becoming; the script reads
+     both off the root and adds them to know when move 1 may start. */
+  --x-shut:   520ms;
+  --x-become: 200ms;
   --x-sink:   7px;    /* how far contents drop as they leave    */
   --x-blur:   2px;
 
@@ -3078,7 +3095,15 @@ body {
    as sliding. The deep crossing doubles both, because it holds the empty grid
    long enough that a light dimming would read as the page having stalled --
    over that length the contents have to be visibly gone. */
-.view .card > *,
+/* And .bk-seat is out of it for exactly the reason the pseudo-elements are.
+   It is not printed on the tile, it is the tile: the face the book's cover
+   turns into on the way out, which has to be arriving at full strength on the
+   beat everything else on the card is leaving at. In the list it took this
+   transition instead of its own -- 150 with 84 of stagger in front of it, in
+   place of the 200 the beat is timed on -- and then took the sink, the blur
+   and the fade to nothing along with the contents it was there to replace.
+   See .bk-seat. */
+.view .card > *:not(.bk-seat),
 .crumb,
 .crumb-count {
   transition: opacity var(--x-fade) var(--x-ease),
@@ -3087,7 +3112,7 @@ body {
   transition-delay: var(--x-delay, 0ms);
 }
 
-.x-empty .view .card > *,
+.x-empty .view .card > *:not(.bk-seat),
 /* The way back was in this list and is not any more. It has two lattice
    rules hanging off it now, and those are struck and ruled across a crossing
    like every other line on the frame -- so fading the box as well drew the
@@ -4703,43 +4728,101 @@ body {
   transition: transform var(--x-deep-morph) var(--x-ease);
 }
 
-/* Going into its seat, on the covers' clock rather than the crossing's.
-  
-   The frame transitions every card's box over the morph with the frame's own
-   ease, which is front-loaded, and the card narrows from the left because its
-   right edge is already where it is going. So the first thing that happened
-   was the left edge eating into an open verso: a page sliced off by the board
-   it is bound into, before the covers had properly begun. The shrink is held
-   back 140 and given the cover's own curve, so by the time the edge reaches
-   the type the verso has shut and there is no type there to slice. 500 long
-   from 140 puts it in its seat at 640, which is where the fade ends and a
-   breath before the views swap.
-  
-   The body slides inside it on exactly the same clock, so the fold sits on the
-   seat's centre line at every point of the way down and not only at the ends.
-   Both are declared here rather than left to the frame, and declared after the
-   exit's own rule, because the two selectors weigh the same. */
+/* Going into its seat -- beat 2, and nothing before it.
+
+   This used to be held back 140 and run for 500, which put it in its seat at
+   640 against covers that met at 465: the shrink was most of the way through
+   before the book had shut. The delay existed to keep the card's left edge off
+   an open verso -- the box narrows from the left, and a page sliced by the
+   board it is bound into is a bad thing to watch. There is nothing to protect
+   now. By the time this class lands the boards have met and the face has gone
+   over, so the thing being narrowed is a blank tile and there is no type on it
+   to cut.
+
+   Move 1 exactly, and no delay. The views swap the instant move 1 is up, so a
+   travel any longer than it is one that gets cut off at the end -- and the end
+   is the part where the tile arrives. The body slides inside it on the same
+   clock, which no longer shows through the face but keeps the two agreeing.
+
+   Reached with .x-shutting in front of it because the rule that fades the
+   board into a card face weighs three and would otherwise take this
+   declaration with it. */
+.x-shutting .view-article .bk.bk-going,
 .bk.bk-going {
   --bk-fall: cubic-bezier(0.55, 0.02, 0.36, 1);
-  /* And the shadow goes with the lift. A cast shadow is a contact shadow:
-     it belongs to a thing sitting on a surface, and this one is being picked
-     up off it. It is also the only place on the card where the seat it is
-     going to has nothing to receive it -- a 366 tile in the writing index is
-     a plain card and casts nothing. */
-  box-shadow: 0 0 0 -30px rgba(0, 0, 0, 0), 0 0 0 -4px rgba(0, 0, 0, 0);
-  transition: left 500ms var(--bk-fall) 140ms,
-              top 500ms var(--bk-fall) 140ms,
-              width 500ms var(--bk-fall) 140ms,
-              height 500ms var(--bk-fall) 140ms,
-              box-shadow 260ms linear,
-              outline-color var(--dur) var(--ease),
-              opacity var(--x-fade) var(--x-ease);
+  transition: left var(--x-out) var(--bk-fall),
+              top var(--x-out) var(--bk-fall),
+              width var(--x-out) var(--bk-fall),
+              height var(--x-out) var(--bk-fall),
+              outline-color var(--x-become) linear,
+              box-shadow var(--x-become) linear;
 }
+.x-shutting .view-article .bk.bk-going .bk-body,
 .bk.bk-going .bk-body,
 .x-empty .view-article .bk.bk-going .bk-body {
-  transition: transform 500ms var(--bk-fall) 140ms,
+  transition: transform var(--x-out) var(--bk-fall),
               opacity 110ms linear 220ms;
 }
+
+/* --- beat 1: the cover becomes the tile ---------------------------------
+
+   Everything that says "book" comes off the object over one short beat, and
+   what is underneath is the card face the rest of the frame is made of. The
+   board's own binding edge goes to the hairline every other tile carries, and
+   the cast a heavy object sitting on a table makes goes to the cast a card
+   makes -- which in the dark room is none at all.
+
+   The transition stands on .x-shutting, which is on from the first frame of
+   the shut, so the values below have something to travel along when they
+   arrive a beat later. */
+.x-shutting .view-article .bk {
+  transition: outline-color var(--x-become) linear,
+              box-shadow var(--x-become) linear;
+}
+/* On the card and not on the stage, which is a performance figure rather than
+   a tidiness one. A class on the stage invalidates the style of everything
+   under it, and under it at this moment is an article: the flow, its three
+   clones, and every line of type in the four of them. That recalculation took
+   174 milliseconds, and the transition below could not start until it was
+   done -- so the beat that is meant to be the face coming up spent the first
+   third of itself as a still frame. One class, one card, one subtree. */
+.bk.bk-seated {
+  outline-color: var(--card-line);
+  box-shadow: 0 calc(var(--cast-y) * var(--lit)) calc(var(--cast-b) * var(--lit))
+              rgba(var(--shade), calc(var(--cast-a) * var(--lit)));
+}
+
+/* And the face itself. The fill, the grain and the hairline, which is the
+   whole of what an empty tile on this frame is -- drawn over the board rather
+   than by undoing it, because a background-image does not interpolate and
+   four layers of leather swapping for one of grain is a cut, not a fade.
+
+   Over everything on the card, the card's own bevel and glare included: what
+   is wanted here is the tile as it will be in the seat, and in the seat it
+   will be empty. */
+.bk-seat {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  opacity: 0;
+  pointer-events: none;
+  background-color: var(--card-fill);
+  background-image: var(--grain);
+  box-shadow: inset 0 0 0 var(--card-edge) var(--card-line);
+  transition: opacity var(--x-become) linear;
+}
+
+/* And it is got ready during the shut, which is the whole reason the hint is
+   here and not on the rule above.
+
+   Fading it in cost a flat 160 milliseconds before anything moved, at every
+   figure the beat was tried at -- the price of rasterising a 1122 by 840 layer
+   of gradient for the first time, paid at the exact moment it was wanted. The
+   shut is half a second of the browser having nothing else to do, so the layer
+   is asked for there and is ready by the time the beat opens. Off again with
+   the class, because a permanent hint is a permanent layer. */
+.x-shutting .view-article .bk-seat { will-change: opacity; }
+.bk.bk-seated .bk-seat { opacity: 1; }
 
 /* The book while it is shut.
 
@@ -12861,6 +12944,16 @@ a.arrow { text-decoration: none; }
         </div>
         </div>
 
+        <!-- The face the shut cover turns into, on the way out.
+
+             Outside .bk-body rather than in it, because the body is the thing
+             that slides and fades and this is the thing that must not: once it
+             is up, it is the only surface on the card, and it has to stay
+             opaque all the way into the seat. Last child and lifted, so it is
+             over the boards, the stamp and the cut edges without any of them
+             having to be taken down one at a time. See .bk-seat. -->
+        <div class="bk-seat" aria-hidden="true"></div>
+
       </section>
 
     </div>
@@ -13516,7 +13609,8 @@ a.arrow { text-decoration: none; }
         <button type="button" class="disc-k" data-disc-toggle aria-label="Pause">
           <svg class="disc-i disc-i-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg>
           <svg class="disc-i disc-i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
-        </button>
+        </button>
+
       </div>
       <p class="disc-say" data-disc-say aria-hidden="true"></p>
     </div>
@@ -15187,7 +15281,7 @@ a.arrow { text-decoration: none; }
     card.addEventListener('bk-shown', function (e) {
       at = 0; roll = 0; grip = null;
       card.classList.add('bk-arriving');
-      card.classList.remove('bk-going');
+      card.classList.remove('bk-going', 'bk-seated');
       // Whatever box the last exit shrank it into is not this one's business;
       // the crossing pins and unpins from here.
       card.style.left = card.style.top = card.style.width = card.style.height = '';
@@ -15231,20 +15325,22 @@ a.arrow { text-decoration: none; }
       card.classList.remove('bk-arriving');
       if (live && travel() > 0.5) { at = clamp(at + (fwd ? 1 : -1), 0, spreads - 1); }
       settle();
+    });
 
-      // And it starts leaving on the same frame it starts shutting.
-      //
-      // It used to be told to go a move later, once the covers had met: the
-      // book shut inside a cover-sized card, faded, and only then did a card
-      // the same size shrink away -- three things in a row where there should
-      // have been one. The board goes down into its seat while the covers are
-      // coming over, so what leaves is a book being closed and put away rather
-      // than a book being closed, and then put away.
-      //
-      // The card's own left, top, width and height carry it; the frame already
-      // transitions all four over the morph. The body slides the other way
-      // inside it by exactly the figure the arrival uses, so the fold stays on
-      // the seat's centre line the whole way down.
+    // And, two beats later, told to go and sit in it.
+    //
+    // This was the tail of the event above: the card was given its seat on the
+    // same frame the boards began to fall, so the shrink and the shut were one
+    // movement made of two readings. Shutting a book and putting it away are
+    // sequential things in the hand and they are sequential here now -- the
+    // covers meet, the face turns into a tile, and only then is this fired.
+    //
+    // The card's own left, top, width and height carry it. The body slides the
+    // other way inside it by exactly the figure the arrival uses, so the fold
+    // stays on the seat's centre line -- which the face now covers, and which
+    // is kept because the two halves of the travel disagreeing is the kind of
+    // thing that shows the moment the face is ever made anything but opaque.
+    card.addEventListener('bk-seating', function (e) {
       var to = e.detail && e.detail.to;
       if (!to || still() || phone()) { return; }
       card.classList.add('bk-going');
@@ -18705,9 +18801,47 @@ a.arrow { text-decoration: none; }
       // enough: the movement starts on a compositor with nothing left to do.
       if (shutting) {
         requestAnimationFrame(function () {
+          // Beat 0. The boards fall, and the screen holds still around them.
           stage.classList.add('x-shutting');
-          // Part of the way into the shut, not after it. See --x-lead.
-          setTimeout(open, ms('--x-lead'));
+          setTimeout(function () {
+            // Beat 1. The covers have met; the object stops being a book and
+            // becomes the tile it is about to be. Still nothing else moves.
+            //
+            // No forced reflow behind this. One was put here to make the
+            // class and the beat's clock start together, and it cost 155
+            // milliseconds on its own: the thing whose layout it demanded is
+            // a card with four copies of an essay inside it, and the browser
+            // has to lay all four out before it can answer. The beat is timed
+            // off the face's own transition now, which needs no such favour.
+            book.classList.add('bk-seated');
+
+            // Beat 2. Now it travels -- and now the rest of the screen may
+            // leave around it.
+            //
+            // Started by the face itself rather than by a second timer set to
+            // the same figure. Two clocks for one beat do not keep step: the
+            // transition begins on a style flush and a timeout begins when it
+            // is asked to, and the drift between them was enough to start the
+            // travel under a cover that was still a tenth transparent. The
+            // face says when it is up; the timer is only there in case it
+            // never speaks -- a display that never ran it, or a room where the
+            // opacity it is going to is the one it already had.
+            var seat = book.querySelector('.bk-seat'), went = false;
+            function fit() {
+              if (went || mine !== gen) { return; }
+              went = true;
+              if (dest) {
+                book.dispatchEvent(new CustomEvent('bk-seating', { detail: { to: dest } }));
+              }
+              open();
+            }
+            if (seat) {
+              seat.addEventListener('transitionend', function (e) {
+                if (e.propertyName === 'opacity') { fit(); }
+              }, { once: true });
+            }
+            setTimeout(fit, ms('--x-become') + 400);
+          }, ms('--x-shut'));
         });
       } else {
         setTimeout(open, 0);
@@ -18781,6 +18915,7 @@ a.arrow { text-decoration: none; }
             // 3. the shapes have settled -- every tile is standing on its own
             //    ground again -- so let the new contents in.
             stage.classList.remove('x-empty', 'x-shutting');
+            if (book) { book.classList.remove('bk-seated'); }
             Array.prototype.forEach.call(document.querySelectorAll('.x-solo'),
               function (e) { e.classList.remove('x-solo'); });
             busy = false;
