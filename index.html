@@ -3289,7 +3289,36 @@ body {
    place of the 200 the beat is timed on -- and then took the sink, the blur
    and the fade to nothing along with the contents it was there to replace.
    See .bk-seat. */
-.view .card > *:not(.bk-seat):not(.w-seat):not(.w-lift),
+/* And .bk-body is out of it for a different reason: the work is invisible.
+
+   The book is shut through every crossing it is in. Coming in, the fold's
+   backwards fill holds the cover down until the arrival has landed; going
+   out, the shut runs as its own beat before the screen begins to leave and
+   the seat comes up over it after. At no point in either is anything inside
+   those boards on the screen.
+
+   What was being faded, sunk and blurred through all of it is .bk-body, and
+   .bk-body is the essay -- the flow and its three clones, every line of type
+   in the four of them. Counted on the way in, that subtree carried
+   filter: blur(4px) for forty-one frames of the crossing, and the cover was
+   down for every one of them.
+
+   It was not meant to. Two rules below this one -- .view-article .bk-body and
+   .x-empty .view-article .bk-body -- give the book its own way in and out and
+   the second says filter: none in as many words. It never held: this rule
+   reaches its subject through a chain of :not()s, and every one of those
+   counts as a class, so a selector written to exclude one thing quietly
+   outweighed the book's own. It is worth saying plainly because the trap is
+   general -- a :not() list is a specificity ladder, and this one has grown a
+   rung twice since it was written.
+
+   What the count is not is a frame rate. This was measured in a headless
+   browser rasterising on the CPU, where the crossing drops frames whatever is
+   on it and two runs of the same build differ by more than the change does.
+   The claim here is the work removed and not a number of milliseconds: a
+   four-pixel blur over two pages of justified type, thirty-three times, for
+   nobody. */
+.view .card > *:not(.bk-seat):not(.w-seat):not(.w-lift):not(.bk-body),
 .crumb,
 .crumb-count {
   transition: opacity var(--x-fade) var(--x-ease),
@@ -3298,7 +3327,7 @@ body {
   transition-delay: var(--x-delay, 0ms);
 }
 
-.x-empty .view .card > *:not(.bk-seat):not(.w-seat):not(.w-lift),
+.x-empty .view .card > *:not(.bk-seat):not(.w-seat):not(.w-lift):not(.bk-body),
 /* The way back was in this list and is not any more. It has two lattice
    rules hanging off it now, and those are struck and ruled across a crossing
    like every other line on the frame -- so fading the box as well drew the
@@ -3311,6 +3340,15 @@ body {
   transform: translateY(var(--x-sink));
   filter: blur(var(--x-blur));
 }
+
+/* The folder keeps the fade and the sink and loses the blur, for the smaller
+   half of the same argument. It is a drawn object rather than a panel of
+   type -- five boxes of gradient with a cast under each of them -- and a
+   blur is a thing you do to writing that is going out of focus. On an object
+   it is expense with nothing to show: it leaves with the screen either way,
+   and four of them leaving at once is four subtrees being re-rastered on
+   every frame of the move the case study grows out of. */
+.x-empty .view .card > .w-folder { filter: none; }
 
 /* And the wall behind the grid.
 
