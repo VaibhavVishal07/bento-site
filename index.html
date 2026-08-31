@@ -2027,20 +2027,42 @@ body {
      Five hundred is seventy, and seventy is the figure every manual gives. */
   width: 500px;
   font-family: var(--f-body);
-  font-size: var(--t-body);
-  line-height: 24px;
+  /* Four over the body size, on thirty.
+
+     This is the subheading of the whole page -- the one paragraph saying what
+     the person does, directly under 36 pixels of monospace with nothing
+     between them -- and at the body size it was the same type as the cards
+     two hundred pixels below it. The only place on the site set off the scale
+     rather than out of it.
+
+     Five hundred of 18 is about sixty characters, which is still inside the
+     measure the 500 was chosen for; thirty of leading is 1.67, which is what
+     a line that long wants. */
+  font-size: 18px;
+  line-height: 30px;
   color: var(--body);
 }
 
 .now {
   position: absolute;
   left: 60px;
-  top: 312px;
+  /* Forty-four lower than it was.
+
+     The blurb sets to four lines at 18 where it set to three at 14, so it
+     ends 48 further down, and at the old figure its last line landed on top
+     of this one. Thirty of that is the type; the rest is the paragraph break
+     coming back, at one line of the new leading rather than the 34 it was.
+
+     Everything in this card tightens by a few pixels from here, because the
+     card is 484 tall and cannot grow -- the row below it starts 21 pixels
+     under its foot. The type asked for 54 of the 61 that were spare. */
+  top: 356px;
   margin: 0;
   width: 500px;
   font-family: var(--f-body);
-  font-size: var(--t-body);
-  line-height: 24px;
+  /* The same figures as the blurb: it is the same voice, one line of it. */
+  font-size: 18px;
+  line-height: 30px;
   color: var(--body);
 }
 
@@ -2050,7 +2072,10 @@ body {
 
 .btn {
   position: absolute;
-  top: 377px;
+  /* Forty-three lower, following the two paragraphs above it. They land 18
+     short of the card's foot rather than 61, which is the same clearance the
+     chip has in the card beside this one. */
+  top: 420px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -2285,10 +2310,18 @@ body {
    ========================================================================== */
 
 .slot-player      { left: 24px; top: 25px;  width: 316px; height: 249px; }
-.repo .label      { left: 24px; top: 300px; }
-.repo .arrow      { left: 316px; top: 298px; }
-.repo .headline   { left: 24px; top: 332px; width: 296px; }
-.repo .sub        { left: 24px; top: 363px; width: 294px; }
+/* The block under the still, lifted twelve.
+
+   Its own sentence is set at the blurb's figures now -- same voice, same
+   size, and the two are read one after the other across the top of the
+   screen -- which is 20 pixels more of it on two lines. The chip below is
+   where it was, so the twelve comes off the gap under the still and the rest
+   off the gap above the chip: 14 and 17 where they were 26 and 25. */
+.repo .label      { left: 24px; top: 288px; }
+.repo .arrow      { left: 316px; top: 286px; }
+.repo .headline   { left: 24px; top: 320px; width: 296px; }
+.repo .sub        { left: 24px; top: 351px; width: 294px;
+                    font-size: 18px; line-height: 30px; }
 
 .chip {
   position: absolute;
