@@ -251,7 +251,7 @@
   /* How long the room takes to change. The largest movement on the site and
      the slowest, because it is the only one where the thing being moved is
      the whole window. See @keyframes wipe-pool. */
-  --wipe-ms: 820ms;
+  --wipe-ms: 520ms;
 
   /* What a plate laid on the cutting mat throws. One figure for both rooms:
      the mat is a dark green surface in either of them, so the shadow on it
@@ -1083,16 +1083,74 @@
    hard edge cannot say on its own: which of the two rooms is on top.
    ========================================================================== */
 
+/* Two directions and they are not each other backwards, because a lamp is not
+   symmetrical: light floods out of a source and darkness does not flood back
+   into one. The root carries which way it is going and the two get separate
+   figures. */
+@property --wipe-g { syntax: "<length>"; inherits: true; initial-value: 0px; }
+
 ::view-transition-old(root),
 ::view-transition-new(root) {
   animation: none;
   mix-blend-mode: normal;
 }
 ::view-transition-old(root) { z-index: 0; }
-::view-transition-new(root) {
-  z-index: 1;
-  filter: drop-shadow(0 var(--wipe-dy, 16px) 22px rgba(0, 3, 10, 0.34));
-  animation: wipe-pool var(--wipe-ms, 820ms) cubic-bezier(0.32, 0.72, 0.24, 1) both;
+::view-transition-new(root) { z-index: 1; }
+
+/* On: light out of the lamp.
+
+   A mask rather than a clip-path, which is the whole of what was wrong with
+   it. A clip-path has one edge and it is infinitely sharp, and the fix that
+   had been applied to it -- a drop-shadow along the leading edge, to say which
+   room was on top -- is a thing you do to a sheet of paper. It made the lit
+   room read as a card being slid over the page, which is exactly what it
+   looked like and exactly what light does not do.
+
+   The mask is a soft ring: opaque to 66 per cent of the radius and gone by
+   100, so there are 34 points of falloff travelling ahead of it. That is not
+   a decoration, it is the only part of this that says light. The cast is gone
+   with the hard edge that needed it.
+
+   And it strikes. A filament does not come up to its working colour, it
+   overshoots and settles back -- so the incoming room arrives half again as
+   bright and a little desaturated, and comes down over the first fifth of the
+   move. That is the flare, and it happens *during* the wipe rather than after
+   it, which is what makes this one event. It was two: a wipe, and then a
+   bloom flashing over the top once the room had already arrived.
+
+   1.45 and not 1.85. The lit room is already a near-white page, so at 1.85 a
+   third of the screen clipped to flat white and the content under the leading
+   edge stopped existing for a beat -- a lamp striking, and also a photograph
+   being overexposed. Half again is a flare you read as heat rather than as a
+   blown highlight. */
+:root.room-on::view-transition-new(root) {
+  -webkit-mask-image: radial-gradient(circle at var(--wipe-x, 50%) var(--wipe-y, 0%),
+    #000 calc(var(--wipe-g) * 0.66), transparent var(--wipe-g));
+  mask-image: radial-gradient(circle at var(--wipe-x, 50%) var(--wipe-y, 0%),
+    #000 calc(var(--wipe-g) * 0.66), transparent var(--wipe-g));
+  animation: lamp-strike var(--wipe-ms, 520ms) cubic-bezier(0.16, 0.74, 0.24, 1) both;
+}
+@keyframes lamp-strike {
+  0%   { --wipe-g: 0px;                    filter: brightness(1.45) saturate(0.88); }
+  20%  {                                   filter: brightness(1.14) saturate(0.96); }
+  100% { --wipe-g: var(--wipe-r, 140%);    filter: brightness(1)    saturate(1); }
+}
+
+/* Off: everything at once.
+
+   The old figures swept a circle up from the floor on the argument that dark
+   gathers there. It is a good sentence and it is not what happens in a room:
+   pull the cord and the whole thing goes at the same instant, because what
+   left was the light and the light was everywhere. So there is no travel here
+   at all -- the dark room simply arrives, quickly, over the lit one -- and
+   what carries the moment is the filament cooling at the lamp afterwards.
+   See .bloom, which is now only ever the way out. */
+:root.room-off::view-transition-new(root) {
+  animation: lamp-out 240ms cubic-bezier(0.5, 0, 0.9, 1) both;
+}
+@keyframes lamp-out {
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 
 /* The pool itself, and it is a CSS animation rather than a scripted one.
@@ -1114,10 +1172,7 @@
    from the top of the window rather than nothing at all. 140% is the radius
    that covers a window of any proportion from an edge midpoint -- generous
    where the exact figure is not available, and never used when it is. */
-@keyframes wipe-pool {
-  from { clip-path: circle(0px at var(--wipe-x, 50%) var(--wipe-y, 0%)); }
-  to   { clip-path: circle(var(--wipe-r, 140%) at var(--wipe-x, 50%) var(--wipe-y, 0%)); }
-}
+
 
 * { box-sizing: border-box; }
 
@@ -1287,20 +1342,29 @@ body {
    script pulls it the same distance, so nothing here needs a pointer that can
    drag: a tap, a click, Enter and Space all pull it.
 
-   One length drives the whole thing. --pull is a registered property, so the
-   string's height and the ferrule's offset are both written off it and the
-   spring back is a transition on one number rather than two elements kept in
-   step by hand. Registered because an unregistered custom property does not
-   interpolate: it would cut from wherever the drag ended to nothing. */
-@property --pull { syntax: "<length>"; inherits: true; initial-value: 0px; }
+   Two numbers drive the whole thing and a script writes both every frame.
+   --pull is how far the string has paid out and --swing is how far the whole
+   thing has come off vertical; the string's height and the ferrule's offset
+   are written off the first, and the second turns the cord about the point it
+   hangs from. Nothing here springs on a timing function -- see the integrator
+   in the script, which is where the physics is. Registered so that a value
+   arriving as a bare token still resolves as a length and an angle. */
+@property --pull  { syntax: "<length>"; inherits: true; initial-value: 0px; }
+@property --swing { syntax: "<angle>";  inherits: true; initial-value: 0deg; }
 
 .cord {
   --cord-len: 128px;
   --pull: 0px;
+  --swing: 0deg;
   position: absolute;
   left: 1766px; top: 0;
   width: 30px; height: 300px;
   z-index: 5;
+  /* Turned about the ceiling, which is the only point on a hanging cord that
+     does not move. 15 is the string's own x inside this box. */
+  transform: rotate(var(--swing));
+  transform-origin: 15px 0;
+  will-change: transform;
   /* Only the ferrule takes the pointer. The string is two pixels wide and
      nobody aims at a two-pixel target; the box round it would swallow presses
      meant for the margin. */
@@ -1368,12 +1432,15 @@ body {
 }
 .cord.is-armed .cord-bob { filter: brightness(1.3); }
 
-/* And the spring. Overshoot in the curve rather than a second keyframe: a
-   cord let go from 40 pixels does not stop at nothing, it goes past and comes
-   back, and one bezier with its second control point over 1 is that. Only on
-   the way home -- the drag itself writes --pull every frame and a transition
-   under it would lag the finger. */
-.cord.is-settling { transition: --pull 620ms cubic-bezier(0.22, 1.45, 0.4, 1); }
+/* There is no transition on the way home and there must not be one.
+   
+   A cord let go does two things at once and they are not the same movement:
+   the string contracts, fast and heavily damped, and the whole thing swings
+   about its anchor, slow and barely damped at all. One timing function cannot
+   be both, and two of them on two properties drift apart within a swing. So
+   the return is integrated frame by frame -- see the block in the script --
+   and this rule exists to say that the absence of a transition here is the
+   design and not an omission. */
 
 /* Lit, the cord is a dark line on a pale wall and the ferrule keeps its
    metal: the same object, the other way round. */
@@ -1412,35 +1479,42 @@ body {
   .cord.is-settling { transition: --pull 1ms linear; }
 }
 
-/* --- and the filament ------------------------------------------------------
+/* --- and the filament cooling ----------------------------------------------
 
-   The pool that carries the room from one to the other is a snapshot the
-   browser owns: nothing live can be drawn into it, so a bloom during the wipe
-   is a bloom nobody sees. This is the beat after -- the filament coming up to
-   heat once the light is already on, thrown from the ferrule the pool grew
-   out of, so the two are one event with the same source.
+   Only on the way out, and it is the one thing the way out has.
 
-   Only going to the lit room. A lamp being switched off does not flare. */
+   Turning a lamp off is not a movement, it is an absence arriving everywhere
+   at once -- which is why the dark room does not travel any more. What is
+   left is the bulb: for a moment after the room has gone there is still heat
+   in the filament, and it is the last thing in the room to go. Thrown from
+   the ferrule, because that is where the lamp is.
+
+   It runs after the transition rather than inside it, and here that is right
+   rather than a compromise: the glow *should* outlast the change. Going the
+   other way the same trick was wrong and is gone -- a flare after the room
+   had already arrived was two events, and the strike is inside the wipe now.
+   See @keyframes lamp-strike. */
 .bloom {
   position: fixed;
   inset: 0;
   z-index: 40;
   pointer-events: none;
   opacity: 0;
-  background: radial-gradient(circle 60vmax at var(--bloom-x, 92%) var(--bloom-y, 12%),
-    rgba(255, 246, 224, 0.42) 0%,
-    rgba(255, 244, 218, 0.20) 22%,
-    rgba(255, 242, 214, 0.06) 50%,
-    rgba(255, 242, 214, 0) 78%);
+  background: radial-gradient(circle 24vmax at var(--bloom-x, 92%) var(--bloom-y, 12%),
+    rgba(255, 236, 196, 0.30) 0%,
+    rgba(255, 232, 188, 0.13) 26%,
+    rgba(255, 230, 184, 0.03) 56%,
+    rgba(255, 230, 184, 0) 80%);
 }
-.bloom.is-lit { animation: bloom-up 620ms cubic-bezier(0.16, 0.9, 0.3, 1) both; }
-@keyframes bloom-up {
-  0%   { opacity: 0; }
-  18%  { opacity: 1; }
-  100% { opacity: 0; }
+/* Full the instant the room goes and then down a curve that is fast at first
+   and slow at the end, which is a filament losing heat and not a fade. */
+.bloom.is-out { animation: bloom-down 460ms cubic-bezier(0.1, 0.62, 0.3, 1) both; }
+@keyframes bloom-down {
+  from { opacity: 1; }
+  to   { opacity: 0; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .bloom.is-lit { animation: none; }
+  .bloom.is-out { animation: none; }
 }
 
 /* The mat is a green rubber surface with its own light, and the playground
@@ -17193,19 +17267,29 @@ a.arrow { text-decoration: none; }
         y = H;
       }
 
-      // The smallest circle from the source that still reaches every corner:
-      // the far corner is whichever of the four is furthest, and anything
-      // less leaves the old room showing there when the animation has ended.
+      /* The smallest circle from the source that still reaches every corner --
+       * whichever of the four is furthest -- and then a fifth more, because
+       * the mask's edge is soft: what has to clear the last corner is not the
+       * radius but the point the falloff has finished, and at 0.62 opaque the
+       * two are 38 per cent apart. Without the margin the far corner spends
+       * the last of the move in a half-lit band. */
       var rad = Math.max(
         Math.hypot(x, y), Math.hypot(W - x, y),
-        Math.hypot(x, H - y), Math.hypot(W - x, H - y));
+        Math.hypot(x, H - y), Math.hypot(W - x, H - y)) * 1.2;
 
-      root.style.setProperty('--wipe-dy', down ? '16px' : '-16px');
       root.style.setProperty('--wipe-x', x.toFixed(1) + 'px');
       root.style.setProperty('--wipe-y', y.toFixed(1) + 'px');
       root.style.setProperty('--wipe-r', rad.toFixed(1) + 'px');
 
-      if (down && bloom) {
+      /* Which way it is going, on the root, because the two directions are
+       * different animations rather than one played backwards -- see the
+       * ::view-transition rules. Off again when the change is done, so a
+       * pseudo-element that only exists during a transition is never left
+       * matching a state that has ended. */
+      root.classList.remove('room-on', 'room-off');
+      root.classList.add(down ? 'room-on' : 'room-off');
+
+      if (!down && bloom) {
         bloom.style.setProperty('--bloom-x', x.toFixed(1) + 'px');
         bloom.style.setProperty('--bloom-y', y.toFixed(1) + 'px');
       }
@@ -17237,17 +17321,26 @@ a.arrow { text-decoration: none; }
       }, 500);
       var stand = function () { clearTimeout(bail); };
       if (t && t.ready) { t.ready.then(stand, stand); }
-      // And the filament comes up once the room is there to light. After the
-      // transition rather than during it: the wipe is a pair of snapshots the
-      // browser owns and nothing live is drawn into them, so a bloom started
-      // now would be invisible until the moment it is over.
-      if (down && bloom && t && t.finished) {
+      /* And the filament cools once the room has gone. Only on the way out:
+       * going the other way the strike is inside the wipe, where it belongs.
+       *
+       * The class comes off first and the box is measured before it goes back
+       * on, because an animation whose name has not changed is not restarted
+       * by having its class re-added in the same frame -- the same lesson the
+       * book's fold cost a whole afternoon. */
+      var clear = function () {
+        root.classList.remove('room-on', 'room-off');
+        if (!down || !bloom) { return; }
+      };
+      if (t && t.finished) {
         t.finished.then(function () {
-          bloom.classList.remove('is-lit');
+          clear();
+          if (down || !bloom) { return; }
+          bloom.classList.remove('is-out');
           void bloom.offsetWidth;
-          bloom.classList.add('is-lit');
-        }, function () {});
-      }
+          bloom.classList.add('is-out');
+        }, clear);
+      } else { setTimeout(clear, 900); }
       // A skipped transition rejects both of these, and an unhandled rejection
       // in a colour switch is noise in a console somebody else is reading.
       if (t && t.finished) { t.finished.then(null, function () {}); }
@@ -17282,104 +17375,242 @@ a.arrow { text-decoration: none; }
     // keyboard so it cannot be the thing that starts the movement.
     function swing() {}
 
-    /* --- pulling it ---------------------------------------------------------
+    /* --- pulling it, and letting it go -------------------------------------
      *
-     * CATCH is how far it has to travel before letting go does anything, and
-     * it is the whole of what makes this a cord. A press that is dragged 8
-     * pixels and released has not pulled a lamp on; a press dragged 40 has.
-     * Being able to start a pull and abandon it is the difference between a
-     * cord and a button drawn as one.
+     * A hanging cord with a weight on the end is two oscillators sharing one
+     * object, and they are not the same movement:
      *
-     * GIVE is the spring. The string pays out with the finger at the top of
-     * the stroke and stiffens as it goes, so the last of the travel costs
-     * more than the first -- one line of arithmetic and most of what the hand
-     * feels. TRAVEL is where the curve has spent nearly all of its give, and
-     * past it the cord is at its stop however far the finger keeps going.
+     *   the string    contracts along its own length -- fast, and damped hard
+     *                 enough that it is over in two bounces
+     *   the pendulum  swings about the point it hangs from -- slow, and barely
+     *                 damped at all, which is why a real one is still moving
+     *                 four seconds after you let go
      *
-     * At GIVE 1 the first ten pixels are worth nine and a half, which is a
-     * string moving with the hand; the catch at 40 is reached at about 56
-     * pixels of drag, which is a pull rather than a nudge and short of a
-     * stretch. The first figures here were 0.62 and 78, and they wanted 71
-     * pixels of drag to reach a catch at 34 -- a cord you had to haul on.
+     * One timing function cannot be both and two of them drift apart inside a
+     * single swing, so neither is a transition. Both are integrated here, on
+     * the frame clock, as damped harmonic oscillators:
+     *
+     *     x'' = -k·x - c·x'      k = w²      c = 2·z·w
+     *
+     * w is the natural frequency in radians a second and z the damping ratio,
+     * which is the one number that says what kind of thing this is: under 1 it
+     * oscillates, at 1 it returns without overshooting, over 1 it crawls back.
+     *
+     * The string is 4.4 cycles a second at z 0.42. The overshoot of a damped
+     * oscillator is exp(-pi·z/sqrt(1-z²)), so that is 23 per cent: let go from
+     * 55 pixels it rides about 13 past the rest and is done on the second
+     * bounce. It was 0.24 first, which is 45 per cent -- 25 pixels of rise on a
+     * 128-pixel string, and a cord does not compress, it goes slack. Thirteen
+     * is a bounce you can see and not a spring being sprung.
+     *
+     * The pendulum is 1.15 a second at z 0.11, which halves the swing every
+     * cycle: seven degrees, then three and a half, then under two, gone in
+     * about three and a half seconds. At 0.055 it halved every other cycle and
+     * was still visibly moving at five, which is a cord nobody let go of.
+     *
+     * Semi-implicit Euler -- velocity first, then position off the new
+     * velocity -- because it is one line, it is stable at these stiffnesses,
+     * and unlike the explicit form it does not quietly add energy over a long
+     * settle. The step is capped and subdivided so a dropped frame integrates
+     * as several small ones rather than one large one, which is where an
+     * integrator on a frame clock usually blows up.
      */
-    var CATCH = 40, GIVE = 1, TRAVEL = 96;
-    var from = null, armed = false, moved = 0;
+    var SPR_W = 27.6, SPR_Z = 0.42;      /* the string: 4.4 Hz, over in two   */
+    var PEN_W = 7.2,  PEN_Z = 0.11;      /* the swing:  1.15 Hz, halves a swing */
+    var STEP = 1 / 240;                  /* the integrator's own clock        */
 
-    function set(px) {
-      cord.style.setProperty('--pull', px.toFixed(1) + 'px');
+    /* CATCH is how far the string has to pay out before letting go does
+     * anything, and it is the whole of what makes this a cord rather than a
+     * button drawn as one: a pull can be started and abandoned.
+     *
+     * GIVE and TRAVEL are the stop. The string pays out with the hand at the
+     * top of the stroke and stiffens as it goes -- one exponential, asymptotic
+     * to TRAVEL -- so a finger that keeps going finds no more string. At GIVE
+     * 1 the first ten pixels are worth nine and a half and the catch at 40 is
+     * reached at about 56 pixels of drag: a pull rather than a nudge, and
+     * short of a stretch.
+     *
+     * SWING is the same stop for the other axis. A cord pulled sideways goes
+     * with the hand and runs out of angle; 26 degrees is as far as one hanging
+     * this length is going to be taken by a finger without being torn off the
+     * ceiling.
+     */
+    var CATCH = 40, GIVE = 1, TRAVEL = 96, SWING = 26;
+
+    var ext = 0, vExt = 0;               /* string: extension and its rate    */
+    var ang = 0, vAng = 0;               /* swing:  degrees and degrees a sec */
+    var grab = null, armed = false, moved = 0, live = 0, last = 0;
+    var calm = matchMedia('(prefers-reduced-motion: reduce)');
+
+    function paint() {
+      cord.style.setProperty('--pull', ext.toFixed(2) + 'px');
+      cord.style.setProperty('--swing', ang.toFixed(3) + 'deg');
     }
 
-    // A cord let go springs back past its rest and comes home. The transition
-    // carries that -- see .cord.is-settling -- and the class comes off when it
-    // has finished so the next drag writes --pull without one under it.
-    function home() {
-      cord.classList.add('is-settling');
-      cord.classList.remove('is-armed');
-      set(0);
-      setTimeout(function () { cord.classList.remove('is-settling'); }, 700);
+    /* One damped step of both oscillators. Returns whether anything is still
+     * worth drawing: under a twentieth of a pixel and a hundredth of a degree
+     * nobody can see it, and a loop that runs for ever on a still cord is a
+     * fan. */
+    function step(h) {
+      vExt += (-(SPR_W * SPR_W) * ext - 2 * SPR_Z * SPR_W * vExt) * h;
+      ext  += vExt * h;
+      vAng += (-(PEN_W * PEN_W) * ang - 2 * PEN_Z * PEN_W * vAng) * h;
+      ang  += vAng * h;
+      return Math.abs(ext) > 0.05 || Math.abs(vExt) > 0.05 ||
+             Math.abs(ang) > 0.04 || Math.abs(vAng) > 0.08;
     }
 
-    function pull(px) {
-      // Diminishing return: 62 per cent of the first pixel and less of every
-      // one after it, asymptotic to TRAVEL. A cord has a stop and a finger
-      // that keeps going does not find more string.
-      var out = TRAVEL * (1 - Math.exp(-(px * GIVE) / TRAVEL));
-      set(Math.max(0, out));
-      var now = out >= CATCH;
-      if (now !== armed) {
-        armed = now;
-        cord.classList.toggle('is-armed', armed);
-      }
+    function run() {
+      if (live) { return; }
+      last = performance.now();
+      live = requestAnimationFrame(function tick(now) {
+        /* Capped, floored, and subdivided.
+         *
+         * Capped because a tab that was in the background hands back a delta
+         * of several seconds, and one Euler step that long does not settle a
+         * spring, it launches it.
+         *
+         * Floored because the first delta can be negative. run() takes its
+         * mark from performance.now() and rAF hands back the timestamp the
+         * *frame* began at, which for a loop started inside an event handler
+         * is earlier than the mark -- so the first dt was below zero, the
+         * subdivision loop never entered, `moving` was still false from its
+         * initialiser, and the else branch below zeroed the state and stopped.
+         * Every drag survived it because a release lands between frames and
+         * the next timestamp is genuinely later; the hover nudge did not,
+         * because it fires inside the frame it is answering. It moved nothing,
+         * every time, and looked exactly like a listener that was not bound.
+         *
+         * And `moving` starts true rather than false, so a frame that takes no
+         * step because there was no time in it is not a frame that decides the
+         * cord has stopped. */
+        var dt = Math.min(Math.max((now - last) / 1000, 0), 0.05);
+        last = now;
+        var moving = true;
+        for (var t = 0; t < dt; t += STEP) { moving = step(Math.min(STEP, dt - t)); }
+        paint();
+        if (moving) { live = requestAnimationFrame(tick); }
+        else {
+          live = 0; ext = 0; vExt = 0; ang = 0; vAng = 0; paint();
+          cord.classList.remove('is-armed');
+        }
+      });
+    }
+
+    function stop() { if (live) { cancelAnimationFrame(live); live = 0; } }
+
+    /* --- the hand on it ------------------------------------------------- */
+
+    /* Where the ferrule hangs from, in window pixels. Read live rather than
+     * off the frame's own figures: the stage is scaled to fit the window, so
+     * 1766 is not where the cord is on the glass. */
+    function anchor() {
+      var r = cord.getBoundingClientRect();
+      return { x: r.left + 15 * (r.width / cord.offsetWidth || 1), y: r.top };
     }
 
     bob.addEventListener('pointerdown', function (e) {
       if (!e.isTrusted) { return; }
-      from = e.clientY;
+      stop();
+      var a = anchor();
+      grab = { ax: a.x, ay: a.y, t: e.timeStamp, x: e.clientX, y: e.clientY,
+               px: e.clientX, py: e.clientY };
       moved = 0;
       armed = false;
-      cord.classList.remove('is-settling', 'is-armed');
+      vExt = 0; vAng = 0;
+      cord.classList.remove('is-armed');
       if (bob.setPointerCapture) { bob.setPointerCapture(e.pointerId); }
+      e.preventDefault();
     });
 
+    /* The cord follows the hand rather than the hand's vertical component.
+     *
+     * Pull straight down and it is all string; pull to one side and it swings
+     * out and stays under your finger, which is what a cord does and what
+     * telling this apart from a slider depends on. Both axes are read off the
+     * one vector from the ceiling to the pointer: its length past the resting
+     * length is the extension, its angle off vertical is the swing, and each
+     * runs through its own stop. */
     bob.addEventListener('pointermove', function (e) {
-      if (from === null) { return; }
-      var d = e.clientY - from;
-      moved = Math.max(moved, Math.abs(d));
-      pull(d);
+      if (!grab) { return; }
+      grab.px = e.clientX; grab.py = e.clientY;
+      moved = Math.max(moved, Math.hypot(e.clientX - grab.x, e.clientY - grab.y));
+
+      var dx = e.clientX - grab.ax, dy = Math.max(1, e.clientY - grab.ay);
+      var len = Math.hypot(dx, dy);
+      var rest = parseFloat(getComputedStyle(cord).getPropertyValue('--cord-len')) || 128;
+
+      ext = TRAVEL * (1 - Math.exp(-Math.max(0, len - rest) * GIVE / TRAVEL));
+      var raw = Math.atan2(dx, dy) * 180 / Math.PI;
+      ang = SWING * Math.tanh(raw / SWING);
+      paint();
+
+      var now = ext >= CATCH;
+      if (now !== armed) { armed = now; cord.classList.toggle('is-armed', armed); }
     });
 
-    function release() {
-      if (from === null) { return; }
+    /* And letting go.
+     *
+     * The velocities the integrator starts from are the hand's, not zero: a
+     * cord released from a standstill drops straight back and one released
+     * mid-flick keeps going the way it was travelling. Sampled over the last
+     * frame of the drag rather than the whole of it, so a slow pull that ends
+     * in a flick throws, and a slow pull that ends slowly does not. */
+    function release(e) {
+      if (!grab) { return; }
       var did = armed;
-      from = null;
-      home();
-      if (did) { choose(showing() === 'light' ? 'dark' : 'light'); }
+      if (e && e.timeStamp > grab.t) {
+        var h = Math.max(8, e.timeStamp - grab.t) / 1000;
+        vAng = Math.max(-140, Math.min(140, (e.clientX - grab.px) / h * 0.22));
+      }
+      grab = null;
+      run();
+      if (did && !calm.matches) { choose(showing() === 'light' ? 'dark' : 'light'); }
+      else if (did) { choose(showing() === 'light' ? 'dark' : 'light'); }
     }
     bob.addEventListener('pointerup', release);
     bob.addEventListener('pointercancel', function () {
-      if (from === null) { return; }
-      from = null;
-      home();
+      if (!grab) { return; }
+      grab = null;
+      armed = false;
+      run();
+    });
+
+    /* A cord in a room with somebody in it is not perfectly still.
+     *
+     * Passing over it stirs it -- a small impulse into the swing and a smaller
+     * one into the string, which is a draught or a sleeve and not a hover
+     * state. It is an impulse and not a pose, so it decays on the same
+     * integrator everything else does and two passes in a row do not stack
+     * into a wobble: the guard is that it only stirs a cord that has already
+     * gone still. */
+    bob.addEventListener('pointerenter', function (e) {
+      if (!e.isTrusted || grab || live || calm.matches) { return; }
+      vAng += 15;
+      vExt += 5;
+      run();
     });
 
     /* And a press that is not a drag.
      *
-     * Most presses are not drags -- a tap, a click, Enter on a focused
-     * control -- and a lamp you can only work by dragging is a lamp half the
-     * people who find it cannot turn on. So the cord pulls itself: past the
-     * catch, held for a beat, then home, and the room changes on the same
-     * frame the hand would have let go.
+     * Most presses are not -- a tap, a click, Enter on a focused control --
+     * and a lamp you can only work by dragging is a lamp half the people who
+     * find it cannot turn on. So the cord pulls itself: the string is set past
+     * the catch with a downward velocity still on it, which is a hand letting
+     * go at the bottom of a stroke rather than a value being assigned, and the
+     * integrator carries it home from there.
      *
      * Guarded on `moved`, because a drag ends in a click too and running both
-     * would toggle the room twice and leave it where it started.
-     */
+     * would turn the lamp twice and leave it where it started. */
     bob.addEventListener('click', function (e) {
       e.preventDefault();
       if (moved > 4) { moved = 0; return; }
-      cord.classList.remove('is-settling');
+      stop();
+      ext = CATCH + 14; vExt = 26;
+      ang = 0; vAng = 9;
       cord.classList.add('is-armed');
-      set(CATCH + 12);
-      setTimeout(function () { home(); }, 130);
+      paint();
+      run();
       choose(showing() === 'light' ? 'dark' : 'light');
     });
 
