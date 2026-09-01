@@ -14,11 +14,12 @@
      which set of them applies -- put it on late and the dark room is drawn
      first and swapped out in front of the reader.
 
-     Nothing is written here and no default is stamped: an absent or unusable
-     entry leaves [data-theme] off the root entirely, which is what hands the
-     visitor back to the prefers-color-scheme query. localStorage throws
-     rather than returning null in a browser set to block site data, so the
-     whole of it is inside the try. */
+     Dark is stamped unless the visitor has stored light: the room this site
+     is written for is the dark one, and that is what a first landing gets
+     whatever the desktop asks for. localStorage throws rather than returning
+     null in a browser set to block site data, so the whole of it is inside
+     the try -- and the catch stamps dark too, because a browser refusing to
+     hand over a preference is still a visitor who has not expressed one. */
   /* Two rooms again, and this is the line the note here promised would be it.
    *
    * What stood here pinned dark on the root before the first paint, which
@@ -30,11 +31,17 @@
    * object under a different lamp -- so bringing the room back is this and the
    * cord's markup, exactly as the old note said it would be.
    *
-   * Three states and not two. A stored choice wins; nothing stored leaves the
-   * attribute off the root entirely, which is what hands the visitor back to
-   * their own desktop through the prefers-color-scheme query. Any other value
-   * is treated as nothing rather than trusted -- a key this small is not worth
-   * a migration, and an unusable entry should read as never having chosen.
+   * Two states and not three. A stored choice wins and everything else is
+   * dark. It used to leave the attribute off and hand the visitor back to
+   * their own desktop through prefers-color-scheme, which is the more polite
+   * answer and the wrong one here: the dark room is the one this page was
+   * drawn for, and somebody arriving on a desktop set light was being shown
+   * the other one before they had asked for it. The cord is how you ask, and
+   * it is the first thing on the page that moves.
+   *
+   * Any other value is treated as dark rather than trusted -- a key this
+   * small is not worth a migration, and an unusable entry should read as
+   * never having chosen.
    *
    * All of it inside the try: localStorage throws rather than returning null
    * in a browser set to block site data, and a page that fails to draw because
@@ -42,10 +49,11 @@
    * the wrong way round. */
   try {
     var room = localStorage.getItem('room');
-    if (room === 'light' || room === 'dark') {
-      document.documentElement.setAttribute('data-theme', room);
-    }
-  } catch (e) {}
+    document.documentElement.setAttribute('data-theme',
+                                          room === 'light' ? 'light' : 'dark');
+  } catch (e) {
+    document.documentElement.setAttribute('data-theme', 'dark');
+  }
 
   /* And the arrival, for the same reason one line up. .arriving holds the
      frame empty -- no cards, no lattice -- and it has to be on before the
@@ -248,9 +256,10 @@
   --ease: cubic-bezier(0.25, 0.7, 0.3, 1);
   --card-line-lit: #262626;              /* one step up the same neutral ramp  */
 
-  /* How long the room takes to change. The largest movement on the site and
-     the slowest, because it is the only one where the thing being moved is
-     the whole window. See @keyframes wipe-pool. */
+  /* How long the light takes to cross the room. It is no longer how long the
+     room takes to change -- that is the 320ms on the flat fills now, and it
+     starts on the frame the switch goes over -- so this is the flare's own
+     figure and nothing waits on it. See @keyframes bloom-up. */
   --wipe-ms: 520ms;
 
   /* What a plate laid on the cutting mat throws. One figure for both rooms:
@@ -1131,138 +1140,37 @@
 
 /* Two directions and they are not each other backwards, because a lamp is not
    symmetrical: light floods out of a source and darkness does not flood back
-   into one. The root carries which way it is going and the two get separate
-   figures. */
-@property --wipe-g { syntax: "<length>"; inherits: true; initial-value: 0px; }
+   into one. That much survived; the machinery under it did not.
 
-::view-transition-old(root),
-::view-transition-new(root) {
-  animation: none;
-  mix-blend-mode: normal;
-}
-::view-transition-old(root) { z-index: 0; }
-::view-transition-new(root) { z-index: 1; }
+   What stood here was a view transition: a masked pool grown across
+   ::view-transition-new(root), with the room swapped inside the callback.
+   It is the right drawing and it was the wrong engine, and the reason is
+   structural rather than a figure that wanted tuning.
 
-/* On: light out of the lamp.
+   startViewTransition does not run its callback when you call it. It waits
+   for a rendering opportunity, photographs the whole document, and only then
+   runs the callback that changes anything -- and until that photograph is
+   taken the page is held. On a document this size that hold is the lag: the
+   chain arrives home, the switch goes over, and then nothing happens for as
+   long as it takes to rasterise a full-page snapshot. Worse, the chain was
+   deliberately frozen across it, so the one object on screen that could have
+   shown the moment was standing still through it.
 
-   A mask rather than a clip-path, which is the whole of what was wrong with
-   the version before last. A clip-path has one edge and it is infinitely
-   sharp, and the fix that had been applied to it -- a drop-shadow along the
-   leading edge, to say which room was on top -- is a thing you do to a sheet
-   of paper. It made the lit room read as a card being slid over the page.
+   Three separate attempts had already been made on that delay from inside --
+   a 500ms bail, a 1200ms hard thaw, a visibility guard -- which is three
+   pieces of scaffolding around a hold that was never going to be tuned away.
 
-   And then it was a cone, and the cone is what this replaced.
+   So the room changes on the line that asks for it. `apply()` sets the
+   attribute, the 320ms already on the flat fills carries the colour, and the
+   light is one fixed element painted over the top -- see .bloom. Nothing is
+   snapshotted, nothing is held, and the chain keeps swinging through the
+   change, which is what it should have been doing all along: it is the thing
+   that was just pulled.
 
-   The cone was a radial falloff intersected with a wedge -- two mask layers
-   and a mask-composite over them -- opening from the ferrule at 205 degrees.
-   It was suspected of never painting at all, on the reading that
-   `mask-composite: intersect` expands to one value per layer and so lands
-   `intersect` on the bottom layer too, where the backdrop is transparent
-   black and a source intersected with nothing is nothing.
-
-   That reading is wrong, and it is written down here because it is a plausible
-   thing to work out from the spec and it took a rendered test to put down.
-   Chrome does not blank the bottom layer: a two-layer mask under a bare
-   `intersect` and the same mask under `add, intersect` rasterise to the same
-   pixels. The three other places in this stylesheet that composite two mask
-   layers with a bare `intersect` -- the lattice's two gap-and-window masks and
-   the dot panel's scan -- are the proof standing in plain sight: all three
-   paint, and always did.
-
-   So nothing was broken. The cone went because a wedge is the wrong shape for
-   this, which is the thing that could have been settled by looking at it: a
-   lamp hanging over a page does not throw a figure with two straight sides
-   across it and then open the figure. It pools. Two straight sides sweeping
-   round a point is a torch being turned on, or a timer running down, and both
-   of those are objects the reader has to identify before the movement means
-   anything.
-
-   One layer now, and no compositing, because one soft circle is the whole of
-   what this needed and a second layer was only ever there to cut the wedge out
-   of it.
-
-   What is left is a soft ring: opaque to 52 per cent of the radius, half-lit
-   at 80, gone by 100. Those 48 points of falloff travelling ahead of the light
-   are the whole of what separates this from a sheet of paper being slid over
-   the page -- the edge is never in one place, which is what an edge made of
-   light does.
-
-   And it strikes. A filament does not come up to its working colour, it
-   overshoots and settles back -- so the incoming room arrives half again as
-   bright and a little desaturated, and comes down over the first fifth of the
-   move. That is the flare, and it happens *during* the wipe rather than after
-   it, which is what makes this one event rather than two.
-
-   1.42 and not 1.85. The lit room is already a near-white page, so at 1.85 a
-   third of the screen clipped to flat white and the content under the leading
-   edge stopped existing for a beat -- a lamp striking, and also a photograph
-   being overexposed. Half again is a flare you read as heat rather than as a
-   blown highlight.
-
-   640ms and not 520. The pool starts at the ferrule, which is up in a corner,
-   so it has a whole diagonal to cross rather than half of one. At 520 from a
-   corner it is a scramble, and what is being asked of it is that it be
-   seamless. */
-
-:root.room-on::view-transition-new(root) {
-  -webkit-mask-image:
-    radial-gradient(circle at var(--wipe-x, 50%) var(--wipe-y, 0%),
-      #000 calc(var(--wipe-g) * 0.52),
-      rgba(0, 0, 0, 0.55) calc(var(--wipe-g) * 0.80),
-      transparent var(--wipe-g));
-  mask-image:
-    radial-gradient(circle at var(--wipe-x, 50%) var(--wipe-y, 0%),
-      #000 calc(var(--wipe-g) * 0.52),
-      rgba(0, 0, 0, 0.55) calc(var(--wipe-g) * 0.80),
-      transparent var(--wipe-g));
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  animation: lamp-strike var(--wipe-ms, 640ms) cubic-bezier(0.22, 0.68, 0.24, 1) both;
-}
-@keyframes lamp-strike {
-  0%   { --wipe-g: 0px;
-         filter: brightness(1.42) saturate(0.90); }
-  22%  { filter: brightness(1.12) saturate(0.97); }
-  100% { --wipe-g: var(--wipe-r, 160%);
-         filter: brightness(1) saturate(1); }
-}
-
-/* Off: everything at once.
-
-   The old figures swept a circle up from the floor on the argument that dark
-   gathers there. It is a good sentence and it is not what happens in a room:
-   pull the cord and the whole thing goes at the same instant, because what
-   left was the light and the light was everywhere. So there is no travel here
-   at all -- the dark room simply arrives, quickly, over the lit one -- and
-   what carries the moment is the filament cooling at the lamp afterwards.
-   See .bloom, which is now only ever the way out. */
-:root.room-off::view-transition-new(root) {
-  animation: lamp-out 340ms cubic-bezier(0.4, 0, 0.9, 1) both;
-}
-@keyframes lamp-out {
-  from { opacity: 0; }
-  to   { opacity: 1; }
-}
-
-/* The pool itself, and it is a CSS animation rather than a scripted one.
-   It used to be driven from t.ready with element.animate({clipPath}) aimed at
-   this pseudo-element, which is a Chrome-shaped way to write it: animating a
-   ::view-transition pseudo through the Web Animations API is not something
-   every engine that ships view transitions also ships. Where it was not
-   understood the call did nothing, the `animation: none` above left the new
-   snapshot sitting at its final state from the first frame, and the whole
-   change arrived as a hard cut -- the room simply swapped, on a machine where
-   nothing looked broken enough to explain itself.
-
-   Written here it is the same declaration every engine already runs on every
-   other pseudo-element on the page. The script's only job is to put four
-   numbers on the root before the snapshots are taken.
-
-   Every var carries a fallback that still describes a wipe, so an engine that
-   does not carry custom properties into the pseudo tree gets a circle opening
-   from the top of the window rather than nothing at all. 140% is the radius
-   that covers a window of any proportion from an edge midpoint -- generous
-   where the exact figure is not available, and never used when it is. */
+   That path is not new and is not a fallback. It is what this did before the
+   wipe existed, and what it already fell back to on any browser without view
+   transitions, on a hidden tab, and under reduced motion. It is now the only
+   path, so there is one behaviour to reason about instead of four. */
 
 
 * { box-sizing: border-box; }
@@ -1587,17 +1495,27 @@ body {
    in the filament, and it is the last thing in the room to go. Thrown from
    the ferrule, because that is where the lamp is.
 
-   It runs after the transition rather than inside it, and here that is right
-   rather than a compromise: the glow *should* outlast the change. Going the
-   other way the same trick was wrong and is gone -- a flare after the room
-   had already arrived was two events, and the strike is inside the wipe now.
-   See @keyframes lamp-strike. */
+   It outlasts the change, and that is right rather than a compromise: the
+   room is already dark by the time this is still cooling, which is the order
+   those two things happen in.
+
+   Both directions live on this one element now. It used to be the way out
+   only -- the way in was a mask on a view-transition pseudo, and that whole
+   mechanism is gone; see the note where it used to be. So the glow in and
+   the glow out are one object with two animations, thrown from one pair of
+   figures, which is also why they cannot disagree about where the lamp is.
+   See @keyframes bloom-up and @keyframes bloom-down. */
 .bloom {
   position: fixed;
   inset: 0;
   z-index: 40;
   pointer-events: none;
   opacity: 0;
+  /* It scales out of the lamp rather than out of the middle of the window,
+     so the origin is the same pair of figures the gradient is centred on and
+     the script writes both from one rect. */
+  transform-origin: var(--bloom-x, 92%) var(--bloom-y, 12%);
+  will-change: opacity, transform;
   background: radial-gradient(circle 24vmax at var(--bloom-x, 92%) var(--bloom-y, 12%),
     rgba(255, 236, 196, 0.30) 0%,
     rgba(255, 232, 188, 0.13) 26%,
@@ -1611,8 +1529,33 @@ body {
   from { opacity: 1; }
   to   { opacity: 0; }
 }
+
+/* And the way in, which is the half this never had.
+
+   The room is already changing underneath this -- the attribute is set on the
+   frame the switch goes over -- so what is left for the light to do is be the
+   light: it strikes at the lamp, floods out past the edges of the window and
+   is gone, over a room that is arriving on its own 320ms underneath.
+
+   Opacity and transform, and nothing else, because those are the two the
+   compositor can run without the main thread: this has to stay smooth across
+   the exact frames the page is busiest swapping every token it owns. Scaled
+   from the lamp rather than grown as a gradient stop, for the same reason --
+   an animated radial-gradient is a repaint of the whole layer every frame,
+   and a scale is a matrix.
+
+   Up fast and out slow. A filament comes to heat in a few milliseconds and
+   the room takes the rest of the beat to admit it, so the flare is at full
+   by 16 per cent and spends the remaining 84 spreading and thinning. */
+.bloom.is-in { animation: bloom-up var(--wipe-ms, 520ms) cubic-bezier(0.22, 0.68, 0.24, 1) both; }
+@keyframes bloom-up {
+  0%   { opacity: 0; transform: scale(0.30); }
+  16%  { opacity: 1; }
+  100% { opacity: 0; transform: scale(1.85); }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .bloom.is-out { animation: none; }
+  .bloom.is-out, .bloom.is-in { animation: none; }
 }
 
 .rules {
@@ -7541,6 +7484,25 @@ body {
    is the one that holds. */
 .room-one { width: 44px; grid-template-columns: 1fr; }
 
+/* And it is the lamp.
+
+   The chain hangs off the foot of this box and the light comes out of it --
+   see seat() and flood() -- which makes this the one object on the frame
+   that is both a control and a source. So it has to look lit when the room
+   is lit, or the reader is pulling a chain attached to a button.
+
+   A ring and two casts, warm, and none of it on the icon: the housing is
+   what glows, the same way a shade glows and the switch on its flex does
+   not. Off in the dark room, where a lamp that is not on should look like a
+   lamp that is not on. */
+.room { transition: box-shadow 320ms var(--ease), outline-color 320ms var(--ease); }
+:root[data-theme="light"] .room {
+  box-shadow:
+    0 0 0 1px rgba(255, 236, 196, 0.42),
+    0 8px 34px -6px rgba(255, 232, 190, 0.60),
+    0 2px 12px -2px rgba(255, 228, 180, 0.45);
+}
+
 /* Two rules apiece: the foot, and the outer side.
 
    The frame already rules the other two. The 70/91 pair runs the whole width
@@ -11943,6 +11905,38 @@ a.arrow { text-decoration: none; }
     --t-heading-2: var(--t-heading);
   }
 
+  /* --- and the five that were not asking the scale at all ----------------
+
+     Everything above is a token, and a token only reaches the rules that read
+     it. These five set a figure of their own, in a stylesheet where 86 other
+     declarations do not, and each was chosen against the frame: 18 for a lede
+     in a 733-wide tile, 34 for a statistic with a whole column to itself, 25
+     and 22 for captions under pictures that had room to be captioned. Carried
+     down unread they are the sizes that make a phone look assembled -- an 18
+     that is neither the 16 above it nor the 14 below, a 34 in a card whose
+     title is 24.
+
+     Onto the nearest step, which for four of them is the one they were
+     reaching for. What is not on this list is the four the scale exempts by
+     name -- the wordmark, the hand on the print, the tape and the deck's own
+     readout -- because those are drawings that happen to have letters in
+     them and a drawing is not the page talking. */
+  .blurb, .now {
+    font-size: var(--t-body); line-height: var(--lh-body);
+  }
+  /* A statistic is the one thing on a case study allowed to be a title, and
+     the case study is a screen that is one thing -- so this is the display
+     step rather than the heading one, and it is the same display step the
+     headline over it uses. */
+  .c-stat b {
+    font-size: var(--t-display); line-height: var(--lh-display);
+  }
+  /* Both of these name a thing in a list of things, which is what a heading
+     is for. */
+  .pc-item b, .lab-pin figcaption b {
+    font-size: var(--t-heading); line-height: var(--lh-heading);
+  }
+
   /* A ground for the glass to stand on. Fixed and behind everything, on its
      own box rather than on the body, so that it does not scroll with the
      column: background-attachment: fixed is the shorter way to write this
@@ -12047,7 +12041,12 @@ a.arrow { text-decoration: none; }
     outline: none;
     border: 1px solid rgba(var(--w), 0.055);
     background-color: var(--card-pane);
-    background-image: var(--pane-ramp);
+    /* Flat, and none. The ramp is a sheet of glass catching a light that
+       stands somewhere on the frame -- and there is no frame here, so it was
+       a highlight falling across six stacked cards from six different
+       directions at once. A column of panels wants to read as a column, which
+       means the eye should find the edges and nothing else. */
+    background-image: none;
     /* Said in full because a card can arrive here carrying the frame's
        figures for layers it no longer has. The book does: its leather is
        grain over a fold shadow over a hide, and the grain is a 220-pixel
@@ -12056,7 +12055,11 @@ a.arrow { text-decoration: none; }
     background-repeat: no-repeat;
     background-size: 100% 100%;
     background-position: 0 0;
-    box-shadow: var(--pane-cast);
+    /* And no cast. A drop shadow says an object is above the surface behind
+       it; these are the surface. On the frame the cast is what lifts a tile
+       off the lattice, and the lattice is the first thing this layout throws
+       away. */
+    box-shadow: none;
   }
 
   /* The material goes with the fill it was painted on. --lit is zero wherever
@@ -12079,9 +12082,13 @@ a.arrow { text-decoration: none; }
   .card, .card::after, .slot, .cover, .avatar,
   .btn, .c-stat b { border-radius: 0; }
 
-  /* The rim, on the ring the frame already built for the hover glint: the
-     mask and the one-pixel padding are right and only the paint changes. */
-  .card::after { background: var(--pane-rim); }
+  /* And the rim comes off with the rest of the glass. It is the lit top edge
+     of a pane, which is the third of the three things -- ramp, cast, rim --
+     that together said this card was a sheet of something with thickness.
+     Take two and leave one and the card does not read as flatter, it reads
+     as a pane that has lost its shadow. The border carries the edge now, on
+     its own, which is all a flat panel needs to be a panel. */
+  .card::after { display: none; }
 
   .intro { order: 1; }
   .repo { order: 2; }
@@ -12401,12 +12408,22 @@ a.arrow { text-decoration: none; }
 
   .bk         { order: 1; }
 
-  /* Three boxes on the frame, three cards here, in the order a thumb should
-     meet them -- which is the order the frame reads left to right: the
-     person, then the evidence, then what he makes of it. */
+  /* The cards in the order a thumb should meet them -- which is the order the
+     frame reads left to right: the person, then the evidence, then what he
+     makes of it, and then the two that say what he is doing about it now.
+
+     All five, and that is the fix rather than a tidy-up. There were three
+     here and there are five on the screen, and the two that were missing did
+     not fall to the bottom of the column -- they went to the top of it. An
+     item with no order is order 0, and 0 sorts before the 1 that Who I Am was
+     given, so a page that opens on the claim opened on the deck instead and
+     the claim was third. Every card that shares a flex line has to name its
+     place or none of them can be sure of theirs. */
   .ab-who        { order: 1; }
   .ab-shelf-card { order: 2; }
   .ab-habits     { order: 3; }
+  .ab-now        { order: 4; }
+  .ab-music      { order: 5; }
 
   /* Everything About places by hand rejoins the flow, for the reason the
      L1 and L2 children do: a card is only relative here, so anything still
@@ -12452,6 +12469,36 @@ a.arrow { text-decoration: none; }
     width: 100%;
   }
   .nw-plate { width: 58px; height: 87px; }
+
+  /* --- the deck, whole ---------------------------------------------------
+
+     The machine is cut to 300 and everything inside it is cut to 300 with it:
+     the well, the stage, the strip of dots and the keys are all laid out to
+     that width, which is why widening it was rejected when the card was drawn
+     and why narrowing it here would be the same job in reverse.
+
+     So the card gets out of its way instead. A phone card is 24 of padding
+     either side inside a 16 gutter either side, which leaves the deck 80 less
+     than the screen: 310 on a 390 phone, and it fits; 295 on a 375 and 280 on
+     a 360, and it does not. That is the cut -- not the deck being too big for
+     the phone, but the deck being 300 in a box that had stopped being 300
+     wide, with the right-hand side of the case over the edge of the card.
+
+     The padding comes off this one card and the machine is centred in the
+     full gutter-to-gutter width, which is 328 on the narrowest phone anybody
+     is holding. It is the same answer the card already gives the shelf and
+     the stills -- pull to the gutter and centre -- rather than a new one.
+
+     Both figures restated, because the rule that put everything on this card
+     back into the flow set width and height to auto, and auto on a box whose
+     contents are placed to the pixel is a box that reports whatever its
+     tallest absolute child happens to reach. */
+  .ab-music { padding-left: 0; padding-right: 0; }
+  .ab-music .ms-wk {
+    width: 300px;
+    height: 290px;
+    margin-inline: auto;
+  }
   .nw-said { flex: 1 1 auto; padding-bottom: 0; }
   /* Reading / Playing / Watching is the one word on the row that says what
      kind of line this is rather than what is on it, so it is set as the label
@@ -12747,40 +12794,41 @@ a.arrow { text-decoration: none; }
   .zoom-still figcaption { margin-left: var(--pad) !important; margin-right: var(--pad) !important; }
 
 
-  /* The switch leaves the frame's margin column, which does not exist here,
-     and floats -- top right, opposite the way-back button at the bottom left,
-     because those are the two corners nothing else on this layout occupies. */
-  .room {
-    position: fixed;
-    top: calc(12px + env(safe-area-inset-top, 0px));
-    /* The frame's own left is 1541px -- a coordinate in a stage 1920 wide --
-       and setting right without clearing it leaves both sides specified, at
-       which point left wins and the switch sits a thousand pixels off the
-       side of the phone, unreachable and out of sight. */
-    left: auto;
-    right: 12px;
-    z-index: 30;
-    width: 72px; height: 36px;
-    background: var(--card-pane);
-    outline: 1px solid rgba(var(--w), 0.08);
-    -webkit-backdrop-filter: blur(14px);
-    backdrop-filter: blur(14px);
-  }
-  .room-c svg { width: 15px; height: 15px; }
+  /* And the sound switch goes with the lamp, because on a phone there is
+     nothing left for it to switch.
 
-  /* The same chain, inboard of the sound switch so the two do not share a
-     corner, and shorter: a hundred and thirty-four pixels down the side of a
-     phone is a rope. Seventy, which is the old fifty-eight and the same fifth
-     as everything else on it. The hardware does not shrink with it -- a
-     ferrule you can hit with a thumb is most of the point of it down here --
-     and the chain is already fixed to the window and already unscaled, so
-     nothing else about it has to change. */
-  .cord {
-    --cord-len: 70px;
-    right: 100px;
-    z-index: 31;
-    height: 216px;
-  }
+     A hush control is worth its corner on a machine whose speakers are
+     already on and pointed at one person. A phone is the other case: it is
+     in a pocket, or in a room with other people in it, or muted at the
+     hardware, and a page that makes a noise at a thumb is a page being
+     rude with a control the reader has to find *afterwards*.
+
+     So the phone is silent -- see play(), which refuses at this width --
+     and a switch that turns off what was never on is a switch that does
+     nothing. Hidden the same way and for the same reason as the chain: out
+     of the tree, not merely out of sight. */
+  .room { display: none; }
+
+  /* And the lamp comes down.
+
+     It is the best thing on the desktop and it does not survive the trip. A
+     pull chain is an object you take hold of and drag against a spring, and
+     the whole of what makes it worth having -- the give, the catch, the
+     stop, the snap back -- is felt through a pointer that can rest on it
+     without pressing. A thumb has no such state: it arrives already pressed,
+     on top of the thing it is pulling, and it hides the ferrule at exactly
+     the moment the chain is supposed to be paying out under it.
+
+     What was left down here was a chain hanging in the one corner a right
+     thumb covers on the way to anything else, which is a switch you throw by
+     accident, on the site's largest and slowest movement.
+
+     Gone, and not merely hidden from the eye: display: none takes it out of
+     the tab order and off the accessibility tree with it, so there is no
+     invisible control left for a screen reader to offer or a stray tap to
+     find. The script is unbothered -- it holds the element and never runs
+     without a pointer on it. */
+  .cord { display: none; }
 
   /* Everything the L2 places by hand has to rejoin the flow, for the same
      reason the L1 children do: a card is only relative here, so anything
@@ -12848,6 +12896,27 @@ a.arrow { text-decoration: none; }
      specific enough to survive into the phone layout, so hand it back. */
   .w-lab .headline,
   .c-hero .headline { width: auto; }
+
+  /* And the lead headline comes down to the step every other card on the
+     screen is using, which is the scale's own rule applied to a layout that
+     has changed underneath it.
+
+     A screen of cards takes heading, body and meta; a screen that is one
+     thing takes display, body and meta; never both title steps at once,
+     because a page with two sizes of title has not decided which one is the
+     title. On the frame Work is not a screen of cards -- the lead is a tile
+     twice the width of the others and display is the size that says so. Here
+     it is the first of six boxes in a column, all the same width, and the
+     only thing 24-over-16 said was that the top card was shouting. The other
+     four did not get smaller; they were always the heading step. It stopped
+     being the lead and started being the loud one.
+
+     The case study keeps its display -- it really is one thing -- which is
+     why this names .w-lab alone and leaves .c-hero out of it. */
+  .w-lab .headline {
+    font-size: var(--t-heading);
+    line-height: var(--lh-heading);
+  }
   .w-one .headline, .w-two .headline, .w-three .headline,
   .c-problem .headline, .c-outcome .headline { width: auto; }
   .w-lab .sub, .w-one .sub, .w-two .sub, .w-three .sub,
@@ -12875,8 +12944,20 @@ a.arrow { text-decoration: none; }
      one continuous column and the apparatus that reported them -- the running
      head, the crease, the folios, the turn -- goes with the spread it was
      describing. */
+     The boards go too, and they are the reason this screen had a slab of
+     leather lying across it. Everything from .bk-body down was handed back to
+     the flow, and the board was not on that list and not on this one: it kept
+     position: absolute and it kept the 561 by 840 it is cut to for a spread,
+     so what a reader met on the way into an essay was a 561-pixel rectangle
+     of hide, sized for a window that is not there, sitting behind and past
+     the type. A cover is the one part of a book that cannot survive the book
+     being unbound -- there is nothing left for it to be the outside of.
+
+     The seat goes with it. It is the flat card the spread fades onto when the
+     book shuts, and there is no shut down here to fade into. */
   .bk-chr, .bk-crease, .bk-shut, .bk-blk, .bk-fore, .bk-stamp,
-  .bk-flip, .bk-cast, .bk-page-r { display: none; }
+  .bk-flip, .bk-cast, .bk-page-r,
+  .bk-board, .bk-seat { display: none; }
   /* Back into the flow, all of it. Everything from the body down was absolute
      so that a spread could be laid out to the pixel, and absolute children
      give a card nothing to be as tall as -- so the card collapsed to its own
@@ -17283,6 +17364,10 @@ a.arrow { text-decoration: none; }
 
     var root = document.documentElement;
     var bloom = document.querySelector('.bloom');
+    /* The switch, which is the lamp: the chain hangs off it and the light
+     * comes out of it. Held here rather than looked up twice because both
+     * seat() and flood() want the same box. */
+    var hush = document.querySelector('[data-hush]');
     var bar = document.querySelector('meta[name="theme-color"]');
     var KEY = 'room';
 
@@ -17319,184 +17404,73 @@ a.arrow { text-decoration: none; }
       mark(name);
     }
 
-    /* The pool.
+    /* The light, and where it comes from.
      *
-     * A circle grown from the middle of one edge to the far corner. Going to
-     * the lit room it starts at the top and falls; coming back to the dark
-     * one it starts at the bottom and rises. See the note above the
-     * ::view-transition rules for why those two directions and not the other
-     * pair.
+     * The switch is the lamp, so the flood starts at its box -- read live,
+     * because the switch stands on a stage that is scaled to fit the window
+     * and its authored coordinates are not where it is on the glass. The foot
+     * of it rather than the middle, so the light leaves from the same edge
+     * the chain hangs off and the two agree about where the lamp is.
      *
-     * The radius is the distance from an edge midpoint to a far corner --
-     * hypot(W/2, H) -- which is the smallest circle from that origin that
-     * still reaches every corner of the window. Anything less leaves the two
-     * far corners of the old room showing after the animation has ended.
-     *
-     * The four figures are set before the transition starts rather than inside
-     * the callback, because they have to be on the root by the time the
-     * browser takes its snapshots: the pseudo-elements inherit custom
-     * properties from the document element, and that is how both the cast and
-     * the keyframes know where the pool is and which way it is travelling.
-     *
-     * The movement itself is a CSS animation on ::view-transition-new(root) --
-     * see @keyframes wipe-pool. It was a scripted one, aimed at the pseudo
-     * through element.animate, and that is a call not every engine that ships
-     * view transitions also honours: where it was ignored the wipe silently
-     * became a hard cut. Nothing here animates anything now; it writes the
-     * geometry and hands the browser the callback.
+     * Going out it still gathers at the floor: a room does not un-light from
+     * the lamp outwards, and the lamp is the last thing to go.
      */
-    function wipe(name) {
-      var down = name === 'light';
-      var W = window.innerWidth, H = window.innerHeight;
-      var x, y;
-
-      /* Going on, the light comes from the lamp.
-       *
-       * The pool used to start at the middle of the top edge, which was the
-       * right answer while the control was a switch in the corner and the
-       * argument was about where daylight comes from. There is a lamp on the
-       * screen now and the reader has just pulled its cord, so the light
-       * starts where they were looking: the ferrule's own box, read live,
-       * because the stage is scaled to fit the window and its authored
-       * position is not where it is on the glass.
-       *
-       * Going off it still gathers at the floor. A room does not un-light
-       * from the lamp outwards -- the lamp is the last thing to go.
-       */
-      if (down) {
-        var r = bob.getBoundingClientRect();
-        x = r.left + r.width / 2;
-        y = r.top + r.height / 2;
-      } else {
-        x = W / 2;
-        y = H;
+    function source(down) {
+      if (down && hush) {
+        var r = hush.getBoundingClientRect();
+        if (r.width || r.height) {
+          return { x: r.left + r.width / 2, y: r.bottom };
+        }
       }
-
-      /* The smallest circle from the source that still reaches every corner --
-       * whichever of the four is furthest -- and then a fifth more, because
-       * the mask's edge is soft: what has to clear the last corner is not the
-       * radius but the point the falloff has finished, and at 0.62 opaque the
-       * two are 38 per cent apart. Without the margin the far corner spends
-       * the last of the move in a half-lit band. */
-      var rad = Math.max(
-        Math.hypot(x, y), Math.hypot(W - x, y),
-        Math.hypot(x, H - y), Math.hypot(W - x, H - y)) * 1.2;
-
-      root.style.setProperty('--wipe-x', x.toFixed(1) + 'px');
-      root.style.setProperty('--wipe-y', y.toFixed(1) + 'px');
-      root.style.setProperty('--wipe-r', rad.toFixed(1) + 'px');
-
-      /* Which way it is going, on the root, because the two directions are
-       * different animations rather than one played backwards -- see the
-       * ::view-transition rules. Off again when the change is done, so a
-       * pseudo-element that only exists during a transition is never left
-       * matching a state that has ended. */
-      root.classList.remove('room-on', 'room-off');
-      root.classList.add(down ? 'room-on' : 'room-off');
-
-      if (!down && bloom) {
-        bloom.style.setProperty('--bloom-x', x.toFixed(1) + 'px');
-        bloom.style.setProperty('--bloom-y', y.toFixed(1) + 'px');
-      }
-
-      /* Everything below is frozen from here. See the note above thaw(). */
-      frozen = true;
-      var t = document.startViewTransition(function () { apply(name); });
-
-      /* And a way out of it.
-       *
-       * A view transition holds the document -- the callback does not run and
-       * nothing on the page changes -- until the browser hands it a rendering
-       * opportunity to take its snapshots from. There are more ways to be
-       * denied one than the visibility check in choose() catches: a window
-       * sitting behind another window, a lid closed on an external display, a
-       * second desktop, any of the several things a machine does to a tab it
-       * has decided nobody is watching. Every one of them ends the same way --
-       * the switch is pressed, the room does not change, and the page is stuck
-       * behind a transition that cannot start. That is what breaks on one
-       * machine and not on another, and it is invisible from the machine it
-       * works on.
-       *
-       * Half a second is an age next to a snapshot and no time at all next to
-       * a person waiting on a control they have just pressed. Past it the
-       * transition is skipped, and skipping still runs the callback: the room
-       * changes on the 320ms the flat fills have carried since before the wipe
-       * existed. A wipe nobody could have watched is worth nothing anyway.
-       */
-      var bail = setTimeout(function () {
-        if (t && t.skipTransition) { t.skipTransition(); }
-      }, 500);
-      var stand = function () { clearTimeout(bail); };
-      if (t && t.ready) { t.ready.then(stand, stand); }
-      /* And the filament cools once the room has gone. Only on the way out:
-       * going the other way the strike is inside the wipe, where it belongs.
-       *
-       * The class comes off first and the box is measured before it goes back
-       * on, because an animation whose name has not changed is not restarted
-       * by having its class re-added in the same frame -- the same lesson the
-       * book's fold cost a whole afternoon. */
-      var clear = function () {
-        root.classList.remove('room-on', 'room-off');
-        thaw();
-      };
-      /* And a hard one, because a frozen chain that is never thawed is a chain
-       * that has stopped for good. finished settles on every path this knows
-       * about -- done, skipped, and the bail above -- and this is for the
-       * paths it does not. It is longer than the longest crossing and it costs
-       * nothing on the run of the mill. */
-      setTimeout(thaw, 1200);
-      if (t && t.finished) {
-        t.finished.then(function () {
-          clear();
-          if (down || !bloom) { return; }
-          bloom.classList.remove('is-out');
-          void bloom.offsetWidth;
-          bloom.classList.add('is-out');
-        }, clear);
-      } else { setTimeout(clear, 900); }
-      // A skipped transition rejects both of these, and an unhandled rejection
-      // in a colour switch is noise in a console somebody else is reading.
-      if (t && t.finished) { t.finished.then(null, function () {}); }
-      if (t && t.updateCallbackDone) { t.updateCallbackDone.then(null, function () {}); }
+      return { x: window.innerWidth / 2, y: window.innerHeight };
     }
 
-    /* Whether the page is currently a photograph of itself.
+    /* And the change itself, which is now one attribute and one class.
      *
-     * True from the moment a view transition is asked for to the moment its
-     * pseudo-elements come down. While it is set the cord's frame loop keeps
-     * turning and steps nothing: see the guard at the top of run()'s tick, and
-     * the note above wipe()'s call to startViewTransition for why a physical
-     * object must not go on being physical while the page is not being
-     * painted. */
-    var frozen = false;
-    function thaw() {
-      if (!frozen) { return; }
-      frozen = false;
-      /* The clock is reset rather than left, so the first frame back is a
-       * frame and not the whole of the crossing arriving as one step. */
-      last = performance.now();
+     * The room swaps on the line that says so. Nothing is photographed,
+     * nothing is held, and the chain is not frozen -- see the note where the
+     * view-transition CSS used to be for why all three of those went. What
+     * carries the colour is the 320ms already on the flat fills; what carries
+     * the moment is the flare, painted over the top out of the lamp.
+     *
+     * The class is taken off, the box is measured, and the class goes back
+     * on: an animation whose name has not changed is not restarted by having
+     * its class re-added in the same frame, so a reader pulling the chain
+     * twice quickly would get one flare and then none. offsetWidth is the
+     * cheapest way to force the reflow that separates them, and it is the
+     * same trick the book's fold already uses. */
+    function flood(name) {
+      var down = name === 'light';
+      var p = source(down);
+
+      if (bloom) {
+        bloom.style.setProperty('--bloom-x', p.x.toFixed(1) + 'px');
+        bloom.style.setProperty('--bloom-y', p.y.toFixed(1) + 'px');
+      }
+
+      apply(name);
+
+      if (!bloom) { return; }
+      bloom.classList.remove('is-in', 'is-out');
+      void bloom.offsetWidth;
+      bloom.classList.add(down ? 'is-in' : 'is-out');
     }
 
     function choose(name) {
       try { localStorage.setItem(KEY, name); } catch (e) {}
 
-      // Three ways out, and the tokens simply swap on all of them -- the
-      // 320ms on the flat fills carries the change, which is what this did
-      // before the wipe existed.
-      //
-      // The third one is not a fallback, it is a correctness guard. A view
-      // transition holds the document until it gets a rendering opportunity
-      // to take its snapshots, and a tab that is not visible never gets one:
-      // the callback does not run, the room does not change, and the page
-      // sits wedged behind a transition that cannot start. A wipe nobody can
-      // watch is worth nothing anyway.
-      if (!document.startViewTransition ||
-          document.visibilityState !== 'visible' ||
-          matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      /* One guard left, and it is the only one that was ever about the
+       * reader rather than about the machinery: somebody who has asked for
+       * less movement gets the room and not the flare. The visibility check
+       * and the two timeouts that used to stand here were guarding against a
+       * transition that could not start, and there is no transition to fail
+       * to start any more -- an attribute is set on a hidden tab exactly as
+       * well as on a visible one. */
+      if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
         apply(name);
         return;
       }
-      wipe(name);
+      flood(name);
     }
 
     /* --- pulling it, and letting it go -------------------------------------
@@ -17582,6 +17556,19 @@ a.arrow { text-decoration: none; }
      */
     var CATCH = 48, GIVE = 1, TRAVEL = 115, SWING = 26;
 
+    /* And the bottom of the pull, which is a place and not an opinion.
+     *
+     * The chain pays out on an exponential -- see hold() -- so it approaches
+     * TRAVEL and never arrives, and there is no last pixel to hang this on.
+     * What there is instead is the point where pulling stops buying chain:
+     * d(ext)/d(finger) is exp(-x / TRAVEL), and at 85 per cent of travel that
+     * has fallen to 0.15 -- past here a finger moves seven pixels to gain one,
+     * and the chain is, to anybody holding it, against its stop.
+     *
+     * 98 is that 85 per cent. It is the figure the drawing already behaves as
+     * though it had, and this is only the sound catching up with it. */
+    var FLOOR = 98;
+
     /* Where the chain hangs, inside its own box. Half of 26. */
     var AX = 13;
 
@@ -17592,6 +17579,7 @@ a.arrow { text-decoration: none; }
     var ang = 0, vAng = 0;               /* swing:  degrees and degrees a sec */
     var bow = 0, vBow = 0;               /* belly:  px off the vertical, and  */
     var grab = null, armed = false, moved = 0, live = 0, last = 0;
+    var bottomed = false;                /* run out against its stop, sounded */
     var detent = false;                  /* a pull that has not fired yet     */
     var say = cord.querySelector('[data-cord-say]'), sayAt = 0;
     var calm = matchMedia('(prefers-reduced-motion: reduce)');
@@ -17606,6 +17594,37 @@ a.arrow { text-decoration: none; }
     var rest = 134;
     function measure() {
       rest = parseFloat(getComputedStyle(cord).getPropertyValue('--cord-len')) || 134;
+      seat();
+    }
+
+    /* Where the chain hangs from, which is the foot of the switch.
+     *
+     * It used to be the ceiling -- top: 0, right: 64px, fixed to the window --
+     * on the argument that a lamp hangs from a room and the room is the
+     * window. That is true of a pendant and this is not one any more: the
+     * switch is the lamp, so the chain comes off the bottom of the switch and
+     * there is nothing above it to come off instead.
+     *
+     * Written as left/top in window pixels rather than as a CSS offset,
+     * because the two boxes do not share a coordinate system: the switch
+     * stands on the stage, which is 1920 wide and scaled to fit, and the
+     * chain is fixed to the glass and deliberately unscaled. There is no
+     * static pair of figures that puts one under the other at two window
+     * sizes, so the rect is read and the chain is placed against it.
+     *
+     * AX is the anchor's own x inside the chain's box, so taking it off the
+     * centre is what lines the first bead up with the middle of the switch
+     * rather than with its left edge.
+     *
+     * Re-run from measure(), which already runs on load and on every resize --
+     * and a resize is exactly when the stage rescales and the switch moves. */
+    function seat() {
+      if (!hush) { return; }
+      var r = hush.getBoundingClientRect();
+      if (!r.width && !r.height) { return; }   /* not laid out yet */
+      cord.style.right = 'auto';
+      cord.style.left = (r.left + r.width / 2 - AX).toFixed(1) + 'px';
+      cord.style.top  = r.bottom.toFixed(1) + 'px';
     }
 
     /* Where the belly of the chain would sit if it had no weight of its own.
@@ -17691,13 +17710,6 @@ a.arrow { text-decoration: none; }
       if (live) { return; }
       last = performance.now();
       live = requestAnimationFrame(function tick(now) {
-        /* Nothing this draws is reaching the screen: the document is in a
-         * view-transition snapshot and the live DOM is not being painted. So
-         * the loop stays up and the physics stands still, and thaw() hands it
-         * back a clock. Integrating through it is how the chain used to spend
-         * a whole crossing settling out of sight and then appear at rest. */
-        if (frozen) { last = now; live = requestAnimationFrame(tick); return; }
-
         /* Capped, floored, and subdivided.
          *
          * Capped because a tab that was in the background hands back a delta
@@ -17740,10 +17752,10 @@ a.arrow { text-decoration: none; }
 
         /* The detent going over. See release().
          *
-         * The condition is the top of the snap: the chain has run all the way
-         * back in, gone past its resting length, and stopped going up. That
-         * instant is the end of the return stroke and it is where a rotary cam
-         * seats.
+         * The condition is the chain arriving home: the frame the return
+         * stroke brings ext back to its resting length. That is where a rotary
+         * cam seats, and it is the last instant of the movement anybody can
+         * see.
          *
          * It was the catch crossing first -- the frame the returning chain
          * passes back up through CATCH -- and that fired 29 milliseconds after
@@ -17751,15 +17763,33 @@ a.arrow { text-decoration: none; }
          * far as anybody watching is concerned. The whole complaint about this
          * being instant would have survived it.
          *
-         * 125ms, and it is the same 125 however hard the chain was pulled: the
+         * Then it was the far end of the bounce -- ext already negative and
+         * the velocity turned back over -- on the reading that the end of the
+         * return stroke is where the chain finally stops. It is not, and the
+         * clamp in paint() is the proof: a chain does not compress, so the
+         * drawing pins ext at -14px and holds it there. On anything harder
+         * than a nudge the chain reached that pin at 92ms and did not move
+         * again, while the switch went over at 125. What that bought was a
+         * chain visibly arriving, stopping dead, and then a third of a beat of
+         * nothing before the room changed -- the lag, and it was being timed
+         * off a phase of the motion that the drawing does not show and that a
+         * chain does not have.
+         *
+         * 79ms, and it is the same 79 however hard the chain was pulled: the
          * period of a linear spring does not depend on how far it was taken
          * from rest, so the switch takes exactly as long to go over on a yank
          * as on a nudge. That is a real property of the mechanism rather than
          * a convenience -- it is why a pull switch sounds the same every time
          * -- and it is the argument for reading the moment off the integrator
          * instead of writing a number into a setTimeout, which would have had
-         * to be the same 125 and would have meant nothing. */
-        if (detent && ext < 0 && vExt >= 0) {
+         * to be the same 79 and would have meant nothing.
+         *
+         * On ext alone and not on the velocity as well, because a frame long
+         * enough to step over the whole crossing must not be a frame that
+         * misses the pull: ext has to pass through here on its way to rest, so
+         * the first frame that finds it home is the pull, however long that
+         * frame was. */
+        if (detent && ext <= 0) {
           detent = false;
           cord.classList.remove('is-armed');
           pulled();
@@ -17800,6 +17830,7 @@ a.arrow { text-decoration: none; }
                px: e.clientX, py: e.clientY, down: e.timeStamp };
       moved = 0;
       armed = false;
+      bottomed = false;
       /* The two the hand is about to take over stop dead; the belly keeps
        * whatever it had, because a chain caught mid-swing does not have its
        * middle straightened by the catching. */
@@ -17868,6 +17899,27 @@ a.arrow { text-decoration: none; }
         if (armed && window.__sfx) { window.__sfx('chain'); }
       }
 
+      /* And the chain reaching the end of its travel.
+       *
+       * A real pull has two things in it a hand can feel and the page only had
+       * one of them. The catch is the first -- the beads letting go through the
+       * housing -- and the stop is the second: the chain runs out, the pull
+       * arrives against something solid, and every further millimetre of finger
+       * is spent on nothing. Without a sound there the bottom of the pull is
+       * the one part of this that the screen shows and the hand cannot tell.
+       *
+       * With hysteresis, and eight pixels of it. Held right at FLOOR a chain
+       * that sounded on the way past would sound again on every frame a finger
+       * trembled across it, which is not a stop being hit, it is a stop being
+       * chattered. Let it back up by eight and it can be hit again -- because
+       * it can be hit again, twice in one grab, by anybody sawing at it. */
+      if (ext >= FLOOR) {
+        if (!bottomed) {
+          bottomed = true;
+          if (window.__sfx) { window.__sfx('stop'); }
+        }
+      } else if (ext < FLOOR - 8) { bottomed = false; }
+
       /* And if they are still holding it a second and a half later, the cord
        * says something. Past the catch only: a reader who has pulled it two
        * pixels and forgotten about it has not done anything worth answering,
@@ -17890,6 +17942,7 @@ a.arrow { text-decoration: none; }
     function release(e) {
       if (!grab) { return; }
       var did = armed;
+      bottomed = false;
       cord.classList.remove('is-saying');
       sayAt = 0;
       if (e && e.timeStamp > grab.t) {
@@ -17940,6 +17993,7 @@ a.arrow { text-decoration: none; }
       if (!grab) { return; }
       grab = null;
       armed = false;
+      bottomed = false;
       detent = false;
       cord.classList.remove('is-saying');
       sayAt = 0;
@@ -22055,6 +22109,22 @@ a.arrow { text-decoration: none; }
        * duller because it is falling into its other seat rather than being
        * lifted into this one, and there is no note after it. A lamp does not
        * fade out politely. It stops, and the room is what is left. */
+      /* stop      the chain against the end of its travel. One hard grain
+       *           with the band up where small metal lives and a Q tight
+       *           enough to ring for a millisecond, the housing taking it
+       *           four milliseconds later an octave down, and the case
+       *           moving in its socket under both. It is the same three
+       *           parts as the detent and it is deliberately the same three:
+       *           a stop and a cam are the same event -- something sprung
+       *           arriving somewhere it cannot go past -- and what separates
+       *           them is that this one is shorter, harder and has nothing
+       *           after it. Nothing warms up at the bottom of a pull. */
+      stop: function () {
+        var t = ac.currentTime;
+        grain(t,         0.009, 2550, 2.4, 0.130);  /* the chain, run out */
+        grain(t + 0.004, 0.020, 1120, 1.6, 0.085);  /* the housing        */
+        note(120, 78, 0.045, 0.055, 'sine');        /* and the case       */
+      },
       chain: function () {
         var t = ac.currentTime, i, at = 0;
         for (i = 0; i < 7; i++) {
@@ -22125,7 +22195,21 @@ a.arrow { text-decoration: none; }
        gesture makes one. A reader who has moved the cursor over the page and
        pressed nothing hears nothing -- which is the browser's rule and not a
        choice here, and the alternative is not sound but a queue. */
+    /* Nothing at all on a phone, and it is the switch's absence that makes
+     * this the rule rather than a preference. The hush control is not drawn
+     * at this width -- see .room in the phone block -- so a sound made here
+     * is a sound with nothing to stop it: the reader's only way out would be
+     * the hardware switch on the side of the device, which is a page telling
+     * somebody to mute their phone. The desktop keeps all of it, and keeps
+     * the switch that answers for it.
+     *
+     * Read live rather than cached at boot, because this is the same list a
+     * desktop window dragged narrow crosses, and a page does not stop being
+     * a phone layout because it did not start as one. */
+    var phone = matchMedia('(max-width: 900px)');
+
     function play(which) {
+      if (phone.matches) { return; }
       if (off || !ac || ac.state !== 'running') { return; }
       var v = VOICE[which];
       if (v) { v(); }
