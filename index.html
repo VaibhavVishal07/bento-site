@@ -1515,7 +1515,6 @@ body {
      so the origin is the same pair of figures the gradient is centred on and
      the script writes both from one rect. */
   transform-origin: var(--bloom-x, 92%) var(--bloom-y, 12%);
-  will-change: opacity, transform;
   background: radial-gradient(circle 24vmax at var(--bloom-x, 92%) var(--bloom-y, 12%),
     rgba(255, 236, 196, 0.30) 0%,
     rgba(255, 232, 188, 0.13) 26%,
@@ -1524,6 +1523,13 @@ body {
 }
 /* Full the instant the room goes and then down a curve that is fast at first
    and slow at the end, which is a filament losing heat and not a fade. */
+/* The hint goes on with the class and comes off with it, which is the rule
+   the book's seat already states: a permanent will-change is a permanent
+   layer, and this element sits over every page on the site doing nothing at
+   all between pulls. Named on the two classes rather than on .bloom so the
+   compositor is asked for a surface at the moment there is something to put
+   on it. */
+.bloom.is-in, .bloom.is-out { will-change: opacity, transform; }
 .bloom.is-out { animation: bloom-down 460ms cubic-bezier(0.1, 0.62, 0.3, 1) both; }
 @keyframes bloom-down {
   from { opacity: 1; }
