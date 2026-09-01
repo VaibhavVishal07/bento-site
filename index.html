@@ -623,14 +623,16 @@
      body, and a flank in shadow. That is what makes it round -- the depth is
      in the spread between them and not in a shadow under it.
 
-     --steel and not --pull, which is the name it was given first and which is
-     already taken: --pull is the registered <length> the cord's extension is
-     written to. A registered property resolves to its own type wherever it is
-     used, so `var(--pull)` inside a gradient came back as 0px, the colour stop
-     was invalid, the whole gradient was invalid, and the ferrule and the ring
-     simply were not painted. No warning anywhere -- an invalid background is a
-     background that is not there. Two things in one stylesheet cannot be
-     called the same thing either. */
+     --steel and not --pull, which is the name it was given first and which
+     was already taken. --pull was then a registered <length> holding the
+     chain's extension, and a registered property resolves to its own type
+     wherever it is used -- so `var(--pull)` inside a gradient came back as
+     0px, the colour stop was invalid, the whole gradient was invalid, and the
+     ferrule and the ring simply were not painted. No warning anywhere: an
+     invalid background is a background that is not there. The chain writes a
+     path rather than a property now and that name is free again, and it is
+     still not going back. Two things in one stylesheet cannot be called the
+     same thing. */
   --steel-hi: #c3c8ce;
   --steel:    #7b8188;
   --steel-lo: #383d43;
@@ -1144,73 +1146,75 @@
 /* On: light out of the lamp.
 
    A mask rather than a clip-path, which is the whole of what was wrong with
-   it. A clip-path has one edge and it is infinitely sharp, and the fix that
-   had been applied to it -- a drop-shadow along the leading edge, to say which
-   room was on top -- is a thing you do to a sheet of paper. It made the lit
-   room read as a card being slid over the page, which is exactly what it
-   looked like and exactly what light does not do.
+   the version before last. A clip-path has one edge and it is infinitely
+   sharp, and the fix that had been applied to it -- a drop-shadow along the
+   leading edge, to say which room was on top -- is a thing you do to a sheet
+   of paper. It made the lit room read as a card being slid over the page.
 
-   And it is a cone, which is the other half of saying light. A lamp with a
-   shade over it does not throw a circle, it throws a beam: the mask is a
-   radial falloff intersected with a wedge opening from the same point, and
-   both are animated. The beam starts narrow at the ferrule and opens to the
-   whole room as it reaches it, which is a filament coming up behind a shade
-   -- at full brightness the shade has stopped mattering and the room is
-   simply lit.
+   And then it was a cone, and the cone never painted a single frame.
 
-   205 degrees is where it points. Conic angles run clockwise from twelve
-   o'clock, so that is down and to the left: the lamp is at the top right of
-   the window and the page is what it has to reach.
+   mask-composite takes one value per mask layer, and a single keyword is
+   expanded across all of them. `mask-composite: intersect` on a two-layer
+   mask is therefore `intersect, intersect`, and the first of those lands on
+   the bottom layer -- which has nothing under it but transparent black. A
+   source intersected with nothing is nothing. The mask resolved empty, the
+   incoming room stayed masked out for the whole 520ms, and then the
+   pseudo-element was torn down and the real page appeared underneath it. Both
+   things being reported about this -- that the beam does nothing, and that the
+   room changes instantly -- were that one line of CSS. It is the worst kind of
+   bug in a stylesheet: a mask that is fully transparent and a mask that is not
+   there look nothing alike, and a mask that is fully OPAQUE and a mask that is
+   not there look identical, so the failure had no symptom of its own to find.
 
-   The radial half is a soft ring: opaque to 66 per cent of the radius and
-   gone by 100, so there are 34 points of falloff travelling ahead of it. That
-   softness is what separates light from a sheet of paper being slid over the
-   page, and the cast that used to say which room was on top is gone with the
-   hard edge that needed it.
+   `add, intersect` would fix the arithmetic and keep the wedge, and the wedge
+   is the other half of the problem: a lamp hanging over a page does not throw
+   a shape with two straight sides across it. It pools. So this is one layer
+   and no compositing at all, and there is now no second layer for a keyword to
+   land on.
+
+   What is left is a soft ring: opaque to 52 per cent of the radius, half-lit
+   at 80, gone by 100. Those 48 points of falloff travelling ahead of the light
+   are the whole of what separates this from a sheet of paper being slid over
+   the page -- the edge is never in one place, which is what an edge made of
+   light does.
 
    And it strikes. A filament does not come up to its working colour, it
    overshoots and settles back -- so the incoming room arrives half again as
    bright and a little desaturated, and comes down over the first fifth of the
    move. That is the flare, and it happens *during* the wipe rather than after
-   it, which is what makes this one event. It was two: a wipe, and then a
-   bloom flashing over the top once the room had already arrived.
+   it, which is what makes this one event rather than two.
 
-   1.45 and not 1.85. The lit room is already a near-white page, so at 1.85 a
+   1.42 and not 1.85. The lit room is already a near-white page, so at 1.85 a
    third of the screen clipped to flat white and the content under the leading
    edge stopped existing for a beat -- a lamp striking, and also a photograph
    being overexposed. Half again is a flare you read as heat rather than as a
-   blown highlight. */
-@property --wipe-a { syntax: "<angle>"; inherits: true; initial-value: 0deg; }
+   blown highlight.
+
+   640ms and not 520. The pool starts at the ferrule, which is up in a corner,
+   so it has a whole diagonal to cross rather than half of one. At 520 from a
+   corner it is a scramble, and what is being asked of it is that it be
+   seamless. */
 
 :root.room-on::view-transition-new(root) {
   -webkit-mask-image:
     radial-gradient(circle at var(--wipe-x, 50%) var(--wipe-y, 0%),
-      #000 calc(var(--wipe-g) * 0.66), transparent var(--wipe-g)),
-    conic-gradient(from calc(205deg - var(--wipe-a)) at var(--wipe-x, 50%) var(--wipe-y, 0%),
-      #000 0deg, #000 calc(var(--wipe-a) * 2),
-      transparent calc(var(--wipe-a) * 2 + 16deg));
+      #000 calc(var(--wipe-g) * 0.52),
+      rgba(0, 0, 0, 0.55) calc(var(--wipe-g) * 0.80),
+      transparent var(--wipe-g));
   mask-image:
     radial-gradient(circle at var(--wipe-x, 50%) var(--wipe-y, 0%),
-      #000 calc(var(--wipe-g) * 0.66), transparent var(--wipe-g)),
-    conic-gradient(from calc(205deg - var(--wipe-a)) at var(--wipe-x, 50%) var(--wipe-y, 0%),
-      #000 0deg, #000 calc(var(--wipe-a) * 2),
-      transparent calc(var(--wipe-a) * 2 + 16deg));
-  /* Both at once, which is what makes it a cone and not two shapes stacked.
-     The prefixed spelling takes a different keyword for the same operation
-     and is what older WebKit answers to. */
-  -webkit-mask-composite: source-in;
-  mask-composite: intersect;
-  animation: lamp-strike var(--wipe-ms, 520ms) cubic-bezier(0.16, 0.74, 0.24, 1) both;
+      #000 calc(var(--wipe-g) * 0.52),
+      rgba(0, 0, 0, 0.55) calc(var(--wipe-g) * 0.80),
+      transparent var(--wipe-g));
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  animation: lamp-strike var(--wipe-ms, 640ms) cubic-bezier(0.22, 0.68, 0.24, 1) both;
 }
 @keyframes lamp-strike {
-  0%   { --wipe-g: 0px;  --wipe-a: 15deg;
-         filter: brightness(1.45) saturate(0.88); }
-  20%  { filter: brightness(1.14) saturate(0.96); }
-  /* The beam has opened past a half turn well before the light has reached
-     the far corner, so what the last third of the move is doing is filling a
-     room rather than widening a torch. */
-  62%  { --wipe-a: 150deg; }
-  100% { --wipe-g: var(--wipe-r, 140%); --wipe-a: 200deg;
+  0%   { --wipe-g: 0px;
+         filter: brightness(1.42) saturate(0.90); }
+  22%  { filter: brightness(1.12) saturate(0.97); }
+  100% { --wipe-g: var(--wipe-r, 160%);
          filter: brightness(1) saturate(1); }
 }
 
@@ -1224,7 +1228,7 @@
    what carries the moment is the filament cooling at the lamp afterwards.
    See .bloom, which is now only ever the way out. */
 :root.room-off::view-transition-new(root) {
-  animation: lamp-out 240ms cubic-bezier(0.5, 0, 0.9, 1) both;
+  animation: lamp-out 340ms cubic-bezier(0.4, 0, 0.9, 1) both;
 }
 @keyframes lamp-out {
   from { opacity: 0; }
@@ -1321,158 +1325,111 @@ body {
    hundred of them, re-resolving its style sixty times a second for the 420ms
    the glow takes to settle. Written here it is these two boxes and the
    twenty-two lines inside them. Nothing else on the screen reads these. */
-/* --- the lamp -------------------------------------------------------------
-
-   Every moving thing on this screen is a reaction. The cards lean at a
-   pointer, the lattice lights under one, the arrows slide, the covers stop
-   when you hover them. Take the pointer away and the page is a photograph:
-   the strip of covers and the two lenticular cards are the only things left
-   moving, and both of them are inside one tile.
-
-   Which is the argument the lenticular card already makes and the rest of
-   the screen does not -- a reader who never touches it should still see it
-   change. So there is a light over the desk, and it is not holding still.
-
-   One element and one property. Twenty-two hairlines each carrying a
-   frame-sized gradient is the repaint the lattice glow is careful about, and
-   a room that costs that every frame for ever is a room with a fan in it.
-   This is a single ellipse moved on a transform, which is a composited layer
-   and no repaint at all -- so the light can run continuously and cost the
-   same as the page sitting still.
-
-   It sits under the cards, and the cards are opaque. So it is never seen on
-   one: what it lights is the gutters between them and the two black margins
-   either side, which is the deadest part of this screen and the part with no
-   content to make it otherwise. A light travelling over an empty desk is
-   still a desk with something happening on it.
-
-   Two periods, and deliberately not a ratio of each other -- 53 and 37 --
-   so the two axes come back into phase once every half hour rather than
-   every minute. A path a reader can learn is a loop, and a loop is a GIF. */
-.lamp {
-  position: absolute;
-  left: 50%; top: 50%;
-  width: 1500px; height: 1100px;
-  margin: -550px 0 0 -750px;
-  pointer-events: none;
-  border-radius: 50%;
-  background: radial-gradient(closest-side,
-    rgba(var(--w), 0.055) 0%,
-    rgba(var(--w), 0.030) 38%,
-    rgba(var(--w), 0.010) 68%,
-    rgba(var(--w), 0) 100%);
-  will-change: transform;
-  animation: lamp-x 53s var(--ease) infinite alternate,
-             lamp-y 37s var(--ease) infinite alternate;
-}
-/* Composited on both counts: two animations on one property would overwrite
-   each other, so each takes an axis of the same translate and the pair are
-   composed by the browser rather than by arithmetic here. */
-@keyframes lamp-x {
-  from { translate: -430px 0; }
-  to   { translate: 430px 0; }
-}
-@keyframes lamp-y {
-  from { transform: translateY(-190px); }
-  to   { transform: translateY(150px); }
-}
-
-/* The lit room has a page to light rather than a desk in the dark, and a
-   white ellipse on white paper is a smudge. It goes the other way there:
-   the same shape, in the room shade, at a third of the strength -- which is
-   a shadow moving over paper and reads as the same lamp. */
-:root[data-theme="light"] .lamp,
-:root:not([data-theme]) .lamp {
-  background: radial-gradient(closest-side,
-    rgba(var(--shade), 0.022) 0%,
-    rgba(var(--shade), 0.012) 38%,
-    rgba(var(--shade), 0.004) 68%,
-    rgba(var(--shade), 0) 100%);
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) .lamp {
-    background: radial-gradient(closest-side,
-      rgba(var(--w), 0.055) 0%,
-      rgba(var(--w), 0.030) 38%,
-      rgba(var(--w), 0.010) 68%,
-      rgba(var(--w), 0) 100%);
-  }
-}
-
-/* A light that will not hold still is exactly what somebody asking for less
-   motion is asking to be rid of. It does not go dark -- it stops, in the
-   middle, which is where an overhead lamp would be anyway. */
-@media (prefers-reduced-motion: reduce) {
-  .lamp { animation: none; }
-}
-
 /* --- the cord -------------------------------------------------------------
 
    The two rooms had a switch: two cells in the corner, one lit, and it told
    you there was a setting. What stands here now tells you there is a lamp.
 
-   A cord hangs in the right margin off the top of the frame. Press the
-   ferrule and drag and the string pays out against a spring; past 34 pixels
-   of travel it catches, and letting go there turns the light. Short of it,
-   it simply springs back and nothing has happened -- which is the whole of
-   what makes it feel like a cord rather than a button drawn as one, because a
-   real pull can be started and abandoned. Press without dragging and the
-   script pulls it the same distance, so nothing here needs a pointer that can
-   drag: a tap, a click, Enter and Space all pull it.
+   A chain hangs in the right margin off the top of the frame. Press the
+   ferrule and drag and it pays out against a spring; past 48 pixels of travel
+   it catches, and letting go there turns the light. Short of it, it simply
+   springs back and nothing has happened -- which is the whole of what makes it
+   feel like a chain rather than a button drawn as one, because a real pull can
+   be started and abandoned. Press without dragging and the script pulls it the
+   same distance, so nothing here needs a pointer that can drag: a tap, a
+   click, Enter and Space all pull it.
 
-   Two numbers drive the whole thing and a script writes both every frame.
-   --pull is how far the string has paid out and --swing is how far the whole
-   thing has come off vertical; the string's height and the ferrule's offset
-   are written off the first, and the second turns the cord about the point it
-   hangs from. Nothing here springs on a timing function -- see the integrator
-   in the script, which is where the physics is. Registered so that a value
-   arriving as a bare token still resolves as a length and an angle. */
-@property --pull  { syntax: "<length>"; inherits: true; initial-value: 0px; }
-@property --swing { syntax: "<angle>";  inherits: true; initial-value: 0deg; }
+   Nothing in this block places anything. There are no custom properties left
+   on it and there is no rotation on it, and both of those went for the same
+   reason.
+
+   A chain pulled sideways is not a rod on a hinge. It leaves the ceiling
+   vertical -- the link at the top is carrying the weight of every link under
+   it, and weight hangs straight down -- and it bends from there to wherever
+   the hand has taken the ferrule. Written as a rotate() on a box it was a
+   rigid stick pivoting about a point, which is the one thing a chain cannot
+   do, and it was the tell: it read as hardware on a hinge rather than as
+   something hanging off a ceiling. Straight under the finger, straight all the
+   way through the swing, straight at rest.
+
+   So the chain is a path and the script writes it every frame: an anchor at
+   the top, the ferrule at the end, and one control point between them whose
+   sideways offset is integrated on a spring of its own. The belly of the chain
+   therefore arrives late -- pull sideways and the bend forms behind the pull,
+   let go and it whips through. That lag is the whole of why this reads as a
+   chain, and it is one more oscillator rather than a curve fitted by eye. See
+   bow in the script, where all three of them are.
+   -------------------------------------------------------------------------- */
 
 .cord {
-  --cord-len: 112px;
-  --pull: 0px;
-  --swing: 0deg;
+  /* A hundred and thirty-four and not a hundred and twelve. Every figure on
+     this object is the old one and a fifth: at the old size the ring read as a
+     bead rather than as something you could take hold of, and a lamp pull you
+     are not sure is a lamp pull is a decoration. The whole of it is scaled
+     together -- the drop, the beads, the ferrule, the ring, the travel and the
+     catch -- because scaling half of it makes a different object rather than a
+     bigger one. */
+  --cord-len: 134px;
   /* Fixed to the window and not to the frame. See the note in the markup:
      inside the stage this hung off the top of a drawing that is centred in the
      window, so on any screen taller than the frame needs it started a hundred
      pixels down with nothing above it -- a cord that had been cut rather than
      one that came from somewhere. Out here it comes off the ceiling.
-     
+
      And it is not scaled with the frame, for the same reason the bar is not:
      the figures on it are the figures you get. A lamp is a lamp at any window
      size; the desk is what gets bigger and smaller. */
   position: fixed;
   top: 0;
   right: 64px;
-  width: 22px; height: 300px;
+  width: 26px; height: 432px;
   z-index: 30;
-  /* Turned about the ceiling, which is the only point on a hanging cord that
-     does not move. 11 is the cord's own x inside this box. */
-  transform: rotate(var(--swing));
-  transform-origin: 11px 0;
-  will-change: transform;
   pointer-events: none;
 }
 
-/* The cord. A hairline, and that is the whole of it.
+/* The chain, and it is a chain now.
 
-   It was a ball chain for a while -- beads with their own shading and a
-   specular on each one -- which is what is actually on a lamp and was, at the
-   size this ends up on a screen, a zipper running down the side of the page.
-   The site is hairlines and flat fills and one warm accent; a rendered chain
-   is a second drawing style arguing with the first, and the argument was
-   settled by looking at it. What says lamp here is the pull, not the cord.
+   It was a ball chain once -- beads with their own shading and a specular on
+   each one -- and that was a second drawing style arguing with a site made of
+   hairlines and flat fills. Then it was a hairline, which is honest and is a
+   wire, and a wire is not what hangs off a lamp. This is the third answer and
+   it is the cheap one: a stroke with round caps and a dash pattern of
+   nothing-followed-by-a-gap. A zero-length dash under a round cap is a dot, so
+   the pattern lays one bead every five pixels along whatever path it is given,
+   at one flat alpha, with no shading on any of them. It is a ball chain, it is
+   one declaration, and because it is a stroke on a path rather than a column
+   of drawn circles the beads follow the curve without being placed on it.
 
-   It pays out rather than stretching: the box gets longer and there is more
-   line, which is what comes off a ceiling. */
-.cord-line {
+   overflow visible, because the swing takes the ferrule well outside a
+   26-pixel column and an SVG clips to its own viewport by default. */
+.cord-svg {
   position: absolute;
-  left: 11px; top: 0;
-  width: 1px;
-  height: calc(var(--cord-len) + var(--pull));
-  background: var(--cord-ink);
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+.cord-path {
+  fill: none;
+  stroke: var(--cord-ink);
+  stroke-width: 4px;
+  stroke-linecap: round;
+  stroke-dasharray: 0.01 5;
+}
+
+/* Where the hand is: a box the size of the ferrule and the ring together,
+   moved to the end of the path every frame.
+
+   Two boxes and not one, because two things at the end of a chain want
+   different angles. The hardware is clamped to the last link and turns with
+   it; the bubble hanging off it is a thing the page is saying and should be
+   level however the chain is leaning. So this one carries the position and the
+   button inside it carries the rotation. */
+.cord-hand {
+  position: absolute;
+  left: 0; top: 0;
+  width: 22px; height: 40px;
+  will-change: transform;
 }
 
 /* And the pull, which is the one object.
@@ -1485,18 +1442,23 @@ body {
    The rule everywhere else on this frame is square, and it is about the
    interface: the cards, the slots, every corner the frame draws. This is not
    the interface. It is an object standing in front of it, and the objects here
-   have always had their own geometry -- the book's boards, the pool of light. */
+   have always had their own geometry -- the book's boards, the pool of light.
+
+   It turns to the chain's own tangent and not to the swing, and once there is
+   a bend in the chain those are two different angles: the ferrule is clamped
+   to the last link, and the last link points where the chain is going rather
+   than where the whole of it is leaning. */
 .cord-bob {
   position: absolute;
-  left: 2px;
-  top: calc(var(--cord-len) + var(--pull));
-  width: 18px; height: 33px;
+  left: 0; top: 0;
+  width: 22px; height: 40px;
   margin: 0;
   padding: 0;
   border: 0;
   background: none;
   pointer-events: auto;
   cursor: grab;
+  transform-origin: 11px 0;
   transition: filter 160ms var(--ease);
 }
 .cord-bob:active { cursor: grabbing; }
@@ -1505,12 +1467,12 @@ body {
   .cord-bob:hover { filter: brightness(1.12); }
 }
 
-/* The ferrule: a collar the cord enters and a taper down to the ring. */
+/* The ferrule: a collar the chain enters and a taper down to the ring. */
 .cord-bob::before {
   content: '';
   position: absolute;
-  left: 5px; top: 0;
-  width: 8px; height: 16px;
+  left: 6px; top: 0;
+  width: 10px; height: 19px;
   background: linear-gradient(100deg, var(--steel-lo), var(--steel) 46%, var(--steel-hi));
   clip-path: polygon(25% 0%, 75% 0%, 100% 100%, 0% 100%);
 }
@@ -1521,18 +1483,18 @@ body {
 .cord-bob::after {
   content: '';
   position: absolute;
-  left: 0; top: 15px;
-  width: 18px; height: 18px;
+  left: 0; top: 18px;
+  width: 22px; height: 22px;
   border-radius: 50%;
   background: linear-gradient(148deg, var(--steel-hi), var(--steel) 42%, var(--steel-lo));
-  -webkit-mask-image: radial-gradient(circle at 50% 50%, transparent 0 4.6px, #000 5.2px);
-  mask-image: radial-gradient(circle at 50% 50%, transparent 0 4.6px, #000 5.2px);
+  -webkit-mask-image: radial-gradient(circle at 50% 50%, transparent 0 5.5px, #000 6.2px);
+  mask-image: radial-gradient(circle at 50% 50%, transparent 0 5.5px, #000 6.2px);
 }
 
-/* Past the catch: the cord brightens and the steel lifts. The tell that
+/* Past the catch: the chain brightens and the steel lifts. The tell that
    letting go here does something, and the reason a pull can be started and
    abandoned without having to guess. */
-.cord.is-armed .cord-line { background: var(--cord-ink-lit); }
+.cord.is-armed .cord-path { stroke: var(--cord-ink-lit); }
 .cord.is-armed .cord-bob { filter: brightness(1.24); }
 
 /* And a word from the cord, for anybody who will not let go of it.
@@ -1545,19 +1507,20 @@ body {
 
    In the hand the playground's prints are written in, which is the site's own
    voice for a note somebody left rather than the page talking -- see --f-hand.
-   To the left of the ferrule, because the cord hangs 64 from the right edge
-   and a bubble on the other side would be off the glass. */
+   To the left of the ferrule, because the chain hangs 64 from the right edge
+   and a bubble on the other side would be off the glass. Inside .cord-hand, so
+   it travels with the pull and does not have to be placed twice. */
 .cord-say {
   position: absolute;
-  right: 26px;
-  top: calc(var(--cord-len) + var(--pull) + 2px);
+  right: 31px;
+  top: 2px;
   width: max-content;
-  padding: 5px 11px 6px;
-  border-radius: 11px 11px 3px 11px;
+  padding: 6px 13px 7px;
+  border-radius: 13px 13px 4px 13px;
   background: var(--say-fill);
   box-shadow: inset 0 0 0 1px var(--say-line);
   font-family: var(--f-hand);
-  font-size: 17px;
+  font-size: 19px;
   line-height: 1;
   white-space: nowrap;
   color: var(--say-ink);
@@ -1572,8 +1535,8 @@ body {
 .cord-say::after {
   content: '';
   position: absolute;
-  right: -3px; bottom: 3px;
-  width: 8px; height: 8px;
+  right: -4px; bottom: 4px;
+  width: 10px; height: 10px;
   background: var(--say-fill);
   box-shadow: inset -1px 1px 0 var(--say-line);
   transform: rotate(45deg);
@@ -1587,29 +1550,23 @@ body {
   .cord.is-saying .cord-say { transform: none; }
 }
 
-/* There is no transition on the way home and there must not be one.
-   
-   A cord let go does two things at once and they are not the same movement:
-   the string contracts, fast and heavily damped, and the whole thing swings
-   about its anchor, slow and barely damped at all. One timing function cannot
-   be both, and two of them on two properties drift apart within a swing. So
-   the return is integrated frame by frame -- see the block in the script --
-   and this rule exists to say that the absence of a transition here is the
-   design and not an omission. */
+/* There is no transition on any of it and there must not be one.
 
-/* Nothing about the hardware is written twice for the two rooms, and that is
-   the point of drawing it as metal rather than as a line at an alpha. Brass is
+   A chain let go does three things at once and they are not the same
+   movement: it contracts, fast and heavily damped; the whole of it swings
+   about its anchor, slow and barely damped at all; and its middle follows both
+   of those late. One timing function cannot be any of them, and three of them
+   on three properties drift apart inside a single swing. So the return is
+   integrated frame by frame -- see the block in the script -- and this note
+   exists to say that the absence of a transition here is the design and not an
+   omission.
+
+   Nothing about the hardware is written twice for the two rooms, and that is
+   the point of drawing it as metal rather than as a line at an alpha. Steel is
    the same steel on a black desk and on a white page; what changes is what is
-   behind it. The one figure that does move is the steel of the chain -- see
-   --bead in each room, where the dark room's beads are lit from above against
-   black and the lit room's are the same beads read as a dark object against
-   paper. */
-
-/* Somebody asking for less motion still gets the cord and still gets the
-   room; what they do not get is the spring. It goes back where it was. */
-@media (prefers-reduced-motion: reduce) {
-  .cord.is-settling { transition: --pull 1ms linear; }
-}
+   behind it. The one figure that does move is the chain's own ink -- see
+   --cord-ink in each room, where the dark room's beads are lit against black
+   and the lit room's are the same beads read as a dark object against paper. */
 
 /* --- and the filament cooling ----------------------------------------------
 
@@ -1648,13 +1605,6 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .bloom.is-out { animation: none; }
 }
-
-/* The mat is a green rubber surface with its own light, and the playground
-   and the piece screen are lit by it. A second lamp over those is a second
-   opinion about which way the light is coming from. */
-.x-lab .lamp,
-.x-piece .lamp { opacity: 0; }
-.lamp { transition: opacity var(--x-morph) var(--x-ease); }
 
 .rules {
   position: absolute; inset: 0; pointer-events: none;
@@ -2610,8 +2560,13 @@ body {
     inset 0 0 0 1px rgba(var(--w), 0.07),
     inset 0 -1px 0 rgba(var(--shade), 0.22),
     0 3px 0 rgba(var(--w), 0.11),
-    0 7px 16px -5px rgba(var(--shade), calc(0.08 + var(--cast-a) * 1.4)),
-    0 2px 5px -2px rgba(var(--shade), calc(0.06 + var(--cast-a) * 1));
+    /* The lit room's cast is off this button. See the note above .btn-ghost:
+       0.10 of --cast-a through the old 1.4 and 1 was 0.22 and 0.16 under a
+       five-per-cent fill, which is a smudge with a button on it rather than a
+       button with a shadow under it. At 0.15 the two rooms are within two
+       points of each other and the ghost is flat in both. */
+    0 7px 16px -5px rgba(var(--shade), calc(0.05 + var(--cast-a) * 0.15)),
+    0 2px 5px -2px rgba(var(--shade), calc(0.04 + var(--cast-a) * 0.15));
 }
 
 /* Down two, and the side of it shorter by the same two.
@@ -2675,8 +2630,8 @@ body {
     inset 0 0 0 1px rgba(var(--w), 0.09),
     inset 0 -1px 0 rgba(var(--shade), 0.20),
     0 1px 0 rgba(var(--w), 0.10),
-    0 4px 9px -4px rgba(var(--shade), calc(0.09 + var(--cast-a) * 1.3)),
-    0 1px 3px -1px rgba(var(--shade), calc(0.07 + var(--cast-a) * 1));
+    0 4px 9px -4px rgba(var(--shade), calc(0.06 + var(--cast-a) * 0.15)),
+    0 1px 3px -1px rgba(var(--shade), calc(0.05 + var(--cast-a) * 0.15));
 }
 
 /* And all the way down. The face travels three and the band gives up the
@@ -2705,7 +2660,7 @@ body {
     inset 0 0 0 1px rgba(var(--w), 0.07),
     inset 0 -1px 0 rgba(var(--shade), 0.12),
     0 0 0 0 rgba(var(--w), 0.06),
-    0 2px 5px -3px rgba(var(--shade), calc(0.06 + var(--cast-a) * 0.9));
+    0 2px 5px -3px rgba(var(--shade), calc(0.045 + var(--cast-a) * 0.15));
 }
 
 .btn:focus-visible { outline: 2px solid rgb(var(--w)); outline-offset: 3px; }
@@ -12053,8 +12008,6 @@ a.arrow { text-decoration: none; }
      point in the sweep. On a phone it is the truer of the two anyway -- the
      light belongs to the room, and the room does not scroll with the
      column. */
-  .lamp { position: fixed; }
-
   /* relative, not static: the card carries two absolutely positioned children
      of its own -- the ring and the .card-hit link -- and a static card is not
      their containing block, so both would escape to the viewport and size
@@ -12806,15 +12759,18 @@ a.arrow { text-decoration: none; }
   }
   .room-c svg { width: 15px; height: 15px; }
 
-  /* The same cord, inboard of the sound switch so the two do not share a
-     corner, and shorter: a hundred and twelve pixels down the side of a phone
-     is a rope. It is already fixed to the window and already unscaled, so
-     nothing else about it has to change down here. */
+  /* The same chain, inboard of the sound switch so the two do not share a
+     corner, and shorter: a hundred and thirty-four pixels down the side of a
+     phone is a rope. Seventy, which is the old fifty-eight and the same fifth
+     as everything else on it. The hardware does not shrink with it -- a
+     ferrule you can hit with a thumb is most of the point of it down here --
+     and the chain is already fixed to the window and already unscaled, so
+     nothing else about it has to change. */
   .cord {
-    --cord-len: 58px;
+    --cord-len: 70px;
     right: 100px;
     z-index: 31;
-    height: 180px;
+    height: 216px;
   }
 
   /* Everything the L2 places by hand has to rejoin the flow, for the same
@@ -13688,9 +13644,7 @@ a.arrow { text-decoration: none; }
 
     <div class="arrive-wipe" aria-hidden="true"></div>
 
-    <!-- The lamp. Under everything, so what it lights is the desk between
-         the cards and the two margins either side of them. See .lamp. -->
-    <span class="lamp" aria-hidden="true"></span>
+
 
 
     <!-- behind the cards: these two pairs show only in the gutters -->
@@ -14959,10 +14913,19 @@ a.arrow { text-decoration: none; }
        The button is the ferrule rather than a box round it, so what you can
        grab is what you can see. See .cord in the stylesheet. -->
   <div class="cord" data-cord>
-    <i class="cord-line" aria-hidden="true"></i>
-    <button class="cord-bob" type="button" data-cord-bob
-            aria-pressed="false" aria-label="Turn the lamp on"></button>
-    <span class="cord-say" data-cord-say aria-hidden="true">Leave me pls</span>
+    <!-- The chain is one path and the script writes its d attribute every
+         frame. Nothing is authored into it here, and there is deliberately no
+         fallback drawn: a straight line sitting behind a curve is a straight
+         line showing through it on the first frame, and this element is
+         painted before its first rAF either way. -->
+    <svg class="cord-svg" aria-hidden="true" focusable="false">
+      <path class="cord-path" data-cord-path d="M13 0"></path>
+    </svg>
+    <div class="cord-hand" data-cord-hand>
+      <button class="cord-bob" type="button" data-cord-bob
+              aria-pressed="false" aria-label="Turn the lamp on"></button>
+      <span class="cord-say" data-cord-say aria-hidden="true">Leave me pls</span>
+    </div>
   </div>
 
   <div class="bloom" aria-hidden="true"></div>
@@ -17345,7 +17308,6 @@ a.arrow { text-decoration: none; }
     function apply(name) {
       root.setAttribute('data-theme', name);
       mark(name);
-      swing();
     }
 
     /* The pool.
@@ -17428,6 +17390,8 @@ a.arrow { text-decoration: none; }
         bloom.style.setProperty('--bloom-y', y.toFixed(1) + 'px');
       }
 
+      /* Everything below is frozen from here. See the note above thaw(). */
+      frozen = true;
       var t = document.startViewTransition(function () { apply(name); });
 
       /* And a way out of it.
@@ -17464,8 +17428,14 @@ a.arrow { text-decoration: none; }
        * book's fold cost a whole afternoon. */
       var clear = function () {
         root.classList.remove('room-on', 'room-off');
-        if (!down || !bloom) { return; }
+        thaw();
       };
+      /* And a hard one, because a frozen chain that is never thawed is a chain
+       * that has stopped for good. finished settles on every path this knows
+       * about -- done, skipped, and the bail above -- and this is for the
+       * paths it does not. It is longer than the longest crossing and it costs
+       * nothing on the run of the mill. */
+      setTimeout(thaw, 1200);
       if (t && t.finished) {
         t.finished.then(function () {
           clear();
@@ -17479,6 +17449,23 @@ a.arrow { text-decoration: none; }
       // in a colour switch is noise in a console somebody else is reading.
       if (t && t.finished) { t.finished.then(null, function () {}); }
       if (t && t.updateCallbackDone) { t.updateCallbackDone.then(null, function () {}); }
+    }
+
+    /* Whether the page is currently a photograph of itself.
+     *
+     * True from the moment a view transition is asked for to the moment its
+     * pseudo-elements come down. While it is set the cord's frame loop keeps
+     * turning and steps nothing: see the guard at the top of run()'s tick, and
+     * the note above wipe()'s call to startViewTransition for why a physical
+     * object must not go on being physical while the page is not being
+     * painted. */
+    var frozen = false;
+    function thaw() {
+      if (!frozen) { return; }
+      frozen = false;
+      /* The clock is reset rather than left, so the first frame back is a
+       * frame and not the whole of the crossing arriving as one step. */
+      last = performance.now();
     }
 
     function choose(name) {
@@ -17503,44 +17490,53 @@ a.arrow { text-decoration: none; }
       wipe(name);
     }
 
-    // Nothing to swing. The switch had two icons and lit whichever had just
-    // come on; a cord answers a press by being pulled, which is the block
-    // below, and apply() is called from inside the drag as well as from the
-    // keyboard so it cannot be the thing that starts the movement.
-    function swing() {}
-
     /* --- pulling it, and letting it go -------------------------------------
      *
-     * A hanging cord with a weight on the end is two oscillators sharing one
-     * object, and they are not the same movement:
+     * A hanging chain with a weight on the end is three oscillators sharing
+     * one object, and they are not the same movement:
      *
-     *   the string    contracts along its own length -- fast, and damped hard
+     *   the chain     pays out along its own length -- fast, and damped hard
      *                 enough that it is over in two bounces
      *   the pendulum  swings about the point it hangs from -- slow, and barely
      *                 damped at all, which is why a real one is still moving
      *                 four seconds after you let go
+     *   the belly     is the middle of the chain, and it arrives late. It is
+     *                 not driven by the hand, it is driven by the ferrule, and
+     *                 it is the one that makes this look like a chain rather
+     *                 than a stick
      *
-     * One timing function cannot be both and two of them drift apart inside a
-     * single swing, so neither is a transition. Both are integrated here, on
-     * the frame clock, as damped harmonic oscillators:
+     * The third one is new and it is the whole of the answer to a chain that
+     * was straight whenever anybody was holding it. There is no such thing as
+     * a taut chain under a finger: the ferrule goes where the hand is, the
+     * anchor stays on the ceiling, and everything in between is still falling
+     * towards the floor while both ends have already moved. Pull sideways and
+     * the bend forms behind the pull; let go and it whips through and past.
      *
-     *     x'' = -k·x - c·x'      k = w²      c = 2·z·w
+     * One timing function cannot be any of the three, and three of them drift
+     * apart inside a single swing, so none of them is a transition. All three
+     * are integrated here, on the frame clock, as damped harmonic oscillators:
+     *
+     *     x'' = -k(x - x0) - c.x'      k = w^2      c = 2.z.w
      *
      * w is the natural frequency in radians a second and z the damping ratio,
      * which is the one number that says what kind of thing this is: under 1 it
      * oscillates, at 1 it returns without overshooting, over 1 it crawls back.
      *
-     * The string is 4.4 cycles a second at z 0.42. The overshoot of a damped
-     * oscillator is exp(-pi·z/sqrt(1-z²)), so that is 23 per cent: let go from
-     * 55 pixels it rides about 13 past the rest and is done on the second
-     * bounce. It was 0.24 first, which is 45 per cent -- 25 pixels of rise on a
-     * 128-pixel string, and a cord does not compress, it goes slack. Thirteen
-     * is a bounce you can see and not a spring being sprung.
+     * The chain is 4.4 cycles a second at z 0.42. The overshoot of a damped
+     * oscillator is exp(-pi.z/sqrt(1-z^2)), so that is 23 per cent: let go
+     * from 66 pixels it rides about 15 past the rest and is done on the second
+     * bounce. It was 0.24 first, which is 45 per cent -- and a chain does not
+     * compress, it goes slack.
      *
      * The pendulum is 1.15 a second at z 0.11, which halves the swing every
      * cycle: seven degrees, then three and a half, then under two, gone in
      * about three and a half seconds. At 0.055 it halved every other cycle and
-     * was still visibly moving at five, which is a cord nobody let go of.
+     * was still visibly moving at five, which is a chain nobody let go of.
+     *
+     * The belly is 2.1 a second at z 0.26 -- slower than the chain and faster
+     * than the swing, which is where the middle of a light chain actually
+     * sits, and underdamped enough to overshoot the line twice on the way
+     * home. That overshoot is the whip.
      *
      * Semi-implicit Euler -- velocity first, then position off the new
      * velocity -- because it is one line, it is stable at these stiffnesses,
@@ -17549,60 +17545,150 @@ a.arrow { text-decoration: none; }
      * as several small ones rather than one large one, which is where an
      * integrator on a frame clock usually blows up.
      */
-    var SPR_W = 27.6, SPR_Z = 0.42;      /* the string: 4.4 Hz, over in two   */
+    var SPR_W = 27.6, SPR_Z = 0.42;      /* the chain:  4.4 Hz, over in two   */
     var PEN_W = 7.2,  PEN_Z = 0.11;      /* the swing:  1.15 Hz, halves a swing */
+    var BOW_W = 13.2, BOW_Z = 0.26;      /* the belly:  2.1 Hz, and it trails */
     var STEP = 1 / 240;                  /* the integrator's own clock        */
 
-    /* CATCH is how far the string has to pay out before letting go does
-     * anything, and it is the whole of what makes this a cord rather than a
+    /* CATCH is how far the chain has to pay out before letting go does
+     * anything, and it is the whole of what makes this a chain rather than a
      * button drawn as one: a pull can be started and abandoned.
      *
-     * GIVE and TRAVEL are the stop. The string pays out with the hand at the
+     * GIVE and TRAVEL are the stop. The chain pays out with the hand at the
      * top of the stroke and stiffens as it goes -- one exponential, asymptotic
-     * to TRAVEL -- so a finger that keeps going finds no more string. At GIVE
-     * 1 the first ten pixels are worth nine and a half and the catch at 40 is
-     * reached at about 56 pixels of drag: a pull rather than a nudge, and
+     * to TRAVEL -- so a finger that keeps going finds no more chain. At GIVE 1
+     * the first ten pixels are worth nine and a half and the catch at 48 is
+     * reached at about 68 pixels of drag: a pull rather than a nudge, and
      * short of a stretch.
      *
-     * SWING is the same stop for the other axis. A cord pulled sideways goes
+     * SWING is the same stop for the other axis. A chain pulled sideways goes
      * with the hand and runs out of angle; 26 degrees is as far as one hanging
      * this length is going to be taken by a finger without being torn off the
      * ceiling.
+     *
+     * All three lengths are the old ones and a fifth, because the object is.
+     * The angle is not: 26 degrees off vertical is 26 degrees off vertical on
+     * a chain of any length, and scaling it would have been scaling a number
+     * that is not a size.
      */
-    var CATCH = 40, GIVE = 1, TRAVEL = 96, SWING = 26;
+    var CATCH = 48, GIVE = 1, TRAVEL = 115, SWING = 26;
 
-    var ext = 0, vExt = 0;               /* string: extension and its rate    */
+    /* Where the chain hangs, inside its own box. Half of 26. */
+    var AX = 13;
+
+    var path = cord.querySelector('[data-cord-path]');
+    var hand = cord.querySelector('[data-cord-hand]');
+
+    var ext = 0, vExt = 0;               /* chain:  extension and its rate    */
     var ang = 0, vAng = 0;               /* swing:  degrees and degrees a sec */
+    var bow = 0, vBow = 0;               /* belly:  px off the vertical, and  */
     var grab = null, armed = false, moved = 0, live = 0, last = 0;
+    var detent = false;                  /* a pull that has not fired yet     */
     var say = cord.querySelector('[data-cord-say]'), sayAt = 0;
     var calm = matchMedia('(prefers-reduced-motion: reduce)');
 
-    function paint() {
-      cord.style.setProperty('--pull', ext.toFixed(2) + 'px');
-      cord.style.setProperty('--swing', ang.toFixed(3) + 'deg');
+    /* The resting length, read once and kept.
+     *
+     * It was read out of the computed style on every pointermove, which is a
+     * style resolution per event on an element that the same event is about to
+     * write to. That is where the drag's jitter was. It changes on exactly one
+     * thing -- the phone breakpoint, which shortens it -- so it is measured
+     * here and re-measured on a resize, and nowhere else. */
+    var rest = 134;
+    function measure() {
+      rest = parseFloat(getComputedStyle(cord).getPropertyValue('--cord-len')) || 134;
     }
 
-    /* One damped step of both oscillators. Returns whether anything is still
-     * worth drawing: under a twentieth of a pixel and a hundredth of a degree
-     * nobody can see it, and a loop that runs for ever on a still cord is a
-     * fan. */
+    /* Where the belly of the chain would sit if it had no weight of its own.
+     *
+     * A share of the way across to the ferrule, and the share rises with
+     * tension: a chain being pulled hard is straighter than one hanging. It
+     * stops well short of a half, which is the share that would put the
+     * control point on the straight line between the two ends and make the
+     * curve a segment -- and that is the point. There is no value of anything
+     * here that draws a straight chain while a hand is on it. */
+    function belly() {
+      var L = rest + Math.max(0, ext);
+      var dx = L * Math.sin(ang * Math.PI / 180);
+      var taut = Math.min(1, Math.max(0, ext / TRAVEL));
+      return dx * (0.20 + 0.16 * taut);
+    }
+
+    /* One damped step of the belly. Separate from step() because it runs while
+     * the chain is being held as well as while it is coming home -- the other
+     * two are the hand's during a drag, and this one never is. */
+    function sag(h) {
+      vBow += (-(BOW_W * BOW_W) * (bow - belly()) - 2 * BOW_Z * BOW_W * vBow) * h;
+      bow  += vBow * h;
+    }
+
+    /* Everything the frame draws, out of the three numbers above.
+     *
+     * The ferrule's position is polar off the anchor. The chain is a quadratic
+     * through one control point, and the control point's y is fixed at 58 per
+     * cent of the drop, which is what makes the curve leave the ceiling
+     * vertical: a quadratic's tangent at its first point is the line to its
+     * control, and a control directly below the anchor is a vertical
+     * departure. Its x is bow, which is integrated rather than placed, and
+     * that is the lag. */
+    function paint() {
+      /* Clamped, because a chain does not compress. On the bounce ext goes
+       * negative, and past a few pixels of that the ferrule would ride up
+       * inside the anchor -- what a real one does there is go slack, which is
+       * a shape this curve cannot draw and nobody has ever noticed missing. */
+      var L = rest + Math.max(-14, ext);
+      var th = ang * Math.PI / 180;
+      var bx = AX + L * Math.sin(th);
+      var by = L * Math.cos(th);
+      var cx = AX + bow;
+      var cy = by * 0.58;
+
+      path.setAttribute('d', 'M' + AX + ' 0Q' + cx.toFixed(1) + ' ' + cy.toFixed(1) +
+                             ' ' + bx.toFixed(1) + ' ' + by.toFixed(1));
+
+      /* The ferrule is clamped to the last link, so it turns to the tangent at
+       * the end of the curve rather than to the swing. For a quadratic that
+       * tangent is simply the control point to the end point, which is why
+       * there is no derivative here to get wrong.
+       *
+       * Negative, and it is not a taste decision. CSS rotate() is clockwise in
+       * a coordinate system whose y runs down, so it carries a point hanging
+       * at (0, L) below the origin to (-L.sin a, L.cos a): a positive angle
+       * takes the weight to the LEFT. Every x in this file is positive to the
+       * right. One sign, and it used to be wrong in two places at once. */
+      var tx = bx - cx, ty = Math.max(1, by - cy);
+      var rot = -Math.atan2(tx, ty) * 180 / Math.PI;
+
+      hand.style.transform = 'translate(' + (bx - 11).toFixed(1) + 'px,' +
+                                            by.toFixed(1) + 'px)';
+      bob.style.transform = 'rotate(' + rot.toFixed(2) + 'deg)';
+    }
+
+    /* One damped step of all three. Returns whether anything is still worth
+     * drawing: under a twentieth of a pixel and a hundredth of a degree nobody
+     * can see it, and a loop that runs for ever on a still chain is a fan. */
     function step(h) {
       vExt += (-(SPR_W * SPR_W) * ext - 2 * SPR_Z * SPR_W * vExt) * h;
       ext  += vExt * h;
       vAng += (-(PEN_W * PEN_W) * ang - 2 * PEN_Z * PEN_W * vAng) * h;
       ang  += vAng * h;
+      sag(h);
       return Math.abs(ext) > 0.05 || Math.abs(vExt) > 0.05 ||
-             Math.abs(ang) > 0.04 || Math.abs(vAng) > 0.08;
+             Math.abs(ang) > 0.04 || Math.abs(vAng) > 0.08 ||
+             Math.abs(bow) > 0.05 || Math.abs(vBow) > 0.4;
     }
 
     function run() {
       if (live) { return; }
       last = performance.now();
       live = requestAnimationFrame(function tick(now) {
-        /* A finger on it beats the physics: while the cord is being held it is
-         * not returning anywhere, so the loop follows the hand instead of
-         * integrating, and one paint a frame is all either of them gets. */
-        if (grab) { hold(now); paint(); live = requestAnimationFrame(tick); last = now; return; }
+        /* Nothing this draws is reaching the screen: the document is in a
+         * view-transition snapshot and the live DOM is not being painted. So
+         * the loop stays up and the physics stands still, and thaw() hands it
+         * back a clock. Integrating through it is how the chain used to spend
+         * a whole crossing settling out of sight and then appear at rest. */
+        if (frozen) { last = now; live = requestAnimationFrame(tick); return; }
+
         /* Capped, floored, and subdivided.
          *
          * Capped because a tab that was in the background hands back a delta
@@ -17613,25 +17699,73 @@ a.arrow { text-decoration: none; }
          * mark from performance.now() and rAF hands back the timestamp the
          * *frame* began at, which for a loop started inside an event handler
          * is earlier than the mark -- so the first dt was below zero, the
-         * subdivision loop never entered, `moving` was still false from its
-         * initialiser, and the else branch below zeroed the state and stopped.
-         * Every drag survived it because a release lands between frames and
-         * the next timestamp is genuinely later; the hover nudge did not,
-         * because it fires inside the frame it is answering. It moved nothing,
-         * every time, and looked exactly like a listener that was not bound.
-         *
-         * And `moving` starts true rather than false, so a frame that takes no
-         * step because there was no time in it is not a frame that decides the
-         * cord has stopped. */
+         * subdivision loop never entered, and the else branch below zeroed the
+         * state and stopped. Every drag survived it because a release lands
+         * between frames and the next timestamp is genuinely later; the hover
+         * nudge did not, because it fires inside the frame it is answering. It
+         * moved nothing, every time, and looked exactly like a listener that
+         * had not been bound. */
         var dt = Math.min(Math.max((now - last) / 1000, 0), 0.05);
         last = now;
+
+        /* A finger on it beats the physics for two of the three. While the
+         * chain is held it is not returning anywhere -- the ferrule is where
+         * it is being held and the swing is the angle of the hand -- but the
+         * belly is nobody's to place, so it keeps integrating. That is the
+         * bend that forms behind a sideways pull, and it is the reason this
+         * branch is not simply a paint. */
+        if (grab) {
+          hold(now);
+          for (var u = 0; u < dt; u += STEP) { sag(Math.min(STEP, dt - u)); }
+          paint();
+          live = requestAnimationFrame(tick);
+          return;
+        }
+
+        /* And `moving` starts true rather than false, so a frame that takes no
+         * step because there was no time in it is not a frame that decides the
+         * chain has stopped. */
         var moving = true;
         for (var t = 0; t < dt; t += STEP) { moving = step(Math.min(STEP, dt - t)); }
         paint();
+
+        /* The detent going over. See release().
+         *
+         * The condition is the top of the snap: the chain has run all the way
+         * back in, gone past its resting length, and stopped going up. That
+         * instant is the end of the return stroke and it is where a rotary cam
+         * seats.
+         *
+         * It was the catch crossing first -- the frame the returning chain
+         * passes back up through CATCH -- and that fired 29 milliseconds after
+         * the finger came off, which is not a beat, it is the same frame as
+         * far as anybody watching is concerned. The whole complaint about this
+         * being instant would have survived it.
+         *
+         * 125ms, and it is the same 125 however hard the chain was pulled: the
+         * period of a linear spring does not depend on how far it was taken
+         * from rest, so the switch takes exactly as long to go over on a yank
+         * as on a nudge. That is a real property of the mechanism rather than
+         * a convenience -- it is why a pull switch sounds the same every time
+         * -- and it is the argument for reading the moment off the integrator
+         * instead of writing a number into a setTimeout, which would have had
+         * to be the same 125 and would have meant nothing. */
+        if (detent && ext < 0 && vExt >= 0) {
+          detent = false;
+          cord.classList.remove('is-armed');
+          pulled();
+        }
+
         if (moving) { live = requestAnimationFrame(tick); }
         else {
-          live = 0; ext = 0; vExt = 0; ang = 0; vAng = 0; paint();
+          live = 0;
+          ext = 0; vExt = 0; ang = 0; vAng = 0; bow = 0; vBow = 0;
+          paint();
           cord.classList.remove('is-armed');
+          /* A guard and not a path anybody takes: the loop cannot stop with a
+           * pull still owed, because ext has to pass through the catch to
+           * reach zero. If it ever does, the light still goes on. */
+          if (detent) { detent = false; pulled(); }
         }
       });
     }
@@ -17640,60 +17774,44 @@ a.arrow { text-decoration: none; }
 
     /* --- the hand on it ------------------------------------------------- */
 
-    /* Where the cord hangs from, in window pixels. Read live rather than off
+    /* Where the chain hangs from, in window pixels. Read live rather than off
      * the stylesheet's figures, because `right: 64px` is a different left edge
      * on every window -- and read on each press rather than once, because the
-     * window is resizable and a cached ceiling is a cord that swings about a
-     * point it is no longer attached to. 11 is the line's x inside the box,
-     * unscaled: this element is fixed to the window and not to the frame. */
+     * window is resizable and a cached ceiling is a chain that swings about a
+     * point it is no longer attached to. */
     function anchor() {
       var r = cord.getBoundingClientRect();
-      return { x: r.left + 11, y: r.top };
+      return { x: r.left + AX, y: r.top };
     }
 
     bob.addEventListener('pointerdown', function (e) {
       if (!e.isTrusted) { return; }
-      stop();
       var a = anchor();
       grab = { ax: a.x, ay: a.y, t: e.timeStamp, x: e.clientX, y: e.clientY,
-               px: e.clientX, py: e.clientY,
-               /* The resting length, read once. It was read out of the
-                * computed style on every pointermove, which is a style
-                * resolution per event on an element the same event is about to
-                * write two custom properties to -- the browser answering a
-                * question it has just been made unable to answer. That is
-                * where the drag's jitter was. It cannot change under a finger
-                * that is already holding the cord, so once is enough. */
-               rest: parseFloat(getComputedStyle(cord)
-                       .getPropertyValue('--cord-len')) || 112,
-               down: e.timeStamp };
+               px: e.clientX, py: e.clientY, down: e.timeStamp };
       moved = 0;
       armed = false;
+      /* The two the hand is about to take over stop dead; the belly keeps
+       * whatever it had, because a chain caught mid-swing does not have its
+       * middle straightened by the catching. */
       vExt = 0; vAng = 0;
       cord.classList.remove('is-armed', 'is-saying');
       sayAt = 0;
       if (bob.setPointerCapture) { bob.setPointerCapture(e.pointerId); }
+      run();
       e.preventDefault();
     });
 
-    /* The cord follows the hand rather than the hand's vertical component.
-     *
-     * Pull straight down and it is all string; pull to one side and it swings
-     * out and stays under your finger, which is what a cord does and what
-     * telling this apart from a slider depends on. Both axes are read off the
-     * one vector from the ceiling to the pointer: its length past the resting
-     * length is the extension, its angle off vertical is the swing, and each
-     * runs through its own stop. */
     /* The move handler records where the finger is and nothing else.
      *
      * A pointer fires faster than the screen draws -- on a 120Hz trackpad
      * against a 60Hz display, twice per frame, and coalesced events can arrive
-     * in bursts of five or six. Resolving the geometry and writing the two
-     * custom properties inside each of those is several style invalidations
-     * for one painted frame, and what comes out the other end is a cord that
-     * stutters against a finger moving smoothly. So the event stores a
-     * position and the frame loop reads it: one resolve, one write, one paint,
-     * per frame that actually happens. */
+     * in bursts of five or six. Resolving the geometry and writing the path
+     * inside each of those is several style invalidations for one painted
+     * frame, and what comes out the other end is a chain that stutters against
+     * a finger moving smoothly. So the event stores a position and the frame
+     * loop reads it: one resolve, one write, one paint, per frame that
+     * actually happens. */
     bob.addEventListener('pointermove', function (e) {
       if (!grab) { return; }
       grab.px = e.clientX; grab.py = e.clientY;
@@ -17702,38 +17820,44 @@ a.arrow { text-decoration: none; }
     });
 
     /* And what the frame does with it. Called from the loop while a finger is
-     * down, in place of the integrator: a held cord is not falling anywhere,
-     * it is where it is being held.
+     * down, in place of the integrator for two of the three.
+     *
+     * The chain follows the hand rather than the hand's vertical component.
+     * Pull straight down and it is all extension; pull to one side and it goes
+     * out and stays under your finger, which is what a chain does and what
+     * telling this apart from a slider depends on. Both are read off the one
+     * vector from the ceiling to the pointer: its length past the resting
+     * length is the extension, its angle off vertical is the swing, and each
+     * runs through its own stop.
      *
      * `hold` and not `follow`, and the name is the whole of a bug that cost an
      * afternoon. This module already had a `var follow` further down -- the
      * callback that keeps an unchosen room in step with the desktop's own
      * setting. A function declaration hoists and is then overwritten by the
      * `var` assignment that runs at module init, so by the time anybody
-     * touched the cord this name meant the media-query listener: it was
+     * touched the chain this name meant the media-query listener: it was
      * called on every frame of every drag, found [data-theme] set, returned,
-     * and moved nothing. No error, no warning, and a cord that did not budge.
+     * and moved nothing. No error, no warning, and a chain that did not budge.
      * Two things in one closure cannot be called the same thing. */
     function hold(now) {
       var dx = grab.px - grab.ax, dy = Math.max(1, grab.py - grab.ay);
       var len = Math.hypot(dx, dy);
 
-      ext = TRAVEL * (1 - Math.exp(-Math.max(0, len - grab.rest) * GIVE / TRAVEL));
+      ext = TRAVEL * (1 - Math.exp(-Math.max(0, len - rest) * GIVE / TRAVEL));
 
-      /* Negative, and it is not a taste decision.
-       *
-       * CSS rotate() is clockwise in a coordinate system whose y runs down, so
-       * a point hanging at (0, L) below the origin goes to (-L·sin0, L·cos0):
-       * a positive angle carries the weight to the LEFT. The pointer's dx is
-       * positive to the right. Written as `ang = SWING · tanh(raw/SWING)` the
-       * cord therefore went the opposite way to the hand on every drag, and
-       * the hover nudge pushed it into the pointer rather than away from it.
-       * One sign, and it was wrong in both places. */
       var raw = Math.atan2(dx, dy) * 180 / Math.PI;
-      ang = -SWING * Math.tanh(raw / SWING);
+      ang = SWING * Math.tanh(raw / SWING);
 
       var arm = ext >= CATCH;
-      if (arm !== armed) { armed = arm; cord.classList.toggle('is-armed', armed); }
+      if (arm !== armed) {
+        armed = arm;
+        cord.classList.toggle('is-armed', armed);
+        /* The beads running out through the housing. Heard at the catch and
+         * not from the first pixel of the drag, because the catch is the one
+         * moment in a pull that a hand can feel, and a sound that starts when
+         * a finger moves is a sound about the finger. */
+        if (armed && window.__sfx) { window.__sfx('chain'); }
+      }
 
       /* And if they are still holding it a second and a half later, the cord
        * says something. Past the catch only: a reader who has pulled it two
@@ -17750,7 +17874,7 @@ a.arrow { text-decoration: none; }
     /* And letting go.
      *
      * The velocities the integrator starts from are the hand's, not zero: a
-     * cord released from a standstill drops straight back and one released
+     * chain released from a standstill drops straight back and one released
      * mid-flick keeps going the way it was travelling. Sampled over the last
      * frame of the drag rather than the whole of it, so a slow pull that ends
      * in a flick throws, and a slow pull that ends slowly does not. */
@@ -17761,49 +17885,71 @@ a.arrow { text-decoration: none; }
       sayAt = 0;
       if (e && e.timeStamp > grab.t) {
         var h = Math.max(8, e.timeStamp - grab.t) / 1000;
-        // Negative for the reason the drag is -- see the note there.
-        vAng = Math.max(-140, Math.min(140, -(e.clientX - grab.px) / h * 0.22));
+        vAng = Math.max(-140, Math.min(140, (e.clientX - grab.px) / h * 0.22));
       }
       grab = null;
+
+      /* Armed, so the switch will go -- but not here, and that is the whole of
+       * what "instant" was.
+       *
+       * The room used to change on pointerup. The finger came off and the page
+       * had already turned, with the chain still up at the top of its travel
+       * and a whole snap ahead of it: two things happening at once that do not
+       * happen at once, and what you saw was a light answering the hand rather
+       * than the hardware.
+       *
+       * A pull switch fires on the way back. The chain runs out, the detent
+       * loads, and it goes over as the spring takes the chain home. So the
+       * flag is set here and pulled() is called from the integrator, at the
+       * top of the snap -- see the condition in run(), which is where the
+       * argument for that particular frame is. */
+      if (did) {
+        detent = true;
+        if (window.__sfx) { window.__sfx('chain'); }
+      }
+      armed = false;
       run();
-      if (did) { pulled(); }
     }
 
     /* What a pull actually does, in one place, so the drag and the click and
      * the keyboard cannot drift apart.
      *
-     * The sound is the lamp's and not the frame's: a switch has a mechanism in
-     * it and a bulb has a filament, and those are two different noises a few
-     * milliseconds apart. See VOICE.lamp-on and VOICE.lamp-off, and __sfx for
-     * why anything is allowed to make a noise here at all -- it refuses until
-     * a gesture has built a context, and the hush switch takes it with
+     * The sound is the lamp's and not the frame's: the beads are one noise and
+     * the detent going over is another, and they are a tenth of a second and
+     * a whole mechanism apart. See VOICE.chain and VOICE['lamp-on'], and __sfx
+     * for why anything is allowed to make a noise here at all -- it refuses
+     * until a gesture has built a context, and the hush switch takes it with
      * everything else. */
     function pulled() {
       var to = showing() === 'light' ? 'dark' : 'light';
       if (window.__sfx) { window.__sfx(to === 'light' ? 'lamp-on' : 'lamp-off'); }
       choose(to);
     }
+
     bob.addEventListener('pointerup', release);
     bob.addEventListener('pointercancel', function () {
       if (!grab) { return; }
       grab = null;
       armed = false;
+      detent = false;
       cord.classList.remove('is-saying');
       sayAt = 0;
       run();
     });
 
-    /* A cord in a room with somebody in it is not perfectly still.
+    /* A chain in a room with somebody in it is not perfectly still.
      *
      * Passing over it stirs it -- a small impulse into the swing and a smaller
-     * one into the string, which is a draught or a sleeve and not a hover
+     * one into the extension, which is a draught or a sleeve and not a hover
      * state. It is an impulse and not a pose, so it decays on the same
      * integrator everything else does and two passes in a row do not stack
-     * into a wobble: the guard is that it only stirs a cord that has already
-     * gone still.
+     * into a wobble: the guard is that it only stirs a chain that has already
+     * gone still. The belly is not touched, because it is not something a
+     * sleeve does to a chain -- it is something the chain does to itself
+     * afterwards, and it happens on its own the moment the ferrule moves.
      *
-     * And it goes the way the hand was going. A sleeve crossing a cord carries
-     * it along with it; a cord that jumps *into* the hand is a cord being
+     * And it goes the way the hand was going. A sleeve crossing a chain
+     * carries it along; a chain that jumps *into* the hand is a chain being
      * pulled by something that is not there.
      *
      * Three ways of asking which way that was, in order of how much they can
@@ -17814,7 +17960,7 @@ a.arrow { text-decoration: none; }
      * back. And where even that is nothing, which is a pointer that appeared
      * on the ferrule out of nowhere, the side of centre it landed on will do.
      * The last fallback is a direction rather than a coin toss because a
-     * still cord that is asked to move by exactly zero should still move. */
+     * still chain that is asked to move by exactly zero should still move. */
     var prevX = null;
     document.addEventListener('pointermove', function (e) {
       prevX = e.clientX;
@@ -17826,7 +17972,7 @@ a.arrow { text-decoration: none; }
       var way = e.movementX ||
                 (prevX === null ? 0 : e.clientX - prevX) ||
                 (e.clientX - (r.left + r.width / 2)) || 1;
-      vAng -= (way > 0 ? 1 : -1) * 16;
+      vAng += (way > 0 ? 1 : -1) * 16;
       vExt += 5;
       run();
     });
@@ -17835,26 +17981,43 @@ a.arrow { text-decoration: none; }
      *
      * Most presses are not -- a tap, a click, Enter on a focused control --
      * and a lamp you can only work by dragging is a lamp half the people who
-     * find it cannot turn on. So the cord pulls itself: the string is set past
-     * the catch with a downward velocity still on it, which is a hand letting
-     * go at the bottom of a stroke rather than a value being assigned, and the
-     * integrator carries it home from there.
+     * find it cannot turn on. So the chain pulls itself: the extension is set
+     * past the catch with a downward velocity still on it, which is a hand
+     * letting go at the bottom of a stroke rather than a value being assigned,
+     * and the integrator carries it home from there. It fires at the detent
+     * like every other pull does, so a click and a drag turn the light at the
+     * same point in the same movement.
      *
-     * Guarded on `moved`, because a drag ends in a click too and running both
+     * A little sideways velocity as well, because nobody pulls a chain
+     * perfectly straight and a self-pull that only moves on one axis is the
+     * one that looks scripted.
+     *
+     * Guarded on the drag's own travel, because a drag ends in a click too and
+     * running both
      * would turn the lamp twice and leave it where it started. */
     bob.addEventListener('click', function (e) {
       e.preventDefault();
       if (moved > 4) { moved = 0; return; }
       stop();
-      ext = CATCH + 14; vExt = 26;
+      ext = CATCH + 17; vExt = 31;
       ang = 0; vAng = 9;
+      bow = 0; vBow = 0;
+      armed = false;
+      detent = true;
       cord.classList.add('is-armed');
+      if (window.__sfx) { window.__sfx('chain'); }
       paint();
       run();
-      pulled();
     });
 
-    // A visitor who never pressed anything follows their desktop, including
+    /* A window that changes size moves the ceiling and, at the breakpoint,
+     * shortens the chain. Nothing is animating at that moment, so re-measuring
+     * and re-drawing is the whole of it. */
+    measure();
+    addEventListener('resize', function () { measure(); if (!live) { paint(); } });
+    paint();
+
+    
     // when it changes under them at sunset. Once they have pressed, it is
     // their choice and the system stops being consulted -- which is why this
     // checks the attribute rather than a flag of its own.
@@ -21850,56 +22013,103 @@ a.arrow { text-decoration: none; }
 
       /* --- the lamp ------------------------------------------------------
        *
-       * Two things happen when a pull cord turns a lamp on and they are not
-       * the same sound. The switch is a mechanism: a small sprung click, which
-       * is noise rather than a note -- a few milliseconds of filtered hiss,
-       * the same way the knock is made. The bulb is a filament coming up to
-       * heat, which is a note that rises and settles, quiet, with a second
-       * partial an octave over it that fades faster than the first.
+       * What a pull switch sounds like, in the order it happens.
        *
-       * Twelve milliseconds apart, because that is what it is: the contact
-       * closes and then the light happens. Simultaneous, they read as one
-       * blip and the object goes away.
+       * It was a click and two notes before, and the objection to it is right:
+       * that was a lamp being *represented*, and the give-away is that it was
+       * musical. It had a fifth in it. A pull switch has no pitch in it worth
+       * the name and nothing in it that rises -- what it has is a run of
+       * little metal beads dragging over a housing, and then a rotary detent
+       * going over centre, which is a sprung cam that snaps rather than a
+       * button that clicks.
        *
-       * Going off is the same click and no filament -- there is nothing to
-       * warm up -- and instead the note falls and stops short. A lamp does
-       * not fade out politely; it stops, and the room is what is left. */
+       * So there are two sounds and they are a tenth of a second and a whole
+       * mechanism apart, which is why they are two entries and not one:
+       *
+       *   chain     the beads. Seven grains of noise up in the top two
+       *             octaves, at irregular spacing over about a tenth of a
+       *             second. Irregular because seven evenly spaced ticks is a
+       *             ratchet, and a chain is not wound, it is dragged. Heard
+       *             twice on every pull -- once when the pull passes the catch
+       *             and once when the spring takes it home -- because that is
+       *             twice that the beads run through the housing.
+       *
+       *   lamp-on   the detent. The cam breaking over at 1.7k, the contact
+       *             closing under it four milliseconds later at 800, and a
+       *             short low body under both that is the switch's own case
+       *             moving in its socket. Nothing pitched until after all
+       *             three, and then it is the filament -- quiet, well behind
+       *             everything, and the one part of the old version that was
+       *             right.
+       *
+       * Off is the same mechanism with nothing to warm up: the cam is a little
+       * duller because it is falling into its other seat rather than being
+       * lifted into this one, and there is no note after it. A lamp does not
+       * fade out politely. It stops, and the room is what is left. */
+      chain: function () {
+        var t = ac.currentTime, i, at = 0;
+        for (i = 0; i < 7; i++) {
+          grain(t + at, 0.010 + Math.random() * 0.013,
+                3300 + Math.random() * 3400, 6, 0.015 + Math.random() * 0.020);
+          at += 0.009 + Math.random() * 0.019;
+        }
+      },
       'lamp-on': function () {
-        click(0.038, 2600, 0.16);
-        note(196, 262, 0.30, 0.075, 'sine',     0.012);
-        note(392, 524, 0.20, 0.030, 'triangle', 0.012);
+        var t = ac.currentTime;
+        grain(t,         0.014, 1740, 1.4, 0.150);   /* the cam over centre */
+        grain(t + 0.005, 0.034,  810, 1.9, 0.120);   /* the contact closing */
+        note(148,  92, 0.055, 0.070, 'sine');        /* the case, moving    */
+        note(198, 250, 0.280, 0.030, 'sine', 0.026); /* and the filament    */
       },
       'lamp-off': function () {
-        click(0.030, 2000, 0.13);
-        note(262, 150, 0.14, 0.055, 'sine',     0.010);
-        note(131,  90, 0.16, 0.028, 'triangle', 0.010);
+        var t = ac.currentTime;
+        grain(t,         0.012, 1480, 1.4, 0.130);
+        grain(t + 0.005, 0.030,  700, 1.9, 0.105);
+        note(132, 84, 0.070, 0.060, 'sine');
       }
     };
 
-    /* The switch's own mechanism: filtered noise with a hard edge on it, which
-     * is what a small sprung contact is. Built the way knock() is built -- a
-     * buffer of white noise through a band-pass and a very fast envelope --
-     * but its length, its centre and its level are arguments, because a
-     * lamp going off is the same mechanism heard slightly duller than the same
-     * mechanism going on. */
-    function click(len, hz, gain) {
+    /* A grain of noise: a slice of one cached buffer through a band-pass,
+     * under an envelope that is up in a millisecond and down over the rest.
+     *
+     * Everything the lamp makes is built out of these, because everything the
+     * lamp makes is a small hard object arriving against another one. A bead
+     * on a housing, a cam going over centre, a contact closing: there is no
+     * pitch in any of them, and the only things that tell them apart are where
+     * the band sits, how sharp it is, and how fast it goes. Three arguments,
+     * three sounds, one function.
+     *
+     * The buffer is a quarter of a second and it is built once. Each grain
+     * starts at a random offset into it, which is what stops seven beads in a
+     * row from being one bead played seven times -- the same trick the book's
+     * page turns use, and for the same reason. Metal never makes the same
+     * noise twice either.
+     *
+     * Looped, because a grain can be asked for that is longer than the offset
+     * leaves in the buffer, and a source that runs off the end goes silent
+     * halfway through its own envelope. */
+    var hissBuf = null;
+    function grain(t, dur, hz, q, gain) {
       if (!ac) { return; }
-      var t = ac.currentTime;
-      var buf = ac.createBuffer(1, Math.ceil(ac.sampleRate * len), ac.sampleRate);
-      var d = buf.getChannelData(0), i;
-      for (i = 0; i < d.length; i++) {
-        // Decaying noise rather than flat: the contact is loudest at the
-        // instant it closes and the rest is the spring behind it.
-        d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / d.length, 2.4);
+      if (!hissBuf) {
+        var n = Math.ceil(ac.sampleRate * 0.25), d, i;
+        hissBuf = ac.createBuffer(1, n, ac.sampleRate);
+        d = hissBuf.getChannelData(0);
+        for (i = 0; i < n; i++) { d[i] = Math.random() * 2 - 1; }
       }
-      var src = ac.createBufferSource(); src.buffer = buf;
+      var src = ac.createBufferSource();
+      src.buffer = hissBuf;
+      src.loop = true;
       var bp = ac.createBiquadFilter();
-      bp.type = 'bandpass'; bp.frequency.value = hz; bp.Q.value = 1.1;
+      bp.type = 'bandpass'; bp.frequency.value = hz; bp.Q.value = q;
       var g = ac.createGain();
-      g.gain.setValueAtTime(gain, t);
-      g.gain.exponentialRampToValueAtTime(0.0001, t + len);
+      /* Exponential both ways. A linear fade on a noise burst sounds like a
+         noise burst being faded, which is the one thing metal never does. */
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(gain, t + 0.0012);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
       src.connect(bp); bp.connect(g); g.connect(out);
-      src.start(t); src.stop(t + len);
+      src.start(t, Math.random() * 0.2); src.stop(t + dur + 0.02);
     }
 
     /* Nothing sounds until there is a running context to sound it, and only a
@@ -21955,6 +22165,7 @@ a.arrow { text-decoration: none; }
       if (el.closest('.ms-key')) { play('key'); return; }
       if (el.matches('[data-route]') || el.closest('.nav')) { play('page'); return; }
       if (el.matches('[data-hush]')) { return; }   /* it speaks for itself */
+      if (el.matches('[data-cord-bob]')) { return; }        /* and so does it */
       play('select');
     }, true);
 
