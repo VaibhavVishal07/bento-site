@@ -612,20 +612,16 @@
   --paper:      #171412;                 /* the page                         */
   --paper-lift: #1c1917;                 /* and a shade up, held in the air  */
 
-  /* The lamp's hardware. Brass for the turned parts and nickelled steel for
-     the chain, which is what the thing is actually made of -- and both are
-     lit rather than tinted: a highlight, a body, a shaded flank and a dark
-     edge, which is the fewest stops that read as a round object rather than
-     a coloured one. */
-  --brass-hi: #f0dba6;
-  --brass:    #c2a05c;
-  --brass-lo: #8a6f34;
-  --brass-dk: #4a3a18;
-  --bead-lit: rgba(255, 255, 255, 0.85);
-  --bead-hi:  #e2e6ea;
-  --bead:     #a8aeb4;
-  --bead-lo:  #62686e;
-  --bead-dk:  #33383d;
+  /* The lamp's hardware, at three stops and no more. Brass because it is the
+     one warm thing on a black frame and that is what makes it read as
+     hardware rather than as a control; three stops because two is a swatch
+     and five is a render, and everything else on this site is a fill with a
+     hairline on it. */
+  --brass-hi: #d9bd7c;
+  --brass:    #ad8d4c;
+  --brass-lo: #6f5828;
+  --cord-ink:     rgba(var(--w), 0.30);
+  --cord-ink-lit: rgba(var(--w), 0.72);
 
 }
 
@@ -852,14 +848,11 @@
   --leaf-edge: 124, 110, 88;
   --paper:      #fbf9f4;
   --paper-lift: #ffffff;
-  /* The same brass, and the chain read the other way round: against paper the
-     beads are an object with the page showing between them, so the body comes
-     down and the shaded flank comes down further. */
-  --bead-lit: rgba(255, 255, 255, 0.92);
-  --bead-hi:  #d3d8dd;
-  --bead:     #949aa1;
-  --bead-lo:  #545a61;
-  --bead-dk:  #2b3036;
+  /* The same brass -- it is the same brass in any room -- and the cord read
+     the other way round: a dark line on paper rather than a light one on a
+     desk. */
+  --cord-ink:     rgba(var(--shade), 0.34);
+  --cord-ink-lit: rgba(var(--shade), 0.78);
 }
 
 /* A visitor who has asked their system for a light desktop and has never
@@ -1040,14 +1033,11 @@
     --leaf-edge: 124, 110, 88;
     --paper:      #fbf9f4;
     --paper-lift: #ffffff;
-    /* The same brass, and the chain read the other way round: against paper the
-       beads are an object with the page showing between them, so the body comes
-       down and the shaded flank comes down further. */
-    --bead-lit: rgba(255, 255, 255, 0.92);
-    --bead-hi:  #d3d8dd;
-    --bead:     #949aa1;
-    --bead-lo:  #545a61;
-    --bead-dk:  #2b3036;
+    /* The same brass -- it is the same brass in any room -- and the cord read
+       the other way round: a dark line on paper rather than a light one on a
+       desk. */
+    --cord-ink:     rgba(var(--shade), 0.34);
+    --cord-ink-lit: rgba(var(--shade), 0.78);
   }
 }
 
@@ -1384,84 +1374,66 @@ body {
 @property --swing { syntax: "<angle>";  inherits: true; initial-value: 0deg; }
 
 .cord {
-  --cord-len: 128px;
+  --cord-len: 112px;
   --pull: 0px;
   --swing: 0deg;
-  position: absolute;
-  left: 1766px; top: 0;
-  width: 30px; height: 300px;
-  z-index: 5;
+  /* Fixed to the window and not to the frame. See the note in the markup:
+     inside the stage this hung off the top of a drawing that is centred in the
+     window, so on any screen taller than the frame needs it started a hundred
+     pixels down with nothing above it -- a cord that had been cut rather than
+     one that came from somewhere. Out here it comes off the ceiling.
+     
+     And it is not scaled with the frame, for the same reason the bar is not:
+     the figures on it are the figures you get. A lamp is a lamp at any window
+     size; the desk is what gets bigger and smaller. */
+  position: fixed;
+  top: 0;
+  right: 64px;
+  width: 22px; height: 300px;
+  z-index: 30;
   /* Turned about the ceiling, which is the only point on a hanging cord that
-     does not move. 15 is the string's own x inside this box. */
+     does not move. 11 is the cord's own x inside this box. */
   transform: rotate(var(--swing));
-  transform-origin: 15px 0;
+  transform-origin: 11px 0;
   will-change: transform;
-  /* Only the ferrule takes the pointer. The string is two pixels wide and
-     nobody aims at a two-pixel target; the box round it would swallow presses
-     meant for the margin. */
   pointer-events: none;
 }
 
-/* The chain.
+/* The cord. A hairline, and that is the whole of it.
 
-   A ball chain and not a string, which is what is actually on a lamp: steel
-   beads on a pin, and the reason a pull cord reads as hardware from across a
-   room is that its highlights repeat. One tile, eight pixels tall, repeated
-   down the length -- a bead with its own shading and a specular the size of a
-   pinhead up on the left shoulder, over a pin drawn behind it so the gaps
-   between beads are a link and not a hole.
+   It was a ball chain for a while -- beads with their own shading and a
+   specular on each one -- which is what is actually on a lamp and was, at the
+   size this ends up on a screen, a zipper running down the side of the page.
+   The site is hairlines and flat fills and one warm accent; a rendered chain
+   is a second drawing style arguing with the first, and the argument was
+   settled by looking at it. What says lamp here is the pull, not the cord.
 
-   It pays out rather than stretching. The tile is fixed and the box gets
-   longer, so pulling shows more beads, which is what a chain does: the length
-   comes off the ceiling and the beads are all the same size for ever. */
+   It pays out rather than stretching: the box gets longer and there is more
+   line, which is what comes off a ceiling. */
 .cord-line {
   position: absolute;
   left: 11px; top: 0;
-  width: 8px;
+  width: 1px;
   height: calc(var(--cord-len) + var(--pull));
-  background-image:
-    /* the specular, up on the shoulder */
-    radial-gradient(circle 1.1px at 2.6px 2.4px, var(--bead-lit), transparent 100%),
-    /* the bead, at a radius that leaves half a pixel between one and the next
-       -- a ball chain's beads very nearly touch, and a visible gap turns the
-       whole thing into beads threaded on a ribbon.
-       
-       The last stop is transparent and the dark rim is at 97, which is not a
-       nicety: a radial-gradient given an explicit size paints its final colour
-       over everything outside the ending shape as well, so ending on the rim
-       colour filled the corners of every tile and the chain was a solid dark
-       bar with beads printed on it. Invisible on black, and the first thing
-       you saw in the lit room. */
-    radial-gradient(circle 3.75px at 4px 4px,
-      var(--bead-hi) 0%, var(--bead) 44%, var(--bead-lo) 76%,
-      var(--bead-dk) 97%, transparent 100%),
-    /* and the pin behind it, two pixels of it, which is what makes that half
-       pixel read as a link rather than as a hole */
-    linear-gradient(to right, transparent 44%, var(--bead) 44%,
-                    var(--bead) 56%, transparent 56%);
-  background-size: 8px 8px, 8px 8px, 8px 8px;
-  background-repeat: repeat-y;
+  background: var(--cord-ink);
 }
 
-/* The ferrule and the weight on it, and they are one control.
+/* And the pull, which is the one object.
 
-   The button is the whole assembly rather than a box round it, so what you can
-   grab is what you can see: a tapered brass cone with a collar at its head,
-   and a brass ring hanging under it. That is a real object and not a stylised
-   one -- the taper is what a ferrule swaged onto a chain looks like, and the
-   ring is a ring because a solid weight at this size is a blob and a hole in
-   it is a silhouette you can read at a glance.
+   A tapered ferrule and a ring under it -- the fewest parts that read as a
+   lamp pull and not a keyring, at the fewest stops that read as metal and not
+   as a colour. Two stops each and one edge: this is the site's own idea of a
+   surface, which is a fill and a hairline, applied to something round.
 
    The rule everywhere else on this frame is square, and it is about the
    interface: the cards, the slots, every corner the frame draws. This is not
-   the interface. It is an object standing in front of it, and the objects on
-   this site have always been allowed their own geometry -- the book's boards,
-   the folder's tab, the pool of light itself. */
+   the interface. It is an object standing in front of it, and the objects here
+   have always had their own geometry -- the book's boards, the pool of light. */
 .cord-bob {
   position: absolute;
   left: 2px;
   top: calc(var(--cord-len) + var(--pull));
-  width: 26px; height: 52px;
+  width: 18px; height: 33px;
   margin: 0;
   padding: 0;
   border: 0;
@@ -1473,52 +1445,38 @@ body {
 .cord-bob:active { cursor: grabbing; }
 .cord-bob:focus-visible { outline: 2px solid rgb(var(--w)); outline-offset: 3px; }
 @media (hover: hover) {
-  .cord-bob:hover { filter: brightness(1.14); }
+  .cord-bob:hover { filter: brightness(1.12); }
 }
 
-/* The cone. Cut with a polygon rather than drawn with borders, so the collar
-   at the head and the flange at the foot are one shape with one gradient
-   across it -- a turned part has one piece of metal in it and one highlight
-   running down the side of that piece. */
+/* The ferrule: a collar the cord enters and a taper down to the ring. */
 .cord-bob::before {
   content: '';
   position: absolute;
-  left: 6px; top: 0;
-  width: 14px; height: 27px;
-  background: linear-gradient(to right,
-    var(--brass-dk) 0%, var(--brass-lo) 12%, var(--brass) 26%,
-    var(--brass-hi) 44%, var(--brass) 62%, var(--brass-lo) 84%,
-    var(--brass-dk) 100%);
-  clip-path: polygon(
-    34% 0%, 66% 0%,          /* the collar the chain enters   */
-    66% 17%,
-    100% 82%, 100% 100%,     /* the taper, and the flange     */
-    0% 100%, 0% 82%,
-    34% 17%);
+  left: 5px; top: 0;
+  width: 8px; height: 16px;
+  background: linear-gradient(100deg, var(--brass-lo), var(--brass) 46%, var(--brass-hi));
+  clip-path: polygon(25% 0%, 75% 0%, 100% 100%, 0% 100%);
 }
 
-/* And the ring. A hole punched with a mask rather than a second box in the
-   page's colour, because what is behind it is whatever the reader is looking
-   at -- a card edge, a lattice line, the desk -- and a disc painted the
-   colour of the ground is a hole only until something moves under it. */
+/* The ring, with its hole punched by a mask rather than filled with a disc in
+   the ground's colour -- what is behind it is a card edge or a lattice line or
+   the desk, and a painted disc is a hole only until something moves under it. */
 .cord-bob::after {
   content: '';
   position: absolute;
-  left: 0; top: 25px;
-  width: 26px; height: 26px;
+  left: 0; top: 15px;
+  width: 18px; height: 18px;
   border-radius: 50%;
-  background: linear-gradient(148deg,
-    var(--brass-hi) 0%, var(--brass) 30%, var(--brass-lo) 62%, var(--brass-dk) 100%);
-  -webkit-mask-image: radial-gradient(circle at 50% 50%,
-    transparent 0 6.5px, #000 7.2px);
-  mask-image: radial-gradient(circle at 50% 50%, transparent 0 6.5px, #000 7.2px);
-  box-shadow: 0 3px 7px -3px rgba(0, 0, 0, 0.7);
+  background: linear-gradient(148deg, var(--brass-hi), var(--brass) 42%, var(--brass-lo));
+  -webkit-mask-image: radial-gradient(circle at 50% 50%, transparent 0 4.6px, #000 5.2px);
+  mask-image: radial-gradient(circle at 50% 50%, transparent 0 4.6px, #000 5.2px);
 }
 
-/* Past the catch. The chain brightens and the brass warms -- the tell that
-   letting go here does something, and the reason a pull can be abandoned
-   without having to guess. */
-.cord.is-armed .cord-bob { filter: brightness(1.28) saturate(1.1); }
+/* Past the catch: the cord brightens and the brass warms. The tell that
+   letting go here does something, and the reason a pull can be started and
+   abandoned without having to guess. */
+.cord.is-armed .cord-line { background: var(--cord-ink-lit); }
+.cord.is-armed .cord-bob { filter: brightness(1.24); }
 
 /* There is no transition on the way home and there must not be one.
    
@@ -12739,22 +12697,13 @@ a.arrow { text-decoration: none; }
   }
   .room-c svg { width: 15px; height: 15px; }
 
-  /* And the cord hangs off the top of the window rather than off the top of a
-     frame, because down here there is no frame.
-
-     Fixed and right, with left cleared for the reason the switch above clears
-     it: the frame's figure is 1766px, a coordinate in a stage 1920 wide, and
-     leaving it set alongside `right` means left wins and the cord hangs a
-     thousand pixels off the side of the phone. It sits inboard of the sound
-     switch and stops short of it, so the two do not share a corner -- and it
-     is shorter, because a hundred and twenty-eight pixels of string down the
-     side of a phone is a rope. */
+  /* The same cord, inboard of the sound switch so the two do not share a
+     corner, and shorter: a hundred and twelve pixels down the side of a phone
+     is a rope. It is already fixed to the window and already unscaled, so
+     nothing else about it has to change down here. */
   .cord {
-    --cord-len: 62px;
-    position: fixed;
-    left: auto;
-    right: 104px;
-    top: 0;
+    --cord-len: 58px;
+    right: 100px;
     z-index: 31;
     height: 180px;
   }
@@ -13634,28 +13583,6 @@ a.arrow { text-decoration: none; }
          the cards and the two margins either side of them. See .lamp. -->
     <span class="lamp" aria-hidden="true"></span>
 
-    <!-- And the cord that turns it on.
-         
-         A switch tells you there are two rooms and asks which one you want. A
-         cord tells you there is a lamp. It hangs in the right margin, off the
-         top of the frame, and it is pulled: press the ferrule and drag, the
-         string pays out against the spring, and past a certain travel it
-         catches and the light changes when you let go. Press it without
-         dragging and it pulls itself the same distance.
-         
-         The button is the ferrule rather than a box round it, so what you can
-         grab is what you can see. See .cord in the stylesheet. -->
-    <div class="cord" data-cord>
-      <i class="cord-line" aria-hidden="true"></i>
-      <button class="cord-bob" type="button" data-cord-bob
-              aria-pressed="false" aria-label="Turn the lamp on"></button>
-    </div>
-
-    <!-- What the lamp does to the room when it catches. The pool that carries
-         the change is a snapshot the browser owns and nothing live can be
-         drawn into it, so the bloom is the beat after: the filament coming up
-         to heat once the light is already on. See .bloom. -->
-    <div class="bloom" aria-hidden="true"></div>
 
     <!-- behind the cards: these two pairs show only in the gutters -->
     <!-- ============================ the lattice =======================
@@ -14898,6 +14825,38 @@ a.arrow { text-decoration: none; }
        said "fixed" inside it was fixed to the drawing -- 1920 wide, scaled by
        whatever the window came to. Out here the figures on it are the figures
        you get. data-cell is kept because the router selects on it. -->
+  <!-- And the cord that turns the lamp on.
+
+       A switch tells you there are two rooms and asks which one you want. A
+       cord tells you there is a lamp. It hangs off the top of the window and
+       it is pulled: press the ferrule and drag, the cord pays out against the
+       spring, and past a certain travel it catches and the light changes when
+       you let go. Press it without dragging and it pulls itself the same
+       distance.
+
+       Outside the stage for the reason the bar above it is outside: the stage
+       is scaled by a transform and a transform makes a containing block for
+       fixed descendants. Inside, the cord hung off the top of the *drawing* --
+       which on any window taller than the frame needs is a hundred pixels
+       down from the top of the screen, so the cord began in mid-air with black
+       above it and read as having been cut off. A lamp hangs from the ceiling
+       of the room and the room is the window.
+
+       The bloom was inside it too, and for a `position: fixed` element that is
+       worse than a wrong offset: inset 0 against the stage is 1920 by 1080
+       scaled to fit, not the window, so the filament cooled over the frame and
+       not over the page.
+
+       The button is the ferrule rather than a box round it, so what you can
+       grab is what you can see. See .cord in the stylesheet. -->
+  <div class="cord" data-cord>
+    <i class="cord-line" aria-hidden="true"></i>
+    <button class="cord-bob" type="button" data-cord-bob
+            aria-pressed="false" aria-label="Turn the lamp on"></button>
+  </div>
+
+  <div class="bloom" aria-hidden="true"></div>
+
   <nav class="nav">
     <a class="nav-home"  href="#" data-cell="399 364" data-route="home" aria-current="page">Home</a>
     <a class="nav-work"  href="#work" data-cell="785 350" data-route="work">Work</a>
@@ -17566,12 +17525,15 @@ a.arrow { text-decoration: none; }
 
     /* --- the hand on it ------------------------------------------------- */
 
-    /* Where the ferrule hangs from, in window pixels. Read live rather than
-     * off the frame's own figures: the stage is scaled to fit the window, so
-     * 1766 is not where the cord is on the glass. */
+    /* Where the cord hangs from, in window pixels. Read live rather than off
+     * the stylesheet's figures, because `right: 64px` is a different left edge
+     * on every window -- and read on each press rather than once, because the
+     * window is resizable and a cached ceiling is a cord that swings about a
+     * point it is no longer attached to. 11 is the line's x inside the box,
+     * unscaled: this element is fixed to the window and not to the frame. */
     function anchor() {
       var r = cord.getBoundingClientRect();
-      return { x: r.left + 15 * (r.width / cord.offsetWidth || 1), y: r.top };
+      return { x: r.left + 11, y: r.top };
     }
 
     bob.addEventListener('pointerdown', function (e) {
