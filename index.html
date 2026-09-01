@@ -19,24 +19,33 @@
      visitor back to the prefers-color-scheme query. localStorage throws
      rather than returning null in a browser set to block site data, so the
      whole of it is inside the try. */
-  /* One room, and it is this one.
+  /* Two rooms again, and this is the line the note here promised would be it.
    *
-   * The site had two and a switch between them, and every surface on it was
-   * written twice: a token block for the lit room under [data-theme="light"],
-   * a second copy of the same block under prefers-color-scheme for the visitor
-   * who had never pressed the switch, and a handful of objects -- the machine,
-   * the mat, the screen -- that needed a third set of figures to be the same
-   * object under a different lamp. That is a lot of surface to keep true, and
-   * keeping it true is the whole cost of a second room.
+   * What stood here pinned dark on the root before the first paint, which
+   * made every lit rule in the stylesheet unreachable: [data-theme="light"]
+   * could not match because the attribute said dark, and :root:not([data-theme])
+   * could not match because the attribute was there at all. The figures were
+   * never deleted -- a token block for the lit room, a second copy of it under
+   * prefers-color-scheme, and a third set for the objects that are the same
+   * object under a different lamp -- so bringing the room back is this and the
+   * cord's markup, exactly as the old note said it would be.
    *
-   * So the attribute is written here and never changed. Every lit rule in the
-   * stylesheet is reached as [data-theme="light"] or as :root:not([data-theme])
-   * inside a prefers-color-scheme query, and with dark pinned on the root from
-   * before the first paint neither can match again. Nothing is deleted: the
-   * figures are all still there and all still right, and if the lit room is
-   * ever wanted back it is this line and the switch's markup, not a rewrite.
-   */
-  document.documentElement.setAttribute('data-theme', 'dark');
+   * Three states and not two. A stored choice wins; nothing stored leaves the
+   * attribute off the root entirely, which is what hands the visitor back to
+   * their own desktop through the prefers-color-scheme query. Any other value
+   * is treated as nothing rather than trusted -- a key this small is not worth
+   * a migration, and an unusable entry should read as never having chosen.
+   *
+   * All of it inside the try: localStorage throws rather than returning null
+   * in a browser set to block site data, and a page that fails to draw because
+   * it could not read a colour preference is a page that has its priorities
+   * the wrong way round. */
+  try {
+    var room = localStorage.getItem('room');
+    if (room === 'light' || room === 'dark') {
+      document.documentElement.setAttribute('data-theme', room);
+    }
+  } catch (e) {}
 
   /* And the arrival, for the same reason one line up. .arriving holds the
      frame empty -- no cards, no lattice -- and it has to be on before the
@@ -1262,6 +1271,176 @@ body {
    middle, which is where an overhead lamp would be anyway. */
 @media (prefers-reduced-motion: reduce) {
   .lamp { animation: none; }
+}
+
+/* --- the cord -------------------------------------------------------------
+
+   The two rooms had a switch: two cells in the corner, one lit, and it told
+   you there was a setting. What stands here now tells you there is a lamp.
+
+   A cord hangs in the right margin off the top of the frame. Press the
+   ferrule and drag and the string pays out against a spring; past 34 pixels
+   of travel it catches, and letting go there turns the light. Short of it,
+   it simply springs back and nothing has happened -- which is the whole of
+   what makes it feel like a cord rather than a button drawn as one, because a
+   real pull can be started and abandoned. Press without dragging and the
+   script pulls it the same distance, so nothing here needs a pointer that can
+   drag: a tap, a click, Enter and Space all pull it.
+
+   One length drives the whole thing. --pull is a registered property, so the
+   string's height and the ferrule's offset are both written off it and the
+   spring back is a transition on one number rather than two elements kept in
+   step by hand. Registered because an unregistered custom property does not
+   interpolate: it would cut from wherever the drag ended to nothing. */
+@property --pull { syntax: "<length>"; inherits: true; initial-value: 0px; }
+
+.cord {
+  --cord-len: 128px;
+  --pull: 0px;
+  position: absolute;
+  left: 1766px; top: 0;
+  width: 30px; height: 300px;
+  z-index: 5;
+  /* Only the ferrule takes the pointer. The string is two pixels wide and
+     nobody aims at a two-pixel target; the box round it would swallow presses
+     meant for the margin. */
+  pointer-events: none;
+}
+
+/* The string. Lit down its length rather than flat, because a cord hanging in
+   front of a wall is round and catches the room on one side of itself. */
+.cord-line {
+  position: absolute;
+  left: 14px; top: 0;
+  width: 2px;
+  height: calc(var(--cord-len) + var(--pull));
+  background: linear-gradient(to right,
+    rgba(var(--w), 0.16) 0%,
+    rgba(var(--w), 0.42) 45%,
+    rgba(var(--w), 0.14) 100%);
+}
+
+/* The ferrule, and it is the one curve on this frame after the pool.
+
+   The rule everywhere else here is square, and it is about the interface: the
+   cards, the slots, the switch, every corner the frame draws. This is not the
+   interface, it is an object standing in front of it -- and the objects on
+   this site have always been allowed their own geometry, the book's boards
+   and the folder's tab included. A pull with square corners is not a pull.
+
+   Brass rather than neutral: it is the one warm thing on a black frame, which
+   is what makes it read as hardware and not as a scroll handle. */
+.cord-bob {
+  position: absolute;
+  left: 7px;
+  top: calc(var(--cord-len) + var(--pull));
+  width: 16px; height: 30px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  pointer-events: auto;
+  cursor: grab;
+  border-radius: 8px 8px 7px 7px / 5px 5px 10px 10px;
+  background:
+    linear-gradient(to right,
+      #4a3a1c 0%, #b9975a 30%, #e8d5a4 46%, #b9975a 64%, #3f3117 100%),
+    linear-gradient(to bottom, #6b5427 0%, #b9975a 22%, #8a6f38 100%);
+  background-blend-mode: multiply, normal;
+  box-shadow: 0 2px 6px -2px rgba(0, 0, 0, 0.8),
+              inset 0 1px 0 rgba(255, 235, 190, 0.35),
+              inset 0 -2px 3px -2px rgba(0, 0, 0, 0.7);
+  transition: filter 160ms var(--ease);
+}
+.cord-bob:active { cursor: grabbing; }
+.cord-bob:focus-visible { outline: 2px solid rgb(var(--w)); outline-offset: 3px; }
+@media (hover: hover) {
+  .cord-bob:hover { filter: brightness(1.18); }
+}
+
+/* Past the catch. Two pixels of light down the string and the ferrule warm --
+   the tell that letting go here does something, and the reason the pull can
+   be abandoned without guessing. */
+.cord.is-armed .cord-line {
+  background: linear-gradient(to right,
+    rgba(var(--w), 0.26) 0%,
+    rgba(var(--w), 0.72) 45%,
+    rgba(var(--w), 0.24) 100%);
+}
+.cord.is-armed .cord-bob { filter: brightness(1.3); }
+
+/* And the spring. Overshoot in the curve rather than a second keyframe: a
+   cord let go from 40 pixels does not stop at nothing, it goes past and comes
+   back, and one bezier with its second control point over 1 is that. Only on
+   the way home -- the drag itself writes --pull every frame and a transition
+   under it would lag the finger. */
+.cord.is-settling { transition: --pull 620ms cubic-bezier(0.22, 1.45, 0.4, 1); }
+
+/* Lit, the cord is a dark line on a pale wall and the ferrule keeps its
+   metal: the same object, the other way round. */
+:root[data-theme="light"] .cord-line,
+:root:not([data-theme]) .cord-line {
+  background: linear-gradient(to right,
+    rgba(var(--shade), 0.20) 0%,
+    rgba(var(--shade), 0.52) 45%,
+    rgba(var(--shade), 0.18) 100%);
+}
+:root[data-theme="light"] .cord.is-armed .cord-line,
+:root:not([data-theme]) .cord.is-armed .cord-line {
+  background: linear-gradient(to right,
+    rgba(var(--shade), 0.34) 0%,
+    rgba(var(--shade), 0.78) 45%,
+    rgba(var(--shade), 0.30) 100%);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .cord-line {
+    background: linear-gradient(to right,
+      rgba(var(--w), 0.16) 0%,
+      rgba(var(--w), 0.42) 45%,
+      rgba(var(--w), 0.14) 100%);
+  }
+  :root:not([data-theme="light"]) .cord.is-armed .cord-line {
+    background: linear-gradient(to right,
+      rgba(var(--w), 0.26) 0%,
+      rgba(var(--w), 0.72) 45%,
+      rgba(var(--w), 0.24) 100%);
+  }
+}
+
+/* Somebody asking for less motion still gets the cord and still gets the
+   room; what they do not get is the spring. It goes back where it was. */
+@media (prefers-reduced-motion: reduce) {
+  .cord.is-settling { transition: --pull 1ms linear; }
+}
+
+/* --- and the filament ------------------------------------------------------
+
+   The pool that carries the room from one to the other is a snapshot the
+   browser owns: nothing live can be drawn into it, so a bloom during the wipe
+   is a bloom nobody sees. This is the beat after -- the filament coming up to
+   heat once the light is already on, thrown from the ferrule the pool grew
+   out of, so the two are one event with the same source.
+
+   Only going to the lit room. A lamp being switched off does not flare. */
+.bloom {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(circle 60vmax at var(--bloom-x, 92%) var(--bloom-y, 12%),
+    rgba(255, 246, 224, 0.42) 0%,
+    rgba(255, 244, 218, 0.20) 22%,
+    rgba(255, 242, 214, 0.06) 50%,
+    rgba(255, 242, 214, 0) 78%);
+}
+.bloom.is-lit { animation: bloom-up 620ms cubic-bezier(0.16, 0.9, 0.3, 1) both; }
+@keyframes bloom-up {
+  0%   { opacity: 0; }
+  18%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bloom.is-lit { animation: none; }
 }
 
 /* The mat is a green rubber surface with its own light, and the playground
@@ -12421,6 +12600,26 @@ a.arrow { text-decoration: none; }
   }
   .room-c svg { width: 15px; height: 15px; }
 
+  /* And the cord hangs off the top of the window rather than off the top of a
+     frame, because down here there is no frame.
+
+     Fixed and right, with left cleared for the reason the switch above clears
+     it: the frame's figure is 1766px, a coordinate in a stage 1920 wide, and
+     leaving it set alongside `right` means left wins and the cord hangs a
+     thousand pixels off the side of the phone. It sits inboard of the sound
+     switch and stops short of it, so the two do not share a corner -- and it
+     is shorter, because a hundred and twenty-eight pixels of string down the
+     side of a phone is a rope. */
+  .cord {
+    --cord-len: 62px;
+    position: fixed;
+    left: auto;
+    right: 104px;
+    top: 0;
+    z-index: 31;
+    height: 180px;
+  }
+
   /* Everything the L2 places by hand has to rejoin the flow, for the same
      reason the L1 children do: a card is only relative here, so anything
      still absolute would size itself against the card rather than sit in it. */
@@ -13295,6 +13494,29 @@ a.arrow { text-decoration: none; }
     <!-- The lamp. Under everything, so what it lights is the desk between
          the cards and the two margins either side of them. See .lamp. -->
     <span class="lamp" aria-hidden="true"></span>
+
+    <!-- And the cord that turns it on.
+         
+         A switch tells you there are two rooms and asks which one you want. A
+         cord tells you there is a lamp. It hangs in the right margin, off the
+         top of the frame, and it is pulled: press the ferrule and drag, the
+         string pays out against the spring, and past a certain travel it
+         catches and the light changes when you let go. Press it without
+         dragging and it pulls itself the same distance.
+         
+         The button is the ferrule rather than a box round it, so what you can
+         grab is what you can see. See .cord in the stylesheet. -->
+    <div class="cord" data-cord>
+      <i class="cord-line" aria-hidden="true"></i>
+      <button class="cord-bob" type="button" data-cord-bob
+              aria-pressed="false" aria-label="Turn the lamp on"></button>
+    </div>
+
+    <!-- What the lamp does to the room when it catches. The pool that carries
+         the change is a snapshot the browser owns and nothing live can be
+         drawn into it, so the bloom is the beat after: the filament coming up
+         to heat once the light is already on. See .bloom. -->
+    <div class="bloom" aria-hidden="true"></div>
 
     <!-- behind the cards: these two pairs show only in the gutters -->
     <!-- ============================ the lattice =======================
@@ -16875,11 +17097,12 @@ a.arrow { text-decoration: none; }
    * page that looks like it failed to load the top of itself.
    */
   (function () {
-    var box = document.querySelector('.room');
-    if (!box) { return; }
+    var cord = document.querySelector('[data-cord]');
+    var bob  = cord && cord.querySelector('[data-cord-bob]');
+    if (!cord || !bob) { return; }
 
     var root = document.documentElement;
-    var cells = Array.prototype.slice.call(box.querySelectorAll('[data-room]'));
+    var bloom = document.querySelector('.bloom');
     var bar = document.querySelector('meta[name="theme-color"]');
     var KEY = 'room';
 
@@ -16894,9 +17117,13 @@ a.arrow { text-decoration: none; }
     // Paint the control to match the page. Split from the click handler so the
     // first call can run against a room nobody picked.
     function mark(name) {
-      cells.forEach(function (c) {
-        c.setAttribute('aria-checked', String(c.getAttribute('data-room') === name));
-      });
+      var lit = name === 'light';
+      // A cord is a switch and not a choice between two named rooms, so it
+      // says pressed rather than checked -- and it says what pulling it will
+      // do next rather than what it did last, which is the one thing a
+      // control with no visible label has to get right.
+      bob.setAttribute('aria-pressed', String(lit));
+      bob.setAttribute('aria-label', lit ? 'Turn the lamp off' : 'Turn the lamp on');
       // Read back rather than kept in a table here: the figure lives in the
       // token, and a copy of it in the script is a second place to change it.
       if (bar) {
@@ -16942,15 +17169,46 @@ a.arrow { text-decoration: none; }
     function wipe(name) {
       var down = name === 'light';
       var W = window.innerWidth, H = window.innerHeight;
-      var x = W / 2, y = down ? 0 : H;
+      var x, y;
 
-      // hypot(W/2, H) -- the smallest circle from an edge midpoint that still
-      // reaches every corner. Anything less leaves the two far corners of the
-      // old room showing after the animation has ended.
+      /* Going on, the light comes from the lamp.
+       *
+       * The pool used to start at the middle of the top edge, which was the
+       * right answer while the control was a switch in the corner and the
+       * argument was about where daylight comes from. There is a lamp on the
+       * screen now and the reader has just pulled its cord, so the light
+       * starts where they were looking: the ferrule's own box, read live,
+       * because the stage is scaled to fit the window and its authored
+       * position is not where it is on the glass.
+       *
+       * Going off it still gathers at the floor. A room does not un-light
+       * from the lamp outwards -- the lamp is the last thing to go.
+       */
+      if (down) {
+        var r = bob.getBoundingClientRect();
+        x = r.left + r.width / 2;
+        y = r.top + r.height / 2;
+      } else {
+        x = W / 2;
+        y = H;
+      }
+
+      // The smallest circle from the source that still reaches every corner:
+      // the far corner is whichever of the four is furthest, and anything
+      // less leaves the old room showing there when the animation has ended.
+      var rad = Math.max(
+        Math.hypot(x, y), Math.hypot(W - x, y),
+        Math.hypot(x, H - y), Math.hypot(W - x, H - y));
+
       root.style.setProperty('--wipe-dy', down ? '16px' : '-16px');
       root.style.setProperty('--wipe-x', x.toFixed(1) + 'px');
       root.style.setProperty('--wipe-y', y.toFixed(1) + 'px');
-      root.style.setProperty('--wipe-r', Math.sqrt(x * x + H * H).toFixed(1) + 'px');
+      root.style.setProperty('--wipe-r', rad.toFixed(1) + 'px');
+
+      if (down && bloom) {
+        bloom.style.setProperty('--bloom-x', x.toFixed(1) + 'px');
+        bloom.style.setProperty('--bloom-y', y.toFixed(1) + 'px');
+      }
 
       var t = document.startViewTransition(function () { apply(name); });
 
@@ -16979,6 +17237,17 @@ a.arrow { text-decoration: none; }
       }, 500);
       var stand = function () { clearTimeout(bail); };
       if (t && t.ready) { t.ready.then(stand, stand); }
+      // And the filament comes up once the room is there to light. After the
+      // transition rather than during it: the wipe is a pair of snapshots the
+      // browser owns and nothing live is drawn into them, so a bloom started
+      // now would be invisible until the moment it is over.
+      if (down && bloom && t && t.finished) {
+        t.finished.then(function () {
+          bloom.classList.remove('is-lit');
+          void bloom.offsetWidth;
+          bloom.classList.add('is-lit');
+        }, function () {});
+      }
       // A skipped transition rejects both of these, and an unhandled rejection
       // in a colour switch is noise in a console somebody else is reading.
       if (t && t.finished) { t.finished.then(null, function () {}); }
@@ -17007,41 +17276,111 @@ a.arrow { text-decoration: none; }
       wipe(name);
     }
 
-    // The icon that has just come on answers the press. Taken off both cells
-    // first, then put back on the live one after a forced reflow, so pressing
-    // the same half twice in a row plays twice rather than once -- an
-    // animation that is already running does not restart when its class is
-    // re-added in the same frame.
-    function swing() {
-      var on = null;
-      cells.forEach(function (c) {
-        var g = c.querySelector('svg');
-        if (!g) { return; }
-        g.classList.remove('lit');
-        if (c.getAttribute('aria-checked') === 'true') { on = g; }
-      });
-      if (!on) { return; }
-      void on.getBoundingClientRect();
-      on.classList.add('lit');
+    // Nothing to swing. The switch had two icons and lit whichever had just
+    // come on; a cord answers a press by being pulled, which is the block
+    // below, and apply() is called from inside the drag as well as from the
+    // keyboard so it cannot be the thing that starts the movement.
+    function swing() {}
+
+    /* --- pulling it ---------------------------------------------------------
+     *
+     * CATCH is how far it has to travel before letting go does anything, and
+     * it is the whole of what makes this a cord. A press that is dragged 8
+     * pixels and released has not pulled a lamp on; a press dragged 40 has.
+     * Being able to start a pull and abandon it is the difference between a
+     * cord and a button drawn as one.
+     *
+     * GIVE is the spring. The string pays out with the finger at the top of
+     * the stroke and stiffens as it goes, so the last of the travel costs
+     * more than the first -- one line of arithmetic and most of what the hand
+     * feels. TRAVEL is where the curve has spent nearly all of its give, and
+     * past it the cord is at its stop however far the finger keeps going.
+     *
+     * At GIVE 1 the first ten pixels are worth nine and a half, which is a
+     * string moving with the hand; the catch at 40 is reached at about 56
+     * pixels of drag, which is a pull rather than a nudge and short of a
+     * stretch. The first figures here were 0.62 and 78, and they wanted 71
+     * pixels of drag to reach a catch at 34 -- a cord you had to haul on.
+     */
+    var CATCH = 40, GIVE = 1, TRAVEL = 96;
+    var from = null, armed = false, moved = 0;
+
+    function set(px) {
+      cord.style.setProperty('--pull', px.toFixed(1) + 'px');
     }
 
-    box.addEventListener('click', function (e) {
-      var c = e.target.closest('[data-room]');
-      if (c) { choose(c.getAttribute('data-room')); }
+    // A cord let go springs back past its rest and comes home. The transition
+    // carries that -- see .cord.is-settling -- and the class comes off when it
+    // has finished so the next drag writes --pull without one under it.
+    function home() {
+      cord.classList.add('is-settling');
+      cord.classList.remove('is-armed');
+      set(0);
+      setTimeout(function () { cord.classList.remove('is-settling'); }, 700);
+    }
+
+    function pull(px) {
+      // Diminishing return: 62 per cent of the first pixel and less of every
+      // one after it, asymptotic to TRAVEL. A cord has a stop and a finger
+      // that keeps going does not find more string.
+      var out = TRAVEL * (1 - Math.exp(-(px * GIVE) / TRAVEL));
+      set(Math.max(0, out));
+      var now = out >= CATCH;
+      if (now !== armed) {
+        armed = now;
+        cord.classList.toggle('is-armed', armed);
+      }
+    }
+
+    bob.addEventListener('pointerdown', function (e) {
+      if (!e.isTrusted) { return; }
+      from = e.clientY;
+      moved = 0;
+      armed = false;
+      cord.classList.remove('is-settling', 'is-armed');
+      if (bob.setPointerCapture) { bob.setPointerCapture(e.pointerId); }
     });
 
-    // Left and right along the group, which is what a radio group does and
-    // what a reader who has landed on one half will try. Tab moves past the
-    // whole control rather than through it, so roving focus is not worth the
-    // machinery on two cells -- both stay reachable.
-    box.addEventListener('keydown', function (e) {
-      if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') { return; }
-      var i = cells.indexOf(document.activeElement);
-      if (i < 0) { return; }
+    bob.addEventListener('pointermove', function (e) {
+      if (from === null) { return; }
+      var d = e.clientY - from;
+      moved = Math.max(moved, Math.abs(d));
+      pull(d);
+    });
+
+    function release() {
+      if (from === null) { return; }
+      var did = armed;
+      from = null;
+      home();
+      if (did) { choose(showing() === 'light' ? 'dark' : 'light'); }
+    }
+    bob.addEventListener('pointerup', release);
+    bob.addEventListener('pointercancel', function () {
+      if (from === null) { return; }
+      from = null;
+      home();
+    });
+
+    /* And a press that is not a drag.
+     *
+     * Most presses are not drags -- a tap, a click, Enter on a focused
+     * control -- and a lamp you can only work by dragging is a lamp half the
+     * people who find it cannot turn on. So the cord pulls itself: past the
+     * catch, held for a beat, then home, and the room changes on the same
+     * frame the hand would have let go.
+     *
+     * Guarded on `moved`, because a drag ends in a click too and running both
+     * would toggle the room twice and leave it where it started.
+     */
+    bob.addEventListener('click', function (e) {
       e.preventDefault();
-      var next = cells[(i + (e.key === 'ArrowRight' ? 1 : cells.length - 1)) % cells.length];
-      next.focus();
-      choose(next.getAttribute('data-room'));
+      if (moved > 4) { moved = 0; return; }
+      cord.classList.remove('is-settling');
+      cord.classList.add('is-armed');
+      set(CATCH + 12);
+      setTimeout(function () { home(); }, 130);
+      choose(showing() === 'light' ? 'dark' : 'light');
     });
 
     // A visitor who never pressed anything follows their desktop, including
