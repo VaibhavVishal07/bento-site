@@ -1151,26 +1151,35 @@
    leading edge, to say which room was on top -- is a thing you do to a sheet
    of paper. It made the lit room read as a card being slid over the page.
 
-   And then it was a cone, and the cone never painted a single frame.
+   And then it was a cone, and the cone is what this replaced.
 
-   mask-composite takes one value per mask layer, and a single keyword is
-   expanded across all of them. `mask-composite: intersect` on a two-layer
-   mask is therefore `intersect, intersect`, and the first of those lands on
-   the bottom layer -- which has nothing under it but transparent black. A
-   source intersected with nothing is nothing. The mask resolved empty, the
-   incoming room stayed masked out for the whole 520ms, and then the
-   pseudo-element was torn down and the real page appeared underneath it. Both
-   things being reported about this -- that the beam does nothing, and that the
-   room changes instantly -- were that one line of CSS. It is the worst kind of
-   bug in a stylesheet: a mask that is fully transparent and a mask that is not
-   there look nothing alike, and a mask that is fully OPAQUE and a mask that is
-   not there look identical, so the failure had no symptom of its own to find.
+   The cone was a radial falloff intersected with a wedge -- two mask layers
+   and a mask-composite over them -- opening from the ferrule at 205 degrees.
+   It was suspected of never painting at all, on the reading that
+   `mask-composite: intersect` expands to one value per layer and so lands
+   `intersect` on the bottom layer too, where the backdrop is transparent
+   black and a source intersected with nothing is nothing.
 
-   `add, intersect` would fix the arithmetic and keep the wedge, and the wedge
-   is the other half of the problem: a lamp hanging over a page does not throw
-   a shape with two straight sides across it. It pools. So this is one layer
-   and no compositing at all, and there is now no second layer for a keyword to
-   land on.
+   That reading is wrong, and it is written down here because it is a plausible
+   thing to work out from the spec and it took a rendered test to put down.
+   Chrome does not blank the bottom layer: a two-layer mask under a bare
+   `intersect` and the same mask under `add, intersect` rasterise to the same
+   pixels. The three other places in this stylesheet that composite two mask
+   layers with a bare `intersect` -- the lattice's two gap-and-window masks and
+   the dot panel's scan -- are the proof standing in plain sight: all three
+   paint, and always did.
+
+   So nothing was broken. The cone went because a wedge is the wrong shape for
+   this, which is the thing that could have been settled by looking at it: a
+   lamp hanging over a page does not throw a figure with two straight sides
+   across it and then open the figure. It pools. Two straight sides sweeping
+   round a point is a torch being turned on, or a timer running down, and both
+   of those are objects the reader has to identify before the movement means
+   anything.
+
+   One layer now, and no compositing, because one soft circle is the whole of
+   what this needed and a second layer was only ever there to cut the wedge out
+   of it.
 
    What is left is a soft ring: opaque to 52 per cent of the radius, half-lit
    at 80, gone by 100. Those 48 points of falloff travelling ahead of the light
