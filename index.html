@@ -612,6 +612,21 @@
   --paper:      #171412;                 /* the page                         */
   --paper-lift: #1c1917;                 /* and a shade up, held in the air  */
 
+  /* The lamp's hardware. Brass for the turned parts and nickelled steel for
+     the chain, which is what the thing is actually made of -- and both are
+     lit rather than tinted: a highlight, a body, a shaded flank and a dark
+     edge, which is the fewest stops that read as a round object rather than
+     a coloured one. */
+  --brass-hi: #f0dba6;
+  --brass:    #c2a05c;
+  --brass-lo: #8a6f34;
+  --brass-dk: #4a3a18;
+  --bead-lit: rgba(255, 255, 255, 0.85);
+  --bead-hi:  #e2e6ea;
+  --bead:     #a8aeb4;
+  --bead-lo:  #62686e;
+  --bead-dk:  #33383d;
+
 }
 
 :root[data-theme="light"] {
@@ -837,6 +852,14 @@
   --leaf-edge: 124, 110, 88;
   --paper:      #fbf9f4;
   --paper-lift: #ffffff;
+  /* The same brass, and the chain read the other way round: against paper the
+     beads are an object with the page showing between them, so the body comes
+     down and the shaded flank comes down further. */
+  --bead-lit: rgba(255, 255, 255, 0.92);
+  --bead-hi:  #d3d8dd;
+  --bead:     #949aa1;
+  --bead-lo:  #545a61;
+  --bead-dk:  #2b3036;
 }
 
 /* A visitor who has asked their system for a light desktop and has never
@@ -1017,6 +1040,14 @@
     --leaf-edge: 124, 110, 88;
     --paper:      #fbf9f4;
     --paper-lift: #ffffff;
+    /* The same brass, and the chain read the other way round: against paper the
+       beads are an object with the page showing between them, so the body comes
+       down and the shaded flank comes down further. */
+    --bead-lit: rgba(255, 255, 255, 0.92);
+    --bead-hi:  #d3d8dd;
+    --bead:     #949aa1;
+    --bead-lo:  #545a61;
+    --bead-dk:  #2b3036;
   }
 }
 
@@ -1371,66 +1402,123 @@ body {
   pointer-events: none;
 }
 
-/* The string. Lit down its length rather than flat, because a cord hanging in
-   front of a wall is round and catches the room on one side of itself. */
+/* The chain.
+
+   A ball chain and not a string, which is what is actually on a lamp: steel
+   beads on a pin, and the reason a pull cord reads as hardware from across a
+   room is that its highlights repeat. One tile, eight pixels tall, repeated
+   down the length -- a bead with its own shading and a specular the size of a
+   pinhead up on the left shoulder, over a pin drawn behind it so the gaps
+   between beads are a link and not a hole.
+
+   It pays out rather than stretching. The tile is fixed and the box gets
+   longer, so pulling shows more beads, which is what a chain does: the length
+   comes off the ceiling and the beads are all the same size for ever. */
 .cord-line {
   position: absolute;
-  left: 14px; top: 0;
-  width: 2px;
+  left: 11px; top: 0;
+  width: 8px;
   height: calc(var(--cord-len) + var(--pull));
-  background: linear-gradient(to right,
-    rgba(var(--w), 0.16) 0%,
-    rgba(var(--w), 0.42) 45%,
-    rgba(var(--w), 0.14) 100%);
+  background-image:
+    /* the specular, up on the shoulder */
+    radial-gradient(circle 1.1px at 2.6px 2.4px, var(--bead-lit), transparent 100%),
+    /* the bead, at a radius that leaves half a pixel between one and the next
+       -- a ball chain's beads very nearly touch, and a visible gap turns the
+       whole thing into beads threaded on a ribbon.
+       
+       The last stop is transparent and the dark rim is at 97, which is not a
+       nicety: a radial-gradient given an explicit size paints its final colour
+       over everything outside the ending shape as well, so ending on the rim
+       colour filled the corners of every tile and the chain was a solid dark
+       bar with beads printed on it. Invisible on black, and the first thing
+       you saw in the lit room. */
+    radial-gradient(circle 3.75px at 4px 4px,
+      var(--bead-hi) 0%, var(--bead) 44%, var(--bead-lo) 76%,
+      var(--bead-dk) 97%, transparent 100%),
+    /* and the pin behind it, two pixels of it, which is what makes that half
+       pixel read as a link rather than as a hole */
+    linear-gradient(to right, transparent 44%, var(--bead) 44%,
+                    var(--bead) 56%, transparent 56%);
+  background-size: 8px 8px, 8px 8px, 8px 8px;
+  background-repeat: repeat-y;
 }
 
-/* The ferrule, and it is the one curve on this frame after the pool.
+/* The ferrule and the weight on it, and they are one control.
 
-   The rule everywhere else here is square, and it is about the interface: the
-   cards, the slots, the switch, every corner the frame draws. This is not the
-   interface, it is an object standing in front of it -- and the objects on
-   this site have always been allowed their own geometry, the book's boards
-   and the folder's tab included. A pull with square corners is not a pull.
+   The button is the whole assembly rather than a box round it, so what you can
+   grab is what you can see: a tapered brass cone with a collar at its head,
+   and a brass ring hanging under it. That is a real object and not a stylised
+   one -- the taper is what a ferrule swaged onto a chain looks like, and the
+   ring is a ring because a solid weight at this size is a blob and a hole in
+   it is a silhouette you can read at a glance.
 
-   Brass rather than neutral: it is the one warm thing on a black frame, which
-   is what makes it read as hardware and not as a scroll handle. */
+   The rule everywhere else on this frame is square, and it is about the
+   interface: the cards, the slots, every corner the frame draws. This is not
+   the interface. It is an object standing in front of it, and the objects on
+   this site have always been allowed their own geometry -- the book's boards,
+   the folder's tab, the pool of light itself. */
 .cord-bob {
   position: absolute;
-  left: 7px;
+  left: 2px;
   top: calc(var(--cord-len) + var(--pull));
-  width: 16px; height: 30px;
+  width: 26px; height: 52px;
   margin: 0;
   padding: 0;
   border: 0;
+  background: none;
   pointer-events: auto;
   cursor: grab;
-  border-radius: 8px 8px 7px 7px / 5px 5px 10px 10px;
-  background:
-    linear-gradient(to right,
-      #4a3a1c 0%, #b9975a 30%, #e8d5a4 46%, #b9975a 64%, #3f3117 100%),
-    linear-gradient(to bottom, #6b5427 0%, #b9975a 22%, #8a6f38 100%);
-  background-blend-mode: multiply, normal;
-  box-shadow: 0 2px 6px -2px rgba(0, 0, 0, 0.8),
-              inset 0 1px 0 rgba(255, 235, 190, 0.35),
-              inset 0 -2px 3px -2px rgba(0, 0, 0, 0.7);
   transition: filter 160ms var(--ease);
 }
 .cord-bob:active { cursor: grabbing; }
 .cord-bob:focus-visible { outline: 2px solid rgb(var(--w)); outline-offset: 3px; }
 @media (hover: hover) {
-  .cord-bob:hover { filter: brightness(1.18); }
+  .cord-bob:hover { filter: brightness(1.14); }
 }
 
-/* Past the catch. Two pixels of light down the string and the ferrule warm --
-   the tell that letting go here does something, and the reason the pull can
-   be abandoned without guessing. */
-.cord.is-armed .cord-line {
+/* The cone. Cut with a polygon rather than drawn with borders, so the collar
+   at the head and the flange at the foot are one shape with one gradient
+   across it -- a turned part has one piece of metal in it and one highlight
+   running down the side of that piece. */
+.cord-bob::before {
+  content: '';
+  position: absolute;
+  left: 6px; top: 0;
+  width: 14px; height: 27px;
   background: linear-gradient(to right,
-    rgba(var(--w), 0.26) 0%,
-    rgba(var(--w), 0.72) 45%,
-    rgba(var(--w), 0.24) 100%);
+    var(--brass-dk) 0%, var(--brass-lo) 12%, var(--brass) 26%,
+    var(--brass-hi) 44%, var(--brass) 62%, var(--brass-lo) 84%,
+    var(--brass-dk) 100%);
+  clip-path: polygon(
+    34% 0%, 66% 0%,          /* the collar the chain enters   */
+    66% 17%,
+    100% 82%, 100% 100%,     /* the taper, and the flange     */
+    0% 100%, 0% 82%,
+    34% 17%);
 }
-.cord.is-armed .cord-bob { filter: brightness(1.3); }
+
+/* And the ring. A hole punched with a mask rather than a second box in the
+   page's colour, because what is behind it is whatever the reader is looking
+   at -- a card edge, a lattice line, the desk -- and a disc painted the
+   colour of the ground is a hole only until something moves under it. */
+.cord-bob::after {
+  content: '';
+  position: absolute;
+  left: 0; top: 25px;
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  background: linear-gradient(148deg,
+    var(--brass-hi) 0%, var(--brass) 30%, var(--brass-lo) 62%, var(--brass-dk) 100%);
+  -webkit-mask-image: radial-gradient(circle at 50% 50%,
+    transparent 0 6.5px, #000 7.2px);
+  mask-image: radial-gradient(circle at 50% 50%, transparent 0 6.5px, #000 7.2px);
+  box-shadow: 0 3px 7px -3px rgba(0, 0, 0, 0.7);
+}
+
+/* Past the catch. The chain brightens and the brass warms -- the tell that
+   letting go here does something, and the reason a pull can be abandoned
+   without having to guess. */
+.cord.is-armed .cord-bob { filter: brightness(1.28) saturate(1.1); }
 
 /* There is no transition on the way home and there must not be one.
    
@@ -1442,36 +1530,13 @@ body {
    and this rule exists to say that the absence of a transition here is the
    design and not an omission. */
 
-/* Lit, the cord is a dark line on a pale wall and the ferrule keeps its
-   metal: the same object, the other way round. */
-:root[data-theme="light"] .cord-line,
-:root:not([data-theme]) .cord-line {
-  background: linear-gradient(to right,
-    rgba(var(--shade), 0.20) 0%,
-    rgba(var(--shade), 0.52) 45%,
-    rgba(var(--shade), 0.18) 100%);
-}
-:root[data-theme="light"] .cord.is-armed .cord-line,
-:root:not([data-theme]) .cord.is-armed .cord-line {
-  background: linear-gradient(to right,
-    rgba(var(--shade), 0.34) 0%,
-    rgba(var(--shade), 0.78) 45%,
-    rgba(var(--shade), 0.30) 100%);
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) .cord-line {
-    background: linear-gradient(to right,
-      rgba(var(--w), 0.16) 0%,
-      rgba(var(--w), 0.42) 45%,
-      rgba(var(--w), 0.14) 100%);
-  }
-  :root:not([data-theme="light"]) .cord.is-armed .cord-line {
-    background: linear-gradient(to right,
-      rgba(var(--w), 0.26) 0%,
-      rgba(var(--w), 0.72) 45%,
-      rgba(var(--w), 0.24) 100%);
-  }
-}
+/* Nothing about the hardware is written twice for the two rooms, and that is
+   the point of drawing it as metal rather than as a line at an alpha. Brass is
+   the same brass on a black desk and on a white page; what changes is what is
+   behind it. The one figure that does move is the steel of the chain -- see
+   --bead in each room, where the dark room's beads are lit from above against
+   black and the lit room's are the same beads read as a dark object against
+   paper. */
 
 /* Somebody asking for less motion still gets the cord and still gets the
    room; what they do not get is the spring. It goes back where it was. */
@@ -17541,8 +17606,18 @@ a.arrow { text-decoration: none; }
       var rest = parseFloat(getComputedStyle(cord).getPropertyValue('--cord-len')) || 128;
 
       ext = TRAVEL * (1 - Math.exp(-Math.max(0, len - rest) * GIVE / TRAVEL));
+
+      /* Negative, and it is not a taste decision.
+       *
+       * CSS rotate() is clockwise in a coordinate system whose y runs down, so
+       * a point hanging at (0, L) below the origin goes to (-L·sin0, L·cos0):
+       * a positive angle carries the weight to the LEFT. The pointer's dx is
+       * positive to the right. Written as `ang = SWING · tanh(raw/SWING)` the
+       * cord therefore went the opposite way to the hand on every drag, and
+       * the hover nudge pushed it into the pointer rather than away from it.
+       * One sign, and it was wrong in both places. */
       var raw = Math.atan2(dx, dy) * 180 / Math.PI;
-      ang = SWING * Math.tanh(raw / SWING);
+      ang = -SWING * Math.tanh(raw / SWING);
       paint();
 
       var now = ext >= CATCH;
@@ -17561,7 +17636,8 @@ a.arrow { text-decoration: none; }
       var did = armed;
       if (e && e.timeStamp > grab.t) {
         var h = Math.max(8, e.timeStamp - grab.t) / 1000;
-        vAng = Math.max(-140, Math.min(140, (e.clientX - grab.px) / h * 0.22));
+        // Negative for the reason the drag is -- see the note there.
+        vAng = Math.max(-140, Math.min(140, -(e.clientX - grab.px) / h * 0.22));
       }
       grab = null;
       run();
@@ -17583,10 +17659,33 @@ a.arrow { text-decoration: none; }
      * state. It is an impulse and not a pose, so it decays on the same
      * integrator everything else does and two passes in a row do not stack
      * into a wobble: the guard is that it only stirs a cord that has already
-     * gone still. */
+     * gone still.
+     *
+     * And it goes the way the hand was going. A sleeve crossing a cord carries
+     * it along with it; a cord that jumps *into* the hand is a cord being
+     * pulled by something that is not there.
+     *
+     * Three ways of asking which way that was, in order of how much they can
+     * be trusted. movementX is the browser's own answer and is what a real
+     * pointer gives. Where it is zero -- a synthesised move, a touch, a
+     * pointer that arrived by teleport -- the difference from the last
+     * position the document saw is the same fact measured a step further
+     * back. And where even that is nothing, which is a pointer that appeared
+     * on the ferrule out of nowhere, the side of centre it landed on will do.
+     * The last fallback is a direction rather than a coin toss because a
+     * still cord that is asked to move by exactly zero should still move. */
+    var prevX = null;
+    document.addEventListener('pointermove', function (e) {
+      prevX = e.clientX;
+    }, { passive: true, capture: true });
+
     bob.addEventListener('pointerenter', function (e) {
       if (!e.isTrusted || grab || live || calm.matches) { return; }
-      vAng += 15;
+      var r = bob.getBoundingClientRect();
+      var way = e.movementX ||
+                (prevX === null ? 0 : e.clientX - prevX) ||
+                (e.clientX - (r.left + r.width / 2)) || 1;
+      vAng -= (way > 0 ? 1 : -1) * 16;
       vExt += 5;
       run();
     });
