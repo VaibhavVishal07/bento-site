@@ -612,16 +612,33 @@
   --paper:      #171412;                 /* the page                         */
   --paper-lift: #1c1917;                 /* and a shade up, held in the air  */
 
-  /* The lamp's hardware, at three stops and no more. Brass because it is the
-     one warm thing on a black frame and that is what makes it read as
-     hardware rather than as a control; three stops because two is a swatch
-     and five is a render, and everything else on this site is a fill with a
-     hairline on it. */
-  --brass-hi: #d9bd7c;
-  --brass:    #ad8d4c;
-  --brass-lo: #6f5828;
+  /* The lamp's hardware, at three stops and no more.
+  
+     Grey and not brass. Brass was the one warm thing on a black frame and
+     that was the argument for it, and it was the wrong argument: this site
+     has no warm things, and one is not an accent, it is an exception. A
+     turned steel part is the same object with the temperature taken out.
+     
+     Three stops because two is a swatch and five is a render: a lit edge, a
+     body, and a flank in shadow. That is what makes it round -- the depth is
+     in the spread between them and not in a shadow under it.
+
+     --steel and not --pull, which is the name it was given first and which is
+     already taken: --pull is the registered <length> the cord's extension is
+     written to. A registered property resolves to its own type wherever it is
+     used, so `var(--pull)` inside a gradient came back as 0px, the colour stop
+     was invalid, the whole gradient was invalid, and the ferrule and the ring
+     simply were not painted. No warning anywhere -- an invalid background is a
+     background that is not there. Two things in one stylesheet cannot be
+     called the same thing either. */
+  --steel-hi: #c3c8ce;
+  --steel:    #7b8188;
+  --steel-lo: #383d43;
   --cord-ink:     rgba(var(--w), 0.30);
   --cord-ink-lit: rgba(var(--w), 0.72);
+  --say-fill: #16181b;
+  --say-line: rgba(var(--w), 0.16);
+  --say-ink:  rgba(var(--w), 0.82);
 
 }
 
@@ -848,11 +865,14 @@
   --leaf-edge: 124, 110, 88;
   --paper:      #fbf9f4;
   --paper-lift: #ffffff;
-  /* The same brass -- it is the same brass in any room -- and the cord read
+  /* The same steel -- it is the same steel in any room -- and the cord read
      the other way round: a dark line on paper rather than a light one on a
      desk. */
   --cord-ink:     rgba(var(--shade), 0.34);
   --cord-ink-lit: rgba(var(--shade), 0.78);
+  --say-fill: #ffffff;
+  --say-line: rgba(var(--shade), 0.16);
+  --say-ink:  rgba(var(--shade), 0.86);
 }
 
 /* A visitor who has asked their system for a light desktop and has never
@@ -1033,11 +1053,14 @@
     --leaf-edge: 124, 110, 88;
     --paper:      #fbf9f4;
     --paper-lift: #ffffff;
-    /* The same brass -- it is the same brass in any room -- and the cord read
+    /* The same steel -- it is the same steel in any room -- and the cord read
        the other way round: a dark line on paper rather than a light one on a
        desk. */
     --cord-ink:     rgba(var(--shade), 0.34);
     --cord-ink-lit: rgba(var(--shade), 0.78);
+    --say-fill: #ffffff;
+    --say-line: rgba(var(--shade), 0.16);
+    --say-ink:  rgba(var(--shade), 0.86);
   }
 }
 
@@ -1127,10 +1150,23 @@
    room read as a card being slid over the page, which is exactly what it
    looked like and exactly what light does not do.
 
-   The mask is a soft ring: opaque to 66 per cent of the radius and gone by
-   100, so there are 34 points of falloff travelling ahead of it. That is not
-   a decoration, it is the only part of this that says light. The cast is gone
-   with the hard edge that needed it.
+   And it is a cone, which is the other half of saying light. A lamp with a
+   shade over it does not throw a circle, it throws a beam: the mask is a
+   radial falloff intersected with a wedge opening from the same point, and
+   both are animated. The beam starts narrow at the ferrule and opens to the
+   whole room as it reaches it, which is a filament coming up behind a shade
+   -- at full brightness the shade has stopped mattering and the room is
+   simply lit.
+
+   205 degrees is where it points. Conic angles run clockwise from twelve
+   o'clock, so that is down and to the left: the lamp is at the top right of
+   the window and the page is what it has to reach.
+
+   The radial half is a soft ring: opaque to 66 per cent of the radius and
+   gone by 100, so there are 34 points of falloff travelling ahead of it. That
+   softness is what separates light from a sheet of paper being slid over the
+   page, and the cast that used to say which room was on top is gone with the
+   hard edge that needed it.
 
    And it strikes. A filament does not come up to its working colour, it
    overshoots and settles back -- so the incoming room arrives half again as
@@ -1144,17 +1180,38 @@
    edge stopped existing for a beat -- a lamp striking, and also a photograph
    being overexposed. Half again is a flare you read as heat rather than as a
    blown highlight. */
+@property --wipe-a { syntax: "<angle>"; inherits: true; initial-value: 0deg; }
+
 :root.room-on::view-transition-new(root) {
-  -webkit-mask-image: radial-gradient(circle at var(--wipe-x, 50%) var(--wipe-y, 0%),
-    #000 calc(var(--wipe-g) * 0.66), transparent var(--wipe-g));
-  mask-image: radial-gradient(circle at var(--wipe-x, 50%) var(--wipe-y, 0%),
-    #000 calc(var(--wipe-g) * 0.66), transparent var(--wipe-g));
+  -webkit-mask-image:
+    radial-gradient(circle at var(--wipe-x, 50%) var(--wipe-y, 0%),
+      #000 calc(var(--wipe-g) * 0.66), transparent var(--wipe-g)),
+    conic-gradient(from calc(205deg - var(--wipe-a)) at var(--wipe-x, 50%) var(--wipe-y, 0%),
+      #000 0deg, #000 calc(var(--wipe-a) * 2),
+      transparent calc(var(--wipe-a) * 2 + 16deg));
+  mask-image:
+    radial-gradient(circle at var(--wipe-x, 50%) var(--wipe-y, 0%),
+      #000 calc(var(--wipe-g) * 0.66), transparent var(--wipe-g)),
+    conic-gradient(from calc(205deg - var(--wipe-a)) at var(--wipe-x, 50%) var(--wipe-y, 0%),
+      #000 0deg, #000 calc(var(--wipe-a) * 2),
+      transparent calc(var(--wipe-a) * 2 + 16deg));
+  /* Both at once, which is what makes it a cone and not two shapes stacked.
+     The prefixed spelling takes a different keyword for the same operation
+     and is what older WebKit answers to. */
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
   animation: lamp-strike var(--wipe-ms, 520ms) cubic-bezier(0.16, 0.74, 0.24, 1) both;
 }
 @keyframes lamp-strike {
-  0%   { --wipe-g: 0px;                    filter: brightness(1.45) saturate(0.88); }
-  20%  {                                   filter: brightness(1.14) saturate(0.96); }
-  100% { --wipe-g: var(--wipe-r, 140%);    filter: brightness(1)    saturate(1); }
+  0%   { --wipe-g: 0px;  --wipe-a: 15deg;
+         filter: brightness(1.45) saturate(0.88); }
+  20%  { filter: brightness(1.14) saturate(0.96); }
+  /* The beam has opened past a half turn well before the light has reached
+     the far corner, so what the last third of the move is doing is filling a
+     room rather than widening a torch. */
+  62%  { --wipe-a: 150deg; }
+  100% { --wipe-g: var(--wipe-r, 140%); --wipe-a: 200deg;
+         filter: brightness(1) saturate(1); }
 }
 
 /* Off: everything at once.
@@ -1454,7 +1511,7 @@ body {
   position: absolute;
   left: 5px; top: 0;
   width: 8px; height: 16px;
-  background: linear-gradient(100deg, var(--brass-lo), var(--brass) 46%, var(--brass-hi));
+  background: linear-gradient(100deg, var(--steel-lo), var(--steel) 46%, var(--steel-hi));
   clip-path: polygon(25% 0%, 75% 0%, 100% 100%, 0% 100%);
 }
 
@@ -1467,16 +1524,68 @@ body {
   left: 0; top: 15px;
   width: 18px; height: 18px;
   border-radius: 50%;
-  background: linear-gradient(148deg, var(--brass-hi), var(--brass) 42%, var(--brass-lo));
+  background: linear-gradient(148deg, var(--steel-hi), var(--steel) 42%, var(--steel-lo));
   -webkit-mask-image: radial-gradient(circle at 50% 50%, transparent 0 4.6px, #000 5.2px);
   mask-image: radial-gradient(circle at 50% 50%, transparent 0 4.6px, #000 5.2px);
 }
 
-/* Past the catch: the cord brightens and the brass warms. The tell that
+/* Past the catch: the cord brightens and the steel lifts. The tell that
    letting go here does something, and the reason a pull can be started and
    abandoned without having to guess. */
 .cord.is-armed .cord-line { background: var(--cord-ink-lit); }
 .cord.is-armed .cord-bob { filter: brightness(1.24); }
+
+/* And a word from the cord, for anybody who will not let go of it.
+
+   Hold the pull down past a second and a half and it says so. This is the one
+   place on the site that is allowed a joke, and it is allowed because it only
+   ever happens to somebody who is already playing with the thing rather than
+   using it: you cannot arrive here by accident, and you cannot see it twice
+   without deciding to.
+
+   In the hand the playground's prints are written in, which is the site's own
+   voice for a note somebody left rather than the page talking -- see --f-hand.
+   To the left of the ferrule, because the cord hangs 64 from the right edge
+   and a bubble on the other side would be off the glass. */
+.cord-say {
+  position: absolute;
+  right: 26px;
+  top: calc(var(--cord-len) + var(--pull) + 2px);
+  width: max-content;
+  padding: 5px 11px 6px;
+  border-radius: 11px 11px 3px 11px;
+  background: var(--say-fill);
+  box-shadow: inset 0 0 0 1px var(--say-line);
+  font-family: var(--f-hand);
+  font-size: 17px;
+  line-height: 1;
+  white-space: nowrap;
+  color: var(--say-ink);
+  opacity: 0;
+  transform: translate(6px, 2px) scale(0.9);
+  transform-origin: 100% 40%;
+  pointer-events: none;
+  transition: opacity 140ms var(--ease), transform 240ms cubic-bezier(0.2, 1.5, 0.4, 1);
+}
+/* The tail, which is what makes it a bubble and not a label: a small square
+   turned on its corner, tucked under the one square corner of the box. */
+.cord-say::after {
+  content: '';
+  position: absolute;
+  right: -3px; bottom: 3px;
+  width: 8px; height: 8px;
+  background: var(--say-fill);
+  box-shadow: inset -1px 1px 0 var(--say-line);
+  transform: rotate(45deg);
+}
+.cord.is-saying .cord-say {
+  opacity: 1;
+  transform: translate(0, 0) scale(1);
+}
+@media (prefers-reduced-motion: reduce) {
+  .cord-say { transition: opacity 140ms linear; }
+  .cord.is-saying .cord-say { transform: none; }
+}
 
 /* There is no transition on the way home and there must not be one.
    
@@ -1490,7 +1599,7 @@ body {
 
 /* Nothing about the hardware is written twice for the two rooms, and that is
    the point of drawing it as metal rather than as a line at an alpha. Brass is
-   the same brass on a black desk and on a white page; what changes is what is
+   the same steel on a black desk and on a white page; what changes is what is
    behind it. The one figure that does move is the steel of the chain -- see
    --bead in each room, where the dark room's beads are lit from above against
    black and the lit room's are the same beads read as a dark object against
@@ -14853,6 +14962,7 @@ a.arrow { text-decoration: none; }
     <i class="cord-line" aria-hidden="true"></i>
     <button class="cord-bob" type="button" data-cord-bob
             aria-pressed="false" aria-label="Turn the lamp on"></button>
+    <span class="cord-say" data-cord-say aria-hidden="true">Leave me pls</span>
   </div>
 
   <div class="bloom" aria-hidden="true"></div>
@@ -17464,6 +17574,7 @@ a.arrow { text-decoration: none; }
     var ext = 0, vExt = 0;               /* string: extension and its rate    */
     var ang = 0, vAng = 0;               /* swing:  degrees and degrees a sec */
     var grab = null, armed = false, moved = 0, live = 0, last = 0;
+    var say = cord.querySelector('[data-cord-say]'), sayAt = 0;
     var calm = matchMedia('(prefers-reduced-motion: reduce)');
 
     function paint() {
@@ -17488,6 +17599,10 @@ a.arrow { text-decoration: none; }
       if (live) { return; }
       last = performance.now();
       live = requestAnimationFrame(function tick(now) {
+        /* A finger on it beats the physics: while the cord is being held it is
+         * not returning anywhere, so the loop follows the hand instead of
+         * integrating, and one paint a frame is all either of them gets. */
+        if (grab) { hold(now); paint(); live = requestAnimationFrame(tick); last = now; return; }
         /* Capped, floored, and subdivided.
          *
          * Capped because a tab that was in the background hands back a delta
@@ -17541,11 +17656,22 @@ a.arrow { text-decoration: none; }
       stop();
       var a = anchor();
       grab = { ax: a.x, ay: a.y, t: e.timeStamp, x: e.clientX, y: e.clientY,
-               px: e.clientX, py: e.clientY };
+               px: e.clientX, py: e.clientY,
+               /* The resting length, read once. It was read out of the
+                * computed style on every pointermove, which is a style
+                * resolution per event on an element the same event is about to
+                * write two custom properties to -- the browser answering a
+                * question it has just been made unable to answer. That is
+                * where the drag's jitter was. It cannot change under a finger
+                * that is already holding the cord, so once is enough. */
+               rest: parseFloat(getComputedStyle(cord)
+                       .getPropertyValue('--cord-len')) || 112,
+               down: e.timeStamp };
       moved = 0;
       armed = false;
       vExt = 0; vAng = 0;
-      cord.classList.remove('is-armed');
+      cord.classList.remove('is-armed', 'is-saying');
+      sayAt = 0;
       if (bob.setPointerCapture) { bob.setPointerCapture(e.pointerId); }
       e.preventDefault();
     });
@@ -17558,16 +17684,41 @@ a.arrow { text-decoration: none; }
      * one vector from the ceiling to the pointer: its length past the resting
      * length is the extension, its angle off vertical is the swing, and each
      * runs through its own stop. */
+    /* The move handler records where the finger is and nothing else.
+     *
+     * A pointer fires faster than the screen draws -- on a 120Hz trackpad
+     * against a 60Hz display, twice per frame, and coalesced events can arrive
+     * in bursts of five or six. Resolving the geometry and writing the two
+     * custom properties inside each of those is several style invalidations
+     * for one painted frame, and what comes out the other end is a cord that
+     * stutters against a finger moving smoothly. So the event stores a
+     * position and the frame loop reads it: one resolve, one write, one paint,
+     * per frame that actually happens. */
     bob.addEventListener('pointermove', function (e) {
       if (!grab) { return; }
       grab.px = e.clientX; grab.py = e.clientY;
       moved = Math.max(moved, Math.hypot(e.clientX - grab.x, e.clientY - grab.y));
+      run();
+    });
 
-      var dx = e.clientX - grab.ax, dy = Math.max(1, e.clientY - grab.ay);
+    /* And what the frame does with it. Called from the loop while a finger is
+     * down, in place of the integrator: a held cord is not falling anywhere,
+     * it is where it is being held.
+     *
+     * `hold` and not `follow`, and the name is the whole of a bug that cost an
+     * afternoon. This module already had a `var follow` further down -- the
+     * callback that keeps an unchosen room in step with the desktop's own
+     * setting. A function declaration hoists and is then overwritten by the
+     * `var` assignment that runs at module init, so by the time anybody
+     * touched the cord this name meant the media-query listener: it was
+     * called on every frame of every drag, found [data-theme] set, returned,
+     * and moved nothing. No error, no warning, and a cord that did not budge.
+     * Two things in one closure cannot be called the same thing. */
+    function hold(now) {
+      var dx = grab.px - grab.ax, dy = Math.max(1, grab.py - grab.ay);
       var len = Math.hypot(dx, dy);
-      var rest = parseFloat(getComputedStyle(cord).getPropertyValue('--cord-len')) || 128;
 
-      ext = TRAVEL * (1 - Math.exp(-Math.max(0, len - rest) * GIVE / TRAVEL));
+      ext = TRAVEL * (1 - Math.exp(-Math.max(0, len - grab.rest) * GIVE / TRAVEL));
 
       /* Negative, and it is not a taste decision.
        *
@@ -17580,11 +17731,21 @@ a.arrow { text-decoration: none; }
        * One sign, and it was wrong in both places. */
       var raw = Math.atan2(dx, dy) * 180 / Math.PI;
       ang = -SWING * Math.tanh(raw / SWING);
-      paint();
 
-      var now = ext >= CATCH;
-      if (now !== armed) { armed = now; cord.classList.toggle('is-armed', armed); }
-    });
+      var arm = ext >= CATCH;
+      if (arm !== armed) { armed = arm; cord.classList.toggle('is-armed', armed); }
+
+      /* And if they are still holding it a second and a half later, the cord
+       * says something. Past the catch only: a reader who has pulled it two
+       * pixels and forgotten about it has not done anything worth answering,
+       * and the joke belongs to somebody who is plainly playing with the
+       * thing. Once per grab -- it goes on the way down and comes off on
+       * release, so holding on does not make it flicker. */
+      if (say && armed && !sayAt && now - grab.down > 1500) {
+        sayAt = now;
+        cord.classList.add('is-saying');
+      }
+    }
 
     /* And letting go.
      *
@@ -17596,6 +17757,8 @@ a.arrow { text-decoration: none; }
     function release(e) {
       if (!grab) { return; }
       var did = armed;
+      cord.classList.remove('is-saying');
+      sayAt = 0;
       if (e && e.timeStamp > grab.t) {
         var h = Math.max(8, e.timeStamp - grab.t) / 1000;
         // Negative for the reason the drag is -- see the note there.
@@ -17603,14 +17766,30 @@ a.arrow { text-decoration: none; }
       }
       grab = null;
       run();
-      if (did && !calm.matches) { choose(showing() === 'light' ? 'dark' : 'light'); }
-      else if (did) { choose(showing() === 'light' ? 'dark' : 'light'); }
+      if (did) { pulled(); }
+    }
+
+    /* What a pull actually does, in one place, so the drag and the click and
+     * the keyboard cannot drift apart.
+     *
+     * The sound is the lamp's and not the frame's: a switch has a mechanism in
+     * it and a bulb has a filament, and those are two different noises a few
+     * milliseconds apart. See VOICE.lamp-on and VOICE.lamp-off, and __sfx for
+     * why anything is allowed to make a noise here at all -- it refuses until
+     * a gesture has built a context, and the hush switch takes it with
+     * everything else. */
+    function pulled() {
+      var to = showing() === 'light' ? 'dark' : 'light';
+      if (window.__sfx) { window.__sfx(to === 'light' ? 'lamp-on' : 'lamp-off'); }
+      choose(to);
     }
     bob.addEventListener('pointerup', release);
     bob.addEventListener('pointercancel', function () {
       if (!grab) { return; }
       grab = null;
       armed = false;
+      cord.classList.remove('is-saying');
+      sayAt = 0;
       run();
     });
 
@@ -17672,7 +17851,7 @@ a.arrow { text-decoration: none; }
       cord.classList.add('is-armed');
       paint();
       run();
-      choose(showing() === 'light' ? 'dark' : 'light');
+      pulled();
     });
 
     // A visitor who never pressed anything follows their desktop, including
@@ -21667,8 +21846,61 @@ a.arrow { text-decoration: none; }
        * The figure comes off the root because that is where the movement's
        * figure already is. Change --x-morph in the stylesheet and this
        * follows it; there is no second copy to keep in step. */
-      grid: function () { tock((num('--x-out') + num('--x-morph')) / 1000, 0); }
+      grid: function () { tock((num('--x-out') + num('--x-morph')) / 1000, 0); },
+
+      /* --- the lamp ------------------------------------------------------
+       *
+       * Two things happen when a pull cord turns a lamp on and they are not
+       * the same sound. The switch is a mechanism: a small sprung click, which
+       * is noise rather than a note -- a few milliseconds of filtered hiss,
+       * the same way the knock is made. The bulb is a filament coming up to
+       * heat, which is a note that rises and settles, quiet, with a second
+       * partial an octave over it that fades faster than the first.
+       *
+       * Twelve milliseconds apart, because that is what it is: the contact
+       * closes and then the light happens. Simultaneous, they read as one
+       * blip and the object goes away.
+       *
+       * Going off is the same click and no filament -- there is nothing to
+       * warm up -- and instead the note falls and stops short. A lamp does
+       * not fade out politely; it stops, and the room is what is left. */
+      'lamp-on': function () {
+        click(0.038, 2600, 0.16);
+        note(196, 262, 0.30, 0.075, 'sine',     0.012);
+        note(392, 524, 0.20, 0.030, 'triangle', 0.012);
+      },
+      'lamp-off': function () {
+        click(0.030, 2000, 0.13);
+        note(262, 150, 0.14, 0.055, 'sine',     0.010);
+        note(131,  90, 0.16, 0.028, 'triangle', 0.010);
+      }
     };
+
+    /* The switch's own mechanism: filtered noise with a hard edge on it, which
+     * is what a small sprung contact is. Built the way knock() is built -- a
+     * buffer of white noise through a band-pass and a very fast envelope --
+     * but its length, its centre and its level are arguments, because a
+     * lamp going off is the same mechanism heard slightly duller than the same
+     * mechanism going on. */
+    function click(len, hz, gain) {
+      if (!ac) { return; }
+      var t = ac.currentTime;
+      var buf = ac.createBuffer(1, Math.ceil(ac.sampleRate * len), ac.sampleRate);
+      var d = buf.getChannelData(0), i;
+      for (i = 0; i < d.length; i++) {
+        // Decaying noise rather than flat: the contact is loudest at the
+        // instant it closes and the rest is the spring behind it.
+        d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / d.length, 2.4);
+      }
+      var src = ac.createBufferSource(); src.buffer = buf;
+      var bp = ac.createBiquadFilter();
+      bp.type = 'bandpass'; bp.frequency.value = hz; bp.Q.value = 1.1;
+      var g = ac.createGain();
+      g.gain.setValueAtTime(gain, t);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + len);
+      src.connect(bp); bp.connect(g); g.connect(out);
+      src.start(t); src.stop(t + len);
+    }
 
     /* Nothing sounds until there is a running context to sound it, and only a
        gesture makes one. A reader who has moved the cursor over the page and
