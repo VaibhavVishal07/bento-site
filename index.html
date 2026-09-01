@@ -1998,7 +1998,12 @@ body {
    Intro card — offsets relative to 400, 91
    ========================================================================== */
 
-.avatar     { left: 60px;  top: 48px;  width: 72px; height: 72px; border-radius: 10.59px; }
+/* Square. It was 10.59 -- a figure carried straight out of a design file and
+   the only rounded corner on this frame: not a card, not the still beside it,
+   not a button, not a print on the table. One rounded thing in a grid of
+   square ones does not read as softer, it reads as the one that was drawn
+   somewhere else. */
+.avatar     { left: 60px;  top: 48px;  width: 72px; height: 72px; }
 
 /* The wordmark ends in a terminal caret, so blink it like one: a hard on/off
    at 530ms a side, the way a tty cursor runs, never a soft fade. */
@@ -3116,11 +3121,18 @@ body {
    ========================================================================== */
 
 :root {
-  --x-fade:  150ms;   /* one tile's contents                    */
-  --x-step:   28ms;   /* how far one tile trails the last       */
-  --x-out:   240ms;   /* move 1 entire: a fade plus three steps */
-  --x-morph: 320ms;   /* move 2: the shapes                     */
-  --x-in:    240ms;   /* move 3 entire                          */
+  /* Halved, all of it, in one pass -- these five, the deep tempo's own four
+     below, the lattice spread, the shut and the fold, the becoming, and the
+     three constants the phone's column crossing is written in. Not --dur and
+     not the hover figures: those are the frame's own micro-states, a card
+     lighting and an arrow sliding four pixels, and they are not the crossing.
+     At half of 300 a hover stops reading as a surface answering a pointer and
+     starts reading as a flicker. */
+  --x-fade:   75ms;   /* one tile's contents                    */
+  --x-step:   14ms;   /* how far one tile trails the last       */
+  --x-out:   120ms;   /* move 1 entire: a fade plus three steps */
+  --x-morph: 160ms;   /* move 2: the shapes                     */
+  --x-in:    120ms;   /* move 3 entire                          */
   /* Every box that travels, and every content that leaves or arrives, runs on
      this. It is a plain ease-out and deliberately a mild one: the frame's own
      --ease puts better than half the distance into the first fifth of the
@@ -3135,11 +3147,11 @@ body {
      animation-delay that changes under a running animation does not leave it
      alone: it re-times it, and the thing you are watching jumps forward by the
      difference. Both did. */
-  --x-deep-morph: 560ms;
+  --x-deep-morph: 280ms;
   /* And its third move, held in the same place and for the same reason: the
      opening waits out the whole arrival, contents included, so it needs the
      figure while .x-deep is on and after it has come off. */
-  --x-deep-in: 330ms;
+  --x-deep-in: 165ms;
   /* The three beats the book gets to itself on the way out.
 
      Leaving L3 is the one crossing where a tile is not a panel of contents
@@ -3179,8 +3191,8 @@ body {
 
      --x-shut is the shut and --x-become is the becoming; the script reads
      both off the root and adds them to know when move 1 may start. */
-  --x-shut:   680ms;
-  --x-become: 200ms;
+  --x-shut:   340ms;
+  --x-become: 100ms;
   /* The folder on Work had a beat of its own here, --x-lift, in which the
      picture came out of its window and opened to the size of the card. It is
      gone -- see .w-seat for why a landscape picture cannot open into a
@@ -3192,8 +3204,8 @@ body {
      rise, because a cover comes up off a book that is already in the hand,
      and it lands before the object does so the settle is the book taking the
      weight of it. */
-  --x-fold:      560ms;
-  --x-fold-at:    60ms;
+  --x-fold:      280ms;
+  --x-fold-at:    30ms;
   --x-fold-ease: cubic-bezier(0.65, 0, 0.35, 1);
   --x-shut-ease: cubic-bezier(0.45, 0, 0.55, 1);
   --x-veil-ease: cubic-bezier(0.4, 0, 0.2, 1);
@@ -3233,8 +3245,8 @@ body {
      multiplies that by its own spread. */
   --x-lattice: calc(var(--x-morph) + var(--x-in));
   --l-ease: cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  --l-spread: 150ms;
-  --l-spread-out: 90ms;
+  --l-spread:  75ms;
+  --l-spread-out: 45ms;
 }
 
 /* Descending to the case study, or climbing back out of it, is the crossing
@@ -3252,9 +3264,9 @@ body {
    The class goes on the root rather than the stage because the script reads
    these figures off the root to time its own three waits. */
 :root.x-deep {
-  --x-fade:  200ms;
-  --x-step:   42ms;
-  --x-out:   330ms;   /* still the fade plus three steps */
+  --x-fade:  100ms;
+  --x-step:   21ms;
+  --x-out:   165ms;   /* still the fade plus three steps */
   --x-morph: var(--x-deep-morph);
   --x-in:    var(--x-deep-in);
   --x-sink:  14px;
@@ -5264,7 +5276,7 @@ body {
 
 .view-article .bk-body {
   transition: transform var(--x-deep-morph) var(--x-ease),
-              opacity 150ms linear 185ms;
+              opacity 75ms linear 92ms;
 }
 
 
@@ -5302,7 +5314,7 @@ body {
      520, and it goes out over the hundred after that -- landing exactly on the
      frame the views swap. */
   transition: transform var(--x-deep-morph) var(--x-ease),
-              opacity 110ms linear 220ms;
+              opacity 55ms linear 110ms;
 }
 .x-empty .view-article .bk.bk-arriving .bk-body {
   opacity: 1;
@@ -5342,7 +5354,7 @@ body {
 .bk.bk-going .bk-body,
 .x-empty .view-article .bk.bk-going .bk-body {
   transition: transform var(--x-out) var(--bk-fall),
-              opacity 110ms linear 220ms;
+              opacity 55ms linear 110ms;
 }
 
 /* --- beat 1: the cover becomes the tile ---------------------------------
@@ -5895,7 +5907,7 @@ body {
 .x-shutting .view-article .bk .bk-stamp,
 .x-shutting .view-article .bk .bk-crease {
   opacity: 0;
-  transition: opacity 140ms var(--x-veil-ease);
+  transition: opacity 70ms var(--x-veil-ease);
 }
 .x-shutting .view-article .bk { outline-color: transparent; }
 
@@ -5919,8 +5931,8 @@ body {
    half that turns: the recto is the back cover's leaf and nothing has been
    lying on it. */
 .stage:not(.x-shutting) .view-article:not([hidden]) .bk .bk-page-v::after {
-  animation: bk-lit 260ms var(--x-veil-ease)
-             calc(var(--x-open-at) + var(--x-fold-at) + var(--x-fold) - 260ms)
+  animation: bk-lit 130ms var(--x-veil-ease)
+             calc(var(--x-open-at) + var(--x-fold-at) + var(--x-fold) - 130ms)
              reverse backwards;
 }
 
@@ -5930,13 +5942,13 @@ body {
    arrive in the last fifth of the opening. */
 .stage:not(.x-shutting) .view-article:not([hidden]) .bk .bk-stamp,
 .stage:not(.x-shutting) .view-article:not([hidden]) .bk .bk-crease {
-  animation: bk-furn 140ms var(--x-veil-ease)
-             calc(var(--x-open-at) + var(--x-fold-at) + var(--x-fold) - 140ms)
+  animation: bk-furn 70ms var(--x-veil-ease)
+             calc(var(--x-open-at) + var(--x-fold-at) + var(--x-fold) - 70ms)
              reverse backwards;
 }
 .stage:not(.x-shutting) .view-article:not([hidden]) .bk {
-  animation: bk-edge 140ms var(--x-veil-ease)
-             calc(var(--x-open-at) + var(--x-fold-at) + var(--x-fold) - 140ms)
+  animation: bk-edge 70ms var(--x-veil-ease)
+             calc(var(--x-open-at) + var(--x-fold-at) + var(--x-fold) - 70ms)
              reverse backwards;
 }
 /* And back up as the boards fold, on the way out -- which now happens a move
@@ -5967,7 +5979,7 @@ body {
 .x-shutting .view-article .bk-page::after,
 .x-empty .view-article .bk-page::after {
   opacity: 1;
-  transition: opacity 260ms linear 130ms;
+  transition: opacity 130ms linear 65ms;
 }
 
 /* And shutting again. The stage empties on the way out of every screen; here
@@ -19615,7 +19627,7 @@ a.arrow { text-decoration: none; }
      * the seventh card everything is below the fold anyway, and the only
      * thing a longer tail buys is a longer wait before the next tap is heard.
      */
-    var CR_OUT = 190, CR_STEP = 70, CR_IN = 560, CR_CAP = 6;
+    var CR_OUT = 95, CR_STEP = 35, CR_IN = 280, CR_CAP = 6;
 
     function column(name) {
       busy = true;
