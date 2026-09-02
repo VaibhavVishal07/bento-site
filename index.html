@@ -337,7 +337,7 @@
      the point of them: the cabinet on About is an object rather than a
      surface of the page, and an object does not change what it is made of
      when somebody turns a lamp on. See .ab-shelf. */
-  --shade: 0, 3, 10;
+  --shade: 12, 8, 0;
 
   /* What the card casts when it is lit, driven by --lit like everything else
      on the surface -- registered, so it interpolates rather than switching.
@@ -663,7 +663,17 @@
 :root[data-theme="light"] {
   color-scheme: light;
 
-  --w:     20, 22, 30;
+  /* The ink, and it is the reason the lit room still read cool after the
+     grounds were warmed. Every type token here is rgba(var(--w), a) -- the
+     headings, the body, the labels, the hairlines, the slots -- so a triple
+     carrying ten more blue than red puts a blue cast on every letter and
+     every rule on the page, under grounds that are cream. That is the two
+     lights problem again, at the smallest scale on the site.
+
+     Turned the same way as the room: red over blue by about the margin it
+     used to be under. It stays a near-black -- this is a cast and not a
+     colour, which is the lesson the first cream room got wrong. */
+  --w:     32, 27, 18;
   --k-lift:  0.10;
   --k-shade: 0.06;
 
@@ -732,23 +742,23 @@
      lands on cannot drift apart. The lesson from the first attempt is kept --
      the spread across the channels is small and the card is still very nearly
      white -- it is only pointed at red instead of at blue. */
-  --bg:        #f7f3ea;
-  --card-fill: #fffdf7;
-  --fill-rgb:  255, 253, 247;
-  --card-line: #ece5d8;
+  --bg:        #f4eee0;
+  --card-fill: #fdf8ec;
+  --fill-rgb:  253, 248, 236;
+  --card-line: #e7dcc6;
   --card-edge: 1px;
-  --card-line-lit: #dcd2c0;
-  --nav-line:  #eee8db;
+  --card-line-lit: #d5c8ab;
+  --nav-line:  #e9dfcb;
 
   /* None. The bloom is the dark room's and does not survive the swap: see
      --nav-lit there. Selection is carried by weight and by the marker under
      the word, which is what carries it in a lit room anyway. */
   --nav-lit: none;
-  --rule:      #e9e1d4;
-  --slot: rgba(58, 45, 20, 0.06);
+  --rule:      #e3d8c3;
+  --slot: rgba(64, 50, 22, 0.07);
 
-  --pill: #16161a;
-  --pill-ink: #f4f4f7;
+  --pill: #1b1710;
+  --pill-ink: #f7f2e6;
 
   /* The lift. Long and soft and barely there at the top -- 26 of blur under
      10 of offset is a sheet a few millimetres off the table rather than a
@@ -761,7 +771,7 @@
   --cast-b: 26px;
   --cast-a: 0.10;
 
-  --card-pane: rgba(255, 253, 247, 0.78);
+  --card-pane: rgba(253, 248, 236, 0.80);
 
   /* Paper under the lights, and no longer cream. See the same four in the
      dark room for why the warmth went.
@@ -771,10 +781,11 @@
      paper is the brightest thing in a room and everything around it is what
      is slightly grey. Cream carried that on hue alone -- take the hue out at
      the old lightness and the print disappears into the page. */
-  --print:       #fcfcfe;
-  --print-shot:  #e4e6ec;
-  --print-mark:  rgba(38, 42, 54, 0.14);
-  --print-faint: rgba(38, 42, 54, 0.48);
+  /* Paper under the same lamp as everything else. */
+  --print:       #fdfaf1;
+  --print-shot:  #e9e1cf;
+  --print-mark:  rgba(56, 46, 26, 0.15);
+  --print-faint: rgba(56, 46, 26, 0.50);
 
   /* The dark room's cast does not carry across, and it was the one thing on
      this screen that visibly did not belong: seventy per cent of black under
@@ -876,8 +887,8 @@
   --pill-cast: 0 1px 2px rgba(22, 26, 36, 0.14);
 
   /* Glass in a lit room is light, and it is flat: tint, border, type. */
-  --ctl-tint: rgba(255, 255, 255, 0.66);
-  --bar-tint: rgba(255, 255, 255, 0.86);
+  --ctl-tint: rgba(254, 250, 240, 0.70);
+  --bar-tint: rgba(254, 250, 240, 0.88);
   --ctl-ramp: none;
   --pane-ramp: none;
   --pane-rim: none;
@@ -920,7 +931,7 @@
   :root:not([data-theme]) {
     color-scheme: light;
 
-    --w:     20, 22, 30;
+    --w:     32, 27, 18;
     --k-lift:  0.10;
     --k-shade: 0.06;
 
@@ -972,18 +983,18 @@
        hairline rather than a border. */
     /* The lit room's figures, kept in step with the copy under
        [data-theme="light"]. See the note there for why they are warm. */
-    --bg:        #f7f3ea;
-    --card-fill: #fffdf7;
-    --fill-rgb:  255, 253, 247;
-    --card-line: #ece5d8;
+    --bg:        #f4eee0;
+    --card-fill: #fdf8ec;
+    --fill-rgb:  253, 248, 236;
+    --card-line: #e7dcc6;
     --card-edge: 1px;
-    --card-line-lit: #dcd2c0;
-    --nav-line:  #eee8db;
+    --card-line-lit: #d5c8ab;
+    --nav-line:  #e9dfcb;
 
     /* See --nav-lit under [data-theme="light"]. */
     --nav-lit: none;
-    --rule:      #e9e1d4;
-    --slot: rgba(58, 45, 20, 0.06);
+    --rule:      #e3d8c3;
+    --slot: rgba(64, 50, 22, 0.07);
 
     --pill: #16161a;
     --pill-ink: #f4f4f7;
@@ -999,7 +1010,7 @@
     --cast-b: 26px;
     --cast-a: 0.10;
 
-    --card-pane: rgba(255, 253, 247, 0.78);
+    --card-pane: rgba(253, 248, 236, 0.80);
 
     /* See the same four under [data-theme="light"]. */
     --print:       #fcfcfe;
@@ -7705,9 +7716,9 @@ body {
 .room {
   position: absolute;
   left: 1541px; top: 91px;
-  width: 88px; height: 44px;                /* two square cells; see the foot */
+  width: 44px; height: 44px;                 /* one square cell; see the foot */
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   background: var(--card-fill);
   /* --card-line-lit, not --nav-line. The ramp here runs #161616 for the
      lattice, #171717 for the nav's stroke, #1a1a1a for a card's edge and
@@ -7723,10 +7734,11 @@ body {
   outline: 1px solid var(--card-line-lit);
 }
 
-/* Two cells again. It was cut to one when the room switch came out and the
-   hush was all that was left standing here; there are two things again -- the
-   sound, and the lamp -- so it goes back to the width and the pair of columns
-   it was drawn at. */
+/* The lamp's own box, two grid lines under the hush's. See the markup for
+   where 177 comes from and why this draws neither of the lattice rules the
+   hush draws. */
+.room-lamp-box { top: 177px; }
+.room-lamp-box::before, .room-lamp-box::after { display: none; }
 
 /* And it is the lamp.
 
@@ -15244,27 +15256,44 @@ a.arrow { text-decoration: none; }
         </svg>
       </button>
 
-      <!-- And the bulb, which is the lamp: the chain hangs off the foot of
-           this cell and the light floods out of it.
+    </div>
 
-           Square, and squarely so -- a mitred rect with no radius on it,
-           because every corner on this frame is cut square and a bulb drawn
-           round here would be the one curved object on the page. What makes
-           it a bulb is not the outline, it is the filament: a zigzag slung
-           between two leads, which is the part of a bulb you actually look at
-           and the part that tells you it is one.
+    <!-- And the lamp, two grid lines below the hush.
 
-           A button and not a decoration. Pulling the chain is the way this is
-           meant to be used, but a lamp you can see and cannot press is a
-           frustration -- so pressing it pulls the chain, through the same
-           self-pull the ferrule's own click runs. -->
+         21 is the lattice's own gutter -- every rule on this frame comes in a
+         pair 21 apart, 70/91 across the top and 1520/1541 down this side --
+         so two of them is 42, and the box lands at 91 + 44 + 42 = 177. Both
+         controls therefore stand on the same vertical the lattice already
+         draws at 1541, which is why this is a second box rather than a second
+         cell inside the first: one outline around both would have to enclose
+         the gap as well, and the gap is lattice, not control.
+
+         It draws neither of the rules the hush draws. The foot would be a
+         horizontal at 221 and there is no lattice line at 221 -- inventing one
+         is the opposite of what those rules are for, which is landing on lines
+         that already exist. The vertical it would draw is the one the hush is
+         already drawing, down the full drop of the frame, and this box hangs
+         on that same line.
+
+         The lamp itself: a square shade on a stem on a base, which is a
+         portable lamp and not a bulb in mid-air. The filament is still in it,
+         because the filament is the part that says the thing is lit and it is
+         what the glow is drawn around -- at 18 pixels it is three segments and
+         no more, which is as much zigzag as survives at this size.
+
+         A button and not a decoration. Pulling the chain is the way this is
+         meant to be used, but a lamp you can see and cannot press is a
+         frustration -- so pressing it pulls the chain, through the same
+         self-pull the ferrule's own click runs. -->
+    <div class="room room-lamp-box">
       <button class="room-c room-lamp" type="button" data-lamp aria-pressed="false"
               aria-label="Turn the lamp on">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
              stroke-linecap="round" aria-hidden="true">
-          <rect x="5.25" y="4.25" width="13.5" height="13.5" stroke-linejoin="miter"/>
-          <path d="M9.9 18v1.9M14.1 18v1.9"/>
-          <path d="M9.4 14.6v-3.9l1.3 2.1L12 9.6l1.3 3.2 1.3-2.1v3.9"/>
+          <rect x="6.5" y="3.25" width="11" height="11" stroke-linejoin="miter"/>
+          <path d="M9.4 9.9l1.3-2.4 1.3 2.4 1.3-2.4 1.3 2.4"/>
+          <path d="M12 14.25v5.15"/>
+          <path d="M8.3 19.75h7.4"/>
         </svg>
       </button>
     </div>
