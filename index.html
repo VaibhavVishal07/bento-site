@@ -7734,11 +7734,14 @@ body {
   outline: 1px solid var(--card-line-lit);
 }
 
-/* The lamp's own box, two grid lines under the hush's. See the markup for
-   where 177 comes from and why this draws neither of the lattice rules the
-   hush draws. */
-.room-lamp-box { top: 177px; }
-.room-lamp-box::before, .room-lamp-box::after { display: none; }
+/* The lamp stands one grid line under the hush rather than two. 21 is the
+   lattice's own gutter, so this is the smallest gap on the frame that is
+   still a gap the frame knows about: 91 + 44 + 21 = 156. Two of them read as
+   two controls that happen to share a column; one reads as a pair.
+
+   The stem and the base are further down, after .room::after, because they
+   are that rule re-cut and they have to beat it on source order. */
+.room-lamp-box { top: 156px; }
 
 /* And it is the lamp.
 
@@ -7804,14 +7807,21 @@ body {
   --lamp: 0;
   background-color: color-mix(in srgb,
     var(--card-fill), var(--warm-lit) calc(var(--lamp) * 100%));
-  box-shadow: inset 0 0 13px rgba(255, 241, 212, calc(var(--lamp) * 0.60));
-}
+  /* Two insets and they are doing different jobs.
 
-/* The envelope holds its line as the glass brightens, and the filament is
-   the one part that darkens -- which is the whole of why a lit bulb is still
-   legible as a bulb rather than a white square. */
-.room-lamp svg {
-  color: color-mix(in srgb, rgb(var(--w)), #3a2a06 calc(var(--lamp) * 100%));
+     The second is the shade full of light, and it is the one that runs with
+     --lamp from nothing to everything.
+
+     The first is the mouth of the shade, and it carries a tenth of itself
+     even at rest. A shade is open at the bottom and there is a bulb up
+     inside it, so the underside of one is never quite as dark as its sides
+     -- and that faint warm bar along the foot is what says, in the dark
+     room, that this square is a shade with something in it rather than a
+     panel. It is the only part of the object that is not switched off when
+     the lamp is. */
+  box-shadow:
+    inset 0 -8px 10px -6px rgba(255, 241, 212, calc(0.12 + var(--lamp) * 0.50)),
+    inset 0 0 13px rgba(255, 241, 212, calc(var(--lamp) * 0.55));
 }
 
 /* The icon is handled where it is declared, further down -- see
@@ -7877,6 +7887,55 @@ body {
   height: calc(1080px + 2 * var(--bleed));
 }
 .room::after { left: 100%; }                /* 1585, the right of the switch */
+
+/* --- the lamp, which is the whole control and not a picture in it -------
+
+   There was a lamp drawn inside a box, and that is two objects: a square
+   panel, and a smaller lamp sitting in the middle of it. The panel was the
+   thing you pressed and the drawing was the thing that told you what it did,
+   and neither was the lamp.
+
+   So the box is the shade. Its outline is the shade's edge, its fill is what
+   the shade is made of, and when the room is lit the whole of it goes warm --
+   which is what a shade does, because a shade is the part of a lamp you can
+   see the light through. Nothing is drawn inside it. There is nothing to
+   draw: you are looking at the object.
+
+   What makes a square read as a lamp rather than as a square is the two
+   things under it. A stem and a foot are the whole silhouette -- take them
+   away and it is a panel again -- and they are the one part of a lamp that is
+   definitely not lit, so they are steel and they stay steel in both rooms.
+
+   These are .room::before and .room::after re-cut. That pair draws the
+   lattice's foot and outer rule on the hush, and this box wants neither: the
+   foot would be a horizontal at 200 and there is no lattice line at 200, and
+   the vertical is already drawn down the full drop of the frame by the hush
+   above. Same weight as those rules, so this has to stand after them, which
+   is why it is here and not up with .room-lamp-box. */
+
+/* The stem. */
+.room-lamp-box::before {
+  content: "";
+  position: absolute;
+  left: 50%; top: 100%;
+  right: auto; bottom: auto;
+  margin-left: -1px;
+  width: 2px; height: 9px;
+  background: var(--steel);
+}
+
+/* And the foot it stands on. Eighteen and not the shade's full 44, because a
+   base as wide as the shade is a plinth: a table lamp is top-heavy and the
+   foot is the smallest thing that can hold it up. */
+.room-lamp-box::after {
+  content: "";
+  position: absolute;
+  left: 50%; top: calc(100% + 9px);
+  right: auto; bottom: auto;
+  margin-left: -9px;
+  width: 18px; height: 3px;
+  background: var(--steel);
+}
 .back::after { right: 100%; }               /* 333, the left of the way back */
 
 /* How far past the frame a horizontal has to reach. 3000 is the lattice's own
@@ -8006,7 +8065,7 @@ body {
    run() and the settle branch -- so the transition is back in time for the
    next hover, and the crossing itself never needs it: --lamp is continuous
    through the change by construction. */
-.room-lamp.is-pulling, .room-lamp.is-pulling svg { transition: none; }
+.room-lamp.is-pulling { transition: none; }
 .hush-off { display: none; }
 .is-hushed .hush-on { display: none; }
 .is-hushed .hush-off { display: block; }
@@ -15287,15 +15346,7 @@ a.arrow { text-decoration: none; }
          self-pull the ferrule's own click runs. -->
     <div class="room room-lamp-box">
       <button class="room-c room-lamp" type="button" data-lamp aria-pressed="false"
-              aria-label="Turn the lamp on">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
-             stroke-linecap="round" aria-hidden="true">
-          <rect x="6.5" y="3.25" width="11" height="11" stroke-linejoin="miter"/>
-          <path d="M9.4 9.9l1.3-2.4 1.3 2.4 1.3-2.4 1.3 2.4"/>
-          <path d="M12 14.25v5.15"/>
-          <path d="M8.3 19.75h7.4"/>
-        </svg>
-      </button>
+              aria-label="Turn the lamp on"></button>
     </div>
 
     <!-- The way back. Two shapes for one control: on the frame it is the
@@ -18086,12 +18137,24 @@ a.arrow { text-decoration: none; }
      * little below the border -- that is where a real chain leaves a switch. */
     var LEAD = 4;
 
+    /* And where across the shade it comes out.
+     *
+     * Not the middle, which is where the stem is. A pull chain on a table
+     * lamp hangs off the side of the shade because the middle of the
+     * underside is taken by the lamp itself -- and here it is taken by the
+     * stem and the foot, drawn in .room-lamp-box::before and ::after. Down
+     * the centre the chain would run straight through both of them.
+     *
+     * 0.82 of the way across, which on a 44 shade is 36: seven pixels in
+     * from the right edge, and eight clear of the eighteen-wide foot. */
+    var HANG = 0.82;
+
     function seat() {
       if (!lampBox) { return; }
       var r = lampBox.getBoundingClientRect();
       if (!r.width && !r.height) { return; }   /* not laid out yet */
       cord.style.right = 'auto';
-      cord.style.left = (r.left + r.width / 2 - AX).toFixed(1) + 'px';
+      cord.style.left = (r.left + r.width * HANG - AX).toFixed(1) + 'px';
       cord.style.top  = (r.bottom + LEAD).toFixed(1) + 'px';
     }
 
