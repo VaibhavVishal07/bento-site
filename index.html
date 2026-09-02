@@ -645,6 +645,13 @@
   --steel-hi: #c3c8ce;
   --steel:    #7b8188;
   --steel-lo: #383d43;
+  /* What the filament is, and the one place it is written.
+
+     The bulb fills with it, the lit room is cast toward it, and the bloom
+     that crosses the page is mixed to it. Three things that are all the same
+     light, so they are all the same figure. */
+  --warm-lit: #fff1d6;
+
   --cord-ink:     rgba(var(--w), 0.30);
   --cord-ink-lit: rgba(var(--w), 0.72);
   --say-fill: #16181b;
@@ -706,20 +713,39 @@
      just enough to stop it being the same white as the cards standing on
      it and not enough to be a colour. Every line between them is a
      hairline rather than a border. */
-  --bg:        #f4f5f8;
-  --card-fill: #ffffff;
-  --fill-rgb:  255, 255, 255;
-  --card-line: #e8eaf0;
+  /* And it is cream again, which reverses the note above rather than
+     ignoring it.
+
+     That note is right about what went wrong the first time: the old ramp
+     carried six points of blue over its red, and at that lightness a cast is
+     not a hue, it is a stain. The answer taken then was to remove the cast
+     entirely and set the room in neutral greys.
+
+     What that missed is what the room is *of*. There is a lamp on this page
+     now and the lit room is what the lamp does -- and a tungsten filament
+     does not throw neutral white, it throws about 2700K. A warm bulb over a
+     blue-grey page is two light sources in one room, and the eye reads the
+     page as the daylit one and the lamp as an ornament on it.
+
+     So the cast is back, and it is the other way: warm, and taken from the
+     same --warm-lit the bulb itself is filled with, so the light and what it
+     lands on cannot drift apart. The lesson from the first attempt is kept --
+     the spread across the channels is small and the card is still very nearly
+     white -- it is only pointed at red instead of at blue. */
+  --bg:        #f7f3ea;
+  --card-fill: #fffdf7;
+  --fill-rgb:  255, 253, 247;
+  --card-line: #ece5d8;
   --card-edge: 1px;
-  --card-line-lit: #d5d9e3;
-  --nav-line:  #ebedf2;
+  --card-line-lit: #dcd2c0;
+  --nav-line:  #eee8db;
 
   /* None. The bloom is the dark room's and does not survive the swap: see
      --nav-lit there. Selection is carried by weight and by the marker under
      the word, which is what carries it in a lit room anyway. */
   --nav-lit: none;
-  --rule:      #e5e8ef;
-  --slot: rgba(20, 24, 40, 0.055);
+  --rule:      #e9e1d4;
+  --slot: rgba(58, 45, 20, 0.06);
 
   --pill: #16161a;
   --pill-ink: #f4f4f7;
@@ -735,7 +761,7 @@
   --cast-b: 26px;
   --cast-a: 0.10;
 
-  --card-pane: rgba(255, 255, 255, 0.76);
+  --card-pane: rgba(255, 253, 247, 0.78);
 
   /* Paper under the lights, and no longer cream. See the same four in the
      dark room for why the warmth went.
@@ -944,18 +970,20 @@
        just enough to stop it being the same white as the cards standing on
        it and not enough to be a colour. Every line between them is a
        hairline rather than a border. */
-    --bg:        #f4f5f8;
-    --card-fill: #ffffff;
-    --fill-rgb:  255, 255, 255;
-    --card-line: #e8eaf0;
+    /* The lit room's figures, kept in step with the copy under
+       [data-theme="light"]. See the note there for why they are warm. */
+    --bg:        #f7f3ea;
+    --card-fill: #fffdf7;
+    --fill-rgb:  255, 253, 247;
+    --card-line: #ece5d8;
     --card-edge: 1px;
-    --card-line-lit: #d5d9e3;
-    --nav-line:  #ebedf2;
+    --card-line-lit: #dcd2c0;
+    --nav-line:  #eee8db;
 
     /* See --nav-lit under [data-theme="light"]. */
     --nav-lit: none;
-    --rule:      #e5e8ef;
-    --slot: rgba(20, 24, 40, 0.055);
+    --rule:      #e9e1d4;
+    --slot: rgba(58, 45, 20, 0.06);
 
     --pill: #16161a;
     --pill-ink: #f4f4f7;
@@ -971,7 +999,7 @@
     --cast-b: 26px;
     --cast-a: 0.10;
 
-    --card-pane: rgba(255, 255, 255, 0.76);
+    --card-pane: rgba(255, 253, 247, 0.78);
 
     /* See the same four under [data-theme="light"]. */
     --print:       #fcfcfe;
@@ -7695,12 +7723,10 @@ body {
   outline: 1px solid var(--card-line-lit);
 }
 
-/* One cell rather than two, now that what stands here is a switch and not a
-   choice between two rooms. It keeps the left edge the pair had, which is the
-   1541 rule, and gives up the half of its width the other room sat in. After
-   .room and not before it: both are one class deep, so the one written second
-   is the one that holds. */
-.room-one { width: 44px; grid-template-columns: 1fr; }
+/* Two cells again. It was cut to one when the room switch came out and the
+   hush was all that was left standing here; there are two things again -- the
+   sound, and the lamp -- so it goes back to the width and the pair of columns
+   it was drawn at. */
 
 /* And it is the lamp.
 
@@ -7740,29 +7766,40 @@ body {
    an svg -- not the document, which is the thing that would have cost. */
 @property --lamp { syntax: "<number>"; inherits: true; initial-value: 0; }
 
-/* The box fills with light. It does not cast any.
+/* The bulb fills with light. It does not cast any.
 
-   What stood here was three outward casts and a ring, which is the drawing
-   you make for something *lit by* a lamp standing off-screen. This is the
-   lamp. A bulb coming up does not throw a halo onto its own housing and
-   leave the housing dark in the middle -- the housing is the part that goes
-   white, and the light it throws lands on the page, which is the bloom's job
-   and is already happening.
+   The glow was on the housing and the housing holds the speaker, so the
+   thing lighting up was a volume control. There is a bulb next to it now and
+   the light belongs to that: it is the square that goes warm, the chain hangs
+   off it, and the flood across the page is thrown from it.
 
-   So: the fill runs from the card's own dark to a warm white, the outline
-   warms with it, and the only shadow is inset -- light pooling inside the
-   glass rather than a shape thrown outside it. Nothing leaves the box.
+   A bulb coming up does not throw a halo onto itself and stay dark in the
+   middle -- the envelope is the part that goes white, and the light it throws
+   lands on the page, which is the bloom's job and is already happening. So
+   the fill runs from the card's own dark to the warm, and the only shadow is
+   inset: light pooling inside the glass rather than a shape thrown outside
+   it. Nothing leaves the box.
 
-   Warm and not #fff. A filament is around 2700K and the whole of the light
-   on this page is mixed to that; a lamp that comes up neutral white next to
-   a bloom that is amber reads as two different lights. */
-.room {
+   --warm-lit and not #fff, and not a figure of its own either. A filament is
+   around 2700K, and the lit room and the bloom are both mixed to the same
+   token -- a bulb that comes up a different white from the room it is
+   lighting is two lights in one place. */
+/* Two classes and not one. .room-c is the button reset -- appearance: none,
+   background: none -- and it is written below this at the same one-class
+   weight, so a bare .room-lamp had its fill taken off by it and the bulb
+   stayed transparent at every value of --lamp. */
+.room-c.room-lamp {
   --lamp: 0;
   background-color: color-mix(in srgb,
-    var(--card-fill), #fff1d6 calc(var(--lamp) * 100%));
-  outline-color: color-mix(in srgb,
-    var(--card-line-lit), #ffe4ae calc(var(--lamp) * 100%));
-  box-shadow: inset 0 0 14px rgba(255, 241, 212, calc(var(--lamp) * 0.55));
+    var(--card-fill), var(--warm-lit) calc(var(--lamp) * 100%));
+  box-shadow: inset 0 0 13px rgba(255, 241, 212, calc(var(--lamp) * 0.60));
+}
+
+/* The envelope holds its line as the glass brightens, and the filament is
+   the one part that darkens -- which is the whole of why a lit bulb is still
+   legible as a bulb rather than a white square. */
+.room-lamp svg {
+  color: color-mix(in srgb, rgb(var(--w)), #3a2a06 calc(var(--lamp) * 100%));
 }
 
 /* The icon is handled where it is declared, further down -- see
@@ -7772,7 +7809,13 @@ body {
 
 /* The resting value, and it is only ever the resting value: the moment a
    hand is on the chain the inline figure paint() writes wins over both. */
-:root[data-theme="light"] .room { --lamp: 1; }
+/* On the bulb and not on the housing, and at three classes rather than two.
+   --lamp inherits, so setting it on .room looks like it should reach the bulb
+   inside it -- but the bulb sets its own resting 0, and a value set on an
+   element beats one inherited into it. Written on .room the lit room left the
+   lamp dark. It also has to outweigh .room-c.room-lamp, which is where that 0
+   is: :root[data-theme] plus the class is three, and that is two. */
+:root[data-theme="light"] .room-lamp { --lamp: 1; }
 
 /* Two rules apiece: the foot, and the outer side.
 
@@ -7881,9 +7924,7 @@ body {
   outline-color: var(--mat-edge);
 }
 .x-lab .back,  .x-piece .back,
-.x-lab .room-c[data-hush], .x-piece .room-c[data-hush] {
-  color: color-mix(in srgb, var(--mat-type), #2a1f08 calc(var(--lamp) * 100%));
-}
+.x-lab .room-c[data-hush], .x-piece .room-c[data-hush] { color: var(--mat-type); }
 @media (hover: hover) and (pointer: fine) {
   .x-lab .back:hover,  .x-piece .back:hover,
   .x-lab .room-c:hover, .x-piece .room-c:hover { color: var(--mat-label); }
@@ -7936,28 +7977,24 @@ body {
    itself does not move when the state changes -- only what is beside it.
    And the switch is lit while the sound is on, which is the reading the room
    switch gave: the state it is in, not the state it would take you to. */
-/* The icon has to survive the box going white under it: it is the one part
-   that darkens as everything else brightens, for the same reason the filament
-   is the one thing in a lit bulb you can still see. --lamp inherits from the
-   housing, which is the only reason this can read it. */
-.room-c[data-hush] {
-  color: color-mix(in srgb, rgb(var(--w)), #2a1f08 calc(var(--lamp) * 100%));
-}
+/* The hush is a hush again. It stopped being the lamp when the bulb arrived
+   next to it, so it goes back to the one colour it had before any of this. */
+.room-c[data-hush] { color: rgb(var(--w)); }
 
-/* And the 300ms on that colour comes off while the chain is live.
+/* And the 300ms on the bulb's colours comes off while the chain is live.
 
-   It is the right figure for what it was written for -- the hush state going
-   over, and the hover -- and it is exactly wrong for a value that is being
-   written sixty times a second by a finger. Left on, the icon eases toward
-   each frame's colour and never arrives at any of them: the box tracks the
-   hand and the icon inside it trails a third of a second behind, which is
-   the same lag this whole control has just had taken out of it.
+   It is the right figure for what it was written for -- a state going over,
+   and the hover -- and it is exactly wrong for a value that is being written
+   sixty times a second by a finger. Left on, the bulb eases toward each
+   frame's colour and never arrives at any of them: the chain tracks the hand
+   and the light inside it trails a third of a second behind, which is the
+   same lag this whole control has just had taken out of it.
 
    The class is on for exactly as long as the integrator is running -- see
    run() and the settle branch -- so the transition is back in time for the
    next hover, and the crossing itself never needs it: --lamp is continuous
    through the change by construction. */
-.room.is-pulling .room-c { transition: none; }
+.room-lamp.is-pulling, .room-lamp.is-pulling svg { transition: none; }
 .hush-off { display: none; }
 .is-hushed .hush-on { display: none; }
 .is-hushed .hush-off { display: block; }
@@ -15196,7 +15233,7 @@ a.arrow { text-decoration: none; }
          is the only thing on this site that reaches out of the screen -- so it
          gets the corner, at the size the room switch had, drawn by the same
          hand as every other icon here. -->
-    <div class="room room-one">
+    <div class="room">
       <button class="room-c" type="button" data-hush aria-pressed="false"
               aria-label="Turn interface sounds off">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
@@ -15204,6 +15241,30 @@ a.arrow { text-decoration: none; }
           <path d="M4 9.5h3.2L12 5.4v13.2L7.2 14.5H4z"/>
           <path class="hush-on" d="M15.8 9.4a3.7 3.7 0 0 1 0 5.2M18.4 6.8a7.4 7.4 0 0 1 0 10.4"/>
           <path class="hush-off" d="M16.2 10.2l4.4 3.6M20.6 10.2l-4.4 3.6"/>
+        </svg>
+      </button>
+
+      <!-- And the bulb, which is the lamp: the chain hangs off the foot of
+           this cell and the light floods out of it.
+
+           Square, and squarely so -- a mitred rect with no radius on it,
+           because every corner on this frame is cut square and a bulb drawn
+           round here would be the one curved object on the page. What makes
+           it a bulb is not the outline, it is the filament: a zigzag slung
+           between two leads, which is the part of a bulb you actually look at
+           and the part that tells you it is one.
+
+           A button and not a decoration. Pulling the chain is the way this is
+           meant to be used, but a lamp you can see and cannot press is a
+           frustration -- so pressing it pulls the chain, through the same
+           self-pull the ferrule's own click runs. -->
+      <button class="room-c room-lamp" type="button" data-lamp aria-pressed="false"
+              aria-label="Turn the lamp on">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+             stroke-linecap="round" aria-hidden="true">
+          <rect x="5.25" y="4.25" width="13.5" height="13.5" stroke-linejoin="miter"/>
+          <path d="M9.9 18v1.9M14.1 18v1.9"/>
+          <path d="M9.4 14.6v-3.9l1.3 2.1L12 9.6l1.3 3.2 1.3-2.1v3.9"/>
         </svg>
       </button>
     </div>
@@ -17703,9 +17764,12 @@ a.arrow { text-decoration: none; }
      * comes out of it. Held here rather than looked up twice because both
      * seat() and flood() want the same box. */
     var hush = document.querySelector('[data-hush]');
-    /* The housing rather than the button: the glow belongs to the box the
-     * chain hangs off, and the button inside it is the thing you press. */
-    var lampBox = hush && hush.closest('.room');
+    /* The bulb. It is the lamp in every sense the page uses the word: the
+     * chain hangs off it, the flood is thrown from it, and it is the box that
+     * fills with light. The hush beside it went back to being a hush the
+     * moment this arrived -- a speaker that lights up is a speaker pretending
+     * to be a lamp, which is what it was doing before there was a bulb. */
+    var lampBox = document.querySelector('[data-lamp]');
     var bar = document.querySelector('meta[name="theme-color"]');
     var KEY = 'room';
 
@@ -17727,6 +17791,11 @@ a.arrow { text-decoration: none; }
       // control with no visible label has to get right.
       bob.setAttribute('aria-pressed', String(lit));
       bob.setAttribute('aria-label', lit ? 'Turn the lamp off' : 'Turn the lamp on');
+      /* And the bulb says the same thing, because it does the same thing. */
+      if (lampBox) {
+        lampBox.setAttribute('aria-pressed', String(lit));
+        lampBox.setAttribute('aria-label', lit ? 'Turn the lamp off' : 'Turn the lamp on');
+      }
       // Read back rather than kept in a table here: the figure lives in the
       // token, and a copy of it in the script is a second place to change it.
       if (bar) {
@@ -17754,8 +17823,8 @@ a.arrow { text-decoration: none; }
      * the lamp outwards, and the lamp is the last thing to go.
      */
     function source(down) {
-      if (down && hush) {
-        var r = hush.getBoundingClientRect();
+      if (down && lampBox) {
+        var r = lampBox.getBoundingClientRect();
         if (r.width || r.height) {
           return { x: r.left + r.width / 2, y: r.bottom };
         }
@@ -17989,8 +18058,8 @@ a.arrow { text-decoration: none; }
     var LEAD = 4;
 
     function seat() {
-      if (!hush) { return; }
-      var r = hush.getBoundingClientRect();
+      if (!lampBox) { return; }
+      var r = lampBox.getBoundingClientRect();
       if (!r.width && !r.height) { return; }   /* not laid out yet */
       cord.style.right = 'auto';
       cord.style.left = (r.left + r.width / 2 - AX).toFixed(1) + 'px';
@@ -18102,7 +18171,20 @@ a.arrow { text-decoration: none; }
 
     function run() {
       if (live) { return; }
-      /* The housing stops easing and starts tracking. See .room.is-pulling. */
+      /* And the anchor is re-read before anything moves.
+       *
+       * seat() runs on load and on resize, and neither of those is the last
+       * moment the bulb moves: the stage is scaled to fit and that scale is
+       * settled by fonts arriving and by the arrival's own layout, both after
+       * the first seat and neither a resize. Measured, the chain was hanging
+       * a pixel and a half to the side of the bulb it comes out of.
+       *
+       * Here rather than in paint(), which would be a forced layout on every
+       * frame of every drag for a figure that changes when the window does.
+       * This is once per interaction, and an interaction is exactly when it
+       * has to be right. */
+      seat();
+      /* The bulb stops easing and starts tracking. See .room-lamp.is-pulling. */
       if (lampBox) { lampBox.classList.add('is-pulling'); }
       last = performance.now();
       live = requestAnimationFrame(function tick(now) {
@@ -18455,9 +18537,10 @@ a.arrow { text-decoration: none; }
      * Guarded on the drag's own travel, because a drag ends in a click too and
      * running both
      * would turn the lamp twice and leave it where it started. */
-    bob.addEventListener('click', function (e) {
-      e.preventDefault();
-      if (moved > 4) { moved = 0; return; }
+    /* The chain pulling itself, in one place, because there are two ways to
+     * ask for it now -- pressing the ferrule, and pressing the bulb -- and two
+     * copies of a pull are two pulls that can drift apart. */
+    function selfPull() {
       stop();
       ext = CATCH + 17; vExt = 31;
       ang = 0; vAng = 9;
@@ -18468,13 +18551,38 @@ a.arrow { text-decoration: none; }
       if (window.__sfx) { window.__sfx('chain'); }
       paint();
       run();
+    }
+
+    bob.addEventListener('click', function (e) {
+      e.preventDefault();
+      if (moved > 4) { moved = 0; return; }
+      selfPull();
     });
+
+    /* Pressing the lamp pulls its own chain. Not a shortcut past the chain --
+     * the chain runs, the detent goes over on the way home, and the room
+     * changes exactly where it does for a drag. A lamp with a switch that
+     * bypassed its own mechanism would be two switches. */
+    if (lampBox) {
+      lampBox.addEventListener('click', function (e) {
+        e.preventDefault();
+        selfPull();
+      });
+    }
 
     /* A window that changes size moves the ceiling and, at the breakpoint,
      * shortens the chain. Nothing is animating at that moment, so re-measuring
      * and re-drawing is the whole of it. */
     measure();
     addEventListener('resize', function () { measure(); if (!live) { paint(); } });
+    /* The two moments after this one at which the stage can still rescale,
+     * neither of which is a resize: a webfont swapping in, and the window's
+     * own load. Both move the bulb, and a chain seated against where the bulb
+     * used to be is a chain hanging beside its lamp. */
+    addEventListener('load', function () { seat(); if (!live) { paint(); } });
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(function () { seat(); if (!live) { paint(); } });
+    }
     paint();
 
     /* And once it is there, it asks to be noticed.
@@ -18504,13 +18612,46 @@ a.arrow { text-decoration: none; }
      * looked at the page. */
     (function () {
       if (calm.matches) { return; }
-      var late = document.documentElement.classList.contains('arriving');
-      setTimeout(function () {
+      var greeted = false;
+      function greet() {
+        if (greeted) { return; }
+        greeted = true;
         if (grab || live) { return; }   /* they got there first */
         vAng = 74;
         vExt = 5;
         run();
-      }, late ? 2620 : 520);
+      }
+
+      /* On the frame it appears, and not a beat after it.
+       *
+       * This was a setTimeout at 2620 -- the arrival's own figure for the
+       * chain, plus its fade, plus a little. Three numbers copied out of a
+       * stylesheet into a script, which is three chances to be wrong and one
+       * certainty: whatever it lands on, it lands *after* the chain is
+       * already hanging there still. That gap is the delay -- the chain
+       * arrives, stops, and then decides to move.
+       *
+       * animationstart is the frame the browser begins the chain's own fade,
+       * which is the exact moment being waited for and the only one that
+       * cannot drift from it: change --at in the stylesheet and this follows,
+       * because it is not a copy of --at, it is the event --at schedules. The
+       * swing and the fade then run together and the chain is already moving
+       * the first time it can be seen at all.
+       *
+       * Guarded on the target, because .cord's children animate too and an
+       * animationstart bubbles. */
+      if (document.documentElement.classList.contains('arriving')) {
+        cord.addEventListener('animationstart', function once(e) {
+          if (e.target !== cord) { return; }
+          cord.removeEventListener('animationstart', once);
+          greet();
+        });
+        /* And a floor under it: a browser that never fires the event, or an
+         * arrival already over by the time this runs, still gets its swing. */
+        setTimeout(greet, 2600);
+      } else {
+        greet();
+      }
     })();
 
     
