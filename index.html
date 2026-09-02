@@ -1426,9 +1426,31 @@ body {
    2  the knurl     a barrel with a milled grip, which is what is actually on
                     the end of most pull switches.
    3  the tag       a flat plate with a punched hole, hung from a link. The
-                    only one of the five that is a label rather than a weight.
+                    only one that is a label rather than a weight.
    4  the acorn     the ceiling-fan shape: a bell that swells and tucks in.
    5  the bar       a short cross bar. Nothing hangs; something is offered.
+   6  the tube      a plain machined cylinder, cut flat at both ends. The
+                    least drawn of them: a piece of stock, not a shape.
+   7  the plumb     an inverted cone that comes to a point. It hangs like a
+                    plumb bob, which is the one object whose whole purpose is
+                    to be exactly where gravity says.
+   8  the disc      a coin, edge lit. Flat to the screen where every other one
+                    is turned, so it reads as thin rather than as small.
+   9  the loop      a wire loop and no body at all. The lightest possible
+                    answer: somewhere to put a finger.
+  10  the ball      a sphere, which is what is on the end of a light pull in
+                    most rooms anybody has stood in.
+
+   And the chain itself takes ?chain=1..5, because what it hangs on is half
+   the object: a bead chain and a taut wire are not the same lamp. One rule
+   apiece -- the whole chain is a stroke with a dash pattern, so a variation
+   is a width, a pattern and a cap.
+
+   1  cable         one continuous hairline, taut. No beads at all.
+   2  links         long dashes butted flat: chain links rather than balls.
+   3  coarse        the same beads, larger and further apart.
+   4  cord          a braided pull -- thick, close-packed, barely broken.
+   5  thread        the thinnest it can be and still be grabbed.
    ---------------------------------------------------------------------- */
 
 /* 1 -- the drop */
@@ -1505,6 +1527,97 @@ body {
   background:
     linear-gradient(180deg, var(--steel-hi), var(--steel) 46%, var(--steel-lo));
   -webkit-mask-image: none; mask-image: none;
+}
+
+/* 6 -- the tube */
+.cord[data-tag="6"] .cord-bob::before {
+  left: 9px; top: 0; width: 4px; height: 8px;
+  background: var(--steel-lo);
+  clip-path: none;
+}
+.cord[data-tag="6"] .cord-bob::after {
+  left: 4px; top: 7px; width: 14px; height: 32px;
+  border-radius: 1.5px;
+  background:
+    linear-gradient(92deg, var(--steel-lo) 0%, var(--steel-hi) 34%,
+                            var(--steel) 62%, var(--steel-lo) 100%);
+  -webkit-mask-image: none; mask-image: none;
+}
+
+/* 7 -- the plumb */
+.cord[data-tag="7"] .cord-bob::before {
+  left: 8px; top: 0; width: 6px; height: 7px;
+  background: linear-gradient(100deg, var(--steel-lo), var(--steel-hi));
+  clip-path: none;
+}
+.cord[data-tag="7"] .cord-bob::after {
+  left: 2px; top: 6px; width: 18px; height: 34px;
+  border-radius: 9px 9px 0 0;
+  clip-path: polygon(0% 0%, 100% 0%, 54% 100%, 46% 100%);
+  background:
+    linear-gradient(96deg, var(--steel-lo), var(--steel-hi) 40%, var(--steel) 74%, var(--steel-lo));
+  -webkit-mask-image: none; mask-image: none;
+}
+
+/* 8 -- the disc */
+.cord[data-tag="8"] .cord-bob::before {
+  left: 9.5px; top: 0; width: 3px; height: 9px;
+  background: var(--steel);
+  clip-path: none;
+}
+.cord[data-tag="8"] .cord-bob::after {
+  left: 0; top: 8px; width: 22px; height: 22px;
+  border-radius: 50%;
+  background:
+    radial-gradient(58% 58% at 36% 30%, rgba(255,255,255,0.34), rgba(255,255,255,0) 68%),
+    linear-gradient(126deg, var(--steel-hi), var(--steel) 38%, var(--steel-lo) 82%);
+  -webkit-mask-image: none; mask-image: none;
+}
+
+/* 9 -- the loop */
+.cord[data-tag="9"] .cord-bob::before {
+  left: 10px; top: 0; width: 2px; height: 11px;
+  background: var(--steel);
+  clip-path: none;
+}
+.cord[data-tag="9"] .cord-bob::after {
+  left: 3px; top: 10px; width: 16px; height: 26px;
+  border-radius: 50%;
+  background: linear-gradient(140deg, var(--steel-hi), var(--steel) 44%, var(--steel-lo));
+  -webkit-mask-image: radial-gradient(ellipse 5.2px 10.4px at 50% 50%, transparent 0 98%, #000 100%);
+  mask-image: radial-gradient(ellipse 5.2px 10.4px at 50% 50%, transparent 0 98%, #000 100%);
+}
+
+/* 10 -- the ball */
+.cord[data-tag="10"] .cord-bob::before {
+  left: 9.5px; top: 0; width: 3px; height: 12px;
+  background: var(--steel-lo);
+  clip-path: none;
+}
+.cord[data-tag="10"] .cord-bob::after {
+  left: 2px; top: 11px; width: 18px; height: 18px;
+  border-radius: 50%;
+  background:
+    radial-gradient(52% 52% at 34% 30%, rgba(255,255,255,0.52), rgba(255,255,255,0) 64%),
+    linear-gradient(132deg, var(--steel-hi), var(--steel) 40%, var(--steel-lo));
+  -webkit-mask-image: none; mask-image: none;
+}
+
+/* --- and the chain it all hangs on -------------------------------------- */
+.cord[data-chain="1"] .cord-path {
+  stroke-width: 1.4px; stroke-dasharray: none; stroke-linecap: butt;
+}
+.cord[data-chain="2"] .cord-path {
+  stroke-width: 3.2px; stroke-dasharray: 5 2.6; stroke-linecap: butt;
+}
+.cord[data-chain="3"] .cord-path {
+  stroke-width: 6px; stroke-dasharray: 0.01 8.5; stroke-linecap: round;
+}
+.cord[data-chain="4"] .cord-path {
+  stroke-width: 5px; stroke-dasharray: 2.6 1.4; stroke-linecap: round;
+}
+.cord[data-chain="5"] .cord-path {
+  stroke-width: 1px; stroke-dasharray: none; stroke-linecap: butt;
 }
 
 /* Past the catch: the chain brightens and the steel lifts. The tell that
@@ -7622,14 +7735,41 @@ body {
    committed in the dark room is preview 1 and unlit, which is --lamp 1, and
    the instant the room becomes light it is preview 0 and lit, which is also
    --lamp 1. The number does not move; only what it means does. */
-@property --lamp { syntax: "<number>"; inherits: false; initial-value: 0; }
+/* inherits, because the icon inside has to know how lit the box under it is.
+   It is set on .room and nowhere above it, so what inherits is a button and
+   an svg -- not the document, which is the thing that would have cost. */
+@property --lamp { syntax: "<number>"; inherits: true; initial-value: 0; }
+
+/* The box fills with light. It does not cast any.
+
+   What stood here was three outward casts and a ring, which is the drawing
+   you make for something *lit by* a lamp standing off-screen. This is the
+   lamp. A bulb coming up does not throw a halo onto its own housing and
+   leave the housing dark in the middle -- the housing is the part that goes
+   white, and the light it throws lands on the page, which is the bloom's job
+   and is already happening.
+
+   So: the fill runs from the card's own dark to a warm white, the outline
+   warms with it, and the only shadow is inset -- light pooling inside the
+   glass rather than a shape thrown outside it. Nothing leaves the box.
+
+   Warm and not #fff. A filament is around 2700K and the whole of the light
+   on this page is mixed to that; a lamp that comes up neutral white next to
+   a bloom that is amber reads as two different lights. */
 .room {
   --lamp: 0;
-  box-shadow:
-    0 0 0 1px rgba(255, 236, 196, calc(var(--lamp) * 0.42)),
-    0 8px 34px -6px rgba(255, 232, 190, calc(var(--lamp) * 0.60)),
-    0 2px 12px -2px rgba(255, 228, 180, calc(var(--lamp) * 0.45));
+  background-color: color-mix(in srgb,
+    var(--card-fill), #fff1d6 calc(var(--lamp) * 100%));
+  outline-color: color-mix(in srgb,
+    var(--card-line-lit), #ffe4ae calc(var(--lamp) * 100%));
+  box-shadow: inset 0 0 14px rgba(255, 241, 212, calc(var(--lamp) * 0.55));
 }
+
+/* The icon is handled where it is declared, further down -- see
+   .room-c[data-hush]. Written here it lost the cascade to that rule: same
+   specificity, earlier in the sheet, so the box went white and the icon
+   stayed white on top of it. */
+
 /* The resting value, and it is only ever the resting value: the moment a
    hand is on the chain the inline figure paint() writes wins over both. */
 :root[data-theme="light"] .room { --lamp: 1; }
@@ -7741,7 +7881,9 @@ body {
   outline-color: var(--mat-edge);
 }
 .x-lab .back,  .x-piece .back,
-.x-lab .room-c[data-hush], .x-piece .room-c[data-hush] { color: var(--mat-type); }
+.x-lab .room-c[data-hush], .x-piece .room-c[data-hush] {
+  color: color-mix(in srgb, var(--mat-type), #2a1f08 calc(var(--lamp) * 100%));
+}
 @media (hover: hover) and (pointer: fine) {
   .x-lab .back:hover,  .x-piece .back:hover,
   .x-lab .room-c:hover, .x-piece .room-c:hover { color: var(--mat-label); }
@@ -7794,7 +7936,28 @@ body {
    itself does not move when the state changes -- only what is beside it.
    And the switch is lit while the sound is on, which is the reading the room
    switch gave: the state it is in, not the state it would take you to. */
-.room-c[data-hush] { color: rgb(var(--w)); }
+/* The icon has to survive the box going white under it: it is the one part
+   that darkens as everything else brightens, for the same reason the filament
+   is the one thing in a lit bulb you can still see. --lamp inherits from the
+   housing, which is the only reason this can read it. */
+.room-c[data-hush] {
+  color: color-mix(in srgb, rgb(var(--w)), #2a1f08 calc(var(--lamp) * 100%));
+}
+
+/* And the 300ms on that colour comes off while the chain is live.
+
+   It is the right figure for what it was written for -- the hush state going
+   over, and the hover -- and it is exactly wrong for a value that is being
+   written sixty times a second by a finger. Left on, the icon eases toward
+   each frame's colour and never arrives at any of them: the box tracks the
+   hand and the icon inside it trails a third of a second behind, which is
+   the same lag this whole control has just had taken out of it.
+
+   The class is on for exactly as long as the integrator is running -- see
+   run() and the settle branch -- so the transition is back in time for the
+   next hover, and the crossing itself never needs it: --lamp is continuous
+   through the change by construction. */
+.room.is-pulling .room-c { transition: none; }
 .hush-off { display: none; }
 .is-hushed .hush-on { display: none; }
 .is-hushed .hush-off { display: block; }
@@ -13377,6 +13540,7 @@ a.arrow { text-decoration: none; }
 .arriving .card,
 .arriving .nav,
 .arriving .room,
+.arriving .cord,
 .arriving .back {
   animation: arrive-card 500ms var(--ease) var(--at, 1180ms) both;
 }
@@ -13393,6 +13557,12 @@ a.arrow { text-decoration: none; }
    hidden and there is nothing to land; on a deep link there is. */
 .arriving .room,
 .arriving .back { --at: 1930ms; }
+/* And the chain last of all, a beat behind the switch it hangs from -- so it
+   reads as dropping from a lamp that is already there rather than as the two
+   of them fading up as one object. It used to be outside the arrival
+   entirely, which meant a chain hanging in a black window for the best part
+   of two seconds before there was anything for it to be attached to. */
+.arriving .cord { --at: 2010ms; }
 
 
 
@@ -17761,8 +17931,11 @@ a.arrow { text-decoration: none; }
      * and collar it was drawn with. See the note by .cord[data-tag] in the
      * stylesheet. */
     try {
-      var pick = new URLSearchParams(location.search).get('tag');
-      if (pick && /^[1-5]$/.test(pick)) { cord.setAttribute('data-tag', pick); }
+      var q = new URLSearchParams(location.search);
+      var pick = q.get('tag');
+      var link = q.get('chain');
+      if (pick && /^([1-9]|10)$/.test(pick)) { cord.setAttribute('data-tag', pick); }
+      if (link && /^[1-5]$/.test(link)) { cord.setAttribute('data-chain', link); }
     } catch (e) {}
 
     var rest = 134;
@@ -17906,6 +18079,8 @@ a.arrow { text-decoration: none; }
 
     function run() {
       if (live) { return; }
+      /* The housing stops easing and starts tracking. See .room.is-pulling. */
+      if (lampBox) { lampBox.classList.add('is-pulling'); }
       last = performance.now();
       live = requestAnimationFrame(function tick(now) {
         /* Capped, floored, and subdivided.
@@ -17999,6 +18174,7 @@ a.arrow { text-decoration: none; }
           ext = 0; vExt = 0; ang = 0; vAng = 0; bow = 0; vBow = 0;
           paint();
           cord.classList.remove('is-armed');
+          if (lampBox) { lampBox.classList.remove('is-pulling'); }
           /* A guard and not a path anybody takes: the loop cannot stop with a
            * pull still owed, because ext has to pass through the catch to
            * reach zero. If it ever does, the light still goes on. */
@@ -18277,6 +18453,42 @@ a.arrow { text-decoration: none; }
     measure();
     addEventListener('resize', function () { measure(); if (!live) { paint(); } });
     paint();
+
+    /* And once it is there, it asks to be noticed.
+     *
+     * A chain in the corner of a dark window is a thing a reader's eye skips,
+     * and the whole of this control is that you work out it can be pulled. So
+     * it swings, once, on the way in -- which is not a decoration, it is the
+     * one sentence the object can say about itself.
+     *
+     * An impulse into the swing and nothing else, through the same integrator
+     * every other movement on this chain goes through. There is no keyframe
+     * here and there could not be a good one: what a hanging chain does after
+     * it is knocked is a damped pendulum, the physics is already written, and
+     * a hand-drawn approximation of it standing next to the real one is how a
+     * thing starts to look animated rather than hung.
+     *
+     * 74 degrees a second, which at PEN_W of 7.2 is about ten degrees of
+     * swing -- twice the sleeve-brush on pointerenter and a long way under the
+     * 26 the drag clamps to. At PEN_Z of 0.11 that is four or five visible
+     * passes before it settles, which is a couple of swings by the time
+     * anybody has looked at it.
+     *
+     * After the arrival, not with it. The chain is still fading up until
+     * 2510ms -- see .arriving .cord -- and a swing underneath an opacity
+     * animation is a swing nobody sees. On a screen with no arrival to wait
+     * for, a short beat instead, so it is not moving before the reader has
+     * looked at the page. */
+    (function () {
+      if (calm.matches) { return; }
+      var late = document.documentElement.classList.contains('arriving');
+      setTimeout(function () {
+        if (grab || live) { return; }   /* they got there first */
+        vAng = 74;
+        vExt = 5;
+        run();
+      }, late ? 2620 : 520);
+    })();
 
     
     // when it changes under them at sunset. Once they have pressed, it is
