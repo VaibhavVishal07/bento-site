@@ -1709,7 +1709,16 @@ body {
   box-shadow: inset -1px 1px 0 var(--say-line);
   transform: rotate(45deg);
 }
-.cord.is-saying .cord-say {
+/* Scoped to the one that is speaking, and by attribute rather than by class.
+
+   Both bubbles carry .cord-say, because everything about how a bubble looks
+   is in that rule and neither of them wants a second copy of it. That makes
+   `.cord.is-saying .cord-say` match both, which would have shown them
+   stacked on the same corner the first time the chain was held. What tells
+   them apart is what they are for, and that is what the data attributes
+   already say. */
+.cord.is-saying  [data-cord-say],
+.cord.is-nudging [data-cord-nudge] {
   opacity: 1;
   transform: translate(0, 0) scale(1);
 }
@@ -7834,45 +7843,46 @@ body {
   --lamp-on:  var(--warm-lit);
   background-color: color-mix(in srgb,
     var(--lamp-off), var(--lamp-on) calc(var(--lamp) * 100%));
-  /* Two insets and they are doing different jobs.
-
-     The second is the shade full of light, and it is the one that runs with
-     --lamp from nothing to everything.
-
-     The first is the mouth of the shade, and it carries a tenth of itself
-     even at rest. A shade is open at the bottom and there is a bulb up
-     inside it, so the underside of one is never quite as dark as its sides
-     -- and that faint warm bar along the foot is what says, in the dark
-     room, that this square is a shade with something in it rather than a
-     panel. It is the only part of the object that is not switched off when
-     the lamp is. */
-  /* And the light sits low in it.
+  /* And the light sits low in it -- but only when there is light.
 
      A diffuser is not evenly bright. The lamp is down at the bottom of the
      box shining up through the frosting, so a cube like this is warmest just
-     above its base and palest at the top -- which is also the only cue that
-     tells you which way up the object is. Flat fill both ways and it is a
-     square swatch.
+     above its foot and palest at the top, which is also the only cue saying
+     which way up the object is: flat fill both ways and it is a swatch. The
+     gradient carries that falloff and the first inset is the pool at the
+     foot; the second is the shade full of light.
 
-     The gradient carries that, and the inset under it is the pool right at
-     the foot. The pool keeps a tenth of itself at rest, because a shade with
-     something in it is never quite as dark at the bottom as at the top, and
-     that faint bar is what says this square is a lamp while it is off. */
-  /* How much of that pool actually shows, which is not the same in the two
-     rooms. On black, a lamp is the brightest thing on the screen and the
-     pool is most of what makes it read as lit. On a lit page it is one more
-     box in a row of boxes, and a strong amber wash across its foot puts it
-     back to being the odd square out -- which is the thing the endpoints
-     above were changed to stop. So the light room keeps the shape of the
-     gradient and about two fifths of its strength: enough that the lamp is
-     still lit from below, not enough to be a different colour. */
+     None of it shows at rest, and that is the fix. The pool used to keep a
+     tenth of itself with the lamp off, on the argument that an unlit shade
+     still has a bulb in it and is never quite as dark along the bottom as at
+     the top. That was an argument about an object with a base under it --
+     the warm bar sat just above the wood and read as light spilling onto it.
+     With the base gone there is nothing for it to spill onto, and a tenth of
+     a warm inset on a plain dark square is a gradient nobody asked for along
+     the bottom edge. Which is exactly what it looked like.
+
+     At zero the box is now flat --card-fill inside a flat outline, which is
+     the hush's box and nothing else. The lamp is told apart from it by its
+     mark until the moment it is lit, which is the right moment for a lamp to
+     start looking different from a switch.
+
+     How much shows once there is light is not the same in the two rooms. On
+     black a lamp is the brightest thing on the screen and the pool is most of
+     what makes it read as lit; on a lit page it is one more box in a row of
+     boxes, and a strong amber wash across its foot puts it back to being the
+     odd square out. The light room keeps the shape and two fifths of the
+     strength.
+
+     0.62 and not 0.52, because 0.52 was the half of it that ran with --lamp
+     and the tenth that has just gone was the other half. The lit end is
+     unchanged; it is only the unlit end that moved. */
   --lamp-warmth: 1;
   background-image: linear-gradient(180deg,
     rgba(255, 231, 184, 0) 24%,
     rgba(255, 231, 184, calc(var(--lamp) * 0.30 * var(--lamp-warmth))) 100%);
   box-shadow:
     inset 0 -9px 11px -6px
-      rgba(255, 241, 212, calc((0.10 + var(--lamp) * 0.52) * var(--lamp-warmth))),
+      rgba(255, 241, 212, calc(var(--lamp) * 0.62 * var(--lamp-warmth))),
     inset 0 0 13px
       rgba(255, 241, 212, calc(var(--lamp) * 0.42 * var(--lamp-warmth)));
 }
@@ -15728,6 +15738,12 @@ a.arrow { text-decoration: none; }
       <button class="cord-bob" type="button" data-cord-bob
               aria-pressed="false" aria-label="Turn the lamp on"></button>
       <span class="cord-say" data-cord-say aria-hidden="true">Leave me pls</span>
+    <!-- And the other thing it says, which is the opposite thing. The first
+         bubble is for somebody holding on too long; this one is for somebody
+         who keeps coming near and never commits. Same bubble, same corner,
+         same hand -- see .cord-say -- because it is the same chain talking
+         and two speech bubbles drawn differently would be two voices. -->
+    <span class="cord-say" data-cord-nudge aria-hidden="true">Don't be shy, pull me</span>
     </div>
   </div>
 
@@ -18306,6 +18322,36 @@ a.arrow { text-decoration: none; }
     var bottomed = false;                /* run out against its stop, sounded */
     var detent = false;                  /* a pull that has not fired yet     */
     var say = cord.querySelector('[data-cord-say]'), sayAt = 0;
+
+    /* And the nudge, which is the other half of the same joke.
+     *
+     * `Leave me pls` is what the chain says to somebody who has taken hold of
+     * it and not let go. This is what it says to somebody who keeps drifting
+     * past it and never takes hold at all -- three approaches with no pull
+     * between them, which is a reader who has worked out the thing is
+     * interactive and not worked out that it is a chain.
+     *
+     * Once they have pulled it, ever, it stops. The whole point of the line is
+     * that they have not yet, and a page that keeps saying `don't be shy` to
+     * somebody who has already done the thing is not a joke, it is a nag. */
+    var nudge = cord.querySelector('[data-cord-nudge]');
+    var hovers = 0, nudgeTimer = 0, everPulled = false;
+
+    function nudged() {
+      hovers = 0;
+      if (!nudge || calm.matches || grab) { return; }
+      cord.classList.add('is-nudging');
+      clearTimeout(nudgeTimer);
+      /* Long enough to read twice and short enough not to become furniture. */
+      nudgeTimer = setTimeout(function () {
+        cord.classList.remove('is-nudging');
+      }, 2800);
+    }
+
+    function hushNudge() {
+      clearTimeout(nudgeTimer);
+      cord.classList.remove('is-nudging');
+    }
     var calm = matchMedia('(prefers-reduced-motion: reduce)');
 
     /* The resting length, read once and kept.
@@ -18648,6 +18694,7 @@ a.arrow { text-decoration: none; }
        * middle straightened by the catching. */
       vExt = 0; vAng = 0;
       cord.classList.remove('is-armed', 'is-saying');
+      hushNudge();          /* asking is over the moment they answer */
       sayAt = 0;
       if (bob.setPointerCapture) { bob.setPointerCapture(e.pointerId); }
       run();
@@ -18795,6 +18842,11 @@ a.arrow { text-decoration: none; }
      * until a gesture has built a context, and the hush switch takes it with
      * everything else. */
     function pulled() {
+      /* They have pulled it. It never asks again. */
+      everPulled = true;
+      hovers = 0;
+      hushNudge();
+
       var to = showing() === 'light' ? 'dark' : 'light';
       if (window.__sfx) { window.__sfx(to === 'light' ? 'lamp-on' : 'lamp-off'); }
 
@@ -18858,7 +18910,17 @@ a.arrow { text-decoration: none; }
     }, { passive: true, capture: true });
 
     bob.addEventListener('pointerenter', function (e) {
-      if (!e.isTrusted || grab || live || calm.matches) { return; }
+      if (!e.isTrusted) { return; }
+
+      /* Counted before the guard below and not after it. That guard is about
+       * whether the chain can be stirred -- it refuses while the thing is
+       * already moving -- and an approach made while it is still swinging
+       * from the last one is still an approach. Counting after it would only
+       * count the ones that arrived at a chain standing perfectly still,
+       * which is a different and much rarer event. */
+      if (!everPulled && ++hovers >= 3) { nudged(); }
+
+      if (grab || live || calm.matches) { return; }
       var r = bob.getBoundingClientRect();
       var way = e.movementX ||
                 (prevX === null ? 0 : e.clientX - prevX) ||
