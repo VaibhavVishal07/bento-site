@@ -488,9 +488,9 @@
        white against a bottle green in the lit one. */
     --lab-mount: #17453a;
   --lab-plate: #0f3229;
-  --mat-type:  rgba(244, 253, 248, 0.96);
-  --mat-label: rgba(226, 246, 236, 0.64);
-  --mat-body:  rgba(226, 246, 236, 0.74);
+    --mat-type:  rgba(var(--w), 0.96);
+    --mat-label: rgba(var(--w), 0.64);
+    --mat-body:  rgba(var(--w), 0.80);
   --lab-shadow: 0 18px 34px -16px rgba(0, 0, 0, 0.66),
                 0 3px 8px -3px rgba(0, 0, 0, 0.4);
 
@@ -822,46 +822,72 @@
      light. The photographs on it are white too, and what tells them from the
      table is the shadow under them, which is all that tells a photograph from
      a table in a lit room anyway. */
-  /* Green, and only just.
-     White was the wrong answer twice. A cutting mat is green -- that is a fact
-     about the object, and an object that is jade in one room and paper in the
-     other is two objects. But the dark room's jade on a lit page is a hole cut
-     in the screen, which is why it was white in the first place.
-     So it is the same mat bleached rather than replaced: a pale sage that is
-     unmistakably green against the page around it and light enough to read as
-     a surface under a window rather than a block on it. The ruling climbs with
-     it, in the green's own ink rather than in grey, so the grid belongs to the
-     mat instead of being drawn on top of one. */
-  /* A cutting mat, and the ruling on one is white.
-     This had it the wrong way round for two revisions: a pale green ground
-     with the grid drawn on it in dark ink, which is a sheet of graph paper.
-     Every self-healing mat ever made is a saturated green with the grid
-     printed on it in white -- the lines are lighter than the ground, not
-     darker -- and that is the whole of what makes it read as rubber rather
-     than as paper. So the ground goes to the green a mat actually is and the
-     grid turns over with it.
-     Which also makes the two rooms one object at last: the mat was already a
-     light grid on a dark green in the dark room, and this is the same
-     arrangement with the lamp on. */
-  --mat: #17876a;
-  --mat-fine: rgba(255, 255, 255, 0.30);
-  --mat-diag: rgba(255, 255, 255, 0.28);
-  --mat-ink:  rgba(240, 253, 247, 0.50);
-  --mat-cut:  rgba(240, 253, 247, 0.34);
-  --mat-edge: rgba(255, 255, 255, 0.22);
-        --lab-mount: #17453a;
-      --lab-plate: #0f3229;
-    --mat-type:  rgba(244, 253, 248, 0.96);
-    --mat-label: rgba(226, 246, 236, 0.64);
-    --mat-body:  rgba(226, 246, 236, 0.74);
-    --lab-shadow: 0 16px 30px -14px rgba(22, 58, 47, 0.34),
-                0 2px 6px -2px rgba(22, 58, 47, 0.20);
-  /* Light on the mat in both rooms now, because the mat is dark in both. */
-  --mat-type:  rgba(244, 253, 248, 0.96);
-  --mat-label: rgba(226, 246, 236, 0.64);
-  --mat-body:  rgba(226, 246, 236, 0.74);
-  --lab-shadow: 0 16px 30px -14px rgba(22, 58, 47, 0.34),
-                  0 2px 6px -2px rgba(22, 58, 47, 0.20);
+  /* Not a mat in the lit room.
+
+     Three goes at this are stacked above and all three are the same mistake.
+     White, then a pale sage, then the saturated green a real cutting mat is
+     with the ruling turned over to white so it reads as rubber rather than as
+     graph paper -- each a better mat than the last, and every one of them a
+     green slab standing in a row of cream boxes. In the dark room that works:
+     jade on near-black is a surface. On a lit page it is the one card made of
+     a different material, and it stops reading as a surface and starts
+     reading as a hole with a pattern in it.
+
+     So the lit room does not have a mat. It has a card, in the card's own
+     colour, with the ruling still on it -- and the ruling was always the part
+     that meant anything. The grid is what says this is where things get made;
+     the green was only ever what the grid was printed on. The dark room keeps
+     its jade, because there the object is right.
+
+     --card-fill and --card-line rather than two new figures, so this is not a
+     card mixed to match the others, it is the others' own values.
+
+     The ruling is a low alpha of --shade and not white, and that is worth
+     naming because white is what the note above argues for. On jade a white
+     line is lighter than its ground and reads as printing. On #fdf8ec there
+     is nowhere lighter to go: white over it is about two per cent of
+     luminance, which is not a faint line, it is no line. So the grid is the
+     frame's own hairline language instead -- a warm dark at a tenth, which on
+     this ground draws the pale line the mat wants and the rest of the page
+     already uses everywhere else. */
+  --mat: var(--card-fill);
+  --mat-fine: rgba(var(--shade), 0.10);
+  --mat-diag: rgba(var(--shade), 0.09);
+  --mat-ink:  rgba(var(--shade), 0.45);
+  --mat-cut:  rgba(var(--shade), 0.20);
+  --mat-edge: var(--card-line);
+  /* Paper prints on a paper table.
+
+     These were emerald in both rooms, because both rooms had a green mat under
+     them. The lit room's mat is the card's own cream now, and a dark green
+     mount on it is the one thing left over from the surface that went -- it
+     read as a stack of dark rectangles on a sheet of graph paper rather than
+     as photographs lying on a table.
+
+     So the lit room's prints are paper, which is what a photograph is, and
+     what tells them from the table is the shadow under them -- which is all
+     that tells a photograph from a table in a lit room anyway. The same
+     figures the room already gives every other print (see --print above), so
+     the Playground's photographs and the ones pinned up on About are made of
+     one material again.
+
+     The cast turns with them: a green-tinted shadow was right under a green
+     mount on green rubber and is a stain under paper on cream. */
+  --lab-mount: var(--print);
+  --lab-plate: var(--print-shot);
+  --lab-shadow: 0 16px 30px -14px rgba(56, 46, 26, 0.26),
+                0 2px 6px -2px rgba(56, 46, 26, 0.16);
+
+  /* And the type on it is the room's own, because the mat is the room's own
+     card now. These were near-white in both rooms while the mat was dark in
+     both; a cream mat under near-white type is exactly the bug the note in
+     the prefers-color-scheme block below sets out at length, arrived at from
+     the other direction. Same alphas the room gives everything else -- see
+     --body and --label above -- so the Playground tile is typeset like every
+     other card rather than like a thing on a mat. */
+  --mat-type:  rgba(var(--w), 0.96);
+  --mat-label: rgba(var(--w), 0.64);
+  --mat-body:  rgba(var(--w), 0.80);
 
   --st-live: #14603b;
   --st-used: #10527e;
@@ -1034,14 +1060,17 @@
        whose machine is set to light and who has never touched the switch was
        getting a white mat while the reader who pressed the switch got the sage
        one, which is two lit rooms. */
-    --mat: #9db3a2;
-    --mat-fine: rgba(20, 48, 38, 0.16);
-    --mat-diag: rgba(20, 48, 38, 0.17);
-    --mat-ink:  rgba(16, 42, 33, 0.52);
-    --mat-cut:  rgba(16, 42, 33, 0.30);
-    --mat-edge: rgba(16, 42, 33, 0.28);
-    --lab-mount: #17453a;
-        --lab-plate: #0f3229;
+    --mat: var(--card-fill);
+    --mat-fine: rgba(var(--shade), 0.10);
+    --mat-diag: rgba(var(--shade), 0.09);
+    --mat-ink:  rgba(var(--shade), 0.45);
+    --mat-cut:  rgba(var(--shade), 0.20);
+    --mat-edge: var(--card-line);
+    /* Paper here too -- see the note under [data-theme="light"]. A value that
+       exists in one of the two light rooms and not the other is the bug the
+       note below this one already describes once. */
+    --lab-mount: var(--print);
+    --lab-plate: var(--print-shot);
 
     /* The mat's ink, which was written for the room it is pressed into and
        not for the room it is found in.
@@ -1056,11 +1085,11 @@
 
        A value that exists in one of the two light rooms and not the other is
        the whole of this bug, so they are stated in both. */
-    --mat-type:  rgba(244, 253, 248, 0.96);
-    --mat-label: rgba(226, 246, 236, 0.64);
-    --mat-body:  rgba(226, 246, 236, 0.74);
-    --lab-shadow: 0 16px 30px -14px rgba(22, 58, 47, 0.34),
-                  0 2px 6px -2px rgba(22, 58, 47, 0.20);
+    --mat-type:  rgba(var(--w), 0.96);
+    --mat-label: rgba(var(--w), 0.64);
+    --mat-body:  rgba(var(--w), 0.80);
+    --lab-shadow: 0 16px 30px -14px rgba(56, 46, 26, 0.26),
+                  0 2px 6px -2px rgba(56, 46, 26, 0.16);
     --bar-tape: #e9efec;
 
     --st-live: #14603b;
@@ -1341,6 +1370,55 @@ body {
   width: 26px; height: 432px;
   z-index: 30;
   pointer-events: none;
+  /* And how big all of that is, as one number. See the note below. */
+  transform: scale(var(--cord-scale, 1));
+  transform-origin: 13px 0;
+}
+
+/* One step smaller on a laptop's window.
+
+   The figures above are the ones this object wants and they were picked on a
+   sixteen-inch screen. Below that the window loses a couple of hundred pixels
+   each way and the chain loses none of them: it hangs the same hundred and
+   thirty-four down a shorter page, beside smaller cards, and stops reading as
+   a fitting of this room and starts reading as hardware off a larger one.
+
+   A scale and not a second set of figures, for the reason the first note
+   gives: the drop, the beads, the ferrule, the ring, the travel and the catch
+   are one object, and a transform on the box is the only thing that takes the
+   same fraction off every one of them at once. The script's lengths come with
+   it for free -- CATCH, TRAVEL, SWING and the bow are integrated in this box's
+   own coordinates and drawn through this box's transform, so they are already
+   in whatever unit the box is currently in, and there is no figure in the
+   script that has to be kept in step with this one.
+
+   The origin is the hang point -- AX across, nothing down -- because that is
+   where the chain leaves the housing and seat() has already put that point on
+   the foot of the switch. About any other origin the anchor slides off the
+   lamp.
+
+   Not a contradiction of the note above, which stands: this is still not the
+   frame's scale, and there is no third size. It is a lamp at either of two
+   window sizes rather than a lamp continuously resized by the desk.
+
+   0.86 and not 0.83. A fifth off would be exactly the object as it was before
+   the fifth went on, and the note above says what was wrong with it: at that
+   size the hardware stopped reading as something you could take hold of. This
+   is most of the way back and short of the size that was rejected -- 115 of
+   drop against 134.
+
+   The floor is the hit area rather than the drawing. What hangs here by
+   default is data-tag="6" -- see the markup -- which is a 14x32 sleeve and
+   not the ring the base rule cuts, so the ring's own figures are not what is
+   being scaled on this page. .cord-bob is 22x40 whatever the tag, and that is
+   the number with a floor under it: 0.86 leaves 19x34 of grab, which is still
+   a target a mouse finds. Much under this and it is the button that fails
+   first, silently, while the drawing still looks fine.
+
+   1512 is the widest laptop this is about -- a fourteen-inch, and a thirteen
+   at 1470 is inside it. A sixteen reports 1728 and keeps the figures above. */
+@media (max-width: 1512px) {
+  .cord { --cord-scale: 0.86; }
 }
 
 /* The chain, and it is a chain now.
@@ -4181,14 +4259,158 @@ body {
    1122 and is 399 to 1521 to the pixel. The gutters land at 663, 949 and
    1235. The last of those is the only one the frame already rules, and the
    middle pair gives way across this band rather than being drawn twice. */
-.w-one   { left: 399px;  top: 596px; width: 264px; height: 335px;
+/* One wide box and two beside it, 596 to the foot of the frame.
+
+   The band is the same 399 to 1521 it was, and two of its three gutters are
+   the two the row of four already ruled: 949/971 and 1235/1257. What went is
+   the pair at 663/685, because the first box now runs through where it was.
+
+   550 and not 528, which would have been two of the old columns and their
+   gutter. 550 is 399 to 949, and 949 is a line the frame draws -- so the wide
+   box ends on a rule rather than on the sum of two boxes that are no longer
+   there. It is a little over twice the 264 either of the others gets, which
+   is the point: this is the row's lead, and a row of equals was a row saying
+   these are three of the same thing.
+
+   The two on the right keep 264 to the pixel. Every figure inside those cards
+   -- the 202 window, the 56 under it, the one line each that must not wrap --
+   was written for a 264 column, and none of it is asked to move. */
+.w-one   { left: 399px;  top: 596px; width: 550px; height: 335px;
            --gx: 100%; --gy: 0%; --gw: 130%; --gh: 165%; --gs: 0.05; }
-.w-two   { left: 685px;  top: 596px; width: 264px; height: 335px;
-           --gx: 68%; --gy: 0%;  --gw: 110%; --gh: 165%; --gs: 0.05; }
-.w-three { left: 971px;  top: 596px; width: 264px; height: 335px;
+.w-two   { left: 971px;  top: 596px; width: 264px; height: 335px;
            --gx: 40%; --gy: 0%;  --gw: 125%; --gh: 165%; --gs: 0.05; }
-.w-four  { left: 1257px; top: 596px; width: 264px; height: 335px;
+.w-three { left: 1257px; top: 596px; width: 264px; height: 335px;
            --gx: 20%; --gy: 0%;  --gw: 125%; --gh: 165%; --gs: 0.05; }
+
+/* --- and the wide one's own inside ----------------------------------------
+
+   The other two are a window with a name under it, which is what a 264 column
+   can hold. This one is half again as wide as it is tall and that shape wants
+   the opposite: the picture standing on one side and the words on the other,
+   reading across rather than down.
+
+   The picture goes right. Left would put it where the eye lands first and
+   leave the name to be found past it; on a row that reads left to right the
+   name is what should be met first and the picture is what it opens onto.
+   It also puts the picture against the 949 gutter, so the wide box and the
+   two cards beside it are a run of three windows with the text tucked in at
+   the near end rather than a picture in the middle of the row.
+
+   The whole card, edge to edge, and no margin at all.
+
+   The other two are a window in a card: 12 of margin, and the card's own
+   surface showing round it. This one is not a card with a picture on it, it
+   is the picture -- so the 12 goes and the four edges are the box's own.
+   .card is overflow: hidden with its outline drawn outside itself, so the
+   image is clipped to the box and the box keeps the edge every other card on
+   the frame has.
+
+   Which also settles the crop this rule used to argue with. A 550 by 335 hole
+   is 1.64 and the picture is 632 by 498, or 1.27: it is cropped top and bottom
+   now rather than left and right, and a picture of a screen loses far less
+   that way. A 16:9 video is 1.78 against 1.64, which is very nearly a fit --
+   so the panel that was the wrong shape for a video is now the right one, and
+   16:9 is the shape to hand it. */
+.w-one .w-shot {
+  left: 0; right: 0; top: 0; bottom: 0;
+  height: auto;
+}
+
+/* And what the picture is, said only while somebody is looking at it.
+
+   A card that is entirely a photograph has nowhere to put a name that is not
+   on top of the photograph, and a name that sits there permanently is a
+   caption burnt into the picture. So it is not there until the pointer is,
+   and what arrives is the name and nothing else.
+
+   Behind hover-and-fine, and that is the whole of the accessibility of it.
+   Where there is no pointer to hover there is no state to enter, so the name
+   must simply be there -- a touch screen that hid it would have a card with no
+   name on it at all. This block never runs on such a device.
+
+   focus-within alongside hover, because .card-hit is a link inside this box
+   and somebody tabbing to it is looking at this card exactly as much as
+   somebody pointing at it. */
+@media (hover: hover) and (pointer: fine) {
+  .w-one .w-said,
+  .w-one .w-shot::after {
+    opacity: 0;
+    transition: opacity 220ms var(--ease);
+  }
+  .w-one:hover .w-said,
+  .w-one:focus-within .w-said,
+  .w-one:hover .w-shot::after,
+  .w-one:focus-within .w-shot::after { opacity: 1; }
+}
+
+/* The ground the name stands on.
+
+   White type on an unknown photograph is a legibility accident waiting for the
+   day somebody puts a pale screenshot in here, so the name brings its own
+   floor: a wash up from the bottom edge, strongest where the type is and gone
+   by the middle of the card. It fades in with the name rather than sitting
+   there, because a card that darkens at one end whether or not anybody is near
+   it is a card with a shadow on it.
+
+   On .w-shot rather than on the card, so it is clipped to the picture and
+   cannot outlive it. */
+.w-one .w-shot::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top,
+    rgba(0, 0, 0, 0.78) 0%, rgba(0, 0, 0, 0.42) 34%, rgba(0, 0, 0, 0) 62%);
+  pointer-events: none;
+}
+
+/* The name, in the bottom left of the picture.
+
+   Bottom because that is where the wash is and where a caption belongs; left
+   because the row reads left to right and this is its first card. 28 off two
+   edges rather than the row's 20 and 38: those figures were measured against a
+   window above and a card edge below, and neither of them is here.
+
+   z-index so it clears the wash, which is a pseudo-element of a box written
+   before this one -- without it the two are painted in the order they appear
+   and the name would be under its own floor. */
+.w-one .w-said {
+  left: 28px;
+  right: 28px;
+  top: auto;
+  bottom: 26px;
+  width: auto;
+  text-align: left;
+  z-index: 1;
+}
+
+/* And the one word on this page that is not written in the room's ink.
+
+   --w is the ink token and it inverts with the room: white in the dark one,
+   32,27,18 in the lit one. Every other line on the site wants that, and this
+   one must not have it -- the name here stands on a photograph under a black
+   wash, and in the lit room it came out near-black on near-black and simply
+   was not there. Caught on a screenshot, not by reading the rule.
+
+   --lift is the token for exactly this and the note at the top of the file
+   says why it exists: it is light rather than ink, so it is white in both
+   rooms. A wash that is black in both rooms wants type that is white in both
+   rooms, and that is the pair.
+
+   .card as well as .w-one, and it is there to win a tie rather than to say
+   anything. `.card:hover .headline` sets the ink colour further down the file
+   and a pseudo-class counts as a class, so that selector and a three-class one
+   here weigh the same (0,3,0) -- and on a tie the later rule takes it, which
+   is the hover rule, which is the ink. The extra class is the whole of the
+   fix. Written first as three classes and it lost, silently and only in the
+   lit room, which is the way a specificity tie always goes wrong. */
+.card.w-one .w-said .headline { color: rgba(var(--lift), 0.96); }
+
+/* Only the name. The sentence was shown here while this card had a column of
+   its own to put it in; the card is a photograph now, and what appears over a
+   photograph should be the one thing somebody needs to know what they are
+   looking at. The sentence is on the case study, one press away. */
+.w-one .w-said .sub,
+.w-one .w-said .w-kind { display: none; }
 
 /* --- the playground, as a lead tile ---------------------------------------
 
@@ -4669,8 +4891,11 @@ body {
    38 off the foot holds whatever it is, and what gives is the gap to the
    folder -- 35 under a one-line name, 12 under a two-line one, which is the
    right way round: the tighter card is the fuller one. */
-.w-one .w-said, .w-two .w-said,
-.w-three .w-said, .w-four .w-said {
+/* The two square-window cards. .w-one is not among them any more -- it is a
+   wide box with the picture beside the words rather than over them, and it
+   sets its own four edges above. */
+.w-two .w-said,
+.w-three .w-said {
   left: 20px;
   right: 20px;
   top: auto;
@@ -4680,28 +4905,18 @@ body {
 }
 
 /* One line each, and an ellipsis where the rest was.
+
+ * A window and a name is what a 264 card holds, and the name is all that is
+ * under the window now: the team and the year that used to sit beneath it are
+ * not written any more -- see workProjects. What it was for and when is on the
+ * case study, which is one press away, and a row of cards repeating the same
+ * employer under each name was a row agreeing with itself.
  *
- * A square window leaves 56 pixels under it and a name and a line is exactly
- * that: 23, 13 of margin, 20. Anything that wraps runs off the bottom of the
- * card, so nothing is allowed to wrap -- which is a real cost and worth
- * naming. "Family safety, without the surveillance" is cut on this screen.
- * The whole of it is on the case study one press away, and on a phone, where
- * the card is the only thing in view and has all the room it wants. */
-/* The name wraps again, because what is under it now is one short line
-   rather than a sentence: 24 above the window, 216 of window, 16 of air,
-   two lines of name at 23, eight, and seventeen is 327 of a 335 card. The
-   line itself is held to one -- a team and a year that wrapped would be a
-   caption pretending to be copy. */
-.w-said .w-by {
-  margin: 8px 0 0;
-  font-family: var(--f-label);
-  font-size: var(--t-meta);
-  line-height: var(--lh-meta);
-  color: var(--icon);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
+ * Anything that wraps runs off the bottom of the card, so nothing is allowed
+ * to wrap -- which is a real cost and worth naming. "Family safety, without
+ * the surveillance" was cut on this screen. The whole of it is on the case
+ * study, and on a phone, where the card is the only thing in view and has all
+ * the room it wants. */
 /* The sentence is the phone's. On the frame the square took its room and
    the line above is what a card of this size can carry. */
 .w-said .sub { display: none; }
@@ -4775,18 +4990,26 @@ body {
    Twelve of margin and not the twenty-four a slot on this frame is usually
    given. That figure was drawn for a window into a card with type either side
    of it; this is the card's whole subject, and a frame round the subject is
-   the frame asking to be looked at. 240 by 202 in a 264 by 335 box, which
-   leaves the name and its line the foot -- see .w-said, set off the bottom
-   edge rather than the top.
+   the frame asking to be looked at. 240 by 227 in a 264 by 335 box, which
+   leaves the name the foot -- see .w-said, set off the bottom edge rather
+   than the top.
+
+   227 and not the 202 it was, and the 25 is not a figure anybody chose: it is
+   exactly what the team-and-year line under the name gave back when it went.
+   Measured, that line was 17 tall on an 8 margin. Handing all of it to the
+   window leaves every other figure on this card where it was -- 12 of margin,
+   38 off the foot, and the same 35 of air between the window and the name --
+   so the card did not get a new proportion, it got a bigger picture in the
+   one it already had.
 
    A blank one is still drawn. An empty frame on this site is a crossed box
    and not an absence: the portrait on About and the ten prints on the table
-   say the same thing the same way, and three of these four are waiting for a
+   say the same thing the same way, and two of these three are waiting for a
    photograph rather than refusing one. */
 .w-shot {
   position: absolute;
   left: 12px; right: 12px; top: 12px;
-  height: 202px;
+  height: 227px;
   background-color: var(--slot);
   background-size: cover;
   background-position: center;
@@ -11551,6 +11774,60 @@ a.arrow { text-decoration: none; }
   --print-rule:  rgba(232, 249, 240, 0.17);
 }
 
+
+/* And paper where the lamp is on.
+
+   The note above is written for one room and says so: it forces the dark room
+   on these screens, hides the switch, and paints the prints emerald so they
+   sit in the same world as a green mat. Two of those three are no longer true.
+   The router does not force the room any more -- measured: walk in with the
+   lamp on and the room stays lit -- and the mat in the lit room is the card's
+   own cream. What is left is emerald mounts on cream, which is the one
+   combination none of the reasoning above ever argued for.
+
+   So the table follows the room after all. In the lit room the prints are the
+   room's own paper, the same figures About's prints use, and the emerald above
+   is left to the dark room it was written for.
+
+   --print-ink and --print-rule are given values here because they are not
+   given any anywhere else: they exist only in the block above, so a lit table
+   without them is a piece page with no body text colour and no rules on it. */
+:root.x-table[data-theme="light"] {
+  --print:       #fdfaf1;
+  --print-shot:  #e9e1cf;
+  --print-mark:  rgba(56, 46, 26, 0.15);
+  --print-faint: rgba(56, 46, 26, 0.50);
+  --print-name:  rgba(24, 28, 38, 0.82);
+  --print-ink:   rgba(var(--w), 0.82);
+  --print-rule:  rgba(var(--w), 0.17);
+}
+@media (prefers-color-scheme: light) {
+  :root.x-table:not([data-theme]) {
+    --print:       #fcfcfe;
+    --print-shot:  #e4e6ec;
+    --print-mark:  rgba(38, 42, 54, 0.14);
+    --print-faint: rgba(38, 42, 54, 0.48);
+    --print-name:  rgba(24, 28, 38, 0.82);
+    --print-ink:   rgba(var(--w), 0.82);
+    --print-rule:  rgba(var(--w), 0.17);
+  }
+}
+
+/* The two controls the table does not have.
+
+   The note above says the switch is hidden on these screens. It is not, and
+   has not been for a while: walk into the Playground and the lamp and the
+   sound button are both still up in the corner. Said here, where the room is
+   already scoped, so it goes for the table and for a piece lying on it.
+
+   The lamp goes with its chain -- a cord hanging from a switch that is not
+   drawn is a chain hanging off the top of the window. seat() reads the lamp's
+   own rect and gives up when it has no size, so the script needs nothing said
+   to it; it simply stops having anywhere to hang from. */
+:root.x-table .room,
+:root.x-table .room-lamp,
+:root.x-table .cord { display: none; }
+
 /* A pair rules only where its boxes are.
 
    The lattice is one set of lines and five screens stand on it, so a pair that
@@ -12766,11 +13043,9 @@ a.arrow { text-decoration: none; }
      in a 335-pixel card -- does not exist down here, where the card is as tall
      as its contents. */
   /* The card is as tall as its contents down here, so it carries the
-     sentence -- and the team and the year go, because the case study is one
-     tap away and a card with a name, a line and two figures on it is
-     already saying enough. */
+     sentence the frame has no room for. The team and the year used to be
+     turned off here too; they are not written at all now. */
   .w-said .sub { display: block; }
-  .w-said .w-by { display: none; }
 
   .card > .arrow { display: none; }
   .label { display: block; margin-bottom: 18px; }
@@ -13014,7 +13289,6 @@ a.arrow { text-decoration: none; }
   .w-one   { order: 2; }
   .w-two   { order: 3; }
   .w-three { order: 4; }
-  .w-four  { order: 5; }
   .w-index { order: 6; }
 
   .c-hero     { order: 1; }
@@ -13645,6 +13919,40 @@ a.arrow { text-decoration: none; }
     height: 190px;
     margin: 0 0 16px;
   }
+  /* And the lead card's window is a window again down here.
+   *
+   * On the frame that one is a full-height panel down the right of a wide box,
+   * which it gets by giving up its height to a top and a bottom -- and
+   * `.w-one .w-shot` outweighs the bare `.w-shot` above whatever room it is
+   * read in. Left alone it followed the card down here, where the box is a
+   * column and there is no height for a top and a bottom to make: the picture
+   * came out 348 wide and nothing tall, which is to say it was gone. Measured
+   * at 430.
+   *
+   * Said here rather than fixed by scoping the frame's rule into a min-width,
+   * because that is not how this stylesheet is built: the frame is the base
+   * and the phone is what overrides it, and a rule that has to be undone down
+   * here is undone down here with the rest of them. */
+  .w-one .w-shot { height: 190px; }
+
+  /* And the lead card's name is simply there.
+   *
+   * On the frame that card is a photograph with its name written over it, so
+   * the name waits for a pointer. Down here the card is a column -- picture,
+   * then name under it -- and there is nothing for the name to be written
+   * over: hiding it until hover would leave a card with no title, and on the
+   * devices this layout is actually for there is no hover to end that with.
+   *
+   * Said unconditionally rather than by narrowing the hover query, because
+   * this has to beat it on a machine that reports a fine pointer AND lands in
+   * this layout -- a window dragged narrow on a laptop, which is the case that
+   * would otherwise show a titleless card to somebody who could hover but has
+   * no photograph under their cursor to hover over.
+   *
+   * The wash goes with it: it exists to carry type over a picture, and the
+   * type is not over the picture here. */
+  .w-one .w-said { opacity: 1; }
+  .w-one .w-shot::after { display: none; }
   .w-shot.is-blank { height: 128px; }
   .w-seat { display: none; }
   /* And the type goes back to the left. Centring is the frame's answer to a
@@ -13652,7 +13960,7 @@ a.arrow { text-decoration: none; }
      paragraphs with a picture at the top of it, and a centred paragraph is a
      centred paragraph. */
   .w-one .w-said, .w-two .w-said,
-  .w-three .w-said, .w-four .w-said { text-align: left; }
+  .w-three .w-said { text-align: left; }
   /* What it is, over the name of it: the smallest line on the card and the
      first one read, which is the job an eyebrow does. */
   .w-kind {
@@ -14400,10 +14708,13 @@ a.arrow { text-decoration: none; }
     <div class="rules rules-under" aria-hidden="true">
       <i class="v" data-on="home about case" style="--lx:762px;--l-at:0.3969"></i>
       <i class="v" data-on="home about case" style="--lx:785px;--l-at:0.4089"></i>
-      <!-- The three gutters the row of four adds, under the cards: covered
-           everywhere but between the boxes. See .w-one. -->
-      <i class="v" data-on="work" style="--lx:663px;--l-at:0.3453"></i>
-      <i class="v" data-on="work" style="--lx:685px;--l-at:0.3568"></i>
+      <!-- The two gutters the work row adds, under the cards: covered
+           everywhere but between the boxes. See .w-one.
+
+           There were three. The pair at 663/685 was the gutter between the
+           first two of four, and the wide box runs straight through it now --
+           a hairline under a card is a hairline nobody sees, and one left
+           there would show at the box's foot where the card stops. -->
       <i class="v" data-on="work" style="--lx:949px;--l-at:0.4943"></i>
       <i class="v" data-on="work" style="--lx:971px;--l-at:0.5057"></i>
       <i class="v" data-on="work" style="--lx:1235px;--l-at:0.6432"></i>
@@ -14466,9 +14777,8 @@ a.arrow { text-decoration: none; }
         <span class="repo-thumbs" aria-hidden="true">
           <i class="repo-thumb is-blank"></i>
           <i class="repo-thumb is-blank"></i>
-          <i class="repo-thumb is-blank"></i>
         </span>
-        <span class="repo-more-t">and 3 more stories</span>
+        <span class="repo-more-t">and 2 more stories</span>
       </a>
 
       <a class="card-hit" href="#work" data-route="work" aria-label="Open Work"></a>
@@ -14594,7 +14904,7 @@ a.arrow { text-decoration: none; }
         <span aria-hidden="true">/</span>
         <b>Work</b>
       </p>
-      <p class="crumb-count">04 projects &nbsp;/&nbsp; 8 writings</p>
+      <p class="crumb-count">03 projects &nbsp;/&nbsp; 8 writings</p>
 
       <!-- ------------------------- lead project ---------------------- -->
       <!-- Tile c is Home's own Playground card, 399,596,364x335: straight up
@@ -14675,7 +14985,6 @@ a.arrow { text-decoration: none; }
           <p class="w-kind">Case study · 2025</p>
           <h2 class="headline">Reimagining linear player</h2>
           <p class="sub">Live TV, rebuilt around what is on now and what is next.</p>
-          <p class="w-by">Airtel Entertainment · 2025</p>
         </div>
         <dl class="w-figs">
           <div class="w-fig"><dt>38%</dt><dd>fewer taps from open to playing</dd></div>
@@ -14692,7 +15001,6 @@ a.arrow { text-decoration: none; }
           <p class="w-kind">Case study · 2024</p>
           <h2 class="headline">Xstream creative toolkit</h2>
           <p class="sub">A kit of parts for a team shipping faster than a design system can keep up with.</p>
-          <p class="w-by">Airtel Entertainment · 2024</p>
         </div>
         <dl class="w-figs">
           <div class="w-fig"><dt>08</dt><dd>catalogues on one set of rules</dd></div>
@@ -14710,31 +15018,12 @@ a.arrow { text-decoration: none; }
           <p class="w-kind">Case study · 2024</p>
           <h2 class="headline">Bubbles // a studio site</h2>
           <p class="sub">A studio site that reads like a place to walk around rather than a list of work.</p>
-          <p class="w-by">Bubbles · 2024</p>
         </div>
         <dl class="w-figs">
           <div class="w-fig"><dt>01</dt><dd>page, start to finish</dd></div>
           <div class="w-fig"><dt>60fps</dt><dd>on a four-year-old phone</dd></div>
         </dl>
         <a class="card-hit" href="#case/bubbles" data-route="case" data-slug="bubbles" aria-label="Open Bubbles // a studio site"></a>
-        <span class="w-seat" aria-hidden="true"></span>
-      </section>
-
-      <!-- ------------------------ w-four ------------------------ -->
-      <!-- Tile e is Home's Connect card, the last one left. -->
-      <section class="card w-four" data-tile="e">
-        <span class="w-shot is-blank" aria-hidden="true"></span>
-        <div class="w-said">
-          <p class="w-kind">Case study · 2025</p>
-          <h2 class="headline">Family safety</h2>
-          <p class="sub">A safety product a teenager would agree to have on their phone.</p>
-          <p class="w-by">Airtel Entertainment · 2025</p>
-        </div>
-        <dl class="w-figs">
-          <div class="w-fig"><dt>2</dt><dd>people have to say yes</dd></div>
-          <div class="w-fig"><dt>94%</dt><dd>still installed after a month</dd></div>
-        </dl>
-        <a class="card-hit" href="#case/family-safety" data-route="case" data-slug="family-safety" aria-label="Open Family safety, without the surveillance"></a>
         <span class="w-seat" aria-hidden="true"></span>
       </section>
 
@@ -18371,12 +18660,34 @@ a.arrow { text-decoration: none; }
       var link = q.get('chain');
       if (pick && /^([1-9]|10)$/.test(pick)) { cord.setAttribute('data-tag', pick); }
       if (link && /^[1-5]$/.test(link)) { cord.setAttribute('data-chain', link); }
+      /* ?cord= -- the size, for the same reason ?tag= and ?chain= are here:
+       * which one is right is a question about a room and a screen, and it is
+       * answered by standing in front of one rather than by reasoning. Sets
+       * the property the media query sets, so it overrides at any width.
+       * NaN fails both comparisons, which is the validation. */
+      var size = parseFloat(q.get('cord'));
+      if (size >= 0.5 && size <= 1.5) { cord.style.setProperty('--cord-scale', String(size)); }
 
     } catch (e) {}
 
     var rest = 134;
+
+    /* What the box is drawn at, read where the length is read.
+     *
+     * Everything below this line -- rest, CATCH, TRAVEL, FLOOR, the bow -- is
+     * in the box's own units, and the box is drawn through a scale. A pointer
+     * is not: clientX is on the glass. So the two have to be put in the same
+     * units before they are compared, and this is the number that does it.
+     *
+     * Read here and not per-move for the reason the note below gives about
+     * --cord-len: a computed style in a pointer handler is a layout flush on
+     * every frame of a drag. The only thing that changes it is the media
+     * query, the only thing that fires that is a resize, and measure() already
+     * runs on every one. */
+    var sc = 1;
     function measure() {
       rest = parseFloat(getComputedStyle(cord).getPropertyValue('--cord-len')) || 134;
+      sc = parseFloat(getComputedStyle(cord).getPropertyValue('--cord-scale')) || 1;
       seat();
     }
 
@@ -18593,6 +18904,46 @@ a.arrow { text-decoration: none; }
          * bend that forms behind a sideways pull, and it is the reason this
          * branch is not simply a paint. */
         if (grab) {
+          /* A held chain, checked against the room it is being held in.
+           *
+           * Everything above this is a way of hearing that a pull ended, and
+           * every one of them is the browser volunteering something. This is
+           * the frame asking instead, and it is here because a pull that ends
+           * in a way nobody hears leaves the chain pinned to a finger that has
+           * gone -- hanging there until the page is reloaded, which is the one
+           * failure this object is not allowed to have.
+           *
+           * Focus first, because it is the certain one: a window that is not
+           * focused is not a window with a hand in it. That covers the release
+           * that happened over another application, the cmd-tab, and the click
+           * that went to the terminal -- none of which reliably deliver a
+           * pointerup to this page.
+           *
+           * Then the clock, for everything left. Six seconds of a pointer that
+           * has not moved and has not lifted is not somebody holding a chain;
+           * a hand resting on a mouse still jitters, and a trackpad still
+           * sends. It is the last resort and it should almost never be what
+           * ends a pull.
+           *
+           * Neither fires on a drag that is still happening, and that is what
+           * the quiet window is for. A pointer being dragged reports every
+           * frame, so 400ms of silence is already a pointer that has stopped
+           * existing -- and gating both tests behind it means a window that
+           * reports itself unfocused while a hand is genuinely working in it
+           * cannot pull the chain out of that hand. The check can only ever
+           * catch a pull that has already gone still.
+           *
+           * Both abandon rather than release, and that distinction is the
+           * whole care in this: releasing a chain that is past the catch turns
+           * the light. Nobody who has cmd-tabbed away has asked for the room
+           * to change, and a light that goes on because a window lost focus is
+           * worse than a chain that stayed down. */
+          var quiet = now - grab.seen;
+          if (quiet > 6000 || ((!document.hasFocus() || document.hidden) && quiet > 400)) {
+            abandon();
+            live = requestAnimationFrame(tick);
+            return;
+          }
           hold(now);
           for (var u = 0; u < dt; u += STEP) { sag(Math.min(STEP, dt - u)); }
           paint();
@@ -18677,15 +19028,51 @@ a.arrow { text-decoration: none; }
      * window is resizable and a cached ceiling is a chain that swings about a
      * point it is no longer attached to. */
     function anchor() {
+      /* getBoundingClientRect reports the box as drawn, so under a scale its
+       * left edge is not the layout's left edge: the origin is AX across and
+       * stays put, which pulls the visible edge in to AX - AX.sc. Undo that
+       * and the anchor is r.left + AX.sc -- the origin itself, which is the
+       * point the chain actually hangs from and the one point on this object
+       * the transform does not move. At sc 1 it is r.left + AX, as before.
+       *
+       * y needs no such correction: the origin is on the top edge, so the top
+       * edge is where it was. */
       var r = cord.getBoundingClientRect();
-      return { x: r.left + AX, y: r.top };
+      return { x: r.left + AX * sc, y: r.top };
     }
 
     bob.addEventListener('pointerdown', function (e) {
       if (!e.isTrusted) { return; }
       var a = anchor();
       grab = { ax: a.x, ay: a.y, t: e.timeStamp, x: e.clientX, y: e.clientY,
-               px: e.clientX, py: e.clientY, down: e.timeStamp };
+               px: e.clientX, py: e.clientY, down: e.timeStamp, slack: 0,
+               seen: performance.now() };
+
+      /* And how far down the hand already was when it closed, which is the
+       * difference between a chain being taken hold of and a chain being
+       * yanked eighteen pixels the instant it is touched.
+       *
+       * hold() spends the distance from the anchor to the pointer, and the
+       * pointer starts at the middle of the ring -- which hangs a ferrule and
+       * half a ring below where the chain itself ends. That head start was
+       * being read as pull: press the ring, move nothing, and the chain paid
+       * out 18px on its own. Measured in Chrome before this line existed.
+       *
+       * It also stole a third of the catch. The note by CATCH says the arm is
+       * reached at about 68 pixels of drag, and it was not -- 18 of them were
+       * already spent by the press, so it armed at about 50 and a pull that
+       * was meant to be a pull was closer to a nudge.
+       *
+       * Solved for rather than assumed zero, so a chain caught mid-swing
+       * carries its extension into the drag instead of snapping back to the
+       * hand: invert the exponential in hold() for the length that produces
+       * the ext already showing, and the difference is the slack. At rest that
+       * is exactly len0 - rest. Clamped because ext can sit a hair off TRAVEL
+       * and log(0) is not a number to put in a pointer handler. */
+      var dx0 = (e.clientX - a.x) / sc, dy0 = Math.max(1, (e.clientY - a.y) / sc);
+      var len0 = Math.hypot(dx0, dy0);
+      var e0 = Math.min(Math.max(ext, 0), TRAVEL * 0.999);
+      grab.slack = len0 - rest + TRAVEL * Math.log(1 - e0 / TRAVEL) / GIVE;
       moved = 0;
       armed = false;
       bottomed = false;
@@ -18711,9 +19098,38 @@ a.arrow { text-decoration: none; }
      * a finger moving smoothly. So the event stores a position and the frame
      * loop reads it: one resolve, one write, one paint, per frame that
      * actually happens. */
-    bob.addEventListener('pointermove', function (e) {
+    /* On the window and not on the ferrule, and that is the fix for a chain
+     * that stayed down.
+     *
+     * setPointerCapture above is what is supposed to make a 22-pixel target
+     * keep receiving a drag that has wandered off it, and while it holds, it
+     * does. It does not always hold. Capture is dropped when the button comes
+     * up somewhere the page does not hear -- over another window, off the edge
+     * of the screen, into a gesture the browser took for itself -- and this
+     * chain hangs 64 pixels from the top right corner, which is about the
+     * easiest place on a page to drag out of. Bound to the ferrule, both
+     * halves of the drag then died at once: no more moves, so the chain froze
+     * where it was, and no pointerup, so grab stayed set and nothing ever
+     * brought it home. It hung there, held by nobody.
+     *
+     * The window hears all of it either way -- a captured event still bubbles
+     * -- so this is also the cheaper binding, one listener instead of one per
+     * target, and !grab is the whole of the work on every move that is not a
+     * drag. */
+    addEventListener('pointermove', function (e) {
       if (!grab) { return; }
+
+      /* And a release the page never heard, noticed on the first move after
+       * it. buttons is a bitmask of what is currently held, so zero during a
+       * drag means the finger came off somewhere we were not told about. Ask
+       * it here rather than trusting pointerup to arrive, because this is the
+       * event that proves the pointer is alive and no longer pressed. Touch
+       * reports zero at all times, so it is guarded on pointerType: a finger
+       * on glass has pointerup and pointercancel and does not need this. */
+      if (e.pointerType === 'mouse' && e.buttons === 0) { release(e); return; }
+
       grab.px = e.clientX; grab.py = e.clientY;
+      grab.seen = performance.now();
       moved = Math.max(moved, Math.hypot(e.clientX - grab.x, e.clientY - grab.y));
       run();
     });
@@ -18739,10 +19155,26 @@ a.arrow { text-decoration: none; }
      * and moved nothing. No error, no warning, and a chain that did not budge.
      * Two things in one closure cannot be called the same thing. */
     function hold(now) {
-      var dx = grab.px - grab.ax, dy = Math.max(1, grab.py - grab.ay);
+      /* Off the glass and into the box, which is what /sc is doing here.
+       *
+       * len is compared against rest and spent against TRAVEL, and both of
+       * those are box units. Left in screen pixels the comparison is wrong by
+       * the scale in the one place it does the most damage: at rest the
+       * ferrule hangs rest.sc pixels below the anchor, so len - rest starts
+       * negative, max(0, ..) pins it at zero, and the first rest.(1 - sc)
+       * pixels of every pull buy no chain at all. A pull that does nothing
+       * until the hand has moved a fifth of an inch is a pull that is stuck.
+       *
+       * Divided here rather than at the two constants because it is the input
+       * that is in the wrong units, not them -- and because ang below wants
+       * the ratio, which /sc leaves alone: atan2(dx/sc, dy/sc) is atan2(dx,
+       * dy), so the angle stays what the note by SWING says it is, a number
+       * that is not a size. */
+      var dx = (grab.px - grab.ax) / sc, dy = Math.max(1, (grab.py - grab.ay) / sc);
       var len = Math.hypot(dx, dy);
 
-      ext = TRAVEL * (1 - Math.exp(-Math.max(0, len - rest) * GIVE / TRAVEL));
+      /* less the slack the hand started with -- see pointerdown */
+      ext = TRAVEL * (1 - Math.exp(-Math.max(0, len - rest - grab.slack) * GIVE / TRAVEL));
 
       var raw = Math.atan2(dx, dy) * 180 / Math.PI;
       ang = SWING * Math.tanh(raw / SWING);
@@ -18868,17 +19300,54 @@ a.arrow { text-decoration: none; }
       choose(to);
     }
 
-    bob.addEventListener('pointerup', release);
-    bob.addEventListener('pointercancel', function () {
+    /* Every way a pull can end, and they all end it.
+     *
+     * release() is written to be idempotent -- it returns on !grab before it
+     * touches anything -- so these are allowed to overlap, and they do: a
+     * normal mouse-up on the ferrule arrives here once as itself and is a
+     * no-op by the time it has bubbled. That is the point. The cost of hearing
+     * about the same release twice is one comparison; the cost of missing it
+     * once is a chain that hangs there until the page is reloaded, which is
+     * what this all was.
+     *
+     * lostpointercapture is the honest signal among these. Whatever took the
+     * capture away -- the button coming up off-window, a gesture, a device
+     * going away mid-drag -- the browser says so here, and if grab has
+     * survived that, the pull is over whether or not a pointerup is ever
+     * coming.
+     *
+     * blur is the case none of the others cover: cmd-tab away mid-pull and the
+     * pointer does not go anywhere, it simply stops being the page's. Coming
+     * back to a chain still held by a hand that left is the same bug wearing a
+     * different coat. */
+    /* Giving up on a pull, as opposed to finishing one.
+     *
+     * release() is what a hand does; this is what happens to a pull that was
+     * interrupted. The difference is the detent: an abandoned pull does not
+     * turn the light however far past the catch it had got, because the person
+     * who started it is no longer here to have meant it. */
+    function abandon() {
       if (!grab) { return; }
       grab = null;
       armed = false;
       bottomed = false;
       detent = false;
-      cord.classList.remove('is-saying');
+      cord.classList.remove('is-armed', 'is-saying');
       sayAt = 0;
       run();
-    });
+    }
+
+    /* Capture phase, so that a pull cannot be ended by anything except this.
+     * These are on the window and they are the last line: a bubbling listener
+     * anywhere on this page that decides to stop propagation would otherwise
+     * take the release with it, and the chain would stay down for a reason
+     * that has nothing to do with the chain. Capture runs on the way in, where
+     * nothing has had the chance yet. */
+    addEventListener('pointerup', release, true);
+    bob.addEventListener('lostpointercapture', release);
+    addEventListener('pointercancel', abandon, true);
+    addEventListener('blur', abandon);
+    addEventListener('visibilitychange', function () { if (document.hidden) { abandon(); } });
 
     /* A chain in a room with somebody in it is not perfectly still.
      *
@@ -18985,6 +19454,7 @@ a.arrow { text-decoration: none; }
      * shortens the chain. Nothing is animating at that moment, so re-measuring
      * and re-drawing is the whole of it. */
     measure();
+
     addEventListener('resize', function () { measure(); if (!live) { paint(); } });
     /* The two moments after this one at which the stage can still rescale,
      * neither of which is a resize: a webfont swapping in, and the window's
@@ -21223,42 +21693,6 @@ a.arrow { text-decoration: none; }
         screensT: 'Screens',
         screens: ['', '', ''],
         screensCap: 'The page at three widths, and the gesture that carries it.'
-      },
-
-      'family-safety': {
-        n: '04',
-        name: 'Family safety, without the surveillance', short: 'Family safety',
-        kind: 'Case study', year: '2025',
-        lede: 'Every product here is sold to the parent and installed on the child. We built the one both sides have to agree to, because the rest get uninstalled.',
-        glance: 'At a glance',
-        stats: [
-          ['2', 'people have to say yes'],
-          ['94%', 'still installed after a month'],
-          ['03', 'things it will not tell you'],
-          ['11wk', 'research to first release']
-        ],
-        processT: 'Process',
-        steps: [
-          ['Ask the child', 'Fourteen households, and both sides of each.'],
-          ['Name the limits', 'What it refuses to report is the product.'],
-          ['Two consents', 'Neither side can turn it on alone.'],
-          ['Ship the quiet one', 'No streaks, no scores, no daily digest.']
-        ],
-        note: 'A tracker a teenager turns off is worth less than a check-in they answer. The restraint is the feature, and it is the only part that cannot be added later.',
-        meta: [
-          ['Role', 'Product design, research'],
-          ['Year', '2025'],
-          ['Team', 'Airtel Entertainment']
-        ],
-        problemT: 'The problem', problem: 'Safety sold to one person and installed on another.',
-        problemTags: ['14 households', '2 consents'],
-        outcomeT: 'What shipped', outcome: 'A check-in, not a map.',
-        outcomeSub: 'Location on request rather than on a timer, an alert both sides can see, and a list of what the app will never report.',
-        outcomeTags: ['Android', 'iOS'],
-        hero: '',
-        screensT: 'Screens',
-        screens: ['', '', ''],
-        screensCap: 'The consent pair, the check-in, and the page that says what it will not do.'
       }
     };
 
