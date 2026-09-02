@@ -7971,57 +7971,23 @@ body {
    above. Same weight as those rules, so this has to stand after them, which
    is why it is here and not up with .room-lamp-box. */
 
-/* No stem, and the base is the square's own width.
+/* Neither of the lattice's two rules, and no base either.
 
-   A narrow foot on a thin stalk hung *below* the box made the control two
-   shapes with a join in the middle -- a panel, and a little bit of furniture
-   underneath it. It also broke the one rule this corner of the frame keeps,
-   which is that a control is a cell the width of its column.
+   .room draws a foot along its underside and a vertical down the full drop
+   of the frame, and this box wants neither: the foot would be a horizontal at
+   200 and there is no lattice line at 200 -- inventing one is the opposite of
+   what those rules are for -- and the vertical is already drawn, by the hush
+   above, down the same column this hangs on.
 
-   So the base comes inside. The bottom band of the square is the base, full
-   width, and what is above it is the shade: one box, one silhouette, nothing
-   sticking out of it. That is a small table lamp seen square on -- a lit body
-   sitting on a dark plinth -- and it is the shape a lantern has too, which is
-   the other thing a square lamp can be.
-
-   Six of the forty-four. Enough to read as the thing the lamp stands on and
-   not so much that the shade stops being most of the object. */
-.room-lamp-box::before { display: none; }
-
-/* The base, and it is not steel.
-
-   Steel is the chain's material and it is right for the chain -- a bead chain
-   is metal and nothing else. The thing a cube lamp of this kind stands on is
-   a turned wooden block, and the difference matters here because the base is
-   the only part of the object that is never lit: it wants to be warm and
-   dark rather than cool and mid, or it reads as a slot the light is going
-   into rather than a block the lamp is sitting on.
-
-   Two stops so it has a top face and a side, which is the whole of what makes
-   six pixels read as a solid. */
-.room-lamp-box::after {
-  content: "";
-  position: absolute;
-  left: 0; right: 0; top: auto; bottom: 0;
-  margin-left: 0;
-  width: auto; height: 7px;
-  background: linear-gradient(180deg, var(--base-hi) 0 2px, var(--base-lo) 2px 100%);
-  z-index: 1;
-}
-
-/* The block is wood in both rooms and it is not the same wood in both.
-
-   A dark walnut is right under a lamp on a black page -- it is the one solid
-   thing there and it should read as heavier than the light above it. Carried
-   into the lit room unchanged it is nearly black on cream, which is the
-   darkest object on the whole screen sitting under the second brightest: not
-   a base any more, a hole. Every other surface here was warmed and lightened
-   for that room and this was the one left behind.
-
-   So it is a pale oak there instead. Same two stops, same top face and side,
-   same idea -- a block of wood in a room with the lights on. */
-:root { --base-hi: #4c3f34; --base-lo: #33291f; }
-:root[data-theme="light"] { --base-hi: #d8c3a1; --base-lo: #bda37c; }
+   The ::after was carrying a base as well: a seven-pixel band of wood across
+   the foot of the square, which is what made a plain box read as a lamp
+   standing on something. It is off. What is left is the shade on its own --
+   the box, the light in it, and the mark -- which is the object with its
+   furniture taken away rather than a different object. If the base turns out
+   to have been doing more work than it looked like, it is one commit back and
+   every figure is still in it. */
+.room-lamp-box::before,
+.room-lamp-box::after { display: none; }
 .back::after { right: 100%; }               /* 333, the left of the way back */
 
 /* How far past the frame a horizontal has to reach. 3000 is the lattice's own
@@ -8259,17 +8225,14 @@ body {
    controls, and this one was overriding that to fill its own cell. Two icons
    in one column at two sizes are two icons drawn on different days.
 
-   The margin is the one thing it does not share. Grid centring puts the icon
-   in the middle of the button, and the bottom seven pixels of this button are
-   the lamp's base -- so centred on the box it sits low in the shade. A bottom
-   margin of exactly the base's height lifts it by half of that, which centres
-   it on the shade instead.
+   It carried a seven-pixel bottom margin too, to lift it clear of the base
+   and centre it on the shade rather than on the box. With the base gone the
+   shade is the box, and that margin would only push the mark high.
 
    Its ink comes from --lamp like everything else here, so it darkens as the
    shade behind it brightens. That is not decoration: a mark that kept one
    colour would be invisible at one end of the travel or the other. */
 .room-lamp svg {
-  margin-bottom: 7px;
   /* Full strength unlit, which is the hush's own ink. It was at 0.42 and the
      two controls sat in one column at two weights -- a speaker at full white
      and a moon at not much under half of it, which reads as one icon being
