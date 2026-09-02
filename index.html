@@ -4282,135 +4282,11 @@ body {
 .w-three { left: 1257px; top: 596px; width: 264px; height: 335px;
            --gx: 20%; --gy: 0%;  --gw: 125%; --gh: 165%; --gs: 0.05; }
 
-/* --- and the wide one's own inside ----------------------------------------
 
-   The other two are a window with a name under it, which is what a 264 column
-   can hold. This one is half again as wide as it is tall and that shape wants
-   the opposite: the picture standing on one side and the words on the other,
-   reading across rather than down.
 
-   The picture goes right. Left would put it where the eye lands first and
-   leave the name to be found past it; on a row that reads left to right the
-   name is what should be met first and the picture is what it opens onto.
-   It also puts the picture against the 949 gutter, so the wide box and the
-   two cards beside it are a run of three windows with the text tucked in at
-   the near end rather than a picture in the middle of the row.
 
-   The whole card, edge to edge, and no margin at all.
 
-   The other two are a window in a card: 12 of margin, and the card's own
-   surface showing round it. This one is not a card with a picture on it, it
-   is the picture -- so the 12 goes and the four edges are the box's own.
-   .card is overflow: hidden with its outline drawn outside itself, so the
-   image is clipped to the box and the box keeps the edge every other card on
-   the frame has.
 
-   Which also settles the crop this rule used to argue with. A 550 by 335 hole
-   is 1.64 and the picture is 632 by 498, or 1.27: it is cropped top and bottom
-   now rather than left and right, and a picture of a screen loses far less
-   that way. A 16:9 video is 1.78 against 1.64, which is very nearly a fit --
-   so the panel that was the wrong shape for a video is now the right one, and
-   16:9 is the shape to hand it. */
-.w-one .w-shot {
-  left: 0; right: 0; top: 0; bottom: 0;
-  height: auto;
-}
-
-/* And what the picture is, said only while somebody is looking at it.
-
-   A card that is entirely a photograph has nowhere to put a name that is not
-   on top of the photograph, and a name that sits there permanently is a
-   caption burnt into the picture. So it is not there until the pointer is,
-   and what arrives is the name and nothing else.
-
-   Behind hover-and-fine, and that is the whole of the accessibility of it.
-   Where there is no pointer to hover there is no state to enter, so the name
-   must simply be there -- a touch screen that hid it would have a card with no
-   name on it at all. This block never runs on such a device.
-
-   focus-within alongside hover, because .card-hit is a link inside this box
-   and somebody tabbing to it is looking at this card exactly as much as
-   somebody pointing at it. */
-@media (hover: hover) and (pointer: fine) {
-  .w-one .w-said,
-  .w-one .w-shot::after {
-    opacity: 0;
-    transition: opacity 220ms var(--ease);
-  }
-  .w-one:hover .w-said,
-  .w-one:focus-within .w-said,
-  .w-one:hover .w-shot::after,
-  .w-one:focus-within .w-shot::after { opacity: 1; }
-}
-
-/* The ground the name stands on.
-
-   White type on an unknown photograph is a legibility accident waiting for the
-   day somebody puts a pale screenshot in here, so the name brings its own
-   floor: a wash up from the bottom edge, strongest where the type is and gone
-   by the middle of the card. It fades in with the name rather than sitting
-   there, because a card that darkens at one end whether or not anybody is near
-   it is a card with a shadow on it.
-
-   On .w-shot rather than on the card, so it is clipped to the picture and
-   cannot outlive it. */
-.w-one .w-shot::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to top,
-    rgba(0, 0, 0, 0.78) 0%, rgba(0, 0, 0, 0.42) 34%, rgba(0, 0, 0, 0) 62%);
-  pointer-events: none;
-}
-
-/* The name, in the bottom left of the picture.
-
-   Bottom because that is where the wash is and where a caption belongs; left
-   because the row reads left to right and this is its first card. 28 off two
-   edges rather than the row's 20 and 38: those figures were measured against a
-   window above and a card edge below, and neither of them is here.
-
-   z-index so it clears the wash, which is a pseudo-element of a box written
-   before this one -- without it the two are painted in the order they appear
-   and the name would be under its own floor. */
-.w-one .w-said {
-  left: 28px;
-  right: 28px;
-  top: auto;
-  bottom: 26px;
-  width: auto;
-  text-align: left;
-  z-index: 1;
-}
-
-/* And the one word on this page that is not written in the room's ink.
-
-   --w is the ink token and it inverts with the room: white in the dark one,
-   32,27,18 in the lit one. Every other line on the site wants that, and this
-   one must not have it -- the name here stands on a photograph under a black
-   wash, and in the lit room it came out near-black on near-black and simply
-   was not there. Caught on a screenshot, not by reading the rule.
-
-   --lift is the token for exactly this and the note at the top of the file
-   says why it exists: it is light rather than ink, so it is white in both
-   rooms. A wash that is black in both rooms wants type that is white in both
-   rooms, and that is the pair.
-
-   .card as well as .w-one, and it is there to win a tie rather than to say
-   anything. `.card:hover .headline` sets the ink colour further down the file
-   and a pseudo-class counts as a class, so that selector and a three-class one
-   here weigh the same (0,3,0) -- and on a tie the later rule takes it, which
-   is the hover rule, which is the ink. The extra class is the whole of the
-   fix. Written first as three classes and it lost, silently and only in the
-   lit room, which is the way a specificity tie always goes wrong. */
-.card.w-one .w-said .headline { color: rgba(var(--lift), 0.96); }
-
-/* Only the name. The sentence was shown here while this card had a column of
-   its own to put it in; the card is a photograph now, and what appears over a
-   photograph should be the one thing somebody needs to know what they are
-   looking at. The sentence is on the case study, one press away. */
-.w-one .w-said .sub,
-.w-one .w-said .w-kind { display: none; }
 
 /* --- the playground, as a lead tile ---------------------------------------
 
@@ -4891,9 +4767,18 @@ body {
    38 off the foot holds whatever it is, and what gives is the gap to the
    folder -- 35 under a one-line name, 12 under a two-line one, which is the
    right way round: the tighter card is the fuller one. */
-/* The two square-window cards. .w-one is not among them any more -- it is a
-   wide box with the picture beside the words rather than over them, and it
-   sets its own four edges above. */
+/* All three of them, and the lead is among them again.
+
+   It spent a while as a photograph with its name written over it on hover: the
+   picture ran the whole box and the words were only there while somebody was
+   pointing at it. That is a good card and it is not this row's card. The other
+   two are a window with a name under it, and one box in three behaving
+   differently is a row with an exception in it rather than a row.
+
+   So the lead is the same card as the others, only wider. The base .w-shot
+   gives it the same 12 of margin and the same 227 of window across its own
+   550, and the name sits under it in the room's ink like the rest of them. */
+.w-one .w-said,
 .w-two .w-said,
 .w-three .w-said {
   left: 20px;
@@ -13919,40 +13804,7 @@ a.arrow { text-decoration: none; }
     height: 190px;
     margin: 0 0 16px;
   }
-  /* And the lead card's window is a window again down here.
-   *
-   * On the frame that one is a full-height panel down the right of a wide box,
-   * which it gets by giving up its height to a top and a bottom -- and
-   * `.w-one .w-shot` outweighs the bare `.w-shot` above whatever room it is
-   * read in. Left alone it followed the card down here, where the box is a
-   * column and there is no height for a top and a bottom to make: the picture
-   * came out 348 wide and nothing tall, which is to say it was gone. Measured
-   * at 430.
-   *
-   * Said here rather than fixed by scoping the frame's rule into a min-width,
-   * because that is not how this stylesheet is built: the frame is the base
-   * and the phone is what overrides it, and a rule that has to be undone down
-   * here is undone down here with the rest of them. */
-  .w-one .w-shot { height: 190px; }
 
-  /* And the lead card's name is simply there.
-   *
-   * On the frame that card is a photograph with its name written over it, so
-   * the name waits for a pointer. Down here the card is a column -- picture,
-   * then name under it -- and there is nothing for the name to be written
-   * over: hiding it until hover would leave a card with no title, and on the
-   * devices this layout is actually for there is no hover to end that with.
-   *
-   * Said unconditionally rather than by narrowing the hover query, because
-   * this has to beat it on a machine that reports a fine pointer AND lands in
-   * this layout -- a window dragged narrow on a laptop, which is the case that
-   * would otherwise show a titleless card to somebody who could hover but has
-   * no photograph under their cursor to hover over.
-   *
-   * The wash goes with it: it exists to carry type over a picture, and the
-   * type is not over the picture here. */
-  .w-one .w-said { opacity: 1; }
-  .w-one .w-shot::after { display: none; }
   .w-shot.is-blank { height: 128px; }
   .w-seat { display: none; }
   /* And the type goes back to the left. Centring is the frame's answer to a
