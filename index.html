@@ -8150,40 +8150,114 @@ body {
    It takes its ink from --lamp like everything else, so it darkens as the
    shade behind it brightens. That is not decoration: a mark that kept one
    colour would be invisible at one end of the travel or the other. */
-/* The morph, and it is two declarations because it is two movements.
+/* The mark goes over at the catch. It does not follow the hand.
 
-   The bite travels up and to the right, out of the disc. At --lamp 0 it is
-   sitting over the disc's shoulder and the hole it leaves is a crescent; by
-   1 it has gone eleven across and ten up, which puts its centre 20 from the
-   disc's -- comfortably more than the 13 the two radii add up to, so there
-   is no bite left at all and the disc is whole.
+   It used to be scrubbed straight off --lamp, a frame at a time, and that was
+   wrong twice. It looked wrong, because a mask and two transforms recomputed
+   sixty times a second under a dragging finger is the one part of this
+   control the compositor cannot carry on its own -- a mask forces the shape
+   to be re-rasterised, and what you saw was the crescent stepping rather than
+   sliding. And it was wrong about the mechanism: the shade is a light and a
+   light does come up under your hand, but the mark is a statement about which
+   room you are going to, and that is not a thing you are halfway through. It
+   is decided at the catch, which is exactly where the switch decides it.
 
-   The rays open out of the middle as it goes. Scaled as well as faded,
-   because rays that only fade are rays that were always there at full length
-   waiting to be shown; growing from just over half puts them inside the disc
-   at the start, where a sun's rays would be if a sun had none.
+   So it is a class and a transition. One state change, one eased movement,
+   and the browser interpolates it on its own clock instead of being handed a
+   new value every frame. The shade keeps tracking the hand -- see --lamp --
+   because that one is a light and should.
 
-   fill-box, so the origin is the rays' own bounding box and not the 44-unit
-   viewport. The rays are symmetrical about 22,19, so their box centre is the
-   disc centre and `center` is the right two words rather than a coincidence.
-
-   Both are transforms and an opacity, which is what the compositor can run
-   on its own -- this has to stay smooth across the same frames the shade is
-   repainting its fill under a finger. */
-.room-lamp .lamp-bite {
-  transform: translate(calc(var(--lamp) * 11px), calc(var(--lamp) * -10px));
+   is-marked is not `the room is lit`, it is `the room this pull is heading
+   for is lit`: the destination rather than the state. At rest they are the
+   same thing; past the catch they are opposites, which is what makes this a
+   preview. See paint(), where it is computed as lit !== committed. */
+.room-lamp .lamp-bite,
+.room-lamp .lamp-bite-line {
+  transform: translate(0px, 0px);
+  transition: transform 440ms cubic-bezier(0.34, 0.02, 0.2, 1);
 }
+/* Nine across and eight up, in the drawing's own units. That puts the
+   shadow's centre 17.6 from the moon's and the two radii add up to 10.5 -- so
+   there is no overlap left, no arc of B inside A, and no bite out of A. The
+   disc is whole and the crescent has become a sun. */
+.room-lamp.is-marked .lamp-bite,
+.room-lamp.is-marked .lamp-bite-line {
+  transform: translate(9px, -8px);
+}
+
+/* The rays open out of the middle with it. Scaled as well as faded, because
+   rays that only fade are rays that were always there at full length waiting
+   to be shown; growing from half puts them inside the disc at the start,
+   where a sun's rays are when it has none.
+
+   fill-box, so the origin is the rays' own bounding box rather than the
+   44-unit viewport. They are symmetrical about 22,19, so their box centre is
+   the disc's centre and `center` is the right two words and not a fluke. */
 .room-lamp .lamp-rays {
-  opacity: var(--lamp);
+  opacity: 0;
   transform-box: fill-box;
   transform-origin: center;
-  transform: scale(calc(0.55 + var(--lamp) * 0.45));
+  transform: scale(0.5);
+  transition: opacity 260ms linear 60ms,
+              transform 440ms cubic-bezier(0.34, 0.02, 0.2, 1);
+}
+.room-lamp.is-marked .lamp-rays {
+  opacity: 1;
+  transform: scale(1);
 }
 
+/* And the bloom, on the frame the switch actually goes over.
+
+   The morph has already happened by then -- it went at the catch, while the
+   chain was still being held -- so the moment of release would otherwise have
+   nothing of its own. This is what it gets: the sun swells once and settles,
+   which is a filament coming up to heat rather than a thing being turned on.
+
+   Only on the way to the lit room. Going the other way the room goes dark and
+   the whole point of the last note on .bloom is that nothing warms up on the
+   way out -- a moon that pulses when you switch a lamp off is an event with
+   nothing behind it.
+
+   The origin is 43 per cent and not the middle, because the mark is centred
+   at 19 of 44 -- the middle of the shade, above the base. */
+@keyframes lamp-bloom {
+  0%   { transform: scale(1); }
+  32%  { transform: scale(1.24); }
+  100% { transform: scale(1); }
+}
+.room-lamp.is-bloom svg {
+  transform-origin: center;
+  animation: lamp-bloom 560ms cubic-bezier(0.22, 0.68, 0.24, 1);
+}
+@media (prefers-reduced-motion: reduce) {
+  .room-lamp.is-bloom svg { animation: none; }
+  .room-lamp .lamp-bite,
+  .room-lamp .lamp-bite-line,
+  .room-lamp .lamp-rays { transition: none; }
+}
+
+/* Same 24 box and same 18 pixels as the hush's icon above it, which is why
+   no width or height is written here: .room-c svg sets them for both
+   controls, and this one was overriding that to fill its own cell. Two icons
+   in one column at two sizes are two icons drawn on different days.
+
+   The margin is the one thing it does not share. Grid centring puts the icon
+   in the middle of the button, and the bottom seven pixels of this button are
+   the lamp's base -- so centred on the box it sits low in the shade. A bottom
+   margin of exactly the base's height lifts it by half of that, which centres
+   it on the shade instead.
+
+   Its ink comes from --lamp like everything else here, so it darkens as the
+   shade behind it brightens. That is not decoration: a mark that kept one
+   colour would be invisible at one end of the travel or the other. */
 .room-lamp svg {
-  width: 100%; height: 100%;
+  margin-bottom: 7px;
+  /* Full strength unlit, which is the hush's own ink. It was at 0.42 and the
+     two controls sat in one column at two weights -- a speaker at full white
+     and a moon at not much under half of it, which reads as one icon being
+     less important rather than as one lamp being off. */
   color: color-mix(in srgb,
-    rgba(var(--w), 0.42), #4a370f calc(var(--lamp) * 100%));
+    rgb(var(--w)), #4a370f calc(var(--lamp) * 100%));
 }
 .hush-off { display: none; }
 .is-hushed .hush-on { display: none; }
@@ -15466,31 +15540,48 @@ a.arrow { text-decoration: none; }
     <div class="room room-lamp-box">
       <button class="room-c room-lamp" type="button" data-lamp aria-pressed="false"
               aria-label="Turn the lamp on">
-        <!-- What is in the shade: one disc, and a bite taken out of it.
+        <!-- What is in the shade: a crescent that opens into a sun, drawn in
+             line like every other icon here.
 
-             This was two marks fading past each other, and a crossfade is not
-             a morph -- halfway through you have half a moon and half a sun
-             lying on top of one another, which is a moment of two objects
-             rather than one object changing its mind.
+             A filled disc with a bite masked out of it is the easy way to
+             this shape and it was the wrong one -- every other mark on this
+             site is a stroke, and one solid glyph among them reads as a
+             different set.
 
-             There is one shape here now. The disc never moves and never
-             fades. What moves is a second circle in a mask, and the crescent
-             is the hole it makes: sitting over the disc's shoulder it eats a
-             moon out of it, and travelling up and away it uncovers a full
-             sun. The rays grow out of the middle as it goes. Nothing appears
-             and nothing disappears -- it is the same circle the whole way,
-             and the moon is the sun with something in front of it.
+             A line crescent is two arcs, and they come from the same two
+             circles the filled version used. Circle A is the moon's own
+             outline; circle B is the shadow that bites it. Then:
 
-             Which is also, as it happens, true. -->
+               A is masked BY B   -- so the part of A's stroke that falls
+                                     inside the shadow is not drawn, which
+                                     opens the ring into the outer arc
+               B is clipped TO A  -- so only the part of B's stroke that
+                                     falls inside the moon is drawn, which is
+                                     the inner arc, the shadow's own edge
+
+             Those two arcs meet at the two points where the circles cross,
+             and what they enclose is a crescent with no fill in it.
+
+             Slide B up and away and both halves of that resolve themselves:
+             A's stroke is uncut and becomes a whole circle, and B's arc has
+             nothing left inside A to draw. One movement, two consequences,
+             and the sun is what is left. -->
         <svg viewBox="0 0 44 44" fill="none" stroke="currentColor"
-             stroke-width="1.3" stroke-linecap="round" aria-hidden="true">
+             stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
           <mask id="lamp-cut" maskUnits="userSpaceOnUse"
                 x="0" y="0" width="44" height="44">
             <rect x="0" y="0" width="44" height="44" fill="#fff"/>
-            <circle class="lamp-bite" cx="27.6" cy="14.4" r="6.6" fill="#000"/>
+            <circle class="lamp-bite" cx="27.4" cy="14.6" r="7" fill="#000"/>
           </mask>
-          <circle class="lamp-disc" cx="22" cy="19" r="6.4"
-                  fill="currentColor" stroke="none" mask="url(#lamp-cut)"/>
+          <clipPath id="lamp-in">
+            <circle cx="22" cy="19" r="6.4"/>
+          </clipPath>
+
+          <circle class="lamp-disc" cx="22" cy="19" r="6.4" mask="url(#lamp-cut)"/>
+          <g clip-path="url(#lamp-in)">
+            <circle class="lamp-bite-line" cx="27.4" cy="14.6" r="7"/>
+          </g>
+
           <g class="lamp-rays">
             <path d="M22 10V7.5M22 28v2.5M13 19h-2.5M31 19h2.5
                      M28.36 12.64l1.77-1.77M15.64 12.64l-1.77-1.77
@@ -18392,6 +18483,13 @@ a.arrow { text-decoration: none; }
         var lit = showing() === 'light';
         var p = commit ? 1 : Math.max(0, Math.min(1, ext / CATCH));
         lampBox.style.setProperty('--lamp', (lit ? 1 - p : p).toFixed(3));
+        /* And the mark, which is a destination rather than a position: the
+         * room this pull is heading for, which past the catch is the opposite
+         * of the room you are in. toggle() with an unchanged value is a no-op,
+         * so this costs nothing on the frames it does not change -- and on the
+         * one frame it does, the transition in the stylesheet takes it from
+         * there. See .room-lamp.is-marked. */
+        lampBox.classList.toggle('is-marked', lit !== commit);
       }
     }
 
@@ -18704,6 +18802,22 @@ a.arrow { text-decoration: none; }
     function pulled() {
       var to = showing() === 'light' ? 'dark' : 'light';
       if (window.__sfx) { window.__sfx(to === 'light' ? 'lamp-on' : 'lamp-off'); }
+
+      /* The sun swells once, here, on the frame the switch goes over -- which
+       * is the moment the chain reaches home and the only one in the whole
+       * gesture that had nothing of its own left to show. The morph is long
+       * finished by now: that went at the catch, with the chain still held.
+       *
+       * Off and on again around a read of offsetWidth, because an animation
+       * whose name has not changed is not restarted by having its class
+       * re-added in the same frame -- the same lesson the book's fold and the
+       * page flood both cost. Lit room only; see the note on the keyframes. */
+      if (lampBox && to === 'light') {
+        lampBox.classList.remove('is-bloom');
+        void lampBox.offsetWidth;
+        lampBox.classList.add('is-bloom');
+      }
+
       choose(to);
     }
 
