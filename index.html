@@ -1408,6 +1408,105 @@ body {
   mask-image: radial-gradient(circle at 50% 50%, transparent 0 5.5px, #000 6.2px);
 }
 
+/* --- the tag, five other ways -------------------------------------------
+
+   What hangs on the end of a chain is the one part of this a reader actually
+   takes hold of, so it is worth trying more than one. Add ?tag=1 .. ?tag=5
+   to the URL and the chain wears a different one; with nothing asked for it
+   keeps the ring and collar above.
+
+   All five are the same two pseudo-elements re-cut, and all five are centred
+   on x=11 whatever their width, because the script places the hand at bx-11
+   and a tag that centres itself anywhere else hangs off the side of its own
+   chain. The button's 22x40 hit area does not change with them: a shape can
+   overflow it and still be grabbed by the same thumb.
+
+   1  the drop      a solid teardrop. No hole, no ring -- the simplest thing
+                    that still reads as weight on the end of a line.
+   2  the knurl     a barrel with a milled grip, which is what is actually on
+                    the end of most pull switches.
+   3  the tag       a flat plate with a punched hole, hung from a link. The
+                    only one of the five that is a label rather than a weight.
+   4  the acorn     the ceiling-fan shape: a bell that swells and tucks in.
+   5  the bar       a short cross bar. Nothing hangs; something is offered.
+   ---------------------------------------------------------------------- */
+
+/* 1 -- the drop */
+.cord[data-tag="1"] .cord-bob::before {
+  left: 8px; top: 0; width: 6px; height: 9px;
+  background: linear-gradient(100deg, var(--steel-lo), var(--steel) 50%, var(--steel-hi));
+  clip-path: none;
+}
+.cord[data-tag="1"] .cord-bob::after {
+  left: 1px; top: 7px; width: 20px; height: 29px;
+  border-radius: 50% 50% 50% 50% / 34% 34% 66% 66%;
+  background:
+    radial-gradient(60% 40% at 34% 24%, rgba(255,255,255,0.42), rgba(255,255,255,0) 70%),
+    linear-gradient(104deg, var(--steel-lo), var(--steel) 44%, var(--steel-hi));
+  -webkit-mask-image: none; mask-image: none;
+}
+
+/* 2 -- the knurl */
+.cord[data-tag="2"] .cord-bob::before {
+  left: 7px; top: 0; width: 8px; height: 8px;
+  background: linear-gradient(100deg, var(--steel-lo), var(--steel) 46%, var(--steel-hi));
+  clip-path: polygon(18% 0%, 82% 0%, 100% 100%, 0% 100%);
+}
+.cord[data-tag="2"] .cord-bob::after {
+  left: 3px; top: 7px; width: 16px; height: 30px;
+  border-radius: 7px;
+  background:
+    repeating-linear-gradient(0deg,
+      rgba(0,0,0,0.34) 0 1px, rgba(255,255,255,0.10) 1px 2px, rgba(0,0,0,0) 2px 4px),
+    linear-gradient(96deg, var(--steel-lo), var(--steel) 42%, var(--steel-hi));
+  -webkit-mask-image: none; mask-image: none;
+}
+
+/* 3 -- the tag */
+.cord[data-tag="3"] .cord-bob::before {
+  left: 8.5px; top: 0; width: 5px; height: 8px;
+  border-radius: 2px;
+  background: linear-gradient(100deg, var(--steel-lo), var(--steel) 50%, var(--steel-hi));
+  clip-path: none;
+}
+.cord[data-tag="3"] .cord-bob::after {
+  left: 2px; top: 6px; width: 18px; height: 34px;
+  border-radius: 3px;
+  background:
+    linear-gradient(112deg, var(--steel-hi), var(--steel) 40%, var(--steel-lo));
+  -webkit-mask-image: radial-gradient(circle at 50% 5.5px, transparent 0 2.4px, #000 3px);
+  mask-image: radial-gradient(circle at 50% 5.5px, transparent 0 2.4px, #000 3px);
+}
+
+/* 4 -- the acorn */
+.cord[data-tag="4"] .cord-bob::before {
+  left: 7.5px; top: 0; width: 7px; height: 10px;
+  background: linear-gradient(100deg, var(--steel-lo), var(--steel) 46%, var(--steel-hi));
+  clip-path: polygon(22% 0%, 78% 0%, 100% 100%, 0% 100%);
+}
+.cord[data-tag="4"] .cord-bob::after {
+  left: 1px; top: 9px; width: 20px; height: 25px;
+  border-radius: 50% 50% 42% 42% / 58% 58% 42% 42%;
+  background:
+    radial-gradient(56% 38% at 36% 26%, rgba(255,255,255,0.38), rgba(255,255,255,0) 72%),
+    linear-gradient(100deg, var(--steel-lo), var(--steel) 45%, var(--steel-hi));
+  -webkit-mask-image: none; mask-image: none;
+}
+
+/* 5 -- the bar */
+.cord[data-tag="5"] .cord-bob::before {
+  left: 10px; top: 0; width: 2px; height: 17px;
+  background: var(--steel);
+  clip-path: none;
+}
+.cord[data-tag="5"] .cord-bob::after {
+  left: -3px; top: 16px; width: 28px; height: 9px;
+  border-radius: 5px;
+  background:
+    linear-gradient(180deg, var(--steel-hi), var(--steel) 46%, var(--steel-lo));
+  -webkit-mask-image: none; mask-image: none;
+}
+
 /* Past the catch: the chain brightens and the steel lifts. The tell that
    letting go here does something, and the reason a pull can be started and
    abandoned without having to guess. */
@@ -7500,14 +7599,40 @@ body {
    A ring and two casts, warm, and none of it on the icon: the housing is
    what glows, the same way a shade glows and the switch on its flex does
    not. Off in the dark room, where a lamp that is not on should look like a
-   lamp that is not on. */
-.room { transition: box-shadow 320ms var(--ease), outline-color 320ms var(--ease); }
-:root[data-theme="light"] .room {
+   lamp that is not on.
+
+   And it comes up under the hand rather than at the end of the pull.
+
+   --lamp is how lit this is, 0 to 1, and paint() writes it on every frame of
+   a pull -- so the glow is the chain's position, not an event. Pull from the
+   dark room and it brightens as the chain pays out; let go early and it
+   falls back down the spring with the chain, because the same number is
+   drawing both. There is no separate animation to get out of step.
+
+   It reaches full at the catch and not at the end of travel, which is the
+   whole reason it is worth having: the catch is the point past which letting
+   go throws the switch, and it is the one thing about a pull a screen cannot
+   otherwise tell you. A fully lit lamp means this pull will fire. Past the
+   catch it holds at full and stops tracking, because the answer has stopped
+   changing.
+
+   No transition on any of this. The value arrives sixty times a second under
+   a finger, and a 320ms ease on top of that is a glow lagging a hand. The
+   handover at the moment the room changes is continuous without one anyway:
+   committed in the dark room is preview 1 and unlit, which is --lamp 1, and
+   the instant the room becomes light it is preview 0 and lit, which is also
+   --lamp 1. The number does not move; only what it means does. */
+@property --lamp { syntax: "<number>"; inherits: false; initial-value: 0; }
+.room {
+  --lamp: 0;
   box-shadow:
-    0 0 0 1px rgba(255, 236, 196, 0.42),
-    0 8px 34px -6px rgba(255, 232, 190, 0.60),
-    0 2px 12px -2px rgba(255, 228, 180, 0.45);
+    0 0 0 1px rgba(255, 236, 196, calc(var(--lamp) * 0.42)),
+    0 8px 34px -6px rgba(255, 232, 190, calc(var(--lamp) * 0.60)),
+    0 2px 12px -2px rgba(255, 228, 180, calc(var(--lamp) * 0.45));
 }
+/* The resting value, and it is only ever the resting value: the moment a
+   hand is on the chain the inline figure paint() writes wins over both. */
+:root[data-theme="light"] .room { --lamp: 1; }
 
 /* Two rules apiece: the foot, and the outer side.
 
@@ -12045,14 +12170,27 @@ a.arrow { text-decoration: none; }
     --pad: 24px;
     padding: var(--pad);
     outline: none;
-    border: 1px solid rgba(var(--w), 0.055);
+    /* Up from 0.055, which was an edge you had to already know was there.
+       --w is the room's own ink -- white in the dark room, near-black in the
+       lit one -- so one figure is a light hairline in both. */
+    border: 1px solid rgba(var(--w), 0.10);
     background-color: var(--card-pane);
-    /* Flat, and none. The ramp is a sheet of glass catching a light that
-       stands somewhere on the frame -- and there is no frame here, so it was
-       a highlight falling across six stacked cards from six different
-       directions at once. A column of panels wants to read as a column, which
-       means the eye should find the edges and nothing else. */
-    background-image: none;
+    /* The frame's ramp is a sheet of glass catching a light that stands
+       somewhere on the frame, and there is no frame here -- so what it drew
+       was a highlight falling across six stacked cards from six different
+       directions at once. That went, and with it went rather more depth than
+       intended: what was left was six flat rectangles with a hairline round
+       them, which is a list and not a stack.
+
+       This is the difference. Not a highlight, which needs a light source
+       the layout does not have, but a shade -- the card simply sinking
+       toward its own foot, which is what a panel lying on a surface does
+       whichever way the room is lit. Black rather than the room's ink,
+       because a shadow is the absence of light in both rooms and rgba(--w)
+       would invert it in the lit one. */
+    background-image: linear-gradient(180deg,
+      rgba(0, 0, 0, 0) 42%,
+      rgba(0, 0, 0, 0.11) 100%);
     /* Said in full because a card can arrive here carrying the frame's
        figures for layers it no longer has. The book does: its leather is
        grain over a fold shadow over a hide, and the grain is a 220-pixel
@@ -12066,6 +12204,24 @@ a.arrow { text-decoration: none; }
        off the lattice, and the lattice is the first thing this layout throws
        away. */
     box-shadow: none;
+  }
+
+  /* And the fill goes a step down from the frame's.
+
+     --card-pane is rgba(22, 21, 20, 0.52), and it was drawn to sit on a
+     lattice with a lit ground behind it. Down here it sits on the field,
+     which is darker, and a pane mixed for a brighter backing reads as washed
+     when it is moved onto a darker one -- the card and the page were closer
+     in value than the hairline between them could carry.
+
+     A fifth of black into the same token rather than a new colour, so the
+     card is still the frame's card and there is only one figure to change if
+     the frame's ever moves.
+
+     The dark room only. The lit room's pane is white at 76 per cent and
+     mixing black into that does not deepen it, it greys it. */
+  :root[data-theme="dark"] .card {
+    background-color: color-mix(in srgb, var(--card-pane), #000 18%);
   }
 
   /* The material goes with the fill it was painted on. --lit is zero wherever
@@ -17374,6 +17530,9 @@ a.arrow { text-decoration: none; }
      * comes out of it. Held here rather than looked up twice because both
      * seat() and flood() want the same box. */
     var hush = document.querySelector('[data-hush]');
+    /* The housing rather than the button: the glow belongs to the box the
+     * chain hangs off, and the button inside it is the thing you press. */
+    var lampBox = hush && hush.closest('.room');
     var bar = document.querySelector('meta[name="theme-color"]');
     var KEY = 'room';
 
@@ -17597,6 +17756,15 @@ a.arrow { text-decoration: none; }
      * write to. That is where the drag's jitter was. It changes on exactly one
      * thing -- the phone breakpoint, which shortens it -- so it is measured
      * here and re-measured on a resize, and nowhere else. */
+    /* Which tag is on the end of it, for as long as there are five of them.
+     * ?tag=1..5, read once; anything else leaves the chain wearing the ring
+     * and collar it was drawn with. See the note by .cord[data-tag] in the
+     * stylesheet. */
+    try {
+      var pick = new URLSearchParams(location.search).get('tag');
+      if (pick && /^[1-5]$/.test(pick)) { cord.setAttribute('data-tag', pick); }
+    } catch (e) {}
+
     var rest = 134;
     function measure() {
       rest = parseFloat(getComputedStyle(cord).getPropertyValue('--cord-len')) || 134;
@@ -17696,6 +17864,30 @@ a.arrow { text-decoration: none; }
       hand.style.transform = 'translate(' + (bx - 11).toFixed(1) + 'px,' +
                                             by.toFixed(1) + 'px)';
       bob.style.transform = 'rotate(' + rot.toFixed(2) + 'deg)';
+
+      /* And the lamp, which is being pulled toward its other state.
+       *
+       * How far the pull has got, as a fraction of the catch rather than of
+       * the travel -- see the note on --lamp in the stylesheet for why the
+       * catch is the figure that means something.
+       *
+       * Committed is armed-or-detent and not armed alone, because those two
+       * flags hand off to each other at the moment the finger lifts: release()
+       * reads armed, sets detent from it and then clears armed, so a preview
+       * driven by armed alone would collapse on the frame after release and
+       * the lamp would go dark on the way home from a pull that is about to
+       * light it.
+       *
+       * Written on the switch and not on the root, which would be the obvious
+       * place and the expensive one: a custom property on the document element
+       * invalidates style for everything under it, and this runs every frame
+       * of every drag. */
+      if (lampBox) {
+        var commit = armed || detent;
+        var lit = showing() === 'light';
+        var p = commit ? 1 : Math.max(0, Math.min(1, ext / CATCH));
+        lampBox.style.setProperty('--lamp', (lit ? 1 - p : p).toFixed(3));
+      }
     }
 
     /* One damped step of all three. Returns whether anything is still worth
