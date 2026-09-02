@@ -15334,7 +15334,10 @@ a.arrow { text-decoration: none; }
 
        The button is the ferrule rather than a box round it, so what you can
        grab is what you can see. See .cord in the stylesheet. -->
-  <div class="cord" data-cord>
+  <!-- data-tag="6" is the tube, which is the one that was chosen. It is set
+       here rather than by making the tube the base drawing, so ?tag= still
+       reaches all ten and there is one place that says which is standing. -->
+  <div class="cord" data-cord data-tag="6">
     <!-- The chain is one path and the script writes its d attribute every
          frame. Nothing is authored into it here, and there is deliberately no
          fallback drawn: a straight line sitting behind a curve is a straight
@@ -17965,13 +17968,33 @@ a.arrow { text-decoration: none; }
      *
      * Re-run from measure(), which already runs on load and on every resize --
      * and a resize is exactly when the stage rescales and the switch moves. */
+    /* And it hangs from just below the housing rather than from its edge.
+     *
+     * The chain is a stroke with a round cap and a dash pattern of nothing
+     * followed by a gap, so a bead is drawn centred on every dash -- including
+     * the one at distance zero, which is the first point of the path. Seated
+     * flush, that put a four-pixel bead centred on the housing's bottom border
+     * with half of it lying on the border itself: a bead stuck to the box
+     * rather than the first link of something hanging off it.
+     *
+     * Four, which is one less than the five the beads are spaced at. So the
+     * gap between the housing and the first bead reads as the same gap that is
+     * between every other pair, and the chain leaves the box the way a chain
+     * leaves a housing -- out of it, not welded to the rim of it.
+     *
+     * Done by moving the whole box rather than by offsetting the dash: the
+     * dash pattern is different in all five chain variations, so an offset
+     * would be five figures to keep in step, and the anchor genuinely is a
+     * little below the border -- that is where a real chain leaves a switch. */
+    var LEAD = 4;
+
     function seat() {
       if (!hush) { return; }
       var r = hush.getBoundingClientRect();
       if (!r.width && !r.height) { return; }   /* not laid out yet */
       cord.style.right = 'auto';
       cord.style.left = (r.left + r.width / 2 - AX).toFixed(1) + 'px';
-      cord.style.top  = r.bottom.toFixed(1) + 'px';
+      cord.style.top  = (r.bottom + LEAD).toFixed(1) + 'px';
     }
 
     /* Where the belly of the chain would sit if it had no weight of its own.
