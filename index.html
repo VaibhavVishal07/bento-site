@@ -2540,14 +2540,14 @@ body {
                --gx: 46%; --gy: -8%; --gw: 95%; --gh: 125%; --gs: 0.055; }
 .repo        { left: 1155px; top: 91px;  width: 366px; height: 484px;
                --gx: 50%; --gy: 0%;  --gw: 140%; --gh: 90%;  --gs: 0.014; }
-.experiments { left: 399px;  top: 596px; width: 364px; height: 335px;
+.experiments { left: 1155px; top: 596px; width: 366px; height: 335px;
                --gx: 100%; --gy: 0%; --gw: 130%; --gh: 140%; --gs: 0.05; }
 .thoughts    { left: 785px;  top: 596px; width: 350px; height: 139px;
                --gx: 68%; --gy: 0%;  --gw: 110%; --gh: 190%; --gs: 0.05; }
 .connect     { left: 785px;  top: 757px; width: 350px; height: 174px;
                --gx: 100%; --gy: 0%; --gw: 125%; --gh: 165%; --gs: 0.058; }
-.media       { left: 1155px; top: 596px; width: 366px; height: 335px;
-               --gx: 30%; --gy: 0%;  --gw: 125%; --gh: 130%; --gs: 0.042; }
+.ocarina     { left: 399px;  top: 596px; width: 364px; height: 335px;
+               --gx: 34%; --gy: 0%; --gw: 125%; --gh: 130%; --gs: 0.042; }
 
 /* --- type ---------------------------------------------------------------- */
 
@@ -2615,7 +2615,7 @@ body {
 /* Real assets. Every file is exported at 2x its design box, so the art has a
    spare pixel on each axis for high-DPR screens. `cover` crops rather than
    stretches where an export's aspect is a hair off its slot. */
-.avatar, .slot-player, .cover {
+.avatar, .slot-player {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -3043,11 +3043,11 @@ body {
 .repo:hover .repo-more-t { color: rgba(var(--w), 0.86); }
 
 /* ==========================================================================
-   Experiments & side quests — relative to 399, 596
+   Experiments & side quests — relative to 1155, 596
    ========================================================================== */
 
 .experiments .label    { left: 23px; top: 23px; }
-.experiments .arrow    { left: 316px; top: 21px; }
+.experiments .arrow    { left: 318px; top: 21px; }
 .experiments .headline { left: 25px; top: 60px; width: 297px; }
 .slot-side             { left: 28px; top: 138px; width: 313px; height: 163px; }
 
@@ -3203,70 +3203,188 @@ body {
 .socials svg { display: block; width: 24px; height: 24px; fill: currentColor; }
 
 /* ==========================================================================
-   About // Media — relative to 1155, 596.
-   The cover strip starts at -16 and runs off the right edge.
+   Ocarina — relative to 399, 596
+
+   The playground card's arrangement, and its figures: the label and the mark
+   on one line at 23, the headline at 60 across 297, and under them a thing
+   lying on the card with its lower quarter over the edge. Written out rather
+   than shared with .experiments through a common selector, because the two
+   cards are the same arrangement and not the same card -- one is a piece of
+   cutting mat with photographs taped to it and this is a plain card with a
+   window on it, and a shared block would have to be unpicked the first time
+   either of them moved.
    ========================================================================== */
 
-.media .label    { left: 24px; top: 23px; }
-.media .arrow    { left: 316px; top: 21px; }
-.media .headline { left: 25px; top: 60px; width: 244px; line-height: 26px; }
+.ocarina .label    { left: 23px; top: 23px; }
+.ocarina .arrow    { left: 318px; top: 21px; }
+.ocarina .headline { left: 25px; top: 60px; width: 297px; }
 
+/* ---- the window, drawn ---------------------------------------------------
 
+   Borrowed from ocarina-site, which builds the same window in markup for its
+   own hero rather than shipping a screenshot of it. Renamed at the door: that
+   file calls these .card, .row, .main, .side and .panel, and .card alone is
+   every box on this frame.
 
-/* The strip is a marquee: nine covers, listed twice, scrolled by exactly one
-   copy. Each cover carries its own right margin rather than a flex gap, so
-   both copies measure the same and the seam at -50% is invisible. One copy is
-   992px, so 28s is a shade over 35px/s. Hovering the card pauses it. */
+   1180 by 634 is the app window's own size, and it is kept. The card shows a
+   crop of a whole window rather than a squeezed one -- scale, never reflow,
+   which is the borrowed file's rule and the right one: a three-pane desktop
+   window reflowed into 340 pixels is three crushed columns.
 
-.covers {
+   0.6, and not the 0.364 that fitted the whole window across the card. The
+   whole window fitted was the wrong thing to want: at that size the sidebar
+   is 84 pixels, its tab names are five pixels tall, and the transcript -- the
+   only part of this that says what the app is for -- is texture. A card that
+   shows all of a thing you cannot read shows nothing.
+
+   At 0.6 the tab names and the transcript can be read, and the card holds the
+   left two thirds of the window instead of all of it: the sidebar entire, and
+   the run down to the passing tests. The rest is over the edge, which is what
+   the edge is for -- the same cut the three prints on the Work screen take,
+   and the lenticular cards on the playground card beside this one.
+
+   162 down is where that card starts its own pieces, so this one starts
+   there too. 380 tall against the 173 left under it shows a little under
+   half. The card's own overflow does the cutting. */
+.oc-win {
+  --oc-fit: 0.6;
+  --w-bg: #060B10; --w-fg: #C9D4E0; --w-top: #101721; --w-bot: #0B1019;
+  --w-acc: #31789B; --w-ground: #04070B;
+  --w-si: #87C7FF; --w-sr: #5CA8FF; --w-sg: #4CC773; --w-sf: #F25959;
+  --w-line: rgba(201, 212, 224, 0.13);
+  --w-dim:  rgba(201, 212, 224, 0.55);
+
   position: absolute;
-  left: -16px;
-  top: 202px;                            /* 214 less the headroom below   */
-  width: 380px;                          /* -16 → the card edge at 364    */
-  height: 167px;                         /* 155 plus the headroom         */
-  padding-top: 12px;                     /* room for a lifted cover: the  */
-  overflow: hidden;                      /* window clips, so it needs it  */
-}
-
-.cover-track {
+  left: 12px;
+  top: 162px;
+  width: 1180px;
+  height: 634px;
+  transform-origin: 0 0;
+  transform: scale(var(--oc-fit));
   display: flex;
-  align-items: flex-start;
-  width: max-content;
-  /* 110 seconds for 992 pixels, which is nine a second -- the same walk the
-     shelf on About runs at. It was 28, and a strip crossing three and a half
-     times faster than the one on the next screen reads as a different object
-     rather than the same idea twice. */
-  animation: cover-scroll 110s linear infinite;
+  flex-direction: column;
+  background: var(--w-bg);
+  color: var(--w-fg);
+  font-family: ui-monospace, Menlo, monospace;
+  border-radius: 10px;
 }
 
-/* The strip stops for a cover, not for the card. :has() rather than a hover on
-   the track itself, because the track's box spans the 12/16px margins between
-   covers -- hovering a gap would pause a strip with nothing under the cursor. */
-.cover-track:has(.cover:hover) { animation-play-state: paused; }
-
-@keyframes cover-scroll {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-50%); }
-}
-
-/* Widths and heights keep the frame's rhythm; the 12/16 gaps are the frame's
-   own, alternating so the wrap lands on the same beat as every other joint. */
-/* The same four shadows the shelf on About uses. Two strips of the same idea
-   should be the same object twice. */
-.cover {
-  position: relative;
+/* A real titlebar with nothing written in it, the way the app draws it: the
+   sidebar carries the wordmark, so a title here would be the name twice. */
+.oc-bar {
+  height: 34px;
   flex: none;
-  margin-right: 12px;
-  box-shadow: var(--lie);
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0 14px;
+  background: var(--w-ground);
 }
-.cover-2, .cover-4, .cover-6, .cover-8 { margin-right: 16px; }
+.oc-bar b { width: 10px; height: 10px; border-radius: 50%; }
 
-/* One size, because they are one kind of thing. The nine used to alternate
-   between 95/96/97/98 wide and 149/155 tall, which was a lot of arithmetic to
-   make a rack of paperbacks look hand-stacked and mostly read as covers that
-   would not line up. 2:3 is what a jacket is, and it is what the shelf on the
-   About screen uses. */
-.cover { width: 96px; height: 144px; }
+/* Four panels floating on the window's ground, with the same gap outside them
+   as between them. */
+.oc-body { flex: 1; display: flex; gap: 10px; padding: 10px; min-height: 0;
+           background: var(--w-ground); }
+.oc-pane { border: 1px solid var(--w-line); border-radius: 12px; }
+/* One gradient cut in two, so the light falls across the column once. */
+.oc-up   { background: linear-gradient(var(--w-top), var(--w-bot)); }
+.oc-down { background: linear-gradient(var(--w-bot), var(--w-ground)); }
+
+.oc-side { width: 230px; flex: none; display: flex; flex-direction: column; gap: 10px; }
+.oc-tabs { flex: 1; min-height: 0; padding: 11px 9px; overflow: hidden; }
+.oc-foot { flex: none; padding: 8px 9px; }
+
+/* The word, where the app draws the mark. The app sets OCARINA on the same
+   dot-matrix board its empty terminal and its token meter are drawn on, and
+   that board is a canvas and a script. At this size it would be nine pixels
+   of it, so it is the word instead, spaced the way the board spaces it. */
+.oc-mark {
+  margin: 4px 0 20px 8px;
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  color: var(--w-si);
+}
+
+.oc-row {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 10px 9px;
+  border-radius: 9px;
+  font-size: 13px;
+  font-style: normal;
+  color: var(--w-dim);
+  white-space: nowrap;
+  overflow: hidden;
+}
+.oc-foot .oc-row { padding: 6px 9px; gap: 7px; }
+.oc-row s { text-decoration: none; overflow: hidden; text-overflow: ellipsis; }
+/* The selected tab wears the theme's accent, fill and edge. It was a whitish
+   wash in an earlier draft of the app, which is the same grey rectangle in
+   every theme. */
+.oc-row.on {
+  background: rgba(49, 120, 155, 0.11);
+  box-shadow: inset 0 0 0 1px rgba(49, 120, 155, 0.34);
+  color: var(--w-fg);
+}
+/* First in the row, so the column of dots can be read down the edge without
+   stopping at any of the names. Semantic, and its own group in the app's
+   theme file rather than three of the ansi sixteen: a dot has to mean stop
+   and go whatever the theme does to red and green. */
+.oc-dot { width: 7px; height: 7px; border-radius: 50%; flex: none; background: var(--w-si); }
+.oc-dot.run { background: var(--w-sr); }
+.oc-dot.bad { background: var(--w-sf); }
+.oc-dot.ok  { background: var(--w-sg); }
+.oc-dot.off { background: rgba(201, 212, 224, 0.22); }
+/* The two switches, drawn rather than named. Both are on, which is the state
+   the app ships and the state the window above is in. */
+.oc-sw {
+  margin-left: auto;
+  width: 28px;
+  height: 16px;
+  border-radius: 9px;
+  flex: none;
+  background: var(--w-acc);
+  position: relative;
+}
+.oc-sw::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 14px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #0B1015;
+}
+
+.oc-main {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  padding: 16px 20px;
+  background: var(--w-bg);
+  border: 1px solid var(--w-line);
+  border-radius: 12px;
+  font-size: 14px;
+  line-height: 2;
+}
+.oc-main i { display: block; font-style: normal; white-space: pre-wrap; }
+.oc-main .oc-dim { color: var(--w-dim); }
+.oc-main em { font-style: normal; color: var(--w-si); }
+.oc-main b  { font-weight: 400; color: var(--w-acc); }
+.oc-main u  { text-decoration: none; color: var(--w-acc); }
+.oc-main q  { quotes: none; color: var(--w-sg); }
+
+/* The task panel, open. At 0.6 it is past the card's right edge entirely and
+   nothing of it shows, and it is written anyway: this is the app's window and
+   the panel is open in it. A crop that reached further would find it there,
+   which is the difference between a window cropped and a window redrawn to
+   fit a crop. */
+.oc-right { width: 230px; flex: none; display: flex; }
+.oc-right .oc-pane { flex: 1; }
 
 /* ==========================================================================
    Nav — absolute in the frame
@@ -3944,6 +4062,21 @@ body {
 .card[data-tile="b"],
 .card[data-tile="f"] { --x-delay: calc(var(--x-step) * 3); }
 
+/* Two cards on Home are read by where they stand rather than by their
+   letters, and only on Home.
+
+   The bottom row swapped ends. Tile c is the left column on every other
+   screen -- the playground lead on L2, the gallery on L3 -- and it keeps the
+   left column's step there; on Home it is the third column now. Tile f is the
+   third column everywhere else and on Home it is the left. Left as they were,
+   the two of them turn the bottom row over from right to left, which is the
+   sweep running backwards.
+
+   So the pair swap, here and nowhere else, and the rules above go on saying
+   what they say on every other screen. */
+.view-home .card[data-tile="c"] { --x-delay: calc(var(--x-step) * 3); }
+.view-home .card[data-tile="f"] { --x-delay: var(--x-step); }
+
 /* Moves 1 and 3 -- what is printed on the tiles. Pseudo-elements are not
    matched by `> *`, so the glare and the edge light stay with the box, which
    is where they belong: they are the tile, not its contents.
@@ -4174,35 +4307,31 @@ body {
    the left instead, the wide tile slides over to make room for it, and the
    bottom row turns over behind them.
 
-   L1 has one tile more than L2 and L3 -- the media card, bottom right -- so on
-   those two crossings one tile has no partner. It was made to fly: it measured
-   which incoming tile was taking its ground and travelled onto it, and split
-   back out of it on the way home.
+   Not every tile has a partner, and the ones that do not simply fade where
+   they stand. L1 used to be the screen with one tile more -- the media card,
+   bottom right -- and that card was made to fly: it measured which incoming
+   tile was taking its ground and travelled onto it, and split back out of it
+   on the way home.
 
-   It has stopped flying, for both of the reasons a card ever should. The first
-   is that it looked wrong -- a card crossing the frame says this is the same
-   screen being reorganised in front of you, which is the one thing a change of
-   level is not, and it is no more true of the media card than it was of the
-   rail. The second is that it could not be made smooth: that card carries the
-   cover marquee, eighteen images on a running animation, and driving its top
-   and height 500 pixels in a fifth of a second means laying all of them out
-   again on every frame. It stuttered, and it was always going to.
+   It had stopped flying long before it came off the screen, for both of the
+   reasons a card ever should. The first is that it looked wrong -- a card
+   crossing the frame says this is the same screen being reorganised in front
+   of you, which is the one thing a change of level is not. The second is that
+   it could not be made smooth: that card carried the cover marquee, eighteen
+   images on a running animation, and driving its top and height 500 pixels in
+   a fifth of a second means laying all of them out again on every frame.
 
-   So it holds still and fades, and what makes that read as something other
-   than a box being switched off is the tile that takes its place: the writing
-   index grows down over exactly that ground, and on the way back shrinks off
-   it again before the media card returns. The ground is visibly taken and
-   visibly given up. Nothing has to fly to say so. */
+   The shelf is off Home now and the ocarina card has its letter, so f is a
+   pair again and it is tile e -- Connect -- that L2 has no answer for. It
+   fades where it stands, the way the media card had been doing. The script
+   needs no rule for either: a tile with no partner is found by measuring and
+   not by being named, so which letter is the odd one this month is not
+   something this file has to know. See open(). */
 .x-solo { opacity: 0; }
 
 /* Nothing is clickable while it is mid-move -- which also keeps the pointer
    from starting a tilt on a card whose box is still travelling. */
 .x-empty .view { pointer-events: none; }
-
-/* And nothing is scrolling. The marquee is behind faded-out contents for the
-   whole crossing, so it has nothing to show and every frame it costs is a
-   frame the boxes and the lattice are not getting. */
-.x-empty .cover-track { animation-play-state: paused; }
 
 /* ==========================================================================
    L2 -- work. Same three columns, same two rows.
@@ -8487,12 +8616,6 @@ body {
   border-radius: inherit;
 }
 
-/* The strip has to receive its own hover, so the media card's hit area stops
-   at the top of the covers window -- above the 12px headroom, not level with
-   the covers, or a lifted cover would slide under the overlay, lose the hover
-   and drop straight back. */
-.media .card-hit { bottom: 133px; }
-
 .card-hit:focus-visible,
 a.arrow:focus-visible {
   outline: 2px solid rgb(var(--w));
@@ -8658,18 +8781,6 @@ a.arrow { text-decoration: none; }
      the leaning -- and without one it is not rasterised as a single flattened
      surface every time anything inside it moves. */
   .bk { transform: none; }
-
-  /* Pick one out of the shelf. Hovering the track dims every cover; the one
-     under the cursor takes itself back and rises into the headroom. Both
-     copies of a cover dim together, which is what the loop should do. */
-  .cover { transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease); }
-  .cover-track:has(.cover:hover) .cover { opacity: 0.15; }
-
-  /* Matched through :has() as well, and not just `.cover-track .cover:hover`.
-     :has() carries the specificity of its argument, so the dim rule above
-     weighs (0,4,0); the plain descendant form is (0,3,0) and loses, which
-     dimmed the hovered cover along with the rest and blacked out the strip. */
-  .cover-track:has(.cover:hover) .cover:hover { opacity: 1; transform: translateY(-10px); }
 }
 
 /* ==========================================================================
@@ -12858,7 +12969,7 @@ a.arrow { text-decoration: none; }
      float over it, and a floating pane with square corners and eighteen
      pixels of air either side does not read as floating. It reads as a shelf
      that has failed to reach the edges. */
-  .card, .card::after, .slot, .cover, .avatar,
+  .card, .card::after, .slot, .avatar,
   .btn, .c-stat b { border-radius: 0; }
 
   /* And the rim comes off with the rest of the glass. It is the lit top edge
@@ -12874,10 +12985,10 @@ a.arrow { text-decoration: none; }
   .thoughts { order: 3; }
   .experiments { order: 4; }
   .connect { order: 5; }
-  .media { order: 6; }
+  .ocarina { order: 6; }
 
   .label, .headline, .sub, .wordmark, .blurb, .now, .repo-more, .arrow,
-  .slot-player, .slot-side, .socials {
+  .slot-player, .slot-side, .slot-oc, .socials {
     position: static;
     left: auto;
     top: auto;
@@ -12935,7 +13046,6 @@ a.arrow { text-decoration: none; }
   .card > .arrow { display: none; }
   .label { display: block; margin-bottom: 18px; }
   .headline { margin-bottom: 8px; }
-  .media .headline { line-height: 28px; }
   .sub { margin-bottom: 16px; }
   .repo-more { display: flex; margin-top: 18px; }
 
@@ -12947,6 +13057,7 @@ a.arrow { text-decoration: none; }
   .actions { display: flex; gap: 12px; margin-top: 26px; }
 
   .slot-player { height: 210px; margin-bottom: 20px; }
+  .slot-oc { height: 190px; margin-bottom: 20px; }
   .slot-side { height: 160px; margin-top: 18px; }
 
   /* And it is cropped rather than pulled to fit.
@@ -12958,33 +13069,13 @@ a.arrow { text-decoration: none; }
      exports: 293x210 against a picture drawn 316x249. Stretched, on exactly
      the devices the scoping was meant to spare.
      A layout question wants a layout answer, so it is settled by width. */
-  .avatar, .slot-player, .slot-side, .bk-plate, .lab-pshot, .pc-shot,
+  .avatar, .slot-player, .slot-side, .slot-oc, .bk-plate, .lab-pshot, .pc-shot,
   .intro:hover .avatar, .repo:hover .slot-player {
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
   }
   .socials { gap: 28px; margin-top: 6px; }
-
-  /* The marquee keeps running here too. Both copies stay in the flow and
-     every cover is levelled to one size, so the two halves still measure the
-     same and the seam at -50% lands invisibly. Full-bleed, like the desktop
-     strip: there it is left: -16px on a 364px card, so it runs past both
-     edges and the card's overflow trims it. Here it has to climb back out of
-     the card's own padding to reach the same edges. */
-  .covers {
-    position: static;
-    width: auto;
-    height: auto;
-    padding-top: 0;
-    margin: 20px calc(var(--pad) * -1) 0;
-    overflow: hidden;
-  }
-  .cover-track { width: max-content; }
-  .cover-track .cover { position: static; width: 96px; height: 152px; margin-right: 12px; }
-
-  /* No pointer to keep off the strip here, so the link takes the card back. */
-  .media .card-hit { bottom: 0; }
 
   /* ---- glass -----------------------------------------------------------
 
@@ -13903,7 +13994,6 @@ a.arrow { text-decoration: none; }
 
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; }
-  .cover-track { animation: none; }
 
   /* Killing the transitions alone would leave the arrow and the art jumping
      straight to their hover positions, which is the motion, not the easing.
@@ -13916,7 +14006,6 @@ a.arrow { text-decoration: none; }
   .repo:hover .slot-player { background-size: 100% 100%; }
 
   .card { transform: none; }
-  .cover-track .cover:hover { transform: none; }
 
   /* A caret that never stops blinking is the one animation nobody can look
      away from. Leave it lit. */
@@ -14004,6 +14093,11 @@ a.arrow { text-decoration: none; }
 .arriving .card[data-tile="d"] { --at: 1620ms; }
 .arriving .card[data-tile="e"] { --at: 1700ms; }
 .arriving .card[data-tile="f"] { --at: 1780ms; }
+/* And the same pair on the way in, for the same reason: on Home the
+   playground card is the last box and lands last, and the ocarina card is the
+   first of the bottom row. See .view-home .card[data-tile="c"] above. */
+.arriving .view-home .card[data-tile="c"] { --at: 1780ms; }
+.arriving .view-home .card[data-tile="f"] { --at: 1530ms; }
 .arriving .nav  { --at: 1860ms; }
 /* The pair in the margins land together, and last. On Home the way back is
    hidden and there is nothing to land; on a deep link there is. */
@@ -14471,6 +14565,21 @@ a.arrow { text-decoration: none; }
     top: calc(158px + 0.25 * var(--lens));
     --w: calc(var(--lens) * 0.973);
   }
+
+  /* And the window on the ocarina card, for the same reason and by the same
+     means. It is cut here as it is cut up there -- flush to the card's own
+     edge rather than inside the padding, because a thing that stops short of
+     the edge is a picture of it.
+     0.52 rather than the frame's 0.6, which keeps the sidebar and the first
+     of the transcript on a card narrower than 364 and reads at the same size.
+     A scale cannot be worked out from the viewport -- scale() takes a number
+     and there is no dividing a length by a length in CSS -- so it is the
+     figure that holds across the widths a phone actually is.
+     The card is given the height to show it, because an absolutely placed box
+     contributes none: 168 for the label and the headline, and 170 of window
+     under them. */
+  .ocarina { min-height: 338px; }
+  .oc-win { --oc-fit: 0.52; left: 0; top: 168px; }
 }
 
 
@@ -14637,6 +14746,10 @@ a.arrow { text-decoration: none; }
     </section>
 
     <!-- ======================= experiments =========================== -->
+    <!-- Third column, bottom, where the shelf's cover strip used to run. It
+         is the same card it was in the left column: a piece cut out of a mat
+         with two lenticular cards lying on it, 2px wider because that is what
+         the column between the frame's 1155 and 1521 measures. -->
     <section class="card experiments" data-tile="c">
 
       <p class="label">Playground</p>
@@ -14710,40 +14823,66 @@ a.arrow { text-decoration: none; }
       </div>
     </section>
 
-    <!-- ======================== about // media ======================= -->
-    <section class="card media" data-tile="f">
-      <p class="label">The shelf</p>
+    <!-- ========================== ocarina =========================== -->
+    <!-- The ground the playground card left, and the one card on this screen
+         that leads off it: a macOS terminal, its own product, its own site.
+         Tile f because f was the letter going spare -- the shelf card had it
+         -- and because Work's third project box is an f too, so the two are
+         partners across the crossing again the way every other pair is: by
+         where they stand, not by what they are about. -->
+    <section class="card ocarina" data-tile="f">
+      <p class="label">Ocarina Terminal</p>
       <span class="arrow" aria-hidden="true">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
              stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h17M14 6l6 6-6 6"/></svg>
       </span>
-      <h2 class="headline">What I am reading, playing and refusing to finish.</h2>
+      <h2 class="headline">Many coding agents in one window, and it explains what breaks.</h2>
 
-      <div class="covers" role="img" aria-label="Book and game covers off the shelf">
-        <div class="cover-track">
-          <div class="slot cover" style="background-image:url('assets/covers/red-rising.jpg');background-size:cover;background-position:center;background-repeat:no-repeat"></div>
-          <div class="slot cover" style="background-image:url('assets/covers/cover-1.png');background-size:cover;background-position:center;background-repeat:no-repeat"></div>
-          <div class="slot cover" style="background-image:url('assets/covers/project-hail-mary.jpg');background-size:cover;background-position:center;background-repeat:no-repeat"></div>
-          <div class="slot cover" style="background-image:url('assets/covers/edith-finch.jpg');background-size:cover;background-position:center;background-repeat:no-repeat"></div>
-          <div class="slot cover" style="background-image:url('assets/covers/piranesi.jpg');background-size:cover;background-position:center;background-repeat:no-repeat"></div>
-          <div class="slot cover" style="background-image:url('assets/covers/cover-6.png');background-size:cover;background-position:center;background-repeat:no-repeat"></div>
-          <div class="slot cover" style="background-image:url('assets/covers/never-let-me-go.jpg');background-size:cover;background-position:center;background-repeat:no-repeat"></div>
-          <div class="slot cover" style="background-image:url('assets/covers/hades.jpg');background-size:cover;background-position:center;background-repeat:no-repeat"></div>
-          <div class="slot cover" style="background-image:url('assets/covers/klara-and-the-sun.jpg');background-size:cover;background-position:center;background-repeat:no-repeat"></div>
-          <!-- the same nine again: the loop scrolls by exactly one copy -->
-          <div class="slot cover cover-loop" style="background-image:url('assets/covers/red-rising.jpg');background-size:cover;background-position:center;background-repeat:no-repeat"></div>
-          <div class="slot cover cover-loop" style="background-image:url('assets/covers/cover-1.png');background-size:cover;background-position:center;background-repeat:no-repeat"></div>
-          <div class="slot cover cover-loop" style="background-image:url('assets/covers/project-hail-mary.jpg');background-size:cover;background-position:center;background-repeat:no-repeat"></div>
-          <div class="slot cover cover-loop" style="background-image:url('assets/covers/edith-finch.jpg');background-size:cover;background-position:center;background-repeat:no-repeat"></div>
-          <div class="slot cover cover-loop" style="background-image:url('assets/covers/piranesi.jpg');background-size:cover;background-position:center;background-repeat:no-repeat"></div>
-          <div class="slot cover cover-loop" style="background-image:url('assets/covers/cover-6.png');background-size:cover;background-position:center;background-repeat:no-repeat"></div>
-          <div class="slot cover cover-loop" style="background-image:url('assets/covers/never-let-me-go.jpg');background-size:cover;background-position:center;background-repeat:no-repeat"></div>
-          <div class="slot cover cover-loop" style="background-image:url('assets/covers/hades.jpg');background-size:cover;background-position:center;background-repeat:no-repeat"></div>
-          <div class="slot cover cover-loop" style="background-image:url('assets/covers/klara-and-the-sun.jpg');background-size:cover;background-position:center;background-repeat:no-repeat"></div>
+      <div class="oc-win" aria-hidden="true">
+        <div class="oc-bar"><b style="background:#FF5F57"></b><b style="background:#FEBC2E"></b><b style="background:#28C840"></b></div>
+        <div class="oc-body">
+          <div class="oc-side">
+            <div class="oc-pane oc-up oc-tabs">
+              <p class="oc-mark">OCARINA</p>
+          <i class="oc-row on"><b class="oc-dot run"></b><s>Fix the checkout page</s></i>
+          <i class="oc-row"><b class="oc-dot run"></b><s>Write the sign-up tests</s></i>
+          <i class="oc-row"><b class="oc-dot bad"></b><s>Rename the theme files</s></i>
+          <i class="oc-row"><b class="oc-dot ok"></b><s>Add a dark mode toggle</s></i>
+          <i class="oc-row"><b class="oc-dot off"></b><s>portfolio-site</s></i>
+            </div>
+            <div class="oc-pane oc-down oc-foot">
+              <i class="oc-row"><s>Theme</s></i>
+              <i class="oc-row"><s>Share Feedback</s></i>
+              <i class="oc-row"><s>Tasks</s><u class="oc-sw"></u></i>
+              <i class="oc-row"><s>Keep Awake</s><u class="oc-sw"></u></i>
+            </div>
+          </div>
+          <div class="oc-main">
+          <i><em>vaibhav@mac</em> <b>~/portfolio-site</b></i>
+          <i><u>&#10095;</u> claude</i>
+          <i>&nbsp;</i>
+          <i class="oc-dim">&gt; Fix the checkout page. The total doesn&#39;t change</i>
+          <i class="oc-dim">&gt; when someone picks a different quantity.</i>
+          <i>&nbsp;</i>
+          <i>Looking through the cart files</i>
+          <i class="oc-dim">&nbsp;&nbsp;found it: the quantity box never tells the total</i>
+          <i>Making the change</i>
+          <i>Running the tests</i>
+          <i><q>&#10003;</q> all 14 passed</i>
+          <i>&nbsp;</i>
+          <i><q>&#10003;</q> The total now updates when the quantity changes.</i>
+          <i>&nbsp;</i>
+          <i><em>vaibhav@mac</em> <b>~/portfolio-site</b></i>
+          <i><u>&#10095;</u></i>
+          </div>
+          <div class="oc-right">
+            <div class="oc-pane oc-up"></div>
+          </div>
         </div>
       </div>
 
-      <a class="card-hit" href="#about" data-route="about" aria-label="Open About"></a>
+      <a class="card-hit" href="https://vaibhavvishal07.github.io/ocarina-site/" target="_blank"
+         rel="noopener" aria-label="Open the Ocarina Terminal site, in a new tab"></a>
     </section>
 
     </div>
@@ -14759,8 +14898,8 @@ a.arrow { text-decoration: none; }
       <p class="crumb-count">03 projects &nbsp;/&nbsp; 8 writings</p>
 
       <!-- ------------------------- lead project ---------------------- -->
-      <!-- Tile c is Home's own Playground card, 399,596,364x335: straight up
-           the frame and twice the width when it lands. -->
+      <!-- Tile c is Home's own Playground card, 1155,596,366x335: across the
+           frame and twice the width when it lands. -->
       <section class="card w-lab" data-tile="c">
         <span class="mat-tool t-work-1" aria-hidden="true"></span>
         <span class="mat-tool t-work-2" aria-hidden="true"></span>
@@ -14863,7 +15002,7 @@ a.arrow { text-decoration: none; }
       </section>
 
       <!-- ------------------------ w-three ------------------------ -->
-      <!-- Tile f crosses the whole frame from Home's media strip. -->
+      <!-- Tile f is the ocarina card on Home, which stands where the playground card used to. -->
       <section class="card w-three" data-tile="f">
         <span class="w-shot is-blank" aria-hidden="true"></span>
         <div class="w-said">
