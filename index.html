@@ -3219,172 +3219,35 @@ body {
 .ocarina .arrow    { left: 318px; top: 21px; }
 .ocarina .headline { left: 25px; top: 60px; width: 297px; }
 
-/* ---- the window, drawn ---------------------------------------------------
+/* ---- the window ----------------------------------------------------------
 
-   Borrowed from ocarina-site, which builds the same window in markup for its
-   own hero rather than shipping a screenshot of it. Renamed at the door: that
-   file calls these .card, .row, .main, .side and .panel, and .card alone is
-   every box on this frame.
+   The photograph as it was framed, and the card does not second-guess it.
 
-   1180 by 634 is the app window's own size, and it is kept. The card shows a
-   crop of a whole window rather than a squeezed one -- scale, never reflow,
-   which is the borrowed file's rule and the right one: a three-pane desktop
-   window reflowed into 340 pixels is three crushed columns.
+   It ran at 396 in a 364 card for a while, which is to say it was enlarged
+   past the card and cropped by it, and the framing you actually saw was this
+   file's rather than the picture's. It is the card's width now: the margin
+   down the left of the shot is the margin on the card, the window's own edge
+   is where the shot puts it, and the only thing the card still does is trim
+   the last 41 of the 234 -- 17 per cent, off a picture that already runs off
+   its own right edge and its own foot.
 
-   0.6, and not the 0.364 that fitted the whole window across the card. The
-   whole window fitted was the wrong thing to want: at that size the sidebar
-   is 84 pixels, its tab names are five pixels tall, and the transcript -- the
-   only part of this that says what the app is for -- is texture. A card that
-   shows all of a thing you cannot read shows nothing.
+   So the height is not chosen. 364 by 234 is 573 by 369 at the card's width,
+   and if the shot is retaken at another shape this figure is what changes.
 
-   At 0.6 the tab names and the transcript can be read, and the card holds the
-   left two thirds of the window instead of all of it: the sidebar entire, and
-   the run down to the passing tests. The rest is over the edge, which is what
-   the edge is for -- the same cut the three prints on the Work screen take,
-   and the lenticular cards on the playground card beside this one.
+   142 down: 36 clear of the headline, which is the air the playground card
+   leaves over its own pieces. */
+.slot-oc { left: 0; top: 142px; width: 364px; height: 234px; }
 
-   162 down is where that card starts its own pieces, so this one starts
-   there too. 380 tall against the 173 left under it shows a little under
-   half. The card's own overflow does the cutting. */
-.oc-win {
-  --oc-fit: 0.6;
-  --w-bg: #060B10; --w-fg: #C9D4E0; --w-top: #101721; --w-bot: #0B1019;
-  --w-acc: #31789B; --w-ground: #04070B;
-  --w-si: #87C7FF; --w-sr: #5CA8FF; --w-sg: #4CC773; --w-sf: #F25959;
-  --w-line: rgba(201, 212, 224, 0.13);
-  --w-dim:  rgba(201, 212, 224, 0.55);
-
-  position: absolute;
-  left: 12px;
-  top: 162px;
-  width: 1180px;
-  height: 634px;
-  transform-origin: 0 0;
-  transform: scale(var(--oc-fit));
-  display: flex;
-  flex-direction: column;
-  background: var(--w-bg);
-  color: var(--w-fg);
-  font-family: ui-monospace, Menlo, monospace;
-  border-radius: 10px;
-}
-
-/* A real titlebar with nothing written in it, the way the app draws it: the
-   sidebar carries the wordmark, so a title here would be the name twice. */
-.oc-bar {
-  height: 34px;
-  flex: none;
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  padding: 0 14px;
-  background: var(--w-ground);
-}
-.oc-bar b { width: 10px; height: 10px; border-radius: 50%; }
-
-/* Four panels floating on the window's ground, with the same gap outside them
-   as between them. */
-.oc-body { flex: 1; display: flex; gap: 10px; padding: 10px; min-height: 0;
-           background: var(--w-ground); }
-.oc-pane { border: 1px solid var(--w-line); border-radius: 12px; }
-/* One gradient cut in two, so the light falls across the column once. */
-.oc-up   { background: linear-gradient(var(--w-top), var(--w-bot)); }
-.oc-down { background: linear-gradient(var(--w-bot), var(--w-ground)); }
-
-.oc-side { width: 230px; flex: none; display: flex; flex-direction: column; gap: 10px; }
-.oc-tabs { flex: 1; min-height: 0; padding: 11px 9px; overflow: hidden; }
-.oc-foot { flex: none; padding: 8px 9px; }
-
-/* The word, where the app draws the mark. The app sets OCARINA on the same
-   dot-matrix board its empty terminal and its token meter are drawn on, and
-   that board is a canvas and a script. At this size it would be nine pixels
-   of it, so it is the word instead, spaced the way the board spaces it. */
-.oc-mark {
-  margin: 4px 0 20px 8px;
-  font-size: 15px;
-  font-weight: 500;
-  letter-spacing: 0.22em;
-  color: var(--w-si);
-}
-
-.oc-row {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  padding: 10px 9px;
-  border-radius: 9px;
-  font-size: 13px;
-  font-style: normal;
-  color: var(--w-dim);
-  white-space: nowrap;
-  overflow: hidden;
-}
-.oc-foot .oc-row { padding: 6px 9px; gap: 7px; }
-.oc-row s { text-decoration: none; overflow: hidden; text-overflow: ellipsis; }
-/* The selected tab wears the theme's accent, fill and edge. It was a whitish
-   wash in an earlier draft of the app, which is the same grey rectangle in
-   every theme. */
-.oc-row.on {
-  background: rgba(49, 120, 155, 0.11);
-  box-shadow: inset 0 0 0 1px rgba(49, 120, 155, 0.34);
-  color: var(--w-fg);
-}
-/* First in the row, so the column of dots can be read down the edge without
-   stopping at any of the names. Semantic, and its own group in the app's
-   theme file rather than three of the ansi sixteen: a dot has to mean stop
-   and go whatever the theme does to red and green. */
-.oc-dot { width: 7px; height: 7px; border-radius: 50%; flex: none; background: var(--w-si); }
-.oc-dot.run { background: var(--w-sr); }
-.oc-dot.bad { background: var(--w-sf); }
-.oc-dot.ok  { background: var(--w-sg); }
-.oc-dot.off { background: rgba(201, 212, 224, 0.22); }
-/* The two switches, drawn rather than named. Both are on, which is the state
-   the app ships and the state the window above is in. */
-.oc-sw {
-  margin-left: auto;
-  width: 28px;
-  height: 16px;
-  border-radius: 9px;
-  flex: none;
-  background: var(--w-acc);
-  position: relative;
-}
-.oc-sw::after {
-  content: "";
-  position: absolute;
-  top: 2px;
-  left: 14px;
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: #0B1015;
-}
-
-.oc-main {
-  flex: 1;
-  min-width: 0;
-  overflow: hidden;
-  padding: 16px 20px;
-  background: var(--w-bg);
-  border: 1px solid var(--w-line);
-  border-radius: 12px;
-  font-size: 14px;
-  line-height: 2;
-}
-.oc-main i { display: block; font-style: normal; white-space: pre-wrap; }
-.oc-main .oc-dim { color: var(--w-dim); }
-.oc-main em { font-style: normal; color: var(--w-si); }
-.oc-main b  { font-weight: 400; color: var(--w-acc); }
-.oc-main u  { text-decoration: none; color: var(--w-acc); }
-.oc-main q  { quotes: none; color: var(--w-sg); }
-
-/* The task panel, open. At 0.6 it is past the card's right edge entirely and
-   nothing of it shows, and it is written anyway: this is the app's window and
-   the panel is open in it. A crop that reached further would find it there,
-   which is the difference between a window cropped and a window redrawn to
-   fit a crop. */
-.oc-right { width: 230px; flex: none; display: flex; }
-.oc-right .oc-pane { flex: 1; }
+/* And no ground under it. .slot paints var(--slot) -- the light wash this
+   site puts where a picture is promised and has not arrived -- and this
+   picture has arrived with a transparent margin down its left and a
+   transparent corner at each end of its titlebar. The wash was showing
+   through all three as a grey patch, which is the placeholder for a missing
+   picture doing its job behind a picture that is present.
+   Taken off rather than the class dropped: the box is still a slot, it is
+   placed like every other slot, and what is different about it is one
+   declaration and not a family. */
+.slot-oc { background-color: transparent; }
 
 /* ==========================================================================
    Nav — absolute in the frame
@@ -12988,7 +12851,7 @@ a.arrow { text-decoration: none; }
   .ocarina { order: 6; }
 
   .label, .headline, .sub, .wordmark, .blurb, .now, .repo-more, .arrow,
-  .slot-player, .slot-side, .slot-oc, .socials {
+  .slot-player, .slot-side, .socials {
     position: static;
     left: auto;
     top: auto;
@@ -13057,7 +12920,6 @@ a.arrow { text-decoration: none; }
   .actions { display: flex; gap: 12px; margin-top: 26px; }
 
   .slot-player { height: 210px; margin-bottom: 20px; }
-  .slot-oc { height: 190px; margin-bottom: 20px; }
   .slot-side { height: 160px; margin-top: 18px; }
 
   /* And it is cropped rather than pulled to fit.
@@ -14570,16 +14432,30 @@ a.arrow { text-decoration: none; }
      means. It is cut here as it is cut up there -- flush to the card's own
      edge rather than inside the padding, because a thing that stops short of
      the edge is a picture of it.
-     0.52 rather than the frame's 0.6, which keeps the sidebar and the first
-     of the transcript on a card narrower than 364 and reads at the same size.
-     A scale cannot be worked out from the viewport -- scale() takes a number
-     and there is no dividing a length by a length in CSS -- so it is the
-     figure that holds across the widths a phone actually is.
-     The card is given the height to show it, because an absolutely placed box
-     contributes none: 168 for the label and the headline, and 170 of window
-     under them. */
-  .ocarina { min-height: 338px; }
-  .oc-win { --oc-fit: 0.52; left: 0; top: 168px; }
+     Wider than the card here too, and by a percentage rather than a figure,
+     because the card down here is whatever the viewport leaves it. The height
+     comes off the picture's own ratio rather than a second figure that would
+     have to be kept in step with it by hand. Flush to the card's edge and not
+     inside its padding, for the reason the lenticular cards above are: a
+     thing that stops short of the edge is a picture of it.
+
+     The card's width here as well, which down here is all of it, and the
+     ratio does the height so there is no second figure to keep in step by
+     hand. What the room under it has to hold is not a height but a fraction
+     of the picture -- the same five sixths the frame shows -- and a card 40
+     pixels wider makes the picture 26 taller, so a fixed figure would show
+     less of it on the wider phone. The room is taken off the width instead:
+     the picture is 0.644 of the card tall, five sixths of that is 0.531, and
+     that is the same fraction of the same picture at every width. min-height
+     carries it because an absolutely placed box contributes none. */
+  .ocarina { min-height: calc(168px + 0.531 * (100vw - 34px)); }
+  .slot-oc {
+    left: 0;
+    top: 168px;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 573 / 369;
+  }
 }
 
 
@@ -14838,48 +14714,7 @@ a.arrow { text-decoration: none; }
       </span>
       <h2 class="headline">Many coding agents in one window, and it explains what breaks.</h2>
 
-      <div class="oc-win" aria-hidden="true">
-        <div class="oc-bar"><b style="background:#FF5F57"></b><b style="background:#FEBC2E"></b><b style="background:#28C840"></b></div>
-        <div class="oc-body">
-          <div class="oc-side">
-            <div class="oc-pane oc-up oc-tabs">
-              <p class="oc-mark">OCARINA</p>
-          <i class="oc-row on"><b class="oc-dot run"></b><s>Fix the checkout page</s></i>
-          <i class="oc-row"><b class="oc-dot run"></b><s>Write the sign-up tests</s></i>
-          <i class="oc-row"><b class="oc-dot bad"></b><s>Rename the theme files</s></i>
-          <i class="oc-row"><b class="oc-dot ok"></b><s>Add a dark mode toggle</s></i>
-          <i class="oc-row"><b class="oc-dot off"></b><s>portfolio-site</s></i>
-            </div>
-            <div class="oc-pane oc-down oc-foot">
-              <i class="oc-row"><s>Theme</s></i>
-              <i class="oc-row"><s>Share Feedback</s></i>
-              <i class="oc-row"><s>Tasks</s><u class="oc-sw"></u></i>
-              <i class="oc-row"><s>Keep Awake</s><u class="oc-sw"></u></i>
-            </div>
-          </div>
-          <div class="oc-main">
-          <i><em>vaibhav@mac</em> <b>~/portfolio-site</b></i>
-          <i><u>&#10095;</u> claude</i>
-          <i>&nbsp;</i>
-          <i class="oc-dim">&gt; Fix the checkout page. The total doesn&#39;t change</i>
-          <i class="oc-dim">&gt; when someone picks a different quantity.</i>
-          <i>&nbsp;</i>
-          <i>Looking through the cart files</i>
-          <i class="oc-dim">&nbsp;&nbsp;found it: the quantity box never tells the total</i>
-          <i>Making the change</i>
-          <i>Running the tests</i>
-          <i><q>&#10003;</q> all 14 passed</i>
-          <i>&nbsp;</i>
-          <i><q>&#10003;</q> The total now updates when the quantity changes.</i>
-          <i>&nbsp;</i>
-          <i><em>vaibhav@mac</em> <b>~/portfolio-site</b></i>
-          <i><u>&#10095;</u></i>
-          </div>
-          <div class="oc-right">
-            <div class="oc-pane oc-up"></div>
-          </div>
-        </div>
-      </div>
+      <div class="slot slot-oc" role="img" aria-label="The Ocarina window: the tab sidebar, and an agent working in the terminal" style="background-image:url('assets/home-ocarina-terminal.png');background-size:cover;background-position:center;background-repeat:no-repeat"></div>
 
       <a class="card-hit" href="https://vaibhavvishal07.github.io/ocarina-site/" target="_blank"
          rel="noopener" aria-label="Open the Ocarina Terminal site, in a new tab"></a>
