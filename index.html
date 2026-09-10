@@ -243,10 +243,16 @@
      measure, which wants a reading size and not a card size. Those are
      drawings that happen to have letters in them. See --f-word, --f-hand,
      .lab-tape, .ms-lcd-a and .bk-flow. */
-  --t-display: 28px; --lh-display: 34px;
-  --t-heading: 17px; --lh-heading: 23px;
-  --t-body:    14px; --lh-body:    20px;
-  --t-meta:    12px; --lh-meta:    17px;
+  /* One step up on every figure, September 2026. The frame is drawn at 1920
+     and read at three quarters of that on the laptops it is actually opened
+     on -- 1440 and 1512 wide -- where a 14 lands as a ten and a half and a
+     12 as a nine. The cards keep the frame's sizes; the three boxes that had
+     every line pinned to a number now let the lines follow one another
+     instead. See "The scale, one step up" below the case study. */
+  --t-display: 32px; --lh-display: 38px;
+  --t-heading: 19px; --lh-heading: 25px;
+  --t-body:    16px; --lh-body:    23px;
+  --t-meta:    14px; --lh-meta:    19px;
 
 
 
@@ -3382,7 +3388,7 @@ body {
   align-items: center;
   justify-content: center;
   font-family: var(--f-nav);
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 500;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -5488,6 +5494,151 @@ body {
   line-height: var(--lh-meta);
   color: var(--icon);
 }
+
+/* ==========================================================================
+   The scale, one step up -- and the three boxes that stopped pinning their
+   lines to make room for it.
+
+   Body went to 16 where 14 stood and meta to 14 where 12 did, for the reason
+   given beside the tokens: the frame is read at three quarters of its own
+   size. The card figures are the frame's and cannot grow, so where a card
+   had every line placed at a number the lines below now follow the lines
+   above. The gaps are the frame's own distances between what used to be
+   pinned tops, and the plate at 349 is not touched: absolute is absolute
+   whatever the padding around it does.
+
+   Frame only. The phone's own rules further down already hand every one of
+   these back to the flow with margins of their own, and a width written here
+   would outweigh them there.
+   ========================================================================== */
+@media (min-width: 901px) {
+  /* The rail: label, readings, second label, steps, note, in that order. */
+  .c-side, .oc-side { padding: 24px 24px 0; }
+  .c-side .label, .oc-side .label, .c-side .label-2,
+  .c-stats, .c-steps, .c-note {
+    position: static; left: auto; top: auto; width: auto;
+  }
+  .c-stats         { margin-top: 21px; }
+  .c-side .label-2 { margin-top: 26px; }
+  .c-steps         { margin-top: 15px; }
+  .c-step          { padding: 12px 0; }
+  .c-note          { margin-top: 10px; }
+
+  /* The hero: the column at 40 flows, the plate at 349 stays put. */
+  .c-hero, .oc-hero { padding: 36px 0 0 40px; }
+  .c-hero .label, .c-hero .headline, .c-hero .sub, .c-hero .w-meta,
+  .oc-hero .label, .oc-hero .headline, .oc-hero .sub, .oc-hero .w-meta {
+    position: static; left: auto; top: auto;
+  }
+  .c-hero .headline, .oc-hero .headline { width: 288px; margin-top: 30px; }
+  .c-hero .sub, .oc-hero .sub           { width: 304px; margin-top: 16px; }
+  .c-hero .w-meta, .oc-hero .w-meta     { width: 288px; margin-top: 16px; }
+
+  /* The two notes under it. */
+  .c-problem, .c-outcome, .oc-why, .oc-get { padding: 20px 24px 0; }
+  .c-problem .label,    .c-outcome .label,    .oc-why .label,    .oc-get .label,
+  .c-problem .headline, .c-outcome .headline, .oc-why .headline, .oc-get .headline,
+  .c-outcome .sub, .oc-get .sub,
+  .c-problem .w-tags, .c-outcome .w-tags, .oc-why .w-tags {
+    position: static; left: auto; top: auto; width: auto;
+  }
+  /* The second heading step, which is the one the file keeps for a narrow
+     card: at 19 "One kit, eleven components." turned over onto a second line
+     and pushed the tags off the foot. The standfirst under it keeps the body
+     size and closes its leading by two, which a three-line paragraph in a
+     174-pixel box can afford and a 23-pixel line cannot. */
+  .c-problem .headline, .c-outcome .headline,
+  .oc-why .headline,    .oc-get .headline    { margin-top: 6px;
+                                               font-size: var(--t-heading-2);
+                                               line-height: calc(var(--lh-heading) - 2px); }
+  .c-outcome .sub, .oc-get .sub             { margin-top: 6px; line-height: 21px; }
+  .c-problem .w-tags, .c-outcome .w-tags, .oc-why .w-tags { margin-top: 8px; }
+}
+
+/* ==========================================================================
+   L2 -- Ocarina Terminal.
+
+   The one card on Home that led straight off the site now leads here first:
+   a screen that says what the thing is before it hands the reader on. It is
+   cut to the case study's five boxes, because it is the same kind of screen
+   -- one thing, with a hero, some readings and a couple of notes -- and the
+   lattice already knows how to rule that shape (see .x-ocarina, which reads
+   the case study's lines). Every word on it is the product site's own, so
+   the two cannot disagree about what the product does.
+   ========================================================================== */
+
+.oc-hero { left: 399px;  top: 91px;  width: 735px; height: 484px;
+           --gx: 40%; --gy: -6%; --gw: 100%; --gh: 125%; --gs: 0.052; }
+.oc-side { left: 1155px; top: 91px;  width: 366px; height: 840px;
+           --gx: 50%; --gy: 0%;  --gw: 140%; --gh: 78%;  --gs: 0.022; }
+.oc-faq  { left: 399px;  top: 596px; width: 364px; height: 335px;
+           --gx: 100%; --gy: 0%; --gw: 130%; --gh: 140%; --gs: 0.05; }
+.oc-why  { left: 785px;  top: 596px; width: 350px; height: 139px;
+           --gx: 68%; --gy: 0%;  --gw: 110%; --gh: 190%; --gs: 0.05; }
+.oc-get  { left: 785px;  top: 757px; width: 350px; height: 174px;
+           --gx: 100%; --gy: 0%; --gw: 125%; --gh: 165%; --gs: 0.058; }
+
+/* The window, lying on the hero the way it lies on the Home card: a photograph
+   of the app, cut by the card's own right edge rather than boxed inside it.
+   Wider than the room it has so the sidebar and the first column of the
+   terminal come up large; the height is the picture's own ratio. */
+.oc-hero .slot-lead {
+  left: 349px; top: 118px;
+  width: 560px; height: 361px;
+  background-size: cover;
+  background-position: 0 0;
+  background-repeat: no-repeat;
+}
+.oc-hero .headline { font-size: var(--t-display); line-height: var(--lh-display); }
+/* The button from the intro card, following the table in the flow rather
+   than standing at 390. Its shadow throws 3px under it, which the card's
+   overflow keeps; the total column is measured to leave that room. */
+.oc-hero .btn {
+  position: static;
+  width: auto;
+  padding: 0 26px;
+  margin-top: 18px;
+  gap: 10px;
+}
+/* "Works with" is two words; the case study's 54 was cut for "Team". */
+.oc-hero .w-meta dt { width: 76px; }
+.oc-hero .btn svg { width: 16px; height: 16px; }
+
+.oc-side .c-steps { margin-top: 15px; }
+.oc-side .c-note  { margin-top: 12px; }
+
+/* One line that leads off the site: the case study's .w-cta, standing in
+   the flow. On the rail it closes the list; on the small card it is the
+   whole card's own hit, spelled out. */
+.oc-link {
+  display: inline-flex; align-items: center; gap: 8px;
+  margin: 18px 0 0;
+  font-family: var(--f-label);
+  font-size: var(--t-body); line-height: var(--lh-body);
+  color: var(--label);
+  text-decoration: none;
+  transition: color var(--dur) var(--ease);
+}
+.oc-link svg { width: 18px; height: 18px; transition: transform var(--dur) var(--ease); }
+.oc-link:hover, .oc-get:hover .oc-link { color: rgba(var(--w), 0.82); }
+.oc-link:hover svg, .oc-get:hover .oc-link svg { transform: translate(2px, -2px); }
+.oc-link:focus-visible { outline: 2px solid rgb(var(--w)); outline-offset: 4px; }
+.oc-get .oc-link { margin-top: 12px; }
+.oc-get .arrow, .oc-why .arrow { left: 302px; top: 16px; }
+
+/* Three questions, answered the way the site answers them. */
+.oc-faq .label { left: 24px; top: 24px; }
+.oc-qa { position: absolute; left: 24px; top: 64px; width: 316px; margin: 0; }
+.oc-qa div { padding: 11px 0; border-top: 1px solid var(--rule); }
+.oc-qa div:first-child { border-top: 0; padding-top: 0; }
+.oc-qa dt { margin: 0; font-family: var(--f-body); font-weight: 600;
+            font-size: var(--t-body); line-height: var(--lh-body); color: var(--heading); }
+.oc-qa dd { margin: 2px 0 0; font-family: var(--f-label);
+            font-size: var(--t-meta); line-height: var(--lh-meta); color: var(--quiet); }
+
+/* The lattice under it is the case study's: same five boxes, same gaps. */
+.x-ocarina .rules i.h-mid { --hgap-x: 4145px; --hgap-w: 386px; }
+.x-ocarina .rules i[data-on]:not([data-on~="case"]) { display: none; }
 
 /* ==========================================================================
    L3 -- the article, as a book.
@@ -12614,10 +12765,10 @@ a.arrow { text-decoration: none; }
      Everything downstream follows without being told, which is the point --
      the rules that matter are written once, up there, in design pixels. */
   :root {
-    --t-display: 24px; --lh-display: 30px;
-    --t-heading: 16px; --lh-heading: 22px;
-    --t-body:    14px; --lh-body:    21px;
-    --t-meta:    12px; --lh-meta:    17px;
+    --t-display: 28px; --lh-display: 34px;
+    --t-heading: 19px; --lh-heading: 25px;
+    --t-body:    16px; --lh-body:    24px;
+    --t-meta:    13px; --lh-meta:    18px;
     /* And one heading step down here rather than two. The second one exists
        because a heading cut for a 735-pixel tile is loud inside a 264-pixel
        card -- and there are no narrow cards on a phone. Everything is one
@@ -13051,7 +13202,7 @@ a.arrow { text-decoration: none; }
     border-radius: 999px;                /* the bar's shape, at the bar's job */
     padding: 0 18px 0 12px;
     font-family: var(--f-nav); letter-spacing: 0.06em;
-    font-size: 13px;
+    font-size: 14px;
     line-height: 1;
     letter-spacing: 0.07em;
     text-transform: uppercase;
@@ -13107,7 +13258,7 @@ a.arrow { text-decoration: none; }
   /* Room at the head of a screen that carries one. Home does not, and the
      stage already says which is which -- it has to, for the lattice. */
   .stage.x-work, .stage.x-case, .stage.x-article,
-  .stage.x-about { padding-top: 54px; }
+  .stage.x-about, .stage.x-ocarina { padding-top: 54px; }
 }
 
 /* ==========================================================================
@@ -13667,6 +13818,23 @@ a.arrow { text-decoration: none; }
      width the card has rather than the 100px the frame measures. */
   .c-shots { display: flex; gap: 8px; margin-top: 4px; }
   .c-shots .slot { flex: 1; height: 150px; }
+
+  /* The Ocarina Terminal screen, in the column: the hero, then the rail,
+     then the two notes, then the questions -- the case study's order. */
+  .oc-hero { order: 1; }
+  .oc-side { order: 2; }
+  .oc-why  { order: 3; }
+  .oc-get  { order: 4; }
+  .oc-faq  { order: 5; }
+  .oc-hero .slot-lead { left: auto; top: auto; width: auto; height: auto;
+                        aspect-ratio: 573 / 369; margin-bottom: 20px;
+                        background-position: center; }
+  .oc-hero .headline { width: auto; }
+  .oc-hero .sub { width: auto; }
+  .oc-hero .btn { position: static; width: auto; padding: 0 26px; margin-top: 22px; }
+  .oc-qa { position: static; left: auto; top: auto; width: auto; margin-top: 4px; }
+  .oc-why .headline, .oc-get .headline, .oc-get .sub { width: auto; }
+  .oc-get .oc-link { margin-top: 10px; }
   /* The book comes apart down here, and it should. A spread needs a landscape
      window and a turn needs somewhere for the next page to be waiting; a phone
      has neither, and the page is already a scroller. So the leaves unbind into
@@ -14716,9 +14884,100 @@ a.arrow { text-decoration: none; }
 
       <div class="slot slot-oc" role="img" aria-label="The Ocarina window: the tab sidebar, and an agent working in the terminal" style="background-image:url('assets/home-ocarina-terminal.png');background-size:cover;background-position:center;background-repeat:no-repeat"></div>
 
-      <a class="card-hit" href="https://vaibhavvishal07.github.io/ocarina-site/" target="_blank"
-         rel="noopener" aria-label="Open the Ocarina Terminal site, in a new tab"></a>
+      <a class="card-hit" href="#ocarina" data-route="ocarina"
+         aria-label="Open Ocarina Terminal"></a>
     </section>
+
+    </div>
+
+    <!-- ====================== L2 ocarina terminal ==================== -->
+    <!-- The Home card's own screen. The case study's five boxes, filled
+         with what the product site says, and two ways off it: the button on
+         the hero and the small card at the foot, which is one link wide. -->
+    <div class="view view-ocarina" data-view="ocarina" hidden>
+
+      <p class="crumb">
+        <a href="#" data-route="home">Home</a>
+        <span aria-hidden="true">/</span>
+        <b>Ocarina Terminal</b>
+      </p>
+      <p class="crumb-count">macOS 14+ &nbsp;/&nbsp; Free, open source</p>
+
+      <!-- ---------------------------- hero --------------------------- -->
+      <section class="card oc-hero" data-tile="a">
+        <div class="slot slot-lead" role="img"
+             aria-label="The Ocarina window: the tab sidebar, and an agent working in the terminal"
+             style="background-image:url('assets/home-ocarina-terminal.png')"></div>
+
+        <p class="label">Ocarina Terminal // macOS</p>
+        <h2 class="headline">A terminal you don't have to learn.</h2>
+        <p class="sub">A macOS terminal for AI coding agents. Many at once, in one window, each tab named for the project it is in.</p>
+
+        <dl class="w-meta">
+          <div><dt>Runs on</dt><dd>macOS 14 and later</dd></div>
+          <div><dt>Works with</dt><dd>Claude Code, Gemini CLI, Codex</dd></div>
+        </dl>
+
+        <a class="btn btn-solid" href="https://vaibhavvishal07.github.io/ocarina-site/" target="_blank" rel="noopener">Open the site <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></a>
+      </section>
+
+      <!-- ---------------------- the rail: what it does ---------------- -->
+      <section class="card oc-side" data-tile="b">
+        <p class="label">What is in the window</p>
+
+        <div class="c-steps">
+          <div class="c-step"><i>01</i><b>Every tab says where it is</b>
+            <span>Each tab is named for the checkout it works in, so a tab deep inside a repo still reads as that project.</span></div>
+          <div class="c-step"><i>02</i><b>Everything you asked, still on the screen</b>
+            <span>It reads the agent's transcript and ticks each job off as it finishes.</span></div>
+          <div class="c-step"><i>03</i><b>The state, in the menu bar</b>
+            <span>Check a tab you are not looking at without returning to the window.</span></div>
+          <div class="c-step"><i>04</i><b>It counts what you have spent</b>
+            <span>The tokens used and the time left in the five-hour window. No percentage, because nothing on your machine knows the allowance.</span></div>
+          <div class="c-step"><i>05</i><b>Your Mac stays awake</b>
+            <span>The display is held on while a run is going, so a long task reaches the end.</span></div>
+          <div class="c-step"><i>06</i><b>Ask for a skill in your own words</b>
+            <span>216 of them ship with it, each installed to whichever agent is in your tab.</span></div>
+        </div>
+
+        <p class="c-note">Nothing here you have to switch on. The tab names, the task list, the meter and the menu bar all run from the moment you open the app.</p>
+
+        <a class="oc-link" href="https://github.com/VaibhavVishal07/Ocarina-Terminal" target="_blank" rel="noopener">Read the source on GitHub <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></a>
+      </section>
+
+      <!-- --------------------------- why --------------------------- -->
+      <section class="card oc-why" data-tile="d">
+        <p class="label">Why it exists</p>
+        <h2 class="headline">A window for people who build with agents.</h2>
+        <p class="w-tags"><span>Swift</span><span>SwiftUI</span><span>SwiftTerm</span></p>
+      </section>
+
+      <!-- --------------------------- get it -------------------------- -->
+      <section class="card oc-get" data-tile="e">
+        <p class="label">Get it</p>
+        <span class="arrow" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+               stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h17M14 6l6 6-6 6"/></svg>
+        </span>
+        <h2 class="headline">Open it and start typing.</h2>
+        <p class="sub">Free, open source, and small enough to read in an afternoon.</p>
+        <a class="oc-link" href="https://vaibhavvishal07.github.io/ocarina-site/" target="_blank" rel="noopener" tabindex="-1">Download from the site <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></a>
+        <a class="card-hit" href="https://vaibhavvishal07.github.io/ocarina-site/" target="_blank" rel="noopener"
+           aria-label="Open the Ocarina Terminal site, in a new tab"></a>
+      </section>
+
+      <!-- -------------------------- questions ------------------------ -->
+      <section class="card oc-faq" data-tile="c">
+        <p class="label">Questions</p>
+        <dl class="oc-qa">
+          <div><dt>Do I need to know how to code?</dt>
+            <dd>No. Ocarina is the window around your coding agent.</dd></div>
+          <div><dt>Does it come with an agent?</dt>
+            <dd>No. You bring the agent and the account you already have.</dd></div>
+          <div><dt>How much does it cost?</dt>
+            <dd>Nothing. Free and open source, for macOS 14 and later.</dd></div>
+        </dl>
+      </section>
 
     </div>
 
@@ -21406,10 +21665,12 @@ a.arrow { text-decoration: none; }
       case: document.querySelector('.view-case'),
       article: document.querySelector('.view-article'),
       lab: document.querySelector('.view-lab'),
-      piece: document.querySelector('.view-piece')
+      piece: document.querySelector('.view-piece'),
+      ocarina: document.querySelector('.view-ocarina')
     };
     if (!nav || !stage || !views.home || !views.work || !views.about ||
-        !views.case || !views.article || !views.lab || !views.piece) return;
+        !views.case || !views.article || !views.lab || !views.piece ||
+        !views.ocarina) return;
 
     /* Written by build.js from content/work.json. */
     var PROJECTS = {
@@ -21720,10 +21981,12 @@ a.arrow { text-decoration: none; }
       case: 'vaibhav_ / work',
       article: 'vaibhav_ / writing',
       lab: 'vaibhav_ / playground',
-      piece: 'vaibhav_ / playground'
+      piece: 'vaibhav_ / playground',
+      ocarina: 'vaibhav_ / ocarina terminal'
     };
     var HASH = { home: '', work: '#work', about: '#about',
-                 case: '#case', article: '#article', lab: '#lab', piece: '#lab' };
+                 case: '#case', article: '#article', lab: '#lab', piece: '#lab',
+                 ocarina: '#ocarina' };
     /* A case study and a piece of writing have an address of their own, so the
      * tab, the address bar and the Back button all name the one you are
      * actually reading rather than the screen it happens to be on. */
@@ -21743,12 +22006,15 @@ a.arrow { text-decoration: none; }
     // The playground hangs off Home rather than off Work -- it is the one
     // screen on the site nobody paid for -- so the bar keeps Home lit while
     // you are on it, for the same reason it keeps Work lit under a case study.
+    // Ocarina Terminal hangs off Home the way the playground does: a card on
+    // the front page with a screen of its own behind it.
     var CELL = { home: 'home', work: 'work', about: 'about',
-                 case: 'work', article: 'work', lab: 'home', piece: 'home' };
+                 case: 'work', article: 'work', lab: 'home', piece: 'home',
+                 ocarina: 'home' };
     // The level above each screen, and what to call it on the button. Home has
     // none, which is how the button knows to go away.
     var PARENT = { work: 'home', about: 'home', case: 'work', article: 'work',
-                   lab: 'home', piece: 'lab' };
+                   lab: 'home', piece: 'lab', ocarina: 'home' };
     /* An article used to go up to the all-writing screen, on the argument that
      * going up from one piece should land among the others rather than back at
      * the top of the section. That screen is gone and the argument came with
@@ -21817,6 +22083,7 @@ a.arrow { text-decoration: none; }
       stage.classList.toggle('x-article', name === 'article');
       stage.classList.toggle('x-lab', name === 'lab');
       stage.classList.toggle('x-piece', name === 'piece');
+      stage.classList.toggle('x-ocarina', name === 'ocarina');
       lamp();
       // The playground's ground is a cutting mat rather than paper, and the
       // ground is the body -- which the stage is inside -- so this one goes
