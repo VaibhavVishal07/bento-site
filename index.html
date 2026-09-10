@@ -5571,24 +5571,49 @@ body {
            --gx: 40%; --gy: -6%; --gw: 100%; --gh: 125%; --gs: 0.052; }
 .oc-side { left: 1155px; top: 91px;  width: 366px; height: 840px;
            --gx: 50%; --gy: 0%;  --gw: 140%; --gh: 78%;  --gs: 0.022; }
-.oc-faq  { left: 399px;  top: 596px; width: 364px; height: 335px;
+.oc-shot { left: 399px;  top: 596px; width: 364px; height: 335px;
            --gx: 100%; --gy: 0%; --gw: 130%; --gh: 140%; --gs: 0.05; }
 .oc-why  { left: 785px;  top: 596px; width: 350px; height: 139px;
            --gx: 68%; --gy: 0%;  --gw: 110%; --gh: 190%; --gs: 0.05; }
 .oc-get  { left: 785px;  top: 757px; width: 350px; height: 174px;
            --gx: 100%; --gy: 0%; --gw: 125%; --gh: 165%; --gs: 0.058; }
 
-/* The window, lying on the hero the way it lies on the Home card: a photograph
-   of the app, cut by the card's own right edge rather than boxed inside it.
-   Wider than the room it has so the sidebar and the first column of the
-   terminal come up large; the height is the picture's own ratio. */
+/* The window, lying on the hero the way it lies on the Home card: the app,
+   cut by the card's own right edge and foot rather than boxed inside it.
+
+   The export carries a transparent margin down its left and along its top,
+   the room the window's shadow was given. On the Home card that margin lies
+   over the card's own fill and is invisible; here the plate's placeholder
+   wash showed through it as a grey strip beside the window. So the wash is
+   off, and the picture is set larger than the box and pulled up and left by
+   exactly the margin, so the window's corner is the plate's corner. */
 .oc-hero .slot-lead {
-  left: 349px; top: 118px;
-  width: 560px; height: 361px;
-  background-size: cover;
-  background-position: 0 0;
+  left: 349px; top: 100px;
+  width: 386px; height: 384px;
+  background-color: transparent;
+  background-size: 620px auto;
+  background-position: -42px -5px;
   background-repeat: no-repeat;
 }
+
+/* A plate with a piece of the app in it -- the task list on the rail, the
+   agent's transcript on the third card -- and a line under or over it. */
+.oc-plate {
+  position: absolute;
+  left: 24px; top: 64px;
+  width: 316px; height: 160px;
+  background-color: var(--slot);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+.oc-shot .c-cap { top: 238px; }
+/* On the rail the plate follows the list, in the flow, and the link goes to
+   the foot: a hole in the middle of a column reads as something missing. */
+.oc-side .c-cap    { position: static; width: 318px; margin: 26px 0 0; }
+.oc-side .oc-plate { position: static; width: 318px; height: 186px; margin-top: 10px; }
+.oc-side .oc-link  { position: absolute; left: 24px; bottom: 22px; margin: 0; }
+.oc-hero .sub      { width: 288px !important; }
 .oc-hero .headline { font-size: var(--t-display); line-height: var(--lh-display); }
 /* The button from the intro card, following the table in the flow rather
    than standing at 390. Its shadow throws 3px under it, which the card's
@@ -5627,7 +5652,7 @@ body {
 .oc-get .arrow, .oc-why .arrow { left: 302px; top: 16px; }
 
 /* Three questions, answered the way the site answers them. */
-.oc-faq .label { left: 24px; top: 24px; }
+.oc-shot .label { left: 24px; top: 24px; }
 .oc-qa { position: absolute; left: 24px; top: 64px; width: 316px; margin: 0; }
 .oc-qa div { padding: 11px 0; border-top: 1px solid var(--rule); }
 .oc-qa div:first-child { border-top: 0; padding-top: 0; }
@@ -13817,10 +13842,16 @@ a.arrow { text-decoration: none; }
   .oc-side { order: 2; }
   .oc-why  { order: 3; }
   .oc-get  { order: 4; }
-  .oc-faq  { order: 5; }
+  .oc-shot { order: 5; }
   .oc-hero .slot-lead { left: auto; top: auto; width: auto; height: auto;
                         aspect-ratio: 573 / 369; margin-bottom: 20px;
-                        background-position: center; }
+                        background-size: 108% auto; background-position: 100% 0; }
+  .oc-plate { position: static; left: auto; top: auto; width: auto; height: auto;
+              aspect-ratio: 2 / 1; margin-top: 16px;
+              background-size: contain; background-color: transparent; }
+  .oc-side .oc-plate { margin-top: 12px; }
+  .oc-side .c-cap { margin-top: 20px; }
+  .oc-side .oc-link { position: static; margin-top: 18px; }
   .oc-hero .headline { width: auto; }
   .oc-hero .sub { width: auto; }
   .oc-hero .btn { position: static; width: auto; padding: 0 26px; margin-top: 22px; }
@@ -14903,7 +14934,7 @@ a.arrow { text-decoration: none; }
 
         <p class="label">Ocarina Terminal // macOS</p>
         <h2 class="headline">A terminal you don't have to learn.</h2>
-        <p class="sub">A macOS terminal for AI coding agents. Many at once, in one window, each tab named for the project it is in.</p>
+        <p class="sub">A macOS terminal for AI coding agents. Many at once, in one window.</p>
 
         <dl class="w-meta">
           <div><dt>Runs on</dt><dd>macOS 14 and later</dd></div>
@@ -14919,20 +14950,18 @@ a.arrow { text-decoration: none; }
 
         <div class="c-steps">
           <div class="c-step"><i>01</i><b>Every tab says where it is</b>
-            <span>Each tab is named for the checkout it works in, so a tab deep inside a repo still reads as that project.</span></div>
-          <div class="c-step"><i>02</i><b>Everything you asked, still on the screen</b>
-            <span>It reads the agent's transcript and ticks each job off as it finishes.</span></div>
-          <div class="c-step"><i>03</i><b>The state, in the menu bar</b>
-            <span>Check a tab you are not looking at without returning to the window.</span></div>
-          <div class="c-step"><i>04</i><b>It counts what you have spent</b>
-            <span>The tokens used and the time left in the five-hour window. No percentage, because nothing on your machine knows the allowance.</span></div>
-          <div class="c-step"><i>05</i><b>Your Mac stays awake</b>
-            <span>The display is held on while a run is going, so a long task reaches the end.</span></div>
-          <div class="c-step"><i>06</i><b>Ask for a skill in your own words</b>
-            <span>216 of them ship with it, each installed to whichever agent is in your tab.</span></div>
+            <span>Named for the checkout it works in.</span></div>
+          <div class="c-step"><i>02</i><b>The state, in the menu bar</b>
+            <span>Check a tab without going back to it.</span></div>
+          <div class="c-step"><i>03</i><b>It counts what you have spent</b>
+            <span>Tokens used, and the time left in the window.</span></div>
+          <div class="c-step"><i>04</i><b>Your Mac stays awake</b>
+            <span>The display holds while a run is going.</span></div>
         </div>
 
-        <p class="c-note">Nothing here you have to switch on. The tab names, the task list, the meter and the menu bar all run from the moment you open the app.</p>
+        <p class="c-cap">The task list, ticked off as the agent finishes.</p>
+        <div class="oc-plate" role="img" aria-label="The Tasks panel: six of nine done"
+             style="background-image:url('assets/ocarina-tasks.jpg')"></div>
 
         <a class="oc-link" href="https://github.com/VaibhavVishal07/Ocarina-Terminal" target="_blank" rel="noopener">Read the source on GitHub <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></a>
       </section>
@@ -14952,23 +14981,18 @@ a.arrow { text-decoration: none; }
                stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h17M14 6l6 6-6 6"/></svg>
         </span>
         <h2 class="headline">Open it and start typing.</h2>
-        <p class="sub">Free, open source, and small enough to read in an afternoon.</p>
+        <p class="sub">Free, and open source.</p>
         <a class="oc-link" href="https://vaibhavvishal07.github.io/ocarina-site/" target="_blank" rel="noopener" tabindex="-1">Download from the site <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></a>
         <a class="card-hit" href="https://vaibhavvishal07.github.io/ocarina-site/" target="_blank" rel="noopener"
            aria-label="Open the Ocarina Terminal site, in a new tab"></a>
       </section>
 
-      <!-- -------------------------- questions ------------------------ -->
-      <section class="card oc-faq" data-tile="c">
-        <p class="label">Questions</p>
-        <dl class="oc-qa">
-          <div><dt>Do I need to know how to code?</dt>
-            <dd>No. Ocarina is the window around your coding agent.</dd></div>
-          <div><dt>Does it come with an agent?</dt>
-            <dd>No. You bring the agent and the account you already have.</dd></div>
-          <div><dt>How much does it cost?</dt>
-            <dd>Nothing. Free and open source, for macOS 14 and later.</dd></div>
-        </dl>
+      <!-- ------------------------ the transcript --------------------- -->
+      <section class="card oc-shot" data-tile="c">
+        <p class="label">It explains what breaks</p>
+        <div class="oc-plate" role="img" aria-label="The agent's transcript: looking through the cart files, finding the fault, running the tests"
+             style="background-image:url('assets/ocarina-transcript.jpg')"></div>
+        <p class="c-cap">The agent's own account of the fix, as it runs. You bring the agent; the window is Ocarina's.</p>
       </section>
 
     </div>
