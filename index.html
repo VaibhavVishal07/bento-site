@@ -5530,8 +5530,8 @@ body {
    ========================================================================== */
 @media (min-width: 901px) {
   /* The rail: label, readings, second label, steps, note, in that order. */
-  .c-side, .oc-side { padding: 24px 24px 0; }
-  .c-side .label, .oc-side .label, .c-side .label-2,
+  .c-side { padding: 24px 24px 0; }
+  .c-side .label, .c-side .label-2,
   .c-stats, .c-steps, .c-note {
     position: static; left: auto; top: auto; width: auto;
   }
@@ -5542,21 +5542,20 @@ body {
   .c-note          { margin-top: 10px; }
 
   /* The hero: the column at 40 flows, the plate at 349 stays put. */
-  .c-hero, .oc-hero { padding: 36px 0 0 40px; }
-  .c-hero .label, .c-hero .headline, .c-hero .sub, .c-hero .w-meta,
-  .oc-hero .label, .oc-hero .headline, .oc-hero .sub, .oc-hero .w-meta {
+  .c-hero { padding: 36px 0 0 40px; }
+  .c-hero .label, .c-hero .headline, .c-hero .sub, .c-hero .w-meta {
     position: static; left: auto; top: auto;
   }
-  .c-hero .headline, .oc-hero .headline { width: 288px; margin-top: 30px; }
-  .c-hero .sub, .oc-hero .sub           { width: 304px; margin-top: 16px; }
-  .c-hero .w-meta, .oc-hero .w-meta     { width: 288px; margin-top: 16px; }
+  .c-hero .headline { width: 288px; margin-top: 30px; }
+  .c-hero .sub      { width: 304px; margin-top: 16px; }
+  .c-hero .w-meta   { width: 288px; margin-top: 16px; }
 
   /* The two notes under it. */
-  .c-problem, .c-outcome, .oc-why, .oc-get { padding: 20px 24px 0; }
-  .c-problem .label,    .c-outcome .label,    .oc-why .label,    .oc-get .label,
-  .c-problem .headline, .c-outcome .headline, .oc-why .headline, .oc-get .headline,
-  .c-outcome .sub, .oc-get .sub,
-  .c-problem .w-tags, .c-outcome .w-tags, .oc-why .w-tags {
+  .c-problem, .c-outcome { padding: 20px 24px 0; }
+  .c-problem .label,    .c-outcome .label,
+  .c-problem .headline, .c-outcome .headline,
+  .c-outcome .sub,
+  .c-problem .w-tags, .c-outcome .w-tags {
     position: static; left: auto; top: auto; width: auto;
   }
   /* The second heading step, which is the one the file keeps for a narrow
@@ -5564,123 +5563,12 @@ body {
      and pushed the tags off the foot. The standfirst under it keeps the body
      size and closes its leading by two, which a three-line paragraph in a
      174-pixel box can afford and a 23-pixel line cannot. */
-  .c-problem .headline, .c-outcome .headline,
-  .oc-why .headline,    .oc-get .headline    { margin-top: 6px;
+  .c-problem .headline, .c-outcome .headline { margin-top: 6px;
                                                font-size: var(--t-heading-2);
                                                line-height: calc(var(--lh-heading) - 2px); }
-  .c-outcome .sub, .oc-get .sub             { margin-top: 6px; line-height: 21px; }
-  .c-problem .w-tags, .c-outcome .w-tags, .oc-why .w-tags { margin-top: 8px; }
+  .c-outcome .sub                            { margin-top: 6px; line-height: 21px; }
+  .c-problem .w-tags, .c-outcome .w-tags     { margin-top: 8px; }
 }
-
-/* ==========================================================================
-   L2 -- Ocarina Terminal.
-
-   The one card on Home that led straight off the site now leads here first:
-   a screen that says what the thing is before it hands the reader on. It is
-   cut to the case study's five boxes, because it is the same kind of screen
-   -- one thing, with a hero, some readings and a couple of notes -- and the
-   lattice already knows how to rule that shape (see .x-ocarina, which reads
-   the case study's lines). Every word on it is the product site's own, so
-   the two cannot disagree about what the product does.
-   ========================================================================== */
-
-.oc-hero { left: 399px;  top: 91px;  width: 735px; height: 484px;
-           --gx: 40%; --gy: -6%; --gw: 100%; --gh: 125%; --gs: 0.052; }
-.oc-side { left: 1155px; top: 91px;  width: 366px; height: 840px;
-           --gx: 50%; --gy: 0%;  --gw: 140%; --gh: 78%;  --gs: 0.022; }
-.oc-shot { left: 399px;  top: 596px; width: 364px; height: 335px;
-           --gx: 100%; --gy: 0%; --gw: 130%; --gh: 140%; --gs: 0.05; }
-.oc-why  { left: 785px;  top: 596px; width: 350px; height: 139px;
-           --gx: 68%; --gy: 0%;  --gw: 110%; --gh: 190%; --gs: 0.05; }
-.oc-get  { left: 785px;  top: 757px; width: 350px; height: 174px;
-           --gx: 100%; --gy: 0%; --gw: 125%; --gh: 165%; --gs: 0.058; }
-
-/* The window, lying on the hero the way it lies on the Home card: the app,
-   cut by the card's own right edge and foot rather than boxed inside it.
-
-   The export carries a transparent margin down its left and along its top,
-   the room the window's shadow was given. On the Home card that margin lies
-   over the card's own fill and is invisible; here the plate's placeholder
-   wash showed through it as a grey strip beside the window. So the wash is
-   off, and the picture is set larger than the box and pulled up and left by
-   exactly the margin, so the window's corner is the plate's corner. */
-.oc-hero .slot-lead {
-  left: 349px; top: 100px;
-  width: 386px; height: 384px;
-  background-color: transparent;
-  background-size: 620px auto;
-  background-position: -42px -5px;
-  background-repeat: no-repeat;
-}
-
-/* A plate with a piece of the app in it -- the task list on the rail, the
-   agent's transcript on the third card -- and a line under or over it. */
-.oc-plate {
-  position: absolute;
-  left: 24px; top: 64px;
-  width: 316px; height: 160px;
-  background-color: var(--slot);
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-}
-.oc-shot .c-cap { top: 238px; }
-/* On the rail the plate follows the list, in the flow, and the link goes to
-   the foot: a hole in the middle of a column reads as something missing. */
-.oc-side .c-cap    { position: static; width: 318px; margin: 26px 0 0; }
-.oc-side .oc-plate { position: static; width: 318px; height: 186px; margin-top: 10px; }
-.oc-side .oc-link  { position: absolute; left: 24px; bottom: 22px; margin: 0; }
-.oc-hero .sub      { width: 288px !important; }
-.oc-hero .headline { font-size: var(--t-display); line-height: var(--lh-display); }
-/* The button from the intro card, following the table in the flow rather
-   than standing at 390. Its shadow throws 3px under it, which the card's
-   overflow keeps; the total column is measured to leave that room. */
-.oc-hero .btn {
-  position: static;
-  width: auto;
-  padding: 0 26px;
-  margin-top: 18px;
-  gap: 10px;
-}
-/* "Works with" is two words; the case study's 54 was cut for "Team". */
-.oc-hero .w-meta dt { width: 76px; }
-.oc-hero .btn svg { width: 16px; height: 16px; }
-
-.oc-side .c-steps { margin-top: 15px; }
-.oc-side .c-note  { margin-top: 12px; }
-
-/* One line that leads off the site: the case study's .w-cta, standing in
-   the flow. On the rail it closes the list; on the small card it is the
-   whole card's own hit, spelled out. */
-.oc-link {
-  display: inline-flex; align-items: center; gap: 8px;
-  margin: 18px 0 0;
-  font-family: var(--f-label);
-  font-size: var(--t-body); line-height: var(--lh-body);
-  color: var(--label);
-  text-decoration: none;
-  transition: color var(--dur) var(--ease);
-}
-.oc-link svg { width: 18px; height: 18px; transition: transform var(--dur) var(--ease); }
-.oc-link:hover, .oc-get:hover .oc-link { color: rgba(var(--w), 0.82); }
-.oc-link:hover svg, .oc-get:hover .oc-link svg { transform: translate(2px, -2px); }
-.oc-link:focus-visible { outline: 2px solid rgb(var(--w)); outline-offset: 4px; }
-.oc-get .oc-link { margin-top: 12px; }
-.oc-get .arrow, .oc-why .arrow { left: 302px; top: 16px; }
-
-/* Three questions, answered the way the site answers them. */
-.oc-shot .label { left: 24px; top: 24px; }
-.oc-qa { position: absolute; left: 24px; top: 64px; width: 316px; margin: 0; }
-.oc-qa div { padding: 11px 0; border-top: 1px solid var(--rule); }
-.oc-qa div:first-child { border-top: 0; padding-top: 0; }
-.oc-qa dt { margin: 0; font-family: var(--f-body); font-weight: 600;
-            font-size: var(--t-body); line-height: var(--lh-body); color: var(--heading); }
-.oc-qa dd { margin: 2px 0 0; font-family: var(--f-label);
-            font-size: var(--t-meta); line-height: var(--lh-meta); color: var(--quiet); }
-
-/* The lattice under it is the case study's: same five boxes, same gaps. */
-.x-ocarina .rules i.h-mid { --hgap-x: 4145px; --hgap-w: 386px; }
-.x-ocarina .rules i[data-on]:not([data-on~="case"]) { display: none; }
 
 /* ==========================================================================
    L3 -- the article, as a book.
@@ -13305,7 +13193,7 @@ a.arrow { text-decoration: none; }
   /* Room at the head of a screen that carries one. Home does not, and the
      stage already says which is which -- it has to, for the lattice. */
   .stage.x-work, .stage.x-case, .stage.x-article,
-  .stage.x-about, .stage.x-ocarina { padding-top: 54px; }
+  .stage.x-about { padding-top: 54px; }
 }
 
 /* ==========================================================================
@@ -13854,29 +13742,6 @@ a.arrow { text-decoration: none; }
      width the card has rather than the 100px the frame measures. */
   .c-shots { display: flex; gap: 8px; margin-top: 4px; }
   .c-shots .slot { flex: 1; height: 150px; }
-
-  /* The Ocarina Terminal screen, in the column: the hero, then the rail,
-     then the two notes, then the questions -- the case study's order. */
-  .oc-hero { order: 1; }
-  .oc-side { order: 2; }
-  .oc-why  { order: 3; }
-  .oc-get  { order: 4; }
-  .oc-shot { order: 5; }
-  .oc-hero .slot-lead { left: auto; top: auto; width: auto; height: auto;
-                        aspect-ratio: 573 / 369; margin-bottom: 20px;
-                        background-size: 108% auto; background-position: 100% 0; }
-  .oc-plate { position: static; left: auto; top: auto; width: auto; height: auto;
-              aspect-ratio: 2 / 1; margin-top: 16px;
-              background-size: contain; background-color: transparent; }
-  .oc-side .oc-plate { margin-top: 12px; }
-  .oc-side .c-cap { margin-top: 20px; }
-  .oc-side .oc-link { position: static; margin-top: 18px; }
-  .oc-hero .headline { width: auto; }
-  .oc-hero .sub { width: auto; }
-  .oc-hero .btn { position: static; width: auto; padding: 0 26px; margin-top: 22px; }
-  .oc-qa { position: static; left: auto; top: auto; width: auto; margin-top: 4px; }
-  .oc-why .headline, .oc-get .headline, .oc-get .sub { width: auto; }
-  .oc-get .oc-link { margin-top: 10px; }
   /* The book comes apart down here, and it should. A spread needs a landscape
      window and a turn needs somewhere for the next page to be waiting; a phone
      has neither, and the page is already a scroller. So the leaves unbind into
@@ -14926,93 +14791,9 @@ a.arrow { text-decoration: none; }
 
       <div class="slot slot-oc" role="img" aria-label="The Ocarina window: the tab sidebar, and an agent working in the terminal" style="background-image:url('assets/home-ocarina-terminal.png');background-size:cover;background-position:center;background-repeat:no-repeat"></div>
 
-      <a class="card-hit" href="#ocarina" data-route="ocarina"
-         aria-label="Open Ocarina Terminal"></a>
+      <a class="card-hit" href="https://vaibhavvishal07.github.io/ocarina-site/" target="_blank"
+         rel="noopener" aria-label="Open the Ocarina Terminal site, in a new tab"></a>
     </section>
-
-    </div>
-
-    <!-- ====================== L2 ocarina terminal ==================== -->
-    <!-- The Home card's own screen. The case study's five boxes, filled
-         with what the product site says, and two ways off it: the button on
-         the hero and the small card at the foot, which is one link wide. -->
-    <div class="view view-ocarina" data-view="ocarina" hidden>
-
-      <p class="crumb">
-        <a href="#" data-route="home">Home</a>
-        <span aria-hidden="true">/</span>
-        <b>Ocarina Terminal</b>
-      </p>
-      <p class="crumb-count">macOS 14+ &nbsp;/&nbsp; Free, open source</p>
-
-      <!-- ---------------------------- hero --------------------------- -->
-      <section class="card oc-hero" data-tile="a">
-        <div class="slot slot-lead" role="img"
-             aria-label="The Ocarina window: the tab sidebar, and an agent working in the terminal"
-             style="background-image:url('assets/home-ocarina-terminal.png')"></div>
-
-        <p class="label">Ocarina Terminal // macOS</p>
-        <h2 class="headline">A terminal you don't have to learn.</h2>
-        <p class="sub">A macOS terminal for AI coding agents. Many at once, in one window.</p>
-
-        <dl class="w-meta">
-          <div><dt>Runs on</dt><dd>macOS 14 and later</dd></div>
-          <div><dt>Works with</dt><dd>Claude Code, Gemini CLI, Codex</dd></div>
-        </dl>
-
-        <a class="btn btn-solid" href="https://vaibhavvishal07.github.io/ocarina-site/" target="_blank" rel="noopener">Open the site <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></a>
-      </section>
-
-      <!-- ---------------------- the rail: what it does ---------------- -->
-      <section class="card oc-side" data-tile="b">
-        <p class="label">What is in the window</p>
-
-        <div class="c-steps">
-          <div class="c-step"><i>01</i><b>Every tab says where it is</b>
-            <span>Named for the checkout it works in.</span></div>
-          <div class="c-step"><i>02</i><b>The state, in the menu bar</b>
-            <span>Check a tab without going back to it.</span></div>
-          <div class="c-step"><i>03</i><b>It counts what you have spent</b>
-            <span>Tokens used, and the time left in the window.</span></div>
-          <div class="c-step"><i>04</i><b>Your Mac stays awake</b>
-            <span>The display holds while a run is going.</span></div>
-        </div>
-
-        <p class="c-cap">The task list, ticked off as the agent finishes.</p>
-        <div class="oc-plate" role="img" aria-label="The Tasks panel: six of nine done"
-             style="background-image:url('assets/ocarina-tasks.jpg')"></div>
-
-        <a class="oc-link" href="https://github.com/VaibhavVishal07/Ocarina-Terminal" target="_blank" rel="noopener">Read the source on GitHub <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></a>
-      </section>
-
-      <!-- --------------------------- why --------------------------- -->
-      <section class="card oc-why" data-tile="d">
-        <p class="label">Why it exists</p>
-        <h2 class="headline">A window for people who build with agents.</h2>
-        <p class="w-tags"><span>Swift</span><span>SwiftUI</span><span>SwiftTerm</span></p>
-      </section>
-
-      <!-- --------------------------- get it -------------------------- -->
-      <section class="card oc-get" data-tile="e">
-        <p class="label">Get it</p>
-        <span class="arrow" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
-               stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h17M14 6l6 6-6 6"/></svg>
-        </span>
-        <h2 class="headline">Open it and start typing.</h2>
-        <p class="sub">Free, and open source.</p>
-        <a class="oc-link" href="https://vaibhavvishal07.github.io/ocarina-site/" target="_blank" rel="noopener" tabindex="-1">Download from the site <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></a>
-        <a class="card-hit" href="https://vaibhavvishal07.github.io/ocarina-site/" target="_blank" rel="noopener"
-           aria-label="Open the Ocarina Terminal site, in a new tab"></a>
-      </section>
-
-      <!-- ------------------------ the transcript --------------------- -->
-      <section class="card oc-shot" data-tile="c">
-        <p class="label">It explains what breaks</p>
-        <div class="oc-plate" role="img" aria-label="The agent's transcript: looking through the cart files, finding the fault, running the tests"
-             style="background-image:url('assets/ocarina-transcript.jpg')"></div>
-        <p class="c-cap">The agent's own account of the fix, as it runs. You bring the agent; the window is Ocarina's.</p>
-      </section>
 
     </div>
 
@@ -21749,12 +21530,10 @@ a.arrow { text-decoration: none; }
       case: document.querySelector('.view-case'),
       article: document.querySelector('.view-article'),
       lab: document.querySelector('.view-lab'),
-      piece: document.querySelector('.view-piece'),
-      ocarina: document.querySelector('.view-ocarina')
+      piece: document.querySelector('.view-piece')
     };
     if (!nav || !stage || !views.home || !views.work || !views.about ||
-        !views.case || !views.article || !views.lab || !views.piece ||
-        !views.ocarina) return;
+        !views.case || !views.article || !views.lab || !views.piece) return;
 
     /* Written by build.js from content/work.json. */
     var PROJECTS = {
@@ -22065,12 +21844,10 @@ a.arrow { text-decoration: none; }
       case: 'vaibhav_ / work',
       article: 'vaibhav_ / writing',
       lab: 'vaibhav_ / playground',
-      piece: 'vaibhav_ / playground',
-      ocarina: 'vaibhav_ / ocarina terminal'
+      piece: 'vaibhav_ / playground'
     };
     var HASH = { home: '', work: '#work', about: '#about',
-                 case: '#case', article: '#article', lab: '#lab', piece: '#lab',
-                 ocarina: '#ocarina' };
+                 case: '#case', article: '#article', lab: '#lab', piece: '#lab' };
     /* A case study and a piece of writing have an address of their own, so the
      * tab, the address bar and the Back button all name the one you are
      * actually reading rather than the screen it happens to be on. */
@@ -22090,15 +21867,12 @@ a.arrow { text-decoration: none; }
     // The playground hangs off Home rather than off Work -- it is the one
     // screen on the site nobody paid for -- so the bar keeps Home lit while
     // you are on it, for the same reason it keeps Work lit under a case study.
-    // Ocarina Terminal hangs off Home the way the playground does: a card on
-    // the front page with a screen of its own behind it.
     var CELL = { home: 'home', work: 'work', about: 'about',
-                 case: 'work', article: 'work', lab: 'home', piece: 'home',
-                 ocarina: 'home' };
+                 case: 'work', article: 'work', lab: 'home', piece: 'home' };
     // The level above each screen, and what to call it on the button. Home has
     // none, which is how the button knows to go away.
     var PARENT = { work: 'home', about: 'home', case: 'work', article: 'work',
-                   lab: 'home', piece: 'lab', ocarina: 'home' };
+                   lab: 'home', piece: 'lab' };
     /* An article used to go up to the all-writing screen, on the argument that
      * going up from one piece should land among the others rather than back at
      * the top of the section. That screen is gone and the argument came with
@@ -22167,7 +21941,6 @@ a.arrow { text-decoration: none; }
       stage.classList.toggle('x-article', name === 'article');
       stage.classList.toggle('x-lab', name === 'lab');
       stage.classList.toggle('x-piece', name === 'piece');
-      stage.classList.toggle('x-ocarina', name === 'ocarina');
       lamp();
       // The playground's ground is a cutting mat rather than paper, and the
       // ground is the body -- which the stage is inside -- so this one goes
