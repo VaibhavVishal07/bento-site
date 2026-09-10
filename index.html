@@ -107,6 +107,14 @@
      which is what reads as a card that has been bent. The darker fill puts
      the step back between the card and the line drawn round it. */
   --bg: #000000;
+  /* And the light on it. A flat black under a grid of black cards is a
+     page with no depth in it: the cards were a slightly different black.
+     This is a pool of charcoal under the frame, falling to black at the
+     edges -- one radial, at the values the cards stand a step above -- so
+     the cards separate from the ground and the frame reads as lit. The mat
+     screens paint their own ground over it; see :root.x-table body. */
+  --ground: radial-gradient(ellipse 70% 60% at 50% 42%,
+              #151515 0%, #0b0b0b 50%, #030303 100%);
 
   /* every card: fill #0D0D0D, 2px outside stroke #1A1A1A, radius 0 */
   --card-fill: #0d0d0d;
@@ -138,7 +146,7 @@
   --nav-lit: 0 0 4px rgba(var(--w), 0.25),
              0 0 18px rgba(var(--w), 0.4);
 
-  --rule: #161616;                       /* hairlines, solid — read off the frame */
+  --rule: #1d1d1d;                       /* hairlines; one step up from the frame's #161616, to hold on the lit ground */
   --slot: rgba(217, 217, 217, 0.07);     /* image placeholders (Rect 34624511) */
 
   --heading: rgba(var(--w), 0.88);
@@ -749,6 +757,10 @@
      the spread across the channels is small and the card is still very nearly
      white -- it is only pointed at red instead of at blue. */
   --bg:        #f4eee0;
+  /* The same pool in paper: a shade brighter under the frame, a shade
+     warmer and darker at the edges. */
+  --ground:    radial-gradient(ellipse 70% 60% at 50% 42%,
+                 #faf6ec 0%, #f4eee0 50%, #eae2d0 100%);
   --card-fill: #fdf8ec;
   --fill-rgb:  253, 248, 236;
   --card-line: #e7dcc6;
@@ -1016,6 +1028,10 @@
     /* The lit room's figures, kept in step with the copy under
        [data-theme="light"]. See the note there for why they are warm. */
     --bg:        #f4eee0;
+  /* The same pool in paper: a shade brighter under the frame, a shade
+     warmer and darker at the edges. */
+  --ground:    radial-gradient(ellipse 70% 60% at 50% 42%,
+                 #faf6ec 0%, #f4eee0 50%, #eae2d0 100%);
     --card-fill: #fdf8ec;
     --fill-rgb:  253, 248, 236;
     --card-line: #e7dcc6;
@@ -1254,6 +1270,7 @@ html, body { height: 100%; }
 body {
   margin: 0;
   background-color: var(--bg);
+  background-image: var(--ground);
   /* No tooth on the ground. --bg has been #000 all along, but the body was
      printing four per cent of fractal noise over it -- a floor that is nearly
      black and never quite, which next to cards at #0d0d0d with a hairline
@@ -12849,7 +12866,9 @@ a.arrow { text-decoration: none; }
     inset: 0;
     z-index: 0;
     pointer-events: none;
-    background: var(--field);
+    /* The phone's ground is this fixed sheet, so the pool goes here, under
+       the field's own pools, rather than on a body that scrolls. */
+    background: var(--field), var(--ground);
   }
 
   .viewport {
