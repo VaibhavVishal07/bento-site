@@ -4516,6 +4516,14 @@ body {
 }
 .w-lab .arrow { left: 685px; top: 20px; color: var(--mat-label); }
 
+.view-lab .t-table-1 { left: 598px; top: 918px; width: 377px; height: 470px; rotate: 113deg; background-image: url("assets/tools/rule-clear.png"); }
+.view-lab .t-table-2 { left: 1406px; top: 949px; width: 212px; height: 278px; rotate: 111deg; background-image: url("assets/tools/pencil-green.png"); }
+.view-lab .t-table-3 { left: 1553px; top: 1022px; width: 80px; height: 102px; rotate: 12deg; background-image: url("assets/tools/eraser.png"); }
+.view-lab .t-table-4 { left: 1787px; top: -155px; width: 319px; height: 339px; rotate: -8deg; background-image: url("assets/tools/set-square.png"); }
+.view-lab .t-table-5 { left: -134px; top: 618px; width: 187px; height: 235px; rotate: 167deg; background-image: url("assets/tools/knife.png"); }
+.view-lab .t-table-6 { left: 1928px; top: 623px; width: 171px; height: 234px; rotate: 54deg; background-image: url("assets/tools/clutch.png"); }
+.view-lab .t-table-7 { left: 148px; top: 932px; width: 219px; height: 280px; rotate: 188deg; background-image: url("assets/tools/pencil-wood.png"); }
+.view-lab .t-table-8 { left: 1759px; top: 958px; width: 357px; height: 428px; rotate: -63deg; background-image: url("assets/tools/rule-steel.png"); }
 
 /* Two photographs and half of a third.
 
@@ -8294,26 +8302,26 @@ body {
  * The same figures the prints use, which is the point -- a control lying on
  * this surface should be the same object as a photograph lying on it. See
  * --lab-plate and --mat-edge. */
-.x-piece .room,
-.x-piece .back {
+.x-lab .room,  .x-piece .room,
+.x-lab .back,  .x-piece .back {
   background: var(--lab-plate);
   outline-color: var(--mat-edge);
 }
-.x-piece .back,
-.x-piece .room-c[data-hush] { color: var(--mat-type); }
+.x-lab .back,  .x-piece .back,
+.x-lab .room-c[data-hush], .x-piece .room-c[data-hush] { color: var(--mat-type); }
 @media (hover: hover) and (pointer: fine) {
-  .x-piece .back:hover,
-  .x-piece .room-c:hover { color: var(--mat-label); }
+  .x-lab .back:hover,  .x-piece .back:hover,
+  .x-lab .room-c:hover, .x-piece .room-c:hover { color: var(--mat-label); }
 }
-.x-piece .room-c.is-hushed { color: var(--mat-label); }
+.x-lab .room-c.is-hushed, .x-piece .room-c.is-hushed { color: var(--mat-label); }
 
 /* The playground and a piece take the lattice off the frame entirely -- see
    .x-lab .rules -- so rules belonging to it go with it. The controls stay; it
    is the ruling that is not drawn on a cutting mat. */
-.x-piece .room::before,
-.x-piece .back::before,
-.x-piece .room::after,
-.x-piece .back::after { display: none; }
+.x-lab .room::before,  .x-piece .room::before,
+.x-lab .back::before,  .x-piece .back::before,
+.x-lab .room::after,   .x-piece .room::after,
+.x-lab .back::after,   .x-piece .back::after { display: none; }
 
 /* Two drawings rather than two words.
 
@@ -11856,15 +11864,8 @@ a.arrow { text-decoration: none; }
    still ruling it back in when this class lands, and a set of lines that
    vanishes on one frame in the middle of being drawn reads as a fault. */
 .rules { transition: opacity var(--x-morph) var(--x-ease); }
+.x-lab .rules,
 .x-piece .rules { opacity: 0; }
-
-/* The playground is a screen of cards again and stands on the lattice like
-   the others. Its grid is whatever the count makes it, so no inner pair is
-   its own: it takes the article's frame, the outer box alone, and the middle
-   pairs give way across the whole of it. */
-.x-lab .rules i[data-on]:not([data-on~="article"]) { display: none; }
-.x-lab .rules i.h-mid { --hgap-x: 3389px; --hgap-w: 1142px; }
-.x-lab .rules i.v-mid { --vgap-y: 81px;   --vgap-h: 860px; }
 
 /* And the crumb line stops taking its ink from the room.
 
@@ -11877,9 +11878,19 @@ a.arrow { text-decoration: none; }
 
    It was dark here for one revision, while the lit mat was a pale sage. The
    mat is a mat again and this is light again with it. */
-/* (The playground's own copy of these went with the mat: it is a card
-   screen on the black ground now, and its crumb takes the room's ink like
-   every other crumb. The piece keeps its set, below.) */
+.x-lab .crumb,
+.x-lab .crumb-count { color: rgba(238, 244, 250, 0.62); }
+.x-lab .crumb a     { color: rgba(238, 244, 250, 0.72); }
+.x-lab .crumb b     { color: rgba(246, 250, 254, 0.95); }
+.x-lab .crumb a:hover { color: rgba(246, 250, 254, 0.95); }
+/* Except in the lit room, where the mat is the card's own cream and light
+   ink on it is no ink at all: there the trail takes the room's, like every
+   other crumb. Both mat screens, since both carry the light figures. */
+:root[data-theme="light"] .x-lab .crumb,   :root[data-theme="light"] .x-piece .crumb,
+:root[data-theme="light"] .x-lab .crumb-count, :root[data-theme="light"] .x-piece .crumb-count { color: var(--icon); }
+:root[data-theme="light"] .x-lab .crumb a, :root[data-theme="light"] .x-piece .crumb a { color: var(--label); }
+:root[data-theme="light"] .x-lab .crumb b, :root[data-theme="light"] .x-piece .crumb b { color: var(--heading); }
+:root[data-theme="light"] .x-lab .crumb a:hover, :root[data-theme="light"] .x-piece .crumb a:hover { color: rgba(var(--w), 0.82); }
 
 /* The protractor and the blade marks. An SVG rather than more gradients,
    because an arc with seven rays off it is a drawing, and gradients are not
@@ -14861,7 +14872,7 @@ a.arrow { text-decoration: none; }
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
              stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h17M14 6l6 6-6 6"/></svg>
       </span>
-      <h2 class="headline">Many coding agents in one window, and it explains what breaks.</h2>
+      <h2 class="headline">Many coding agents in one window.</h2>
 
       <div class="slot slot-oc" role="img" aria-label="The Ocarina window: the tab sidebar, and an agent working in the terminal" style="background-image:url('assets/home-ocarina-terminal.png');background-size:cover;background-position:center;background-repeat:no-repeat"></div>
 
@@ -15037,7 +15048,7 @@ a.arrow { text-decoration: none; }
             </div>
           </div>
         </div></span></span></i><b class="w-shelf-hand">walkman</b></span>
-          <span class="w-shelf-oc"><i style="background-image:url('assets/lab-ocarina.jpg');background-size:cover;background-position:center;background-repeat:no-repeat"></i><b class="w-shelf-hand">ocarina</b></span>
+          <span class="w-shelf-oc"><i style="background-image:url('assets/home-ocarina-terminal.png');background-size:cover;background-position:center;background-repeat:no-repeat"></i><b class="w-shelf-hand">terminal</b></span>
         </div>
 
         <a class="card-hit" href="#lab" data-route="lab" aria-label="Open the Playground"></a>
@@ -15684,12 +15695,13 @@ a.arrow { text-decoration: none; }
          why there is no bar item for it: the crumb and the phone's back
          button are the way out, exactly as they are for a case study.
 
-         Cards, and as many of them as content/playground.json has. They are
-         laid as a bento by the script -- see the table in the piece script
-         below -- so the room is always full: three make one wide box over
-         two, four make two over two, five make two over three. Each is the
-         same object it was on the table, the window and the name, with the
-         tape and the mat gone. -->
+         The ground is still the mat (see :root.x-table), with its marks and
+         its tools at the margins. What lies on it is cards now, as many as
+         content/playground.json has, laid as a bento by the script -- see the
+         table in the piece script below -- so the room is always full: three
+         make one wide box over two, four make two over two, five make two
+         over three. Each is the same object it was as a print, the window and
+         the name, with the tape gone. -->
     <div class="view view-lab" data-view="lab" hidden>
 
       <p class="crumb">
@@ -15699,8 +15711,34 @@ a.arrow { text-decoration: none; }
       </p>
       <p class="crumb-count" data-lab-count>&nbsp;</p>
 
+      <svg class="lab-marks" viewBox="0 0 1920 1080" aria-hidden="true">
+        <!-- the protractor, out in the bottom margin where the bar is not -->
+        <g class="lab-arc">
+          <path d="M70 962a80 80 0 0 1 160 0"/>
+          <path d="M70 962h160"/>
+          <path d="M150 962 219.3 922M150 962 206.6 905.4M150 962 190 902.7
+                   M150 962V882M150 962 110 902.7M150 962 93.4 905.4M150 962 80.7 922"/>
+          <circle cx="150" cy="962" r="2.6"/>
+        </g>
+        <!-- and the marks a blade leaves, which is the whole point of the
+             words self-healing: it closes over them and they still show -->
+        <g class="lab-cuts">
+          <path d="M470 96h120M1290 84h96M1740 300v88M28 470h104
+                   M980 492l64-64M1880 690v96M404 500h92
+                   M62 700l40 40M1420 470h88M900 88l44 44"/>
+        </g>
+      </svg>
 
       
+
+      <span class="mat-tool t-table-1" aria-hidden="true"></span>
+      <span class="mat-tool t-table-2" aria-hidden="true"></span>
+      <span class="mat-tool t-table-3" aria-hidden="true"></span>
+      <span class="mat-tool t-table-4" aria-hidden="true"></span>
+      <span class="mat-tool t-table-5" aria-hidden="true"></span>
+      <span class="mat-tool t-table-6" aria-hidden="true"></span>
+      <span class="mat-tool t-table-7" aria-hidden="true"></span>
+      <span class="mat-tool t-table-8" aria-hidden="true"></span>
 
 
       <figure class="card lab-pin lab-pin-1">
@@ -15722,11 +15760,11 @@ a.arrow { text-decoration: none; }
       </figure>
 
       <figure class="card lab-pin lab-pin-2">
-        <span class="lab-pshot" role="img" aria-label="Ocarina" style="background-image:url('assets/lab-ocarina.jpg');background-size:cover;background-position:center;background-repeat:no-repeat"></span>
-        <figcaption><span class="lab-kind">Running · Three.js · Web Audio · React</span><b>Ocarina</b>
-          <span>A playable ocarina, and a synth built for one cavity.</span></figcaption>
-        <a class="lab-hit" href="#lab/ocarina" data-route="piece" data-slug="ocarina" data-repo="VaibhavVishal07/ocarina"
-           aria-label="Open Ocarina"></a>
+        <span class="lab-pshot" role="img" aria-label="Ocarina Terminal" style="background-image:url('assets/home-ocarina-terminal.png');background-size:cover;background-position:center;background-repeat:no-repeat"></span>
+        <figcaption><span class="lab-kind">Shipping · Swift · SwiftUI · SwiftTerm</span><b>Ocarina Terminal</b>
+          <span>A macOS terminal for coding agents, many at once in one window.</span></figcaption>
+        <a class="lab-hit" href="#lab/ocarina-terminal" data-route="piece" data-slug="ocarina-terminal" data-repo="VaibhavVishal07/Ocarina-Terminal"
+           aria-label="Open Ocarina Terminal"></a>
       </figure>
 
       <figure class="card lab-pin lab-pin-3">
@@ -19620,22 +19658,22 @@ a.arrow { text-decoration: none; }
       facts: ['Two to six frames', 'Ships four ways', 'Draws on a canvas']
     },
 
-    'ocarina': {
-      name: 'Ocarina',
-      kit: 'Three.js · Web Audio · React',
-      state: 'live', label: 'Running',
-      shot: 'assets/lab-ocarina.jpg',
-      lede: 'An ocarina you can play in the browser, sounded by a synthesiser built for one cavity.',
+    'ocarina-terminal': {
+      name: 'Ocarina Terminal',
+      kit: 'Swift · SwiftUI · SwiftTerm',
+      state: 'live', label: 'Shipping',
+      shot: 'assets/home-ocarina-terminal.png',
+      lede: 'A macOS terminal for AI coding agents: many at once, in one window, each tab named for the project it is in.',
       beats: [
-        ['What I wanted', 'Every browser ocarina I found was a keyboard with a picture of one over it. I wanted the instrument: the real mesh, the five buttons the game gives you, and a sound generated rather than a folder of samples played back.',
-         'the five buttons, in a diamond', ''],
-        ['What it does', 'The five buttons sound D, F, A and B, which is every song the game has, because they were written for them. Finish one it knows and it answers — dimmed scene, the name written out, the phrase back on a struck voice that is plainly not yours.',
-         'the songbook, eighteen songs deep', ''],
-        ['What happened', 'It was a reed organ for a week. 440 Hz sat under a label reading A5, so every note played an octave beneath its own name; and the synth had a detuned double, a sub-octave and a filter. A vessel flute is nearly a sine.',
-         'the octave it had been playing in', '']
+        ['What I wanted', 'Running four agents meant four terminal windows, none of which said which project it was in or whether the agent had finished. I wanted one window that knew, without a preference to switch on for any of it.',
+         'four windows, none of them labelled', ''],
+        ['What it does', 'Every tab is named for the checkout it works in. It reads the agent\'s transcript and ticks each job off as it finishes, puts the state in the menu bar, counts the tokens spent and the time left, and holds the display on while a run is going.',
+         'the tab sidebar and the task list', ''],
+        ['What happened', 'It became a real terminal that happens to be a window around your agent: normal commands still work, you bring the agent and the account you already have, and it ships 216 skills that install to whichever agent is in the tab.',
+         'asking for a skill in your own words', '']
       ],
-      verdict: 'Four pitch classes is a chord, not a scale. Most of the series cannot go on it, and forcing one teaches the wrong tune.',
-      facts: ['Eighteen songs, six of them warps', 'No audio files', 'Three evenings']
+      verdict: 'Nothing here you have to switch on. The tab names, the task list and the meter run from the moment you open the app.',
+      facts: ['Free and open source', 'macOS 14 and later', 'Claude Code, Gemini CLI, Codex']
     },
 
     'walkman': {
@@ -19664,8 +19702,8 @@ a.arrow { text-decoration: none; }
     var lab = document.querySelector('.view-lab');
     if (!view || !lab) { return; }
 
-    /* The bento. The room is the frame's own -- 399 to 1521 across, 91 to
-       931 down, the box every other L2 stands in -- and the cards share it
+    /* The bento, on the mat. The room is the frame's own -- 399 to 1521
+       across, 91 to 931 down, the box every other L2 stands in -- and the cards share it
        however many there are: two rows up to six, three up to twelve, four
        past that, and a row takes the extra so that the rows above it are
        never the fuller ones. Three is one wide card over two; four is two
@@ -22091,9 +22129,7 @@ a.arrow { text-decoration: none; }
       // The playground's ground is a cutting mat rather than paper, and the
       // ground is the body -- which the stage is inside -- so this one goes
       // on the root. See :root.x-table.
-      // The playground stands on the black ground with the other card
-      // screens now; the mat is the piece's alone.
-      root.classList.toggle('x-table', name === 'piece');
+      root.classList.toggle('x-table', name === 'lab' || name === 'piece');
       // State only. Nothing downstream of this may read layout: the pin that
       // makes a tile travel is three lines away and a forced layout before it
       // resolves the tile at its final size, which leaves it nothing to travel
@@ -22204,7 +22240,8 @@ a.arrow { text-decoration: none; }
     function column(name) {
       busy = true;
 
-      var mat = name === 'piece' || here === 'piece';
+      var mat = name === 'lab'   || here === 'lab' ||
+                name === 'piece' || here === 'piece';
 
       stage.classList.add('x-cross-out');
       if (mat) { stage.classList.add('x-cross-mat'); }
