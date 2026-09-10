@@ -3259,7 +3259,18 @@ body {
 
    142 down: 36 clear of the headline, which is the air the playground card
    leaves over its own pieces. */
-.slot-oc { left: 0; top: 142px; width: 364px; height: 234px; }
+.slot-oc { left: 20px; top: 142px; width: 364px; height: 234px; }
+
+/* Twenty in from the card's edge, so the window's corner stands on the
+   card rather than on its edge, and an edge of its own: a hairline in the
+   room's ink, on a radius a shade under the window's so the picture fills
+   to it. The card cuts the right and the foot, so what shows is the top,
+   the left and the one corner between them -- which is what a window shows. */
+.slot-oc {
+  border: 1px solid rgba(var(--w), 0.16);
+  border-radius: 8px;
+  overflow: hidden;
+}
 
 /* And no ground under it. .slot paints var(--slot) -- the light wash this
    site puts where a picture is promised and has not arrived -- and this
@@ -14548,7 +14559,7 @@ a.arrow { text-decoration: none; }
      carries it because an absolutely placed box contributes none. */
   .ocarina { min-height: calc(168px + 0.531 * (100vw - 34px)); }
   .slot-oc {
-    left: 0;
+    left: 20px;
     top: 168px;
     width: 100%;
     height: auto;
