@@ -11894,21 +11894,22 @@ a.arrow { text-decoration: none; }
    them, which is the half a print in a pile always loses.
    ------------------------------------------------------------------------- */
 
-/* A card now, and .card draws it: the fill, the edge, the glare, the grain.
-   What is left here is where it stands and how it is filled.
-
-   Where it stands is four figures the script writes onto each one, because
-   the answer depends on how many there are -- see the bento in the piece
-   script. The window fills whatever the caption leaves, so a card of any
-   height holds a picture of the right height without a second figure. */
 .lab-pin {
-  left: var(--lx); top: var(--ly);
-  width: var(--lw); height: var(--lh);
+  position: absolute;
+  /* 336 unless the table has been re-laid to hold more than the ten that
+     were placed by hand, in which case build.js cuts the prints down to the
+     pitch and writes the figure once, on the table. */
+  width: var(--pin-w, 336px);
   margin: 0;
-  padding: 12px 12px 0;
-  display: flex;
-  flex-direction: column;
-  rotate: 0deg;
+  padding: 13px 13px 0;
+  background: var(--print);
+  box-shadow: var(--print-cast);
+
+  /* transform is the lift and rotate is the angle, and they are two
+     properties rather than one shorthand for the reason the About prints
+     split them: the crossing fades these in with a transform of its own, and
+     a shorthand would take the angle with it. */
+  transform-origin: 50% 60%;
   transition: transform 260ms var(--ease),
               box-shadow 260ms var(--ease);
 }
@@ -11917,11 +11918,9 @@ a.arrow { text-decoration: none; }
   position: relative;
   display: block;
   overflow: hidden;
-  /* Whatever the caption leaves. --pin-shot is still written, for the one
-     window that measures a card against its own height -- see .lab-pshot-lens. */
-  flex: 1 1 auto;
-  min-height: 0;
-  height: auto;
+  /* The window keeps its share of the paper when the paper is cut down: a
+     smaller print, not a print with a different opening in it. */
+  height: var(--pin-shot, 212px);
   background-color: var(--print-shot);
   background-size: cover;
   background-position: center;
@@ -12144,16 +12143,7 @@ a.arrow { text-decoration: none; }
   .w-shelf-lens i .play-case { animation: none; }
 }
 
-.lab-pin figcaption { flex: none; padding: 16px 12px 18px; }
-.lab-pin .lab-kind {
-  display: block;
-  margin-bottom: 6px;
-  font-family: var(--f-label);
-  font-size: var(--t-meta); line-height: var(--lh-meta);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--icon);
-}
+.lab-pin figcaption { padding: 13px 3px 15px; }
 
 /* Written on, rather than set under.
 
@@ -12170,21 +12160,20 @@ a.arrow { text-decoration: none; }
    And both lines are centred on the paper. A hand-written name hard against
    the left edge of a print reads as a file name; centred under the window it
    reads as a caption somebody wrote in the space left for one. */
-/* Set, not written on. The hand was the right voice for a note on a print
-   and the wrong one for a card: a card's name is a heading, in the face and
-   at the step every other card on the site names things in. */
 .lab-pin figcaption b {
-  display: block; margin-bottom: 2px;
-  font-family: var(--f-body); letter-spacing: 0;
-  font-size: var(--t-heading); line-height: var(--lh-heading); font-weight: 600;
-  text-transform: none; text-align: left;
-  color: var(--heading);
+  display: block; margin-bottom: 3px;
+  font-family: var(--f-hand); letter-spacing: 0;
+  font-size: 25px; line-height: 27px; font-weight: 500;
+  text-transform: none; text-align: center;
+  color: var(--print-name);
 }
 .lab-pin figcaption span {
   display: block;
-  text-align: left;
-  font-size: var(--t-body); line-height: var(--lh-body); font-weight: 300;
-  color: var(--sub);
+  text-align: center;
+  /* The name above this is written in the hand and keeps its own size -- it
+     is a note on a print, not the page talking. The line under it is the
+     page. */
+  font-size: var(--t-meta); line-height: var(--lh-meta); color: var(--print-faint);
 }
 
 /* A strip over the head of each one, half on the paper and half on the mat,
@@ -12195,7 +12184,7 @@ a.arrow { text-decoration: none; }
 .lab-hit {
   position: absolute;
   inset: 0;
-  z-index: 4;
+  z-index: 1;
 }
 .lab-hit:focus-visible { outline: 2px solid rgb(var(--w)); outline-offset: 6px; }
 
@@ -12238,6 +12227,11 @@ a.arrow { text-decoration: none; }
   .view-lab > .lab-pin > .lab-hit { animation: none; }
 }
 
+.lab-pin > .lab-tape {
+  left: 50%; top: -11px;
+  width: 104px; height: 22px;
+  margin-left: -52px;
+}
 
 /* --- picking one up -------------------------------------------------------
 
@@ -12255,9 +12249,10 @@ a.arrow { text-decoration: none; }
    are smaller and stacked and taped down exactly the same way.
    ------------------------------------------------------------------------- */
 
-.pc-item { transform-origin: 50% 12px; }
+.lab-pin, .pc-item { transform-origin: 50% 12px; }
 
 @media (hover: hover) and (pointer: fine) {
+  .lab-pin:hover,
   .pc-item:hover {
     z-index: 6;
     transform: perspective(760px) rotateX(-7deg);
@@ -12265,6 +12260,7 @@ a.arrow { text-decoration: none; }
                 0 8px 14px -6px rgba(0, 0, 0, 0.44);
   }
 }
+.lab-pin:focus-within,
 .pc-item:focus-visible {
   z-index: 6;
   transform: perspective(760px) rotateX(-7deg);
@@ -12272,10 +12268,19 @@ a.arrow { text-decoration: none; }
               0 8px 14px -6px rgba(0, 0, 0, 0.44);
 }
 
-/* Where each card stands is the script's -- four custom properties on the
-   card, worked out from the count. What build.js still writes here is the
-   deal: which card lands first. */
+/* Two rows of five, and every figure below was picked rather than stepped.
+   The x positions are on a 371 pitch because five 336s and four 35s is
+   exactly the 1820 there is to put them in; the tops and the angles are not
+   on anything. The angles are not on anything. */
 /* Written by build.js from content/playground.json -- see SPOTS there. */
+.lab-pin-1 { left: 607px; top: 184px; rotate: -3.4deg; }
+.lab-pin-2 { left: 978px; top: 200px; rotate: 2.6deg; }
+.lab-pin-3 { left: 792px; top: 609px; rotate: 1.6deg; }
+
+.lab-pin-1 > .lab-tape { rotate: -3.8deg; }
+.lab-pin-2 > .lab-tape { rotate: -2.8deg; }
+.lab-pin-3 > .lab-tape { rotate: -1.8deg; }
+
 .view-lab > .lab-pin-1 { --x-delay: calc(var(--x-step) + var(--pin-deal) * 0); }
 .view-lab > .lab-pin-2 { --x-delay: calc(var(--x-step) + var(--pin-deal) * 1); }
 .view-lab > .lab-pin-3 { --x-delay: calc(var(--x-step) + var(--pin-deal) * 2); }
@@ -12758,6 +12763,12 @@ a.arrow { text-decoration: none; }
        the field's own pools, rather than on a body that scrolls. */
     background: var(--field), var(--ground);
   }
+  /* Not on the mat. The mat is painted on the body under this sheet, and
+     the sheet stands over everything that is not positioned -- which on the
+     playground is the prints' paper. With the pool on it the mat and the
+     paper both went under charcoal. The field alone is what stood here
+     before the pool, and the field is all but transparent. */
+  :root.x-table body::before { background: var(--field); }
 
   .viewport {
     position: static;
@@ -13467,17 +13478,14 @@ a.arrow { text-decoration: none; }
 
   
 
-  /* relative and not static: the hit inside is inset: 0 against the nearest
-     positioned box, and a static card hands it the whole column. */
   .lab-pin {
-    position: relative;
-    left: auto; top: auto;
-    width: auto; height: auto;
+    position: static;
+    width: auto;
     rotate: none;
     transform: none;
-    display: block;                      /* the window is a fixed 200 here */
+    box-shadow: var(--print-cast);
   }
-  .lab-pin figcaption { padding: 16px 0 2px; }
+    .lab-pin > .lab-tape { display: none; }
   /* Two figures for one window, and they have to move together: the card
      standing in it is cut by the height, so a height changed here and a
      --lens-well left on the desktop's would cut it somewhere the rule above
@@ -13668,6 +13676,21 @@ a.arrow { text-decoration: none; }
      section lit. What a trail also does is offer the level above as a link,
      and that is the whole of the button. */
     .crumb { display: none; }
+
+  /* Except on the playground, which is the one screen with no card and so no
+     label anywhere on it: a reader landing there gets ten photographs and no
+     word about what they are looking at. The back button says HOME, which is
+     where the reader came from rather than where they are. */
+  .x-lab .crumb {
+    display: flex;
+    position: static;
+    left: auto; top: auto;
+    margin: 46px 0 4px;
+    letter-spacing: 0.04em;
+  }
+  .x-lab .crumb a, .x-lab .crumb span { display: none; }
+  .x-lab .crumb b { color: rgba(242, 253, 247, 0.94); }
+  .x-lab .view-lab > .lab-pin:first-of-type { margin-top: 0; }
 
 
   /* The frame places this by hand and does it at (0,2,0) -- `.c-hero
@@ -15519,13 +15542,10 @@ a.arrow { text-decoration: none; }
          why there is no bar item for it: the crumb and the phone's back
          button are the way out, exactly as they are for a case study.
 
-         The ground is still the mat (see :root.x-table), with its marks and
-         its tools at the margins. What lies on it is cards now, as many as
-         content/playground.json has, laid as a bento by the script -- see the
-         table in the piece script below -- so the room is always full: three
-         make one wide box over two, four make two over two, five make two
-         over three. Each is the same object it was as a print, the window and
-         the name, with the tape gone. -->
+         No card anywhere in here, and no tile either. The ground is the mat
+         (see :root.x-table) and the ten photographs are taped straight onto
+         it -- so this is the one screen on the site with nothing standing on
+         the frame, which is the point of it. -->
     <div class="view view-lab" data-view="lab" hidden>
 
       <p class="crumb">
@@ -15565,7 +15585,8 @@ a.arrow { text-decoration: none; }
       <span class="mat-tool t-table-8" aria-hidden="true"></span>
 
 
-      <figure class="card lab-pin lab-pin-1">
+      <figure class="lab-pin lab-pin-1">
+        <span class="lab-tape" aria-hidden="true"></span>
         <span class="lab-pshot lab-pshot-lens" aria-hidden="true">
           <div class="play-case lab-lens">
             <lenticular-card class="play-lens"
@@ -15577,21 +15598,23 @@ a.arrow { text-decoration: none; }
             <span class="play-foot" aria-hidden="true">FULL BLEED &middot; Green Flame</span>
           </div>
         </span>
-        <figcaption><span class="lab-kind">Running · Canvas · Web Components</span><b>Lenticard</b>
+        <figcaption><b>Lenticard</b>
           <span>Two to six photographs become one card you have to tilt.</span></figcaption>
         <a class="lab-hit" href="#lab/lenticard" data-route="piece" data-slug="lenticard" data-repo="VaibhavVishal07/lenticard"
            aria-label="Open Lenticard"></a>
       </figure>
 
-      <figure class="card lab-pin lab-pin-2">
+      <figure class="lab-pin lab-pin-2">
+        <span class="lab-tape" aria-hidden="true"></span>
         <span class="lab-pshot" role="img" aria-label="Ocarina Terminal" style="background-image:url('assets/home-ocarina-terminal.png');background-size:cover;background-position:center;background-repeat:no-repeat"></span>
-        <figcaption><span class="lab-kind">Shipping · Swift · SwiftUI · SwiftTerm</span><b>Ocarina Terminal</b>
+        <figcaption><b>Ocarina Terminal</b>
           <span>A macOS terminal for coding agents, many at once in one window.</span></figcaption>
         <a class="lab-hit" href="#lab/ocarina-terminal" data-route="piece" data-slug="ocarina-terminal" data-repo="VaibhavVishal07/Ocarina-Terminal"
            aria-label="Open Ocarina Terminal"></a>
       </figure>
 
-      <figure class="card lab-pin lab-pin-3">
+      <figure class="lab-pin lab-pin-3">
+        <span class="lab-tape" aria-hidden="true"></span>
         <span class="lab-pshot lab-pshot-live" aria-hidden="true" style="--wk-mini:0.58">
           <span class="wk-mini walkman"><span class="wk-mini-in">        <div class="ms-wk">
           <div class="ms-wk-face">
@@ -15634,7 +15657,7 @@ a.arrow { text-decoration: none; }
           </div>
         </div></span></span>
         </span>
-        <figcaption><span class="lab-kind">On npm · npm · Vanilla JS · CSS</span><b>Walkman</b>
+        <figcaption><b>Walkman</b>
           <span>A tape deck for a YouTube link, on npm.</span></figcaption>
         <a class="lab-hit" href="#lab/walkman" data-route="piece" data-slug="walkman" data-repo="VaibhavVishal07/bento-portfolio"
            aria-label="Open Walkman"></a>
@@ -19526,54 +19549,6 @@ a.arrow { text-decoration: none; }
     var lab = document.querySelector('.view-lab');
     if (!view || !lab) { return; }
 
-    /* The bento, on the mat. The room is the frame's own -- 399 to 1521
-       across, 91 to 931 down, the box every other L2 stands in -- and the cards share it
-       however many there are: two rows up to six, three up to twelve, four
-       past that, and a row takes the extra so that the rows above it are
-       never the fuller ones. Three is one wide card over two; four is two
-       over two; five is two over three; add a sixth and the five move up to
-       make three over three. Each card is told where it stands in four
-       custom properties, which the phone ignores: down there a card is a
-       card in the column and the frame's figures do not apply.
-
-       The gutter is 21, the lattice's own, so a card's edge lands where a
-       ruled pair would. And --pin-shot is written for the one window that
-       measures its contents against its own height: the lenticular card
-       stands at a fraction of the window and is cut where the window ends,
-       so it is told roughly how tall that will be. */
-    (function () {
-      var pins = lab.querySelectorAll('.lab-pin'), n = pins.length;
-      if (!n) { return; }
-      var L = 399, T = 91, W = 1122, H = 840, G = 21;
-      var rows = n <= 2 ? 1 : n <= 6 ? 2 : n <= 12 ? 3 : 4;
-      var base = Math.floor(n / rows), extra = n % rows;
-      var rowH = (H - G * (rows - 1)) / rows;
-      var i = 0;
-      for (var r = 0; r < rows; r++) {
-        var k = base + (r >= rows - extra ? 1 : 0);
-        var w = (W - G * (k - 1)) / k;
-        var shot = Math.round(rowH - 120);
-        for (var c = 0; c < k && i < n; c++, i++) {
-          var pin = pins[i];
-          pin.style.setProperty('--lx', (L + c * (w + G)).toFixed(2) + 'px');
-          pin.style.setProperty('--ly', (T + r * (rowH + G)).toFixed(2) + 'px');
-          pin.style.setProperty('--lw', w.toFixed(2) + 'px');
-          pin.style.setProperty('--lh', rowH.toFixed(2) + 'px');
-          pin.style.setProperty('--pin-shot', shot + 'px');
-          /* The machine standing in a window was sized for the print's
-             336 by 212. It grows with the window it is in now, at the
-             proportion the content chose, and never past the window. */
-          var live = pin.querySelector('.lab-pshot-live');
-          if (live) {
-            var chosen = parseFloat(live.style.getPropertyValue('--wk-mini')) || 0.58;
-            var grow = Math.min((w - 24) / 310, shot / 212);
-            var fit = Math.min((w - 24) / 366, shot / 356) * 0.96;
-            live.style.setProperty('--wk-mini', Math.min(chosen * grow, fit).toFixed(3));
-          }
-        }
-      }
-    })();
-
     var rail = view.querySelector('[data-pc-rail]');
     var order = [];
 
@@ -22423,9 +22398,135 @@ a.arrow { text-decoration: none; }
       return true;
     }
 
-    /* (The table crossing -- prints walking from the playground into the
-       piece's rail -- went with the table. The playground is a screen of
-       cards now and crosses into a piece the way every screen crosses.) */
+        /* The table crossing.
+     *
+     * Both screens are laid on the same mat and hold the same ten
+     * photographs, so the move between them is a rearrangement rather than a
+     * replacement: measure every print where it stands, swap the views on one
+     * frame, measure its counterpart, and hand each one the difference to
+     * unwind. The reader sees ten photographs walk to the left and a sheet of
+     * paper come in on the right.
+     *
+     * Keyed by slug through data-slug, which both the print's hit area and
+     * the rail's item carry, so nothing here depends on the two lists being
+     * in the same order.
+     *
+     * Rects are real pixels and transforms are the frame's, hence the divide
+     * by the stage scale -- the same arithmetic the opened cover on About
+     * uses, and for the same reason.
+     */
+    /* The table crossing.
+     *
+     * Both screens are laid on the same mat and hold the same ten
+     * photographs, so the move between them is a rearrangement rather than a
+     * replacement. Measure every print where it stands, swap the views on one
+     * frame, measure its counterpart, and fly a copy of it across.
+     *
+     * A copy, and not the thing itself. See .tbl-fly: the rail is a scrolling
+     * box and the arriving prints live inside it, so animating them in place
+     * asked the browser to reconsider that box ten times a frame. The copies
+     * sit on the stage with nothing around them.
+     *
+     * Keyed by slug through data-slug, which both the print's hit area and
+     * the rail's item carry, so nothing here depends on the two lists being
+     * in the same order.
+     */
+    function table(name) {
+      if (busy) { return; }
+      busy = true;
+
+      var box = stage.getBoundingClientRect();
+      var scale = stage.offsetWidth > 0 ? box.width / stage.offsetWidth : 1;
+
+      // Client pixels to the frame's own, which is what everything on the
+      // stage is positioned in.
+      function frame(r) {
+        return { x: (r.left - box.left) / scale, y: (r.top - box.top) / scale,
+                 w: r.width / scale, h: r.height / scale };
+      }
+
+      /* Measured square. A print is turned a few degrees and the rect a
+         rotated element reports is its bounding box, which is bigger than the
+         element and centred differently. Rotation comes off before the tape
+         measure and goes back after. */
+      function census(root) {
+        var map = {}, boxes = [];
+        Array.prototype.forEach.call(root.querySelectorAll('[data-slug]'), function (el) {
+          var b = el.closest('.lab-pin') || (el.classList.contains('pc-item') ? el : null);
+          if (b) { boxes.push([el.getAttribute('data-slug'), b]); }
+        });
+        boxes.forEach(function (pair) { pair[1].style.rotate = '0deg'; });
+        void root.offsetWidth;
+        boxes.forEach(function (pair) {
+          var r = pair[1].getBoundingClientRect();
+          if (r.width) { map[pair[0]] = { r: frame(r), el: pair[1] }; }
+        });
+        boxes.forEach(function (pair) { pair[1].style.rotate = ''; });
+        return map;
+      }
+
+      var before = census(views[name === 'piece' ? 'lab' : 'piece']);
+      paint(name);
+
+      // The rail has to be standing where it will stand before anything is
+      // measured against it.
+      if (name === 'piece' && window.__pieceRail) { window.__pieceRail(); }
+
+      var arriving = views[name];
+      var after = census(arriving);
+
+      var layer = document.createElement('div');
+      layer.className = 'tbl-fly';
+      layer.setAttribute('aria-hidden', 'true');
+      stage.appendChild(layer);
+
+      // Down the rail on the way in, down the table on the way out.
+      var order = Object.keys(after).sort(function (a, b) {
+        return (after[a].r.y - after[b].r.y) || (after[a].r.x - after[b].r.x);
+      });
+
+      var held = [], copies = [];
+      order.forEach(function (slug, i) {
+        var to = after[slug], from = before[slug];
+        if (!from) { return; }
+
+        var copy = to.el.cloneNode(true);
+        copy.removeAttribute('id');
+        copy.classList.add('tbl-copy');
+        copy.style.left = to.r.x + 'px';
+        copy.style.top = to.r.y + 'px';
+        copy.style.width = to.r.w + 'px';
+        copy.style.rotate = '0deg';
+        copy.style.opacity = '1';
+        copy.style.setProperty('--tbl-i', String(i));
+        copy.style.transform = 'translate(' + (from.r.x - to.r.x).toFixed(2) + 'px,' +
+                               (from.r.y - to.r.y).toFixed(2) + 'px) scale(' +
+                               (from.r.w / to.r.w).toFixed(4) + ')';
+        layer.appendChild(copy);
+        copies.push(copy);
+
+        to.el.classList.add('tbl-hold');
+        held.push(to.el);
+      });
+
+      var sheet = arriving.querySelector('.pc-sheet');
+      if (sheet) { sheet.classList.add('is-arriving'); }
+
+      // One frame with every copy standing where its original was, then go.
+      void stage.offsetWidth;
+      copies.forEach(function (c) {
+        c.classList.add('is-off');
+        c.style.transform = '';
+      });
+
+      setTimeout(function () {
+        held.forEach(function (el) { el.classList.remove('tbl-hold'); });
+        if (sheet) { sheet.classList.remove('is-arriving'); }
+        if (layer.parentNode) { layer.parentNode.removeChild(layer); }
+        busy = false;
+      }, 900);
+    }
+
     function routeFromUrl() {
       var h = location.hash;
       if (h.indexOf('#lab/') === 0 && piece(h.slice(5))) { return 'piece'; }
@@ -22502,6 +22603,7 @@ a.arrow { text-decoration: none; }
         if (!piece(slug)) { return; }
         history.pushState({ view: 'piece' }, '', HASH.piece);
         if (was === 'piece') { return; }
+        if (was === 'lab') { table('piece'); return; }
         go('piece');
         return;
       }
@@ -22519,6 +22621,7 @@ a.arrow { text-decoration: none; }
       // Push first so the address bar is right the moment the tiles move,
       // and so Back walks the two screens rather than leaving the site.
             history.pushState({ view: to }, '', hashOf(to) || location.pathname);
+      if (here === 'piece' && to === 'lab') { table('lab'); return; }
       go(to);
     });
 
